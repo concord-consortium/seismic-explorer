@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/capemendocino.json"],
+  "maxLatitude":42,
+  "maxLongitude":-123,
+  "minLatitude":39,
+  "minLongitude":-126,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

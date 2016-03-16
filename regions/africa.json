@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/africa.json"],
+  "maxLatitude": 41,
+  "maxLongitude": 58,
+  "minLatitude": -39,
+  "minLongitude": -26,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

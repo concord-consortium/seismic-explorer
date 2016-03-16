@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/lomaprieta.json"],
+  "maxLatitude": 39,
+  "maxLongitude": 236,
+  "minLatitude": 36,
+  "minLongitude": 239,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

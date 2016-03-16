@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/northeast.json"],
+  "maxLatitude": 49,
+  "maxLongitude": -64,
+  "minLatitude": 39,
+  "minLongitude": -81,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

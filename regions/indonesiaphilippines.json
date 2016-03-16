@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/indonesiaphilippines.json"],
+  "maxLatitude": 21,
+  "maxLongitude": -225,
+  "minLatitude": -18,
+  "minLongitude": -272,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

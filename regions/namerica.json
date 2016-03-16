@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/namerica.json"],
+  "maxLatitude": 79,
+  "maxLongitude": -43,
+  "minLatitude": 10,
+  "minLongitude": -174,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

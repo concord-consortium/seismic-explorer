@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/yellowstone.json"],
+  "maxLatitude": 47,
+  "maxLongitude": -108,
+  "minLatitude": 41,
+  "minLongitude": -114,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/europe.json"],
+  "minLatitude":33,
+  "minLongitude":-11,
+  "maxLatitude":72,
+  "maxLongitude":49,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/southerncalifornia1992.json"],
+  "maxLatitude": 38,
+  "maxLongitude": -113,
+  "minLatitude": 31,
+  "minLongitude": -123,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

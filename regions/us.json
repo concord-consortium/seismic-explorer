@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/us.json"],
+  "maxLatitude": 51,
+  "maxLongitude": -66,
+  "minLatitude": 23,
+  "minLongitude": -131,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

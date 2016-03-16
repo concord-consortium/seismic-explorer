@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/antarctica.json"],
+  "maxLatitude": -55,
+  "maxLongitude": 181,
+  "minLatitude": -89,
+  "minLongitude": -173,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

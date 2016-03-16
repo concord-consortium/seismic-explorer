@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/Denali2002.json"],
+  "maxLatitude": 65,
+  "maxLongitude": -144,
+  "minLatitude": 61,
+  "minLongitude": -156,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

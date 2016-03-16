@@ -1,0 +1,113 @@
+{
+  "datasets":["datasets/northatlantic.json"],
+  "minLatitude":-2,
+  "minLongitude":-100,
+  "maxLatitude":75,
+  "maxLongitude":11,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "Iceland",
+        "scaffold": "regions/iceland.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+         [
+           [
+             -23.90625,
+             62.99515845212052
+           ],
+           [
+             -23.90625,
+             66.99884379185184
+           ],
+           [
+             -12.83203125,
+             66.99884379185184
+           ],
+           [
+             -12.83203125,
+             62.99515845212052
+           ],
+           [
+             -23.90625,
+             62.99515845212052
+           ]
+         ]
+       ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "Mid-Atlantic Ridge",
+        "scaffold": "regions/atlanticridge.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+         [
+           [
+             -43.76953125,
+             32.99023555965106
+           ],
+           [
+             -43.76953125,
+             37.3002752813443
+           ],
+           [
+             -32.51953125,
+             37.3002752813443
+           ],
+           [
+             -32.51953125,
+             32.99023555965106
+           ],
+           [
+             -43.76953125,
+             32.99023555965106
+           ]
+         ]
+       ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "Carribean",
+        "scaffold": "regions/carribean.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+           [
+             [
+               -82.96875,
+               16.972741019999035
+             ],
+             [
+               -82.96875,
+               24.206889622398023
+             ],
+             [
+               -66.62109375,
+               24.206889622398023
+             ],
+             [
+               -66.62109375,
+               16.972741019999035
+             ],
+             [
+               -82.96875,
+               16.972741019999035
+             ]
+           ]
+         ]
+      }
+    }
+  ]
+}

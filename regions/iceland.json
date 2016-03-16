@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/iceland.json"],
+  "maxLatitude": 68,
+  "maxLongitude": -12,
+  "minLatitude": 60,
+  "minLongitude": -30,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

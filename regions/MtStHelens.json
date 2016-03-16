@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/MtStHelens.json"],
+  "maxLatitude": 47,
+  "maxLongitude": -120,
+  "minLatitude": 45,
+  "minLongitude": -123,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

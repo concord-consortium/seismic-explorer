@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/northridge1995.json"],
+  "maxLatitude": 36,
+  "maxLongitude": -116,
+  "minLatitude": 32,
+  "minLongitude": -120,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

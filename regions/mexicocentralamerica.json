@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/mexicocentralamerica.json"],
+  "minLatitude":4,
+  "minLongitude":-124,
+  "maxLatitude":34,
+  "maxLongitude":-74,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

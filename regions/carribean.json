@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/carribean.json"],
+  "maxLatitude": 31,
+  "maxLongitude": -55,
+  "minLatitude": 7,
+  "minLongitude": -99,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

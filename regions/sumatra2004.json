@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/sumatra2004.json"],
+  "maxLatitude": 10,
+  "maxLongitude": 108,
+  "minLatitude": -9,
+  "minLongitude": 89,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

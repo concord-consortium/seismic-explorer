@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/sichuan2008.json"],
+  "maxLatitude": 35,
+  "maxLongitude": 112,
+  "minLatitude": 27,
+  "minLongitude": 100,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

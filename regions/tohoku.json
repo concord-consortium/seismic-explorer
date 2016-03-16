@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/tohoku.json"],
+  "maxLatitude": 40,
+  "maxLongitude": 145,
+  "minLatitude": 38,
+  "minLongitude": 140,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

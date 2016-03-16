@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/newmadrid.json"],
+  "maxLatitude": 41,
+  "maxLongitude": -85,
+  "minLatitude": 33,
+  "minLongitude": -95,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

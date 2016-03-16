@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/newzealand.json"],
+  "maxLatitude": -27,
+  "maxLongitude": -172,
+  "minLatitude": -56,
+  "minLongitude": -200,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

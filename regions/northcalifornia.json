@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/northcalifornia.json"],
+  "minLatitude":36,
+  "minLongitude":-126,
+  "maxLatitude":43,
+  "maxLongitude":-118,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/kurilkamchatka.json"],
+  "maxLatitude": 57,
+  "maxLongitude": 170,
+  "minLatitude": 38,
+  "minLongitude": 137,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

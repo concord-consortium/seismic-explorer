@@ -1,0 +1,10 @@
+{
+  "datasets":["datasets/pacific.json"],
+  "maxLatitude": 61,
+  "maxLongitude": 294,
+  "minLatitude": -60,
+  "minLongitude": 107,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": []
+}

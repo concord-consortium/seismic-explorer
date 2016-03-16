@@ -1,0 +1,215 @@
+{
+  "datasets":["datasets/usgroup.json"],
+  "maxLatitude": 50,
+  "maxLongitude": -58,
+  "minLatitude": 16,
+  "minLongitude": -136,
+  "restrictedView":true,
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "Northeast",
+        "scaffold": "regions/northeast.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -74.1796875,
+              42.032974332441405
+            ],
+            [
+              -74.1796875,
+              44.465151013519616
+            ],
+            [
+              -69.2578125,
+              44.465151013519616
+            ],
+            [
+              -69.2578125,
+              42.032974332441405
+            ],
+            [
+              -74.1796875,
+              42.032974332441405
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "New Madrid Fault",
+        "scaffold": "regions/newmadrid.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+              [
+                -88.9453125,
+                33.87041555094183
+              ],
+              [
+                -88.9453125,
+                37.020098201368114
+              ],
+              [
+                -84.55078125,
+                37.020098201368114
+              ],
+              [
+                -84.55078125,
+                33.87041555094183
+              ],
+              [
+                -88.9453125,
+                33.87041555094183
+              ]
+            ]
+          ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "Contiguous 48 States",
+        "scaffold": "regions/us.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+        [
+          [
+            -105.1171875,
+            42.5530802889558
+          ],
+          [
+            -105.1171875,
+            45.089035564831015
+          ],
+          [
+            -93.8671875,
+            45.089035564831015
+          ],
+          [
+            -93.8671875,
+            42.5530802889558
+          ],
+          [
+            -105.1171875,
+            42.5530802889558
+          ]
+        ]
+      ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "Yellowstone",
+        "scaffold": "regions/yellowstone.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+              [
+                -115.83984375,
+                43.83452678223682
+              ],
+              [
+                -115.83984375,
+                46.437856895024204
+              ],
+              [
+                -112.1484375,
+                46.437856895024204
+              ],
+              [
+                -112.1484375,
+                43.83452678223682
+              ],
+              [
+                -115.83984375,
+                43.83452678223682
+              ]
+            ]
+          ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "Yellowstone 1959",
+        "scaffold": "regions/yellowstone1959.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+        [
+          [
+            -119.53125,
+            44.213709909702054
+          ],
+          [
+            -119.53125,
+            46.6795944656402
+          ],
+          [
+            -116.3671875,
+            46.6795944656402
+          ],
+          [
+            -116.3671875,
+            44.213709909702054
+          ],
+          [
+            -119.53125,
+            44.213709909702054
+          ]
+        ]
+      ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "label": "California Group",
+        "scaffold": "regions/california.json"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+         [
+           [
+             -123.22265625000001,
+             37.71859032558813
+           ],
+           [
+             -123.22265625000001,
+             42.81152174509788
+           ],
+           [
+             -119.00390625,
+             42.81152174509788
+           ],
+           [
+             -119.00390625,
+             37.71859032558813
+           ],
+           [
+             -123.22265625000001,
+             37.71859032558813
+           ]
+         ]
+       ]
+      }
+    }
+  ]
+}
