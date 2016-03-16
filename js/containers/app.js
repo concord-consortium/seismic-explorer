@@ -50,8 +50,8 @@ class App extends Component {
         </div>
         <div className='controls-container'>
           <div className='filters'>
-            <label>Min mag: <input type='range' min='0' max='10' value={filters.get('minMag')} onChange={this.handleMinMag}/></label>
-            <label>Max mag: <input type='range' min='0' max='10' value={filters.get('maxMag')} onChange={this.handleMaxMag}/></label>
+            <label>Min mag: <input type='range' min='0' max='10' step='0.1' value={filters.get('minMag')} onChange={this.handleMinMag}/></label>
+            <label>Max mag: <input type='range' min='0' max='10' step='0.1' value={filters.get('maxMag')} onChange={this.handleMaxMag}/></label>
             <label>Min time: <input type='range' min='-347155200000' max='1458142681658' step='86400' value={filters.get('minTime')} onChange={this.handleMinTime}/></label>
             <label>Max time: <input type='range' min='-347155200000' max='1458142681658' step='86400' value={filters.get('maxTime')} onChange={this.handleMaxTime}/></label>
           </div>

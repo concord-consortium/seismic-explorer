@@ -30,7 +30,7 @@ function data(state = null, action) {
   switch (action.type) {
     case RECEIVE_DATA:
       // Don't use ImmutableJS - this data is too big and it would also affect filtering time.
-      return Object.freeze(swapCoords(action.response))
+      return swapCoords(action.response)
     default:
       return state
   }
@@ -72,7 +72,7 @@ export default function reducer(state = INITIAL_STATE, action) {
               .set('filters', newFilters)
               // Update filtered earthquakes only if data or filters have been changed.
               // Otherwise, reuse old data. It ensures that we won't update React components when it's not needed.
-              .set('filteredEarthquakes', newData && filtersOrDataUpdated ? calcEarthquakes2(newData, newFilters) : state.get('filteredEarthquakes'))
+              .set('filteredEarthquakes', newData && filtersOrDataUpdated ? calcEarthquakes(newData, newFilters) : state.get('filteredEarthquakes'))
 }
 
 const calcEarthquakes = (data, filters) => {
@@ -81,30 +81,16 @@ const calcEarthquakes = (data, filters) => {
   const minTime = filters.get('minTime')
   const maxTime = filters.get('maxTime')
   console.time('eq filtering')
+  // Two important notes:
+  // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
+  // - yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
   const result = data.features.map(eq => {
     const props = eq.properties
-    eq.hidden = !(props.mag > minMag &&
-                  props.mag < maxMag &&
-                  props.time > minTime &&
-                  props.time < maxTime)
+    eq.visible = props.mag > minMag &&
+                 props.mag < maxMag &&
+                 props.time > minTime &&
+                 props.time < maxTime
     return eq
-  })
-  console.timeEnd('eq filtering')
-  return result
-}
-
-const calcEarthquakes2 = (data, filters) => {
-  const minMag = filters.get('minMag')
-  const maxMag = filters.get('maxMag')
-  const minTime = filters.get('minTime')
-  const maxTime = filters.get('maxTime')
-  console.time('eq filtering')
-  const result = data.features.filter(eq => {
-    const props = eq.properties
-    return props.mag > minMag &&
-           props.mag < maxMag &&
-           props.time > minTime &&
-           props.time < maxTime
   })
   console.timeEnd('eq filtering')
   return result

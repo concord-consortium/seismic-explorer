@@ -4,7 +4,7 @@
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/concord-consortium/seismic-eruptions-2.git"
+    "url": "git+https://github.com/concord-consortium/seismic-eruptions2.git"
   },
   "keywords": [
     "seismic",
@@ -14,9 +14,9 @@
   "author": "Pior Janik <janikpiotrek@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/concord-consortium/seismic-eruptions-2/issues"
+    "url": "https://github.com/concord-consortium/seismic-eruptions2/issues"
   },
-  "homepage": "https://github.com/concord-consortium/seismic-eruptions-2#readme",
+  "homepage": "https://github.com/concord-consortium/seismic-eruptions2#readme",
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
     "babel-core": "^6.6.4",
