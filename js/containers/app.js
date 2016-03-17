@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { connect } from 'react-redux'
-import { requestData, invalidateData, setMinMag, setMaxMag, setMinTime, setMaxTime } from '../actions'
+import * as actions from '../actions'
 import SeismicEruptionsMap from '../components/seismic-eruptions-map'
 
 import '../../css/app.less'
@@ -18,7 +18,7 @@ class App extends Component {
 
   componentDidMount() {
     const { requestData } = this.props
-    requestData('datasets/world.json')
+    requestData('regions/world.json')
   }
 
   handleMinMag(event) {
@@ -42,11 +42,11 @@ class App extends Component {
   }
 
   render() {
-    const { earthquakes, filters } = this.props
+    const { region, earthquakes, filters } = this.props
     return (
       <div className='seismic-eruptions-app'>
         <div className='map-container'>
-          <SeismicEruptionsMap earthquakes={earthquakes}/>
+          <SeismicEruptionsMap region={region} earthquakes={earthquakes}/>
         </div>
         <div className='controls-container'>
           <div className='filters'>
@@ -68,19 +68,9 @@ function mapStateToProps(state) {
     lastUpdated: dataStatus.get('lastUpdated'),
     error: dataStatus.get('error'),
     filters: state.get('filters'),
+    region: state.get('region'),
     earthquakes: state.get('filteredEarthquakes')
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    requestData: (path) => dispatch(requestData(path)),
-    invalidateData: () => dispatch(invalidateData()),
-    setMinMag: (value) => dispatch(setMinMag(value)),
-    setMaxMag: (value) => dispatch(setMaxMag(value)),
-    setMinTime: (value) => dispatch(setMinTime(value)),
-    setMaxTime: (value) => dispatch(setMaxTime(value))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(mapStateToProps, actions)(App)

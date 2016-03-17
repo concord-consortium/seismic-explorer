@@ -1,6 +1,6 @@
 import Immutable, { Map, Set } from 'immutable'
 import {
-  REQUEST_DATA, RECEIVE_DATA, RECEIVE_ERROR, INVALIDATE_DATA,
+  REQUEST_DATA, RECEIVE_DATA, RECEIVE_EARTHQUAKES, RECEIVE_REGION, RECEIVE_ERROR, INVALIDATE_DATA,
   SET_MIN_MAG, SET_MAX_MAG, SET_MIN_TIME, SET_MAX_TIME
 } from '../actions'
 
@@ -25,10 +25,24 @@ function dataStatus(state = Map(), action) {
   }
 }
 
+function region(state = Map(), action) {
+  switch (action.type) {
+    case RECEIVE_REGION:
+      const data = action.response
+      const bounds = [
+        [data.minLatitude, data.minLongitude],
+        [data.maxLatitude, data.maxLongitude]
+      ]
+      return state.set('bounds', bounds)
+                  .set('restricted', data.restrictedView)
+    default:
+      return state
+  }
+}
 
 function data(state = null, action) {
   switch (action.type) {
-    case RECEIVE_DATA:
+    case RECEIVE_EARTHQUAKES:
       // Don't use ImmutableJS - this data is too big and it would also affect filtering time.
       return swapCoords(action.response)
     default:
@@ -39,11 +53,15 @@ function data(state = null, action) {
 const INITIAL_FILTERS = Map({
   minMag: 0,
   maxMag: 10,
-  minTime: -347155200000,
-  maxTime: 1458142681658
+  minTime: -Infinity,
+  maxTime: Infinity
 })
 function filters(state = INITIAL_FILTERS, action) {
   switch (action.type) {
+    case RECEIVE_EARTHQUAKES:
+      const times = action.response.features.map(eq => eq.properties.time)
+      return state.set('minTime', Math.min(...times))
+                  .set('maxTime', Math.max(...times))
     case SET_MIN_MAG:
       return state.set('minMag', action.value)
     case SET_MAX_MAG:
@@ -68,6 +86,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   // We can use simple comparison as we use ImmutableJS structures.
   const filtersOrDataUpdated = oldData !== newData || oldFilters !== newFilters
   return state.set('dataStatus', dataStatus(state.get('dataStatus'), action))
+              .set('region', region(state.get('region'), action))
               .set('data', newData)
               .set('filters', newFilters)
               // Update filtered earthquakes only if data or filters have been changed.
@@ -83,7 +102,7 @@ const calcEarthquakes = (data, filters) => {
   console.time('eq filtering')
   // Two important notes:
   // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
-  // - yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
+  // - Yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
   const result = data.features.map(eq => {
     const props = eq.properties
     eq.visible = props.mag > minMag &&

@@ -1,39 +1,66 @@
 import fetch from 'isomorphic-fetch'
-import { getDataJSON } from '../api'
+import { fetchJSON } from '../api'
 
 export const INVALIDATE_DATA = 'INVALIDATE_DATA'
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
+export const RECEIVE_REGION = 'RECEIVE_REGION'
+export const RECEIVE_EARTHQUAKES = 'RECEIVE_EARTHQUAKES'
 export const RECEIVE_ERROR = 'RECEIVE_ERROR'
 export const SET_MIN_MAG = 'SET_MIN_MAG'
 export const SET_MAX_MAG = 'SET_MAX_MAG'
 export const SET_MIN_TIME = 'SET_MIN_TIME'
 export const SET_MAX_TIME = 'SET_MAX_TIME'
 
+export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
+  return dispatch => {
+    dispatch({type: REQUEST_DATA})
+    fetchJSON(path)
+      .then(
+        response => dispatch(receiveData(response, dataType)),
+        error => dispatch(receiveError(error))
+      )
+  }
+}
 
-// When fetch succeeds, receiveData action will be called with the response object (json in this case).
-// REQUEST_DATA action will be processed by the reducer immediately.
-// See: api-middleware.js
-export function requestData(path) {
-  return {
-    type: REQUEST_DATA,
-    fetchJSON: {
-      path,
-      successAction: receiveData,
-      errorAction: receiveError
+function receiveData(response, dataType) {
+  return dispatch => {
+    dispatch({
+      type: RECEIVE_DATA,
+      dataType,
+      receivedAt: Date.now()
+    })
+    switch(dataType) {
+      case 'region':
+        return dispatch(receiveRegion(response))
+      case 'earthquakes':
+        return dispatch(receiveEarthquakes(response))
     }
   }
 }
 
-export function receiveData(response) {
+function receiveRegion(response) {
+  return dispatch => {
+    dispatch({
+      type: RECEIVE_REGION,
+      response: response,
+      receivedAt: Date.now()
+    })
+    response.datasets.forEach(earthquakesPath =>
+      dispatch(requestData(earthquakesPath, 'earthquakes'))
+    )
+  }
+}
+
+function receiveEarthquakes(response) {
   return {
-    type: RECEIVE_DATA,
+    type: RECEIVE_EARTHQUAKES,
     response: response,
     receivedAt: Date.now()
   }
 }
 
-export function receiveError(response) {
+function receiveError(response) {
   return {
     type: RECEIVE_ERROR,
     response: response,
