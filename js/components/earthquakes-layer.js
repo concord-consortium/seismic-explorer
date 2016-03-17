@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { LayerGroup } from 'react-leaflet'
-import EarthquakeMarker from '../custom-leaflet/earthquake-marker'
+import EarthquakeMarker, { depthToColor, magnitudeToRadius } from '../custom-leaflet/earthquake-marker'
 
 import '../../css/earthquake-layer.less'
 
@@ -27,7 +27,8 @@ export default class EarthquakesLayer extends LayerGroup {
       validMarkers[eq.id] = true
       if (!this.renderedMarkers[eq.id]) {
         const marker = new EarthquakeMarker(eq.geometry.coordinates, {
-          radius: 8
+          radius: magnitudeToRadius(eq.properties.mag),
+          fillColor: depthToColor(eq.geometry.coordinates[2])
         })
         this.leafletElement.addLayer(marker)
         this.renderedMarkers[eq.id] = marker
