@@ -17,8 +17,20 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { requestData } = this.props
-    requestData('regions/world.json')
+    this.updateRegion()
+  }
+
+  componentDidUpdate(prevProps) {
+    // params.regionPath is provided by react-router.
+    if (prevProps.params.regionPath !== this.props.params.regionPath) {
+      this.updateRegion()
+    }
+  }
+
+  updateRegion() {
+    const { params, requestData } = this.props
+    // params.regionPath is provided by react-router.
+    requestData(params.regionPath)
   }
 
   handleMinMag(event) {
