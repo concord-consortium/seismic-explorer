@@ -45,7 +45,8 @@ function data(state = null, action) {
   switch (action.type) {
     case RECEIVE_EARTHQUAKES:
       // Don't use ImmutableJS - this data is too big and it would also affect filtering time.
-      return swapCoords(action.response.features)
+      // .revert() to sort earthquakes by time.
+      return swapCoords(action.response.features).reverse()
     case RECEIVE_REGION:
       // Cleanup earthquakes when region is changed, as sometimes the same earthquake (with the same ID)
       // might have different coordinates, depending on region. It would confuse rendering components.
