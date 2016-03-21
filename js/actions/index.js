@@ -13,6 +13,7 @@ export const SET_MIN_TIME = 'SET_MIN_TIME'
 export const SET_MAX_TIME = 'SET_MAX_TIME'
 
 export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
+  console.time('data fetching')
   return dispatch => {
     dispatch({type: REQUEST_DATA})
     fetchJSON(path)
@@ -53,6 +54,7 @@ function receiveRegion(response) {
 }
 
 function receiveEarthquakes(response) {
+  console.timeEnd('data fetching')
   return {
     type: RECEIVE_EARTHQUAKES,
     response: response,

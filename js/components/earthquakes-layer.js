@@ -25,12 +25,15 @@ export default class EarthquakesLayer extends LayerGroup {
     const validMarkers = {}
     earthquakes.forEach(eq => {
       validMarkers[eq.id] = true
-      if (!this.renderedMarkers[eq.id]) {
+      // Don't render invisible markers unless it's necessary.
+      if (eq.visible && !this.renderedMarkers[eq.id]) {
         const marker = earthquakeMarker(eq)
         this.leafletElement.addLayer(marker)
         this.renderedMarkers[eq.id] = marker
       }
-      this.renderedMarkers[eq.id].setVisible(eq.visible)
+      if (this.renderedMarkers[eq.id]) {
+        this.renderedMarkers[eq.id].setVisible(eq.visible)
+      }
     })
     // Remove markers that do not exist anymore.
     Object.keys(this.renderedMarkers).forEach(id => {

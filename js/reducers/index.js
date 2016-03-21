@@ -1,4 +1,4 @@
-import Immutable, { Map, Set } from 'immutable'
+import Immutable, { Map } from 'immutable'
 import {
   REQUEST_DATA, RECEIVE_DATA, RECEIVE_EARTHQUAKES, RECEIVE_REGION, RECEIVE_ERROR, INVALIDATE_DATA,
   SET_MIN_MAG, SET_MAX_MAG, SET_MIN_TIME, SET_MAX_TIME
@@ -34,6 +34,7 @@ function region(state = Map(), action) {
         [data.maxLatitude, data.maxLongitude]
       ]
       return state.set('bounds', bounds)
+                  .set('subregions', polygonToPoint(data.features))
                   .set('restricted', data.restrictedView)
     default:
       return state
@@ -44,7 +45,11 @@ function data(state = null, action) {
   switch (action.type) {
     case RECEIVE_EARTHQUAKES:
       // Don't use ImmutableJS - this data is too big and it would also affect filtering time.
-      return swapCoords(action.response)
+      return swapCoords(action.response.features)
+    case RECEIVE_REGION:
+      // Cleanup earthquakes when region is changed, as sometimes the same earthquake (with the same ID)
+      // might have different coordinates, depending on region. It would confuse rendering components.
+      return []
     default:
       return state
   }
@@ -103,7 +108,7 @@ const calcEarthquakes = (data, filters) => {
   // Two important notes:
   // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
   // - Yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
-  const result = data.features.map(eq => {
+  const result = data.map(eq => {
     const props = eq.properties
     eq.visible = props.mag > minMag &&
                  props.mag < maxMag &&
@@ -116,10 +121,26 @@ const calcEarthquakes = (data, filters) => {
 }
 
 const swapCoords = (data) => {
-  data.features.forEach(eq => {
-    const tmp = eq.geometry.coordinates[0]
-    eq.geometry.coordinates[0] = eq.geometry.coordinates[1]
-    eq.geometry.coordinates[1] = tmp
+  data.forEach(point => {
+    const tmp = point.geometry.coordinates[0]
+    point.geometry.coordinates[0] = point.geometry.coordinates[1]
+    point.geometry.coordinates[1] = tmp
+  })
+  return data
+}
+
+const polygonToPoint = (data) => {
+  data.forEach(polygon => {
+    const coords = polygon.geometry.coordinates[0]
+    let avgLat = 0
+    let avgLong = 0
+    coords.forEach(c => {
+      avgLong += c[0]
+      avgLat += c[1]
+    })
+    polygon.geometry.coordinates[0] = avgLat / coords.length
+    polygon.geometry.coordinates[1] = avgLong / coords.length
+    polygon.geometry.type = 'Point'
   })
   return data
 }
