@@ -1,7 +1,7 @@
 import Immutable, { Map } from 'immutable'
 import {
   REQUEST_DATA, RECEIVE_DATA, RECEIVE_EARTHQUAKES, RECEIVE_REGION, RECEIVE_ERROR, INVALIDATE_DATA,
-  SET_MIN_MAG, SET_MAX_MAG, SET_MIN_TIME, SET_MAX_TIME
+  SET_MIN_MAG, SET_MAX_MAG, SET_MIN_TIME, SET_MAX_TIME, SET_BASE_LAYER, SET_PLATES_VISIBLE
 } from '../actions'
 
 function dataStatus(state = Map(), action) {
@@ -57,7 +57,7 @@ function data(state = null, action) {
 }
 
 const INITIAL_FILTERS = Map({
-  minMag: 0,
+  minMag: 5,
   maxMag: 10,
   minTime: -Infinity,
   maxTime: Infinity
@@ -81,6 +81,21 @@ function filters(state = INITIAL_FILTERS, action) {
   }
 }
 
+const INITIAL_LAYERS = Map({
+  base: 'satellite', // or 'street' or 'earthquake-density'
+  plates: false
+})
+function layers(state = INITIAL_LAYERS, action) {
+  switch (action.type) {
+    case SET_BASE_LAYER:
+      return state.set('base', action.value)
+    case SET_PLATES_VISIBLE:
+      return state.set('plates', action.value)
+    default:
+      return state;
+  }
+}
+
 const INITIAL_STATE = Map({
   filteredEarthquakes: []
 })
@@ -95,6 +110,7 @@ export default function reducer(state = INITIAL_STATE, action) {
               .set('region', region(state.get('region'), action))
               .set('data', newData)
               .set('filters', newFilters)
+              .set('layers', layers(state.get('layers'), action))
               // Update filtered earthquakes only if data or filters have been changed.
               // Otherwise, reuse old data. It ensures that we won't update React components when it's not needed.
               .set('filteredEarthquakes', newData && filtersOrDataUpdated ? calcEarthquakes(newData, newFilters) : state.get('filteredEarthquakes'))

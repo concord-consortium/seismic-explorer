@@ -11,6 +11,9 @@ export const SET_MIN_MAG = 'SET_MIN_MAG'
 export const SET_MAX_MAG = 'SET_MAX_MAG'
 export const SET_MIN_TIME = 'SET_MIN_TIME'
 export const SET_MAX_TIME = 'SET_MAX_TIME'
+export const SET_BASE_LAYER = 'SET_BASE_LAYER'
+export const SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE'
+
 
 export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
   console.time('data fetching')
@@ -98,6 +101,20 @@ export function setMinTime(value) {
 export function setMaxTime(value) {
   return {
     type: SET_MAX_TIME,
+    value
+  }
+}
+
+export function setBaseLayer(value) {
+  return {
+    type: SET_BASE_LAYER,
+    value
+  }
+}
+
+export function setPlatesVisible(value) {
+  return {
+    type: SET_PLATES_VISIBLE,
     value
   }
 }

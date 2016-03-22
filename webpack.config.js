@@ -38,9 +38,7 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      {from: 'public'},
-      {from: 'datasets', to: 'datasets'},
-      {from: 'regions', to: 'regions'}
+      {from: 'public'}
     ])
   ]
 };
