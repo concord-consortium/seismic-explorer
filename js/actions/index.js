@@ -7,13 +7,10 @@ export const RECEIVE_DATA = 'RECEIVE_DATA'
 export const RECEIVE_REGION = 'RECEIVE_REGION'
 export const RECEIVE_EARTHQUAKES = 'RECEIVE_EARTHQUAKES'
 export const RECEIVE_ERROR = 'RECEIVE_ERROR'
-export const SET_MIN_MAG = 'SET_MIN_MAG'
-export const SET_MAX_MAG = 'SET_MAX_MAG'
-export const SET_MIN_TIME = 'SET_MIN_TIME'
-export const SET_MAX_TIME = 'SET_MAX_TIME'
+export const SET_FILTER = 'SET_FILTER'
 export const SET_BASE_LAYER = 'SET_BASE_LAYER'
 export const SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE'
-
+export const SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED'
 
 export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
   console.time('data fetching')
@@ -77,30 +74,10 @@ export function invalidateData() {
   return {type: INVALIDATE_DATA}
 }
 
-export function setMinMag(value) {
+export function setFilter(name, value) {
   return {
-    type: SET_MIN_MAG,
-    value
-  }
-}
-
-export function setMaxMag(value) {
-  return {
-    type: SET_MAX_MAG,
-    value
-  }
-}
-
-export function setMinTime(value) {
-  return {
-    type: SET_MIN_TIME,
-    value
-  }
-}
-
-export function setMaxTime(value) {
-  return {
-    type: SET_MAX_TIME,
+    type: SET_FILTER,
+    name,
     value
   }
 }
@@ -115,6 +92,13 @@ export function setBaseLayer(value) {
 export function setPlatesVisible(value) {
   return {
     type: SET_PLATES_VISIBLE,
+    value
+  }
+}
+
+export function setAnimationEnabled(value) {
+  return {
+    type: SET_ANIMATION_ENABLED,
     value
   }
 }

@@ -3,6 +3,7 @@ import pureRender from 'pure-render-decorator'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
 import SeismicEruptionsMap from '../components/seismic-eruptions-map'
+import AnimationButton from '../components/animation-button'
 
 import '../../css/app.less'
 
@@ -10,12 +11,11 @@ import '../../css/app.less'
 class App extends Component {
   constructor(props) {
     super(props)
-    this.handleMinMag = this.handleMinMag.bind(this)
-    this.handleMaxMag = this.handleMaxMag.bind(this)
-    this.handleMinTime = this.handleMinTime.bind(this)
     this.handleMaxTime = this.handleMaxTime.bind(this)
     this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
     this.handlePlateLayerChange = this.handlePlateLayerChange.bind(this)
+    this.handleAnimStep = this.handleAnimStep.bind(this)
+    this.handleAnimBtnClick = this.handleAnimBtnClick.bind(this)
   }
 
   componentDidMount() {
@@ -35,24 +35,9 @@ class App extends Component {
     requestData(params.regionPath)
   }
 
-  handleMinMag(event) {
-    const { setMinMag } = this.props
-    setMinMag(event.target.value)
-  }
-
-  handleMaxMag(event) {
-    const { setMaxMag } = this.props
-    setMaxMag(event.target.value)
-  }
-
-  handleMinTime(event) {
-    const { setMinTime } = this.props
-    setMinTime(event.target.value)
-  }
-
   handleMaxTime(event) {
-    const { setMaxTime } = this.props
-    setMaxTime(event.target.value)
+    const { setFilter } = this.props
+    setFilter('maxTime', Number.parseInt(event.target.value))
   }
 
   handleBaseLayerChange(event) {
@@ -65,16 +50,37 @@ class App extends Component {
     setPlatesVisible(event.target.checked)
   }
 
+  handleAnimStep(newValue) {
+    const { filters, setFilter, setAnimationEnabled } = this.props
+    if (newValue > filters.get('maxTimeLimit')) {
+      newValue = filters.get('maxTimeLimit')
+      setAnimationEnabled(false)
+    }
+    setFilter('maxTime', newValue)
+  }
+
+  handleAnimBtnClick() {
+    const { animation, setAnimationEnabled } = this.props
+    setAnimationEnabled(!animation)
+  }
+
+  get animSpeed() {
+    const { filters } = this.props
+    return (filters.get('maxTimeLimit') - filters.get('minTimeLimit')) / 15000
+  }
+
   render() {
-    const { region, earthquakes, layers, filters } = this.props
+    const { region, earthquakes, layers, filters, animation } = this.props
     return (
       <div className='seismic-eruptions-app'>
-        <div className='map-container'>
+        <div className={`map-container ${animation ? ' with-animation' : ''}`}>
           <SeismicEruptionsMap region={region} earthquakes={earthquakes} layers={layers}/>
         </div>
         <div className='controls-container'>
+          <AnimationButton ref='playButton' animationEnabled={animation} speed={this.animSpeed} value={filters.get('maxTime')}
+                           onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}/>
           <div className='filters'>
-            <label>Max time: <input type='range' min='-347155200000' max='1458142681658' step='86400' value={filters.get('maxTime')} onChange={this.handleMaxTime}/></label>
+            <input type='range' min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step='86400' value={filters.get('maxTime')} onChange={this.handleMaxTime}/>
           </div>
           <select value={layers.get('base')} onChange={this.handleBaseLayerChange}>
             <option value='satellite'>Satellite</option>
@@ -97,6 +103,7 @@ function mapStateToProps(state) {
     filters: state.get('filters'),
     region: state.get('region'),
     layers: state.get('layers'),
+    animation: state.get('animation'),
     earthquakes: state.get('filteredEarthquakes')
   }
 }

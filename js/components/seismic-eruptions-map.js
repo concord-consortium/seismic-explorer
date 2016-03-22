@@ -11,6 +11,16 @@ function scaffoldUrl(subregion) {
   return '#' + window.encodeURIComponent(subregion.properties.scaffold)
 }
 
+// Cache icons. First, it's just fater. Second, it prevents us from unnecessary re-rendering and buttons blinking.
+const _icons = {}
+function getSubregionIcon(label, url) {
+  const iconKey = label + url
+  if (!_icons[iconKey]) {
+    _icons[iconKey] = subregionIcon(label, url)
+  }
+  return _icons[iconKey]
+}
+
 @pureRender
 export default class SeismicEruptionsMap extends Component {
   renderBaseLayer() {
@@ -32,7 +42,7 @@ export default class SeismicEruptionsMap extends Component {
     const { region } = this.props
     const subregions = region.get('subregions') || []
     return subregions.map((sr, idx) => {
-      return <Marker key={idx} position={sr.geometry.coordinates} icon={subregionIcon(sr.properties.label, scaffoldUrl(sr))}/>
+      return <Marker key={idx} position={sr.geometry.coordinates} icon={getSubregionIcon(sr.properties.label, scaffoldUrl(sr))}/>
     })
   }
 

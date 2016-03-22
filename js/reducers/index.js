@@ -1,7 +1,7 @@
 import Immutable, { Map } from 'immutable'
 import {
   REQUEST_DATA, RECEIVE_DATA, RECEIVE_EARTHQUAKES, RECEIVE_REGION, RECEIVE_ERROR, INVALIDATE_DATA,
-  SET_MIN_MAG, SET_MAX_MAG, SET_MIN_TIME, SET_MAX_TIME, SET_BASE_LAYER, SET_PLATES_VISIBLE
+  SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED
 } from '../actions'
 
 function dataStatus(state = Map(), action) {
@@ -57,25 +57,25 @@ function data(state = null, action) {
 }
 
 const INITIAL_FILTERS = Map({
-  minMag: 5,
+  minMag: 0,
   maxMag: 10,
   minTime: -Infinity,
-  maxTime: Infinity
+  maxTime: Infinity,
+  minTimeLimit: -Infinity,
+  maxTimeLimit: Infinity
 })
 function filters(state = INITIAL_FILTERS, action) {
   switch (action.type) {
     case RECEIVE_EARTHQUAKES:
       const times = action.response.features.map(eq => eq.properties.time)
-      return state.set('minTime', Math.min(...times))
-                  .set('maxTime', Math.max(...times))
-    case SET_MIN_MAG:
-      return state.set('minMag', action.value)
-    case SET_MAX_MAG:
-      return state.set('maxMag', action.value)
-    case SET_MIN_TIME:
-      return state.set('minTime', action.value)
-    case SET_MAX_TIME:
-      return state.set('maxTime', action.value)
+      const minDataTime = Math.min(...times)
+      const maxDataTime = Math.max(...times)
+      return state.set('minTime', minDataTime)
+                  .set('maxTime', minDataTime)
+                  .set('minTimeLimit', minDataTime)
+                  .set('maxTimeLimit', maxDataTime)
+    case SET_FILTER:
+      return state.set(action.name, action.value)
     default:
       return state
   }
@@ -96,6 +96,18 @@ function layers(state = INITIAL_LAYERS, action) {
   }
 }
 
+function animation(state = false, action) {
+  switch (action.type) {
+    case SET_ANIMATION_ENABLED:
+      return action.value
+    case RECEIVE_REGION:
+      // Disable animation when user changes region.
+      return false
+    default:
+      return state;
+  }
+}
+
 const INITIAL_STATE = Map({
   filteredEarthquakes: []
 })
@@ -108,9 +120,10 @@ export default function reducer(state = INITIAL_STATE, action) {
   const filtersOrDataUpdated = oldData !== newData || oldFilters !== newFilters
   return state.set('dataStatus', dataStatus(state.get('dataStatus'), action))
               .set('region', region(state.get('region'), action))
+              .set('layers', layers(state.get('layers'), action))
+              .set('animation', animation(state.get('animation'), action))
               .set('data', newData)
               .set('filters', newFilters)
-              .set('layers', layers(state.get('layers'), action))
               // Update filtered earthquakes only if data or filters have been changed.
               // Otherwise, reuse old data. It ensures that we won't update React components when it's not needed.
               .set('filteredEarthquakes', newData && filtersOrDataUpdated ? calcEarthquakes(newData, newFilters) : state.get('filteredEarthquakes'))
