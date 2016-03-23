@@ -71,7 +71,7 @@
 
 	var _app2 = _interopRequireDefault(_app);
 
-	var _configureStore = __webpack_require__(896);
+	var _configureStore = __webpack_require__(897);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
@@ -34081,7 +34081,7 @@
 
 	var _controls2 = _interopRequireDefault(_controls);
 
-	__webpack_require__(894);
+	__webpack_require__(895);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -54473,11 +54473,15 @@
 
 	var _ccLogo2 = _interopRequireDefault(_ccLogo);
 
-	__webpack_require__(888);
+	var _screenfull = __webpack_require__(888);
 
-	__webpack_require__(890);
+	var _screenfull2 = _interopRequireDefault(_screenfull);
 
-	__webpack_require__(892);
+	__webpack_require__(889);
+
+	__webpack_require__(891);
+
+	__webpack_require__(893);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -54498,7 +54502,8 @@
 	    var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(Controls).call(this, props));
 
 	    _this.state = {
-	      settingsVisible: false
+	      settingsVisible: false,
+	      fullscreen: false
 	    };
 	    _this.handleMaxTime = _this.handleMaxTime.bind(_this);
 	    _this.handleMinMag = _this.handleMinMag.bind(_this);
@@ -54507,10 +54512,22 @@
 	    _this.handleAnimStep = _this.handleAnimStep.bind(_this);
 	    _this.handleAnimBtnClick = _this.handleAnimBtnClick.bind(_this);
 	    _this.toggleSettings = _this.toggleSettings.bind(_this);
+	    _this.toggleFullscreen = _this.toggleFullscreen.bind(_this);
 	    return _this;
 	  }
 
 	  (0, _createClass3.default)(Controls, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      if (_screenfull2.default.enabled) {
+	        document.addEventListener(_screenfull2.default.raw.fullscreenchange, function () {
+	          _this2.setState({ fullscreen: _screenfull2.default.isFullscreen });
+	        });
+	      }
+	    }
+	  }, {
 	    key: 'handleMaxTime',
 	    value: function handleMaxTime(value) {
 	      var setFilter = this.props.setFilter;
@@ -54569,13 +54586,24 @@
 	      this.setState({ settingsVisible: !settingsVisible });
 	    }
 	  }, {
+	    key: 'toggleFullscreen',
+	    value: function toggleFullscreen() {
+	      if (!_screenfull2.default.isFullscreen) {
+	        _screenfull2.default.request();
+	      } else {
+	        _screenfull2.default.exit();
+	      }
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _props3 = this.props;
 	      var animationEnabled = _props3.animationEnabled;
 	      var filters = _props3.filters;
 	      var layers = _props3.layers;
-	      var settingsVisible = this.state.settingsVisible;
+	      var _state = this.state;
+	      var settingsVisible = _state.settingsVisible;
+	      var fullscreen = _state.fullscreen;
 
 
 	      return _react2.default.createElement(
@@ -54594,6 +54622,11 @@
 	          'div',
 	          { className: 'settings-icon', onClick: this.toggleSettings },
 	          _react2.default.createElement('i', { className: 'fa fa-gear' })
+	        ),
+	        _screenfull2.default.enabled && _react2.default.createElement(
+	          'div',
+	          { className: 'fullscreen-icon', onClick: this.toggleFullscreen },
+	          _react2.default.createElement('i', { className: 'fa ' + (fullscreen ? 'fa-compress' : 'fa-arrows-alt') })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -61036,12 +61069,163 @@
 
 /***/ },
 /* 888 */
+/***/ function(module, exports) {
+
+	/*!
+	* screenfull
+	* v3.0.0 - 2015-11-24
+	* (c) Sindre Sorhus; MIT License
+	*/
+	(function () {
+		'use strict';
+
+		var isCommonjs = typeof module !== 'undefined' && module.exports;
+		var keyboardAllowed = typeof Element !== 'undefined' && 'ALLOW_KEYBOARD_INPUT' in Element;
+
+		var fn = (function () {
+			var val;
+			var valLength;
+
+			var fnMap = [
+				[
+					'requestFullscreen',
+					'exitFullscreen',
+					'fullscreenElement',
+					'fullscreenEnabled',
+					'fullscreenchange',
+					'fullscreenerror'
+				],
+				// new WebKit
+				[
+					'webkitRequestFullscreen',
+					'webkitExitFullscreen',
+					'webkitFullscreenElement',
+					'webkitFullscreenEnabled',
+					'webkitfullscreenchange',
+					'webkitfullscreenerror'
+
+				],
+				// old WebKit (Safari 5.1)
+				[
+					'webkitRequestFullScreen',
+					'webkitCancelFullScreen',
+					'webkitCurrentFullScreenElement',
+					'webkitCancelFullScreen',
+					'webkitfullscreenchange',
+					'webkitfullscreenerror'
+
+				],
+				[
+					'mozRequestFullScreen',
+					'mozCancelFullScreen',
+					'mozFullScreenElement',
+					'mozFullScreenEnabled',
+					'mozfullscreenchange',
+					'mozfullscreenerror'
+				],
+				[
+					'msRequestFullscreen',
+					'msExitFullscreen',
+					'msFullscreenElement',
+					'msFullscreenEnabled',
+					'MSFullscreenChange',
+					'MSFullscreenError'
+				]
+			];
+
+			var i = 0;
+			var l = fnMap.length;
+			var ret = {};
+
+			for (; i < l; i++) {
+				val = fnMap[i];
+				if (val && val[1] in document) {
+					for (i = 0, valLength = val.length; i < valLength; i++) {
+						ret[fnMap[0][i]] = val[i];
+					}
+					return ret;
+				}
+			}
+
+			return false;
+		})();
+
+		var screenfull = {
+			request: function (elem) {
+				var request = fn.requestFullscreen;
+
+				elem = elem || document.documentElement;
+
+				// Work around Safari 5.1 bug: reports support for
+				// keyboard in fullscreen even though it doesn't.
+				// Browser sniffing, since the alternative with
+				// setTimeout is even worse.
+				if (/5\.1[\.\d]* Safari/.test(navigator.userAgent)) {
+					elem[request]();
+				} else {
+					elem[request](keyboardAllowed && Element.ALLOW_KEYBOARD_INPUT);
+				}
+			},
+			exit: function () {
+				document[fn.exitFullscreen]();
+			},
+			toggle: function (elem) {
+				if (this.isFullscreen) {
+					this.exit();
+				} else {
+					this.request(elem);
+				}
+			},
+			raw: fn
+		};
+
+		if (!fn) {
+			if (isCommonjs) {
+				module.exports = false;
+			} else {
+				window.screenfull = false;
+			}
+
+			return;
+		}
+
+		Object.defineProperties(screenfull, {
+			isFullscreen: {
+				get: function () {
+					return Boolean(document[fn.fullscreenElement]);
+				}
+			},
+			element: {
+				enumerable: true,
+				get: function () {
+					return document[fn.fullscreenElement];
+				}
+			},
+			enabled: {
+				enumerable: true,
+				get: function () {
+					// Coerce to boolean in case of old WebKit
+					return Boolean(document[fn.fullscreenEnabled]);
+				}
+			}
+		});
+
+		if (isCommonjs) {
+			module.exports = screenfull;
+		} else {
+			window.screenfull = screenfull;
+		}
+	})();
+
+
+/***/ },
+/* 889 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(889);
+	var content = __webpack_require__(890);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(808)(content, {});
@@ -61061,7 +61245,7 @@
 	}
 
 /***/ },
-/* 889 */
+/* 890 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(807)();
@@ -61069,19 +61253,19 @@
 
 
 	// module
-	exports.push([module.id, ".controls {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  -webkit-flex-wrap: nowrap;\n  -ms-flex-wrap: nowrap;\n  flex-wrap: nowrap;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n}\n.controls .center {\n  -webkit-box-flex: 5;\n  -webkit-flex: 5 1 auto;\n  -ms-flex: 5 1 auto;\n  flex: 5 1 auto;\n  margin: 0 30px;\n}\n.controls img {\n  height: 60px;\n  margin: 0 10px;\n}\n.controls .animation-button,\n.controls .settings-icon {\n  margin: 0 30px;\n  display: inline-block;\n  font-size: 3.5em;\n  cursor: pointer;\n  color: #444;\n}\n.controls .animation-button:hover,\n.controls .settings-icon:hover {\n  color: #000;\n}\n.controls .settings {\n  position: fixed;\n  right: 0;\n  bottom: 80px;\n  background: white;\n  padding: 0.5em 1em;\n  width: 480px;\n  border-top-left-radius: 10px;\n  color: #444;\n  -webkit-transition: right 750ms;\n  transition: right 750ms;\n}\n.controls .settings.hidden {\n  right: -700px;\n}\n.controls .settings > div {\n  margin: 20px;\n}\n.controls .settings h2 {\n  margin-bottom: 1em;\n}\n.controls .settings select {\n  margin-left: 10px;\n  font-size: 2em;\n}\n.controls .settings .rc-slider {\n  font-size: 0.6em;\n  width: 400px;\n  margin: 15px 5px;\n}\n", ""]);
+	exports.push([module.id, ".controls {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  -webkit-flex-wrap: nowrap;\n  -ms-flex-wrap: nowrap;\n  flex-wrap: nowrap;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n}\n.controls .center {\n  -webkit-box-flex: 5;\n  -webkit-flex: 5 1 auto;\n  -ms-flex: 5 1 auto;\n  flex: 5 1 auto;\n  margin: 0 30px;\n}\n.controls img {\n  height: 60px;\n  margin: 0 10px;\n}\n.controls .animation-button,\n.controls .settings-icon,\n.controls .fullscreen-icon {\n  margin: 0 15px;\n  display: inline-block;\n  font-size: 3.5em;\n  cursor: pointer;\n  color: #777;\n}\n.controls .animation-button:hover,\n.controls .settings-icon:hover,\n.controls .fullscreen-icon:hover {\n  color: #000;\n}\n.controls .settings {\n  position: fixed;\n  right: 0;\n  bottom: 80px;\n  background: white;\n  padding: 0.5em 1em;\n  width: 480px;\n  border-top-left-radius: 10px;\n  color: #444;\n  -webkit-transition: right 750ms;\n  transition: right 750ms;\n}\n.controls .settings.hidden {\n  right: -700px;\n}\n.controls .settings > div {\n  margin: 20px;\n}\n.controls .settings h2 {\n  margin-bottom: 1em;\n}\n.controls .settings select {\n  margin-left: 10px;\n  font-size: 2em;\n}\n.controls .settings .rc-slider {\n  font-size: 0.6em;\n  width: 400px;\n  margin: 15px 5px;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 890 */
+/* 891 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(891);
+	var content = __webpack_require__(892);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(808)(content, {});
@@ -61101,7 +61285,7 @@
 	}
 
 /***/ },
-/* 891 */
+/* 892 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(807)();
@@ -61115,13 +61299,13 @@
 
 
 /***/ },
-/* 892 */
+/* 893 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(893);
+	var content = __webpack_require__(894);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(808)(content, {});
@@ -61141,7 +61325,7 @@
 	}
 
 /***/ },
-/* 893 */
+/* 894 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(807)();
@@ -61149,19 +61333,19 @@
 
 
 	// module
-	exports.push([module.id, ".rc-slider {\n  font-size: 0.5em;\n  height: 0.7em;\n}\n.rc-slider-track {\n  height: 0.7em;\n  background-color: #D85900;\n}\n.rc-slider-handle {\n  margin-left: -1em;\n  margin-top: -0.65em;\n  width: 2em;\n  height: 2em;\n  border-color: #D85900;\n}\n.rc-slider-handle:hover {\n  border-color: #9F3903;\n}\n.rc-slider-dot {\n  top: -1px;\n  width: 0.9em;\n  height: 0.9em;\n}\n.rc-slider-dot-active {\n  border-color: #D95900;\n}\n.rc-slider-mark {\n  top: 1.3em;\n  font-size: 1em;\n}\n.rc-slider-mark-text {\n  font-size: 1.5em;\n}\n.slider-big {\n  font-size: 1em;\n}\n.slider-big .rc-slider-mark-text {\n  font-size: 0.9em;\n}\n", ""]);
+	exports.push([module.id, ".rc-slider {\n  font-size: 0.5em;\n  height: 0.7em;\n}\n.rc-slider-track {\n  height: 0.7em;\n  background-color: #D85900;\n}\n.rc-slider-handle {\n  margin-left: -1em;\n  margin-top: -0.65em;\n  width: 2em;\n  height: 2em;\n  border-color: #D85900;\n}\n.rc-slider-handle:hover {\n  border-color: #9F3903;\n}\n.rc-slider-dot {\n  top: -1px;\n  width: 0.9em;\n  height: 0.9em;\n}\n.rc-slider-dot-active {\n  border-color: #D95900;\n}\n.rc-slider-mark {\n  top: 1.3em;\n  font-size: 1em;\n}\n.rc-slider-mark-text {\n  font-size: 1.5em;\n  pointer-events: none;\n}\n.slider-big {\n  font-size: 1em;\n}\n.slider-big .rc-slider-mark-text {\n  font-size: 0.9em;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 894 */
+/* 895 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(895);
+	var content = __webpack_require__(896);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(808)(content, {});
@@ -61181,7 +61365,7 @@
 	}
 
 /***/ },
-/* 895 */
+/* 896 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(807)();
@@ -61195,7 +61379,7 @@
 
 
 /***/ },
-/* 896 */
+/* 897 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -61207,15 +61391,15 @@
 
 	var _redux = __webpack_require__(458);
 
-	var _reduxThunk = __webpack_require__(897);
+	var _reduxThunk = __webpack_require__(898);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
-	var _reduxLogger = __webpack_require__(898);
+	var _reduxLogger = __webpack_require__(899);
 
 	var _reduxLogger2 = _interopRequireDefault(_reduxLogger);
 
-	var _reducers = __webpack_require__(899);
+	var _reducers = __webpack_require__(900);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -61228,7 +61412,7 @@
 	}
 
 /***/ },
-/* 897 */
+/* 898 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -61247,7 +61431,7 @@
 	module.exports = thunkMiddleware;
 
 /***/ },
-/* 898 */
+/* 899 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -61480,7 +61664,7 @@
 	module.exports = createLogger;
 
 /***/ },
-/* 899 */
+/* 900 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -61489,13 +61673,13 @@
 	  value: true
 	});
 
-	var _toConsumableArray2 = __webpack_require__(900);
+	var _toConsumableArray2 = __webpack_require__(901);
 
 	var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
 	exports.default = reducer;
 
-	var _immutable = __webpack_require__(909);
+	var _immutable = __webpack_require__(910);
 
 	var _immutable2 = _interopRequireDefault(_immutable);
 
@@ -61676,14 +61860,14 @@
 	};
 
 /***/ },
-/* 900 */
+/* 901 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	exports.__esModule = true;
 
-	var _from = __webpack_require__(901);
+	var _from = __webpack_require__(902);
 
 	var _from2 = _interopRequireDefault(_from);
 
@@ -61702,32 +61886,32 @@
 	};
 
 /***/ },
-/* 901 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(902), __esModule: true };
-
-/***/ },
 /* 902 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(569);
-	__webpack_require__(903);
-	module.exports = __webpack_require__(547).Array.from;
+	module.exports = { "default": __webpack_require__(903), __esModule: true };
 
 /***/ },
 /* 903 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(569);
+	__webpack_require__(904);
+	module.exports = __webpack_require__(547).Array.from;
+
+/***/ },
+/* 904 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var ctx         = __webpack_require__(548)
 	  , $export     = __webpack_require__(546)
 	  , toObject    = __webpack_require__(537)
-	  , call        = __webpack_require__(904)
-	  , isArrayIter = __webpack_require__(905)
+	  , call        = __webpack_require__(905)
+	  , isArrayIter = __webpack_require__(906)
 	  , toLength    = __webpack_require__(585)
-	  , getIterFn   = __webpack_require__(906);
-	$export($export.S + $export.F * !__webpack_require__(908)(function(iter){ Array.from(iter); }), 'Array', {
+	  , getIterFn   = __webpack_require__(907);
+	$export($export.S + $export.F * !__webpack_require__(909)(function(iter){ Array.from(iter); }), 'Array', {
 	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
 	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
 	    var O       = toObject(arrayLike)
@@ -61757,7 +61941,7 @@
 
 
 /***/ },
-/* 904 */
+/* 905 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// call something on iterator step with safe closing on error
@@ -61774,7 +61958,7 @@
 	};
 
 /***/ },
-/* 905 */
+/* 906 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// check on default Array iterator
@@ -61787,10 +61971,10 @@
 	};
 
 /***/ },
-/* 906 */
+/* 907 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(907)
+	var classof   = __webpack_require__(908)
 	  , ITERATOR  = __webpack_require__(590)('iterator')
 	  , Iterators = __webpack_require__(575);
 	module.exports = __webpack_require__(547).getIteratorMethod = function(it){
@@ -61800,7 +61984,7 @@
 	};
 
 /***/ },
-/* 907 */
+/* 908 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
@@ -61828,7 +62012,7 @@
 	};
 
 /***/ },
-/* 908 */
+/* 909 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ITERATOR     = __webpack_require__(590)('iterator')
@@ -61854,7 +62038,7 @@
 	};
 
 /***/ },
-/* 909 */
+/* 910 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
