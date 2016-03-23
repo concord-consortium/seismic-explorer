@@ -35801,7 +35801,6 @@
 	function requestData(path) {
 	  var dataType = arguments.length <= 1 || arguments[1] === undefined ? 'region' : arguments[1];
 	  // dataType: 'region' or 'earthquakes'
-	  console.time('data fetching');
 	  return function (dispatch) {
 	    dispatch({ type: REQUEST_DATA });
 	    (0, _api.fetchJSON)(path).then(function (response) {
@@ -35842,7 +35841,6 @@
 	}
 
 	function receiveEarthquakes(response) {
-	  console.timeEnd('data fetching');
 	  return {
 	    type: RECEIVE_EARTHQUAKES,
 	    response: response,
@@ -37152,6 +37150,14 @@
 	  return date.getDay() + '/' + date.getMonth() + '/' + date.getFullYear();
 	}
 
+	function toggleFullscreen() {
+	  if (!_screenfull2.default.isFullscreen) {
+	    _screenfull2.default.request();
+	  } else {
+	    _screenfull2.default.exit();
+	  }
+	}
+
 	var Controls = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
 	  (0, _inherits3.default)(Controls, _Component);
 
@@ -37171,7 +37177,6 @@
 	    _this.handleAnimStep = _this.handleAnimStep.bind(_this);
 	    _this.handleAnimBtnClick = _this.handleAnimBtnClick.bind(_this);
 	    _this.toggleSettings = _this.toggleSettings.bind(_this);
-	    _this.toggleFullscreen = _this.toggleFullscreen.bind(_this);
 	    return _this;
 	  }
 
@@ -37245,15 +37250,6 @@
 	      this.setState({ settingsVisible: !settingsVisible });
 	    }
 	  }, {
-	    key: 'toggleFullscreen',
-	    value: function toggleFullscreen() {
-	      if (!_screenfull2.default.isFullscreen) {
-	        _screenfull2.default.request();
-	      } else {
-	        _screenfull2.default.exit();
-	      }
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _props3 = this.props;
@@ -37284,7 +37280,7 @@
 	        ),
 	        _screenfull2.default.enabled && _react2.default.createElement(
 	          'div',
-	          { className: 'fullscreen-icon', onClick: this.toggleFullscreen },
+	          { className: 'fullscreen-icon', onClick: toggleFullscreen },
 	          _react2.default.createElement('i', { className: 'fa ' + (fullscreen ? 'fa-compress' : 'fa-arrows-alt') })
 	        ),
 	        _react2.default.createElement(
@@ -37532,14 +37528,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _onClick = this.props.onClick;
+	      var onClick = this.props.onClick;
 
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'animation-button' },
-	        _react2.default.createElement('i', { className: this.icon, onClick: function onClick(e) {
-	            e.preventDefault();_onClick();
-	          } })
+	        _react2.default.createElement('i', { className: this.icon, onClick: onClick })
 	      );
 	    }
 	  }, {
@@ -60844,11 +60838,9 @@
 	    value: function hideMarkersToRemove() {
 	      var _this4 = this;
 
-	      console.time('eq hide');
 	      this.markersToRemove.forEach(function (eqId) {
 	        _this4.renderedMarkers[eqId].setVisible(false);
 	      });
-	      console.timeEnd('eq hide');
 	    }
 	  }, {
 	    key: 'addRemoveMarkersChunk',
@@ -61404,7 +61396,7 @@
 
 
 	// module
-	exports.push([module.id, ".earthquake-marker.hidden {\n  visibility: hidden;\n}\n.with-animation .earthquake-marker {\n  -webkit-transform-origin: center;\n  transform-origin: center;\n  -webkit-transition: visibility 700ms, -webkit-transform 700ms;\n  transition: visibility 700ms, -webkit-transform 700ms;\n  transition: visibility 700ms, transform 700ms;\n  transition: visibility 700ms, transform 700ms, -webkit-transform 700ms;\n}\n.with-animation .earthquake-marker path {\n  -webkit-transition: fill 300ms ease 500ms;\n  transition: fill 300ms ease 500ms;\n}\n.with-animation .earthquake-marker.hidden {\n  -webkit-transform: scale(0);\n  transform: scale(0);\n}\n.with-animation .earthquake-marker.hidden path {\n  fill: white;\n  -webkit-transition: fill 300ms ease 0ms;\n  transition: fill 300ms ease 0ms;\n}\n", ""]);
+	exports.push([module.id, ".earthquake-marker {\n  -webkit-transform: scale(1);\n  transform: scale(1);\n  -webkit-transform-origin: center;\n  transform-origin: center;\n}\n.earthquake-marker.hidden {\n  visibility: hidden;\n}\n.with-animation .earthquake-marker {\n  -webkit-transition: visibility 700ms, -webkit-transform 700ms;\n  transition: visibility 700ms, -webkit-transform 700ms;\n  transition: visibility 700ms, transform 700ms;\n  transition: visibility 700ms, transform 700ms, -webkit-transform 700ms;\n}\n.with-animation .earthquake-marker path {\n  -webkit-transition: fill 300ms ease 500ms;\n  transition: fill 300ms ease 500ms;\n}\n.with-animation .earthquake-marker.hidden {\n  -webkit-transform: scale(0);\n  transform: scale(0);\n}\n.with-animation .earthquake-marker.hidden path {\n  fill: white;\n  -webkit-transition: fill 300ms ease 0ms;\n  transition: fill 300ms ease 0ms;\n}\n", ""]);
 
 	// exports
 
@@ -62704,7 +62696,6 @@
 	  var maxMag = filters.get('maxMag');
 	  var minTime = filters.get('minTime');
 	  var maxTime = filters.get('maxTime');
-	  console.time('eq filtering');
 	  // Two important notes:
 	  // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
 	  // - Yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
@@ -62713,7 +62704,6 @@
 	    eq.visible = props.mag > minMag && props.mag < maxMag && props.time > minTime && props.time < maxTime;
 	    return eq;
 	  });
-	  console.timeEnd('eq filtering');
 	  return result;
 	};
 
