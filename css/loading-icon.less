@@ -1,0 +1,89 @@
+@keyframes uil-default-anim {
+  0% {
+    opacity: 1
+  }
+  100% {
+    opacity: 0
+  }
+}
+
+.loading-icon-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-icon {
+  display: inline-block;
+  position: relative;
+  background: none;
+  width: 200px;
+  height: 200px;
+
+  .element {
+    top: 80px;
+    left: 93px;
+    width: 14px;
+    height: 40px;
+    background: #ff9200;
+    border-radius: 10px;
+    position: absolute;
+  }
+
+  div:nth-of-type(1) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: -0.5s;
+  }
+  div:nth-of-type(2) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: -0.4166666666666667s;
+  }
+  div:nth-of-type(3) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: -0.33333333333333337s;
+  }
+  div:nth-of-type(4) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: -0.25s;
+  }
+  div:nth-of-type(5) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: -0.16666666666666669s;
+  }
+  div:nth-of-type(6) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: -0.08333333333333331s;
+  }
+  div:nth-of-type(7) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: 0s;
+  }
+  div:nth-of-type(8) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: 0.08333333333333337s;
+  }
+  div:nth-of-type(9) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: 0.16666666666666663s;
+  }
+  div:nth-of-type(10) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: 0.25s;
+  }
+  div:nth-of-type(11) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: 0.33333333333333337s;
+  }
+  div:nth-of-type(12) {
+    animation: uil-default-anim 1s linear infinite;
+    animation-delay: 0.41666666666666663s;
+  }
+}
