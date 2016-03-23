@@ -78,11 +78,9 @@ export default class EarthquakesLayer extends LayerGroup {
   }
 
   hideMarkersToRemove() {
-    console.time('eq hide')
     this.markersToRemove.forEach(eqId => {
       this.renderedMarkers[eqId].setVisible(false)
     })
-    console.timeEnd('eq hide')
   }
 
   addRemoveMarkersChunk() {

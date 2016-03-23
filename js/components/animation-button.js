@@ -72,7 +72,7 @@ export default class AnimationButton extends Component {
     const { onClick } = this.props
     return (
       <div className='animation-button'>
-        <i className={this.icon} onClick={(e) => { e.preventDefault(); onClick()}}/>
+        <i className={this.icon} onClick={onClick}/>
       </div>
     )
   }

@@ -134,7 +134,6 @@ const calcEarthquakes = (data, filters) => {
   const maxMag = filters.get('maxMag')
   const minTime = filters.get('minTime')
   const maxTime = filters.get('maxTime')
-  console.time('eq filtering')
   // Two important notes:
   // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
   // - Yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
@@ -146,7 +145,6 @@ const calcEarthquakes = (data, filters) => {
                  props.time < maxTime
     return eq
   })
-  console.timeEnd('eq filtering')
   return result
 }
 

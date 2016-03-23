@@ -1,12 +1,16 @@
+.earthquake-marker {
+  transform: scale(1);
+  transform-origin: center;
+}
+
 .earthquake-marker.hidden {
   visibility: hidden;
 }
 
+
 .with-animation {
   .earthquake-marker {
-    transform-origin: center;
     transition: visibility 700ms, transform 700ms;
-
     path {
       transition: fill 300ms ease 500ms;
     }
@@ -14,7 +18,6 @@
 
   .earthquake-marker.hidden {
     transform: scale(0);
-
     path {
       fill: white;
       transition: fill 300ms ease 0ms;

@@ -17,6 +17,14 @@ function sliderDateFormatter(value) {
   return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`
 }
 
+function toggleFullscreen() {
+  if (!screenfull.isFullscreen) {
+    screenfull.request()
+  } else {
+    screenfull.exit()
+  }
+}
+
 @pureRender
 class Controls extends Component {
   constructor(props) {
@@ -32,7 +40,6 @@ class Controls extends Component {
     this.handleAnimStep = this.handleAnimStep.bind(this)
     this.handleAnimBtnClick = this.handleAnimBtnClick.bind(this)
     this.toggleSettings = this.toggleSettings.bind(this)
-    this.toggleFullscreen = this.toggleFullscreen.bind(this)
   }
 
   componentDidMount() {
@@ -82,14 +89,6 @@ class Controls extends Component {
     this.setState({settingsVisible: !settingsVisible})
   }
 
-  toggleFullscreen() {
-    if (!screenfull.isFullscreen) {
-      screenfull.request()
-    } else {
-      screenfull.exit()
-    }
-  }
-
   get dateMarks() {
     const { filters } = this.props
     const min = filters.get('minTimeLimit')
@@ -122,7 +121,7 @@ class Controls extends Component {
           <i className='fa fa-gear'/>
         </div>
         {screenfull.enabled &&
-          <div className='fullscreen-icon' onClick={this.toggleFullscreen}>
+          <div className='fullscreen-icon' onClick={toggleFullscreen}>
             <i className={`fa ${fullscreen ? 'fa-compress' : 'fa-arrows-alt'}`}/>
           </div>
         }

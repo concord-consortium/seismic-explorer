@@ -13,7 +13,6 @@ export const SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE'
 export const SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED'
 
 export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
-  console.time('data fetching')
   return dispatch => {
     dispatch({type: REQUEST_DATA})
     fetchJSON(path)
@@ -54,7 +53,6 @@ function receiveRegion(response) {
 }
 
 function receiveEarthquakes(response) {
-  console.timeEnd('data fetching')
   return {
     type: RECEIVE_EARTHQUAKES,
     response: response,
