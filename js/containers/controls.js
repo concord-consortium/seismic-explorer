@@ -5,6 +5,7 @@ import * as actions from '../actions'
 import AnimationButton from '../components/animation-button'
 import Slider from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
+import screenfull from 'screenfull'
 
 import '../../css/controls.less'
 import 'rc-slider/assets/index.css'
@@ -21,7 +22,8 @@ class Controls extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      settingsVisible: false
+      settingsVisible: false,
+      fullscreen: false
     }
     this.handleMaxTime = this.handleMaxTime.bind(this)
     this.handleMinMag = this.handleMinMag.bind(this)
@@ -30,6 +32,15 @@ class Controls extends Component {
     this.handleAnimStep = this.handleAnimStep.bind(this)
     this.handleAnimBtnClick = this.handleAnimBtnClick.bind(this)
     this.toggleSettings = this.toggleSettings.bind(this)
+    this.toggleFullscreen = this.toggleFullscreen.bind(this)
+  }
+
+  componentDidMount() {
+    if (screenfull.enabled) {
+      document.addEventListener(screenfull.raw.fullscreenchange, () => {
+        this.setState({fullscreen: screenfull.isFullscreen})
+      })
+    }
   }
 
   handleMaxTime(value) {
@@ -71,6 +82,14 @@ class Controls extends Component {
     this.setState({settingsVisible: !settingsVisible})
   }
 
+  toggleFullscreen() {
+    if (!screenfull.isFullscreen) {
+      screenfull.request()
+    } else {
+      screenfull.exit()
+    }
+  }
+
   get dateMarks() {
     const { filters } = this.props
     const min = filters.get('minTimeLimit')
@@ -88,7 +107,7 @@ class Controls extends Component {
 
   render() {
     const { animationEnabled, filters, layers } = this.props
-    const { settingsVisible } = this.state
+    const { settingsVisible, fullscreen } = this.state
 
     return (
       <div className='controls'>
@@ -102,6 +121,11 @@ class Controls extends Component {
         <div className='settings-icon' onClick={this.toggleSettings}>
           <i className='fa fa-gear'/>
         </div>
+        {screenfull.enabled &&
+          <div className='fullscreen-icon' onClick={this.toggleFullscreen}>
+            <i className={`fa ${fullscreen ? 'fa-compress' : 'fa-arrows-alt'}`}/>
+          </div>
+        }
         <div className={`settings ${settingsVisible ? '' : 'hidden'}`}>
           <h2>Settings</h2>
           <div>
