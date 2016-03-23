@@ -34123,8 +34123,28 @@
 	      requestData(params.regionPath);
 	    }
 	  }, {
-	    key: 'render',
-	    value: function render() {
+	    key: 'renderError',
+	    value: function renderError() {
+	      var error = this.props.error;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'error' },
+	        _react2.default.createElement(
+	          'h1',
+	          null,
+	          'ERROR'
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          error.message
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'renderApp',
+	    value: function renderApp() {
 	      var _props2 = this.props;
 	      var region = _props2.region;
 	      var earthquakes = _props2.earthquakes;
@@ -34134,7 +34154,7 @@
 
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'seismic-eruptions-app' },
+	        null,
 	        dataFetching && _react2.default.createElement(_loadingIcon2.default, null),
 	        '/* \'with-animation\' class enables fancy animation of earthquakes when they are hidden or show. Enable it only when user started animation using play button, as it\'s too slow for manual filtering using sliders.  */',
 	        _react2.default.createElement(
@@ -34149,12 +34169,24 @@
 	        )
 	      );
 	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var error = this.props.error;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'seismic-eruptions-app' },
+	        error ? this.renderError() : this.renderApp()
+	      );
+	    }
 	  }]);
 	  return App;
 	}(_react.Component)) || _class;
 
 	function mapStateToProps(state) {
 	  return {
+	    error: state.getIn(['dataStatus', 'error']),
 	    dataFetching: state.getIn(['dataStatus', 'isFetching']),
 	    filters: state.get('filters'),
 	    region: state.get('region'),
@@ -44190,7 +44222,7 @@
 
 
 	// module
-	exports.push([module.id, ".controls {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  -webkit-flex-wrap: nowrap;\n  -ms-flex-wrap: nowrap;\n  flex-wrap: nowrap;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n}\n.controls .center {\n  -webkit-box-flex: 5;\n  -webkit-flex: 5 1 auto;\n  -ms-flex: 5 1 auto;\n  flex: 5 1 auto;\n  margin: 0 30px;\n}\n.controls img {\n  height: 60px;\n  margin: 0 10px;\n}\n.controls .animation-button,\n.controls .settings-icon,\n.controls .fullscreen-icon {\n  margin: 0 15px;\n  display: inline-block;\n  font-size: 3.5em;\n  cursor: pointer;\n  color: #777;\n}\n.controls .animation-button:hover,\n.controls .settings-icon:hover,\n.controls .fullscreen-icon:hover {\n  color: #000;\n}\n.controls .settings {\n  position: fixed;\n  right: 0;\n  bottom: 80px;\n  background: white;\n  padding: 0.5em 1em;\n  width: 480px;\n  border-top-left-radius: 10px;\n  color: #444;\n  -webkit-transition: right 750ms;\n  transition: right 750ms;\n}\n.controls .settings.hidden {\n  right: -700px;\n}\n.controls .settings > div {\n  margin: 20px;\n}\n.controls .settings h2 {\n  margin-bottom: 1em;\n}\n.controls .settings select {\n  margin-left: 10px;\n  font-size: 2em;\n}\n.controls .settings .rc-slider {\n  font-size: 0.6em;\n  width: 400px;\n  margin: 15px 5px;\n}\n", ""]);
+	exports.push([module.id, ".controls {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  -webkit-flex-wrap: nowrap;\n  -ms-flex-wrap: nowrap;\n  flex-wrap: nowrap;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n}\n.controls .center {\n  -webkit-box-flex: 5;\n  -webkit-flex: 5 1 auto;\n  -ms-flex: 5 1 auto;\n  flex: 5 1 auto;\n  margin: 0 30px;\n}\n.controls img {\n  height: 60px;\n  margin: 0 10px;\n}\n.controls .animation-button,\n.controls .settings-icon,\n.controls .fullscreen-icon {\n  margin: 0 15px;\n  display: inline-block;\n  font-size: 3.5em;\n  cursor: pointer;\n  color: #777;\n}\n.controls .animation-button:hover,\n.controls .settings-icon:hover,\n.controls .fullscreen-icon:hover {\n  color: #000;\n}\n.controls .settings {\n  position: fixed;\n  right: 0;\n  bottom: 80px;\n  background: white;\n  padding: 0.5em 1em;\n  width: 480px;\n  border-top-left-radius: 10px;\n  color: #444;\n  -webkit-transition: right 750ms;\n  transition: right 750ms;\n}\n.controls .settings.hidden {\n  right: -700px;\n}\n.controls .settings > div {\n  margin: 20px;\n}\n.controls .settings h2 {\n  margin-bottom: 1em;\n}\n.controls .settings select {\n  margin-left: 10px;\n}\n.controls .settings .rc-slider {\n  font-size: 0.6em;\n  width: 400px;\n  margin: 15px 5px;\n}\n", ""]);
 
 	// exports
 
@@ -62224,7 +62256,7 @@
 
 
 	// module
-	exports.push([module.id, ".seismic-eruptions-app {\n  font: 16px verdana, helvetica, sans-serif;\n  height: 100%;\n}\n.seismic-eruptions-app .map-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 80px;\n}\n.seismic-eruptions-app .controls-container {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 80px;\n}\n.seismic-eruptions-app .leaflet-control-attribution {\n  display: none;\n}\n", ""]);
+	exports.push([module.id, ".seismic-eruptions-app {\n  font: 16px verdana, helvetica, sans-serif;\n  height: 100%;\n}\n.seismic-eruptions-app .map-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 80px;\n}\n.seismic-eruptions-app .controls-container {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 80px;\n}\n.seismic-eruptions-app .leaflet-control-attribution {\n  display: none;\n}\n.seismic-eruptions-app .error {\n  text-align: center;\n}\n.seismic-eruptions-app .error h1 {\n  margin-top: 5em;\n}\n", ""]);
 
 	// exports
 
