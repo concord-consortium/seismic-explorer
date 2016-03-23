@@ -1,0 +1,63 @@
+.controls {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  flex-wrap: nowrap;
+  align-items: center;
+  display: flex;
+
+  .center {
+    flex: 5 1 auto;
+    margin: 0 30px;
+  }
+
+  img {
+    height: 60px;
+    margin: 0 10px;
+  }
+
+  .animation-button, .settings-icon {
+    margin: 0 30px;
+    display: inline-block;
+    font-size: 3.5em;
+    cursor: pointer;
+    color: #444;
+    &:hover {
+      color: #000;
+    }
+  }
+
+  .settings {
+    position: fixed;
+    right: 0;
+    bottom: 80px;
+    background: white;
+    padding: 0.5em 1em;
+    width: 480px;
+    border-top-left-radius: 10px;
+    color: #444;
+    transition: right 750ms;
+    &.hidden {
+      right: -700px;
+    }
+
+    & > div {
+      margin: 20px;
+    }
+
+    h2 {
+      margin-bottom: 1em;
+    }
+
+    select {
+      margin-left: 10px;
+      font-size: 2em;
+    }
+
+    .rc-slider {
+      font-size: 0.6em;
+      width: 400px;
+      margin: 15px 5px;
+    }
+  }
+}

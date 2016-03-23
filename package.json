@@ -47,6 +47,7 @@
     "leaflet-plugins": "^1.5.2",
     "pure-render-decorator": "^0.2.0",
     "rainbowvis.js": "^1.0.1",
+    "rc-slider": "^3.5.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-leaflet": "^0.10.2",

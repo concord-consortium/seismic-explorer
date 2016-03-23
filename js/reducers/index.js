@@ -57,12 +57,12 @@ function data(state = null, action) {
 }
 
 const INITIAL_FILTERS = Map({
-  minMag: 0,
+  minMag: 5,
   maxMag: 10,
-  minTime: -Infinity,
-  maxTime: Infinity,
-  minTimeLimit: -Infinity,
-  maxTimeLimit: Infinity
+  minTime: 0,
+  maxTime: 0,
+  minTimeLimit: 0,
+  maxTimeLimit: 0
 })
 function filters(state = INITIAL_FILTERS, action) {
   switch (action.type) {
@@ -96,7 +96,7 @@ function layers(state = INITIAL_LAYERS, action) {
   }
 }
 
-function animation(state = false, action) {
+function animationEnabled(state = false, action) {
   switch (action.type) {
     case SET_ANIMATION_ENABLED:
       return action.value
@@ -121,7 +121,7 @@ export default function reducer(state = INITIAL_STATE, action) {
   return state.set('dataStatus', dataStatus(state.get('dataStatus'), action))
               .set('region', region(state.get('region'), action))
               .set('layers', layers(state.get('layers'), action))
-              .set('animation', animation(state.get('animation'), action))
+              .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
               .set('data', newData)
               .set('filters', newFilters)
               // Update filtered earthquakes only if data or filters have been changed.
