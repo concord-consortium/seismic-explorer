@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { Map, TileLayer, Marker } from 'react-leaflet'
+import { latLngBounds } from 'leaflet'
 import EarthquakesLayer from './earthquakes-layer'
 import PlatesLayer from './plates-layer'
 import subregionIcon from '../custom-leaflet/subregion-icon'
 
 import '../../css/leaflet/leaflet.css'
+import '../../css/seismic-eruptions-map.less'
 
 function scaffoldUrl(subregion) {
   return '#' + window.encodeURIComponent(subregion.properties.scaffold)
@@ -23,6 +25,40 @@ function getSubregionIcon(label, url) {
 
 @pureRender
 export default class SeismicEruptionsMap extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      boundsChanged: false
+    }
+    this.handleMoveStart = this.handleMoveStart.bind(this)
+    this.fitBounds = this.fitBounds.bind(this)
+  }
+
+  componentWillUpdate(nextProps) {
+    if (this.props.region.get('bounds') !== nextProps.region.get('bounds')) {
+      this._ignoreMovestart = true
+      this.setState({boundsChanged: false})
+    }
+  }
+
+  componentDidUpdate() {
+    this._ignoreMovestart = false
+  }
+
+  handleMoveStart() {
+    // This event is fired also when we change bounds property pragmatically (e.g. when user changes the region).
+    if (!this._ignoreMovestart) {
+      this.setState({boundsChanged: true})
+    }
+  }
+
+  fitBounds() {
+    const { region } = this.props
+    const bounds = region.get('bounds')
+    this.refs.map.getLeafletElement().fitBounds(bounds)
+    this.setState({boundsChanged: false})
+  }
+
   renderBaseLayer() {
     // #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same
     // component instance when we switch between maps with subdomains and without.
@@ -48,14 +84,20 @@ export default class SeismicEruptionsMap extends Component {
 
   render() {
     const { region, earthquakes, layers } = this.props
+    const { boundsChanged } = this.state
     const bounds = region.get('bounds')
     return (
-      <Map className='seismic-eruptions-map' bounds={bounds} style={{height: '100%'}}>
-        {this.renderBaseLayer()}
-        {layers.get('plates') && <PlatesLayer/>}
-        <EarthquakesLayer earthquakes={earthquakes}/>
-        {this.renderSubregionButtons()}
-      </Map>
+      <div className='seismic-eruptions-map'>
+        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
+          {this.renderBaseLayer()}
+          {layers.get('plates') && <PlatesLayer/>}
+          <EarthquakesLayer earthquakes={earthquakes}/>
+          {this.renderSubregionButtons()}
+        </Map>
+        <div className='map-controls'>
+          {boundsChanged && <div className='map-button' onClick={this.fitBounds}><i className='fa fa-map-marker'/></div>}
+        </div>
+      </div>
     )
   }
 }

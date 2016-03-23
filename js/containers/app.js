@@ -7,6 +7,7 @@ import SeismicEruptionsMap from '../components/seismic-eruptions-map'
 import LoadingIcon from '../components/loading-icon'
 
 import '../../css/app.less'
+import 'font-awesome/css/font-awesome.css'
 
 @pureRender
 class App extends Component {
@@ -39,12 +40,12 @@ class App extends Component {
 
   renderApp() {
     const { region, earthquakes, layers, animationEnabled, dataFetching } = this.props
+    // 'with-animation' class enables fancy animation of earthquakes when they are hidden or show.
+    // Enable it only when user started animation using play button, as it's too slow for manual
+    // filtering using sliders.
     return (
       <div>
         {dataFetching && <LoadingIcon/>}
-        /* 'with-animation' class enables fancy animation of earthquakes when they are hidden or show.
-           Enable it only when user started animation using play button, as it's too slow for manual
-           filtering using sliders.  */
         <div className={`map-container ${animationEnabled ? ' with-animation' : ''}`}>
           <SeismicEruptionsMap region={region} earthquakes={earthquakes} layers={layers}/>
         </div>
