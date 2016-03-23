@@ -20,7 +20,6 @@ class Cache {
   }
 }
 
-
 const cache = new Cache()
 
 export function fetchJSON(path) {

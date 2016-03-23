@@ -27,10 +27,20 @@ class App extends Component {
     requestData(params.regionPath)
   }
 
-  render() {
+  renderError() {
+    const { error } = this.props
+    return (
+      <div className='error'>
+        <h1>ERROR</h1>
+        <div>{error.message}</div>
+      </div>
+    )
+  }
+
+  renderApp() {
     const { region, earthquakes, layers, animationEnabled, dataFetching } = this.props
     return (
-      <div className='seismic-eruptions-app'>
+      <div>
         {dataFetching && <LoadingIcon/>}
         /* 'with-animation' class enables fancy animation of earthquakes when they are hidden or show.
            Enable it only when user started animation using play button, as it's too slow for manual
@@ -44,10 +54,20 @@ class App extends Component {
       </div>
     )
   }
+
+  render() {
+    const { error } = this.props
+    return (
+      <div className='seismic-eruptions-app'>
+        {error ? this.renderError() : this.renderApp()}
+      </div>
+    )
+  }
 }
 
 function mapStateToProps(state) {
   return {
+    error: state.getIn(['dataStatus', 'error']),
     dataFetching: state.getIn(['dataStatus', 'isFetching']),
     filters: state.get('filters'),
     region: state.get('region'),
