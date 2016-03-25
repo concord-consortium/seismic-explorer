@@ -34,6 +34,13 @@ module.exports = {
         test: /\.(eot|ttf|woff|woff2|svg)((\?|\#).*)?$/,
         loader: 'url-loader?limit=8192'
       }
+    ],
+    // See: https://gist.github.com/mjackson/ecd3914ebee934f4daf4
+    postLoaders: [
+      {
+        include: path.resolve(__dirname, 'node_modules/pixi.js'),
+        loader: 'transform?brfs'
+      }
     ]
   },
   plugins: [
