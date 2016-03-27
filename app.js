@@ -44272,9 +44272,9 @@
 
 	var _leaflet = __webpack_require__(714);
 
-	var _canvasEarthquakesLayer = __webpack_require__(884);
+	var _earthquakesCanvasLayer = __webpack_require__(884);
 
-	var _canvasEarthquakesLayer2 = _interopRequireDefault(_canvasEarthquakesLayer);
+	var _earthquakesCanvasLayer2 = _interopRequireDefault(_earthquakesCanvasLayer);
 
 	var _platesLayer = __webpack_require__(1035);
 
@@ -44395,7 +44395,7 @@
 	          { ref: 'map', className: 'map', bounds: bounds, onLeafletMovestart: this.handleMoveStart },
 	          this.renderBaseLayer(),
 	          layers.get('plates') && _react2.default.createElement(_platesLayer2.default, null),
-	          _react2.default.createElement(_canvasEarthquakesLayer2.default, { earthquakes: earthquakes }),
+	          _react2.default.createElement(_earthquakesCanvasLayer2.default, { earthquakes: earthquakes }),
 	          this.renderSubregionButtons()
 	        ),
 	        _react2.default.createElement(
@@ -60709,31 +60709,25 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var CanvasEarthquakesLayer = (0, _pureRenderDecorator2.default)(_class = function (_MapLayer) {
-	  (0, _inherits3.default)(CanvasEarthquakesLayer, _MapLayer);
+	var EarthquakesCanvasLayer = (0, _pureRenderDecorator2.default)(_class = function (_MapLayer) {
+	  (0, _inherits3.default)(EarthquakesCanvasLayer, _MapLayer);
 
-	  function CanvasEarthquakesLayer() {
-	    (0, _classCallCheck3.default)(this, CanvasEarthquakesLayer);
-	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(CanvasEarthquakesLayer).apply(this, arguments));
+	  function EarthquakesCanvasLayer() {
+	    (0, _classCallCheck3.default)(this, EarthquakesCanvasLayer);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(EarthquakesCanvasLayer).apply(this, arguments));
 	  }
 
-	  (0, _createClass3.default)(CanvasEarthquakesLayer, [{
+	  (0, _createClass3.default)(EarthquakesCanvasLayer, [{
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      var _this2 = this;
-
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(CanvasEarthquakesLayer.prototype), 'componentWillMount', this).call(this);
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(EarthquakesCanvasLayer.prototype), 'componentWillMount', this).call(this);
 	      this.leafletElement = (0, _earthquakesCanvasLayer.earthquakesCanvasLayer)();
-	      this.leafletElement.onAddCallback = function () {
-	        _this2.leafletElement.setEarthquakes(_this2.props.earthquakes);
-	      };
+	      this.leafletElement.setEarthquakes(this.props.earthquakes);
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
-	      if (this.leafletElement._map) {
-	        this.leafletElement.setEarthquakes(this.props.earthquakes);
-	      }
+	      this.leafletElement.setEarthquakes(this.props.earthquakes);
 	    }
 	  }, {
 	    key: 'render',
@@ -60741,10 +60735,10 @@
 	      return null;
 	    }
 	  }]);
-	  return CanvasEarthquakesLayer;
+	  return EarthquakesCanvasLayer;
 	}(_reactLeaflet.MapLayer)) || _class;
 
-	exports.default = CanvasEarthquakesLayer;
+	exports.default = EarthquakesCanvasLayer;
 
 /***/ },
 /* 885 */
@@ -60844,11 +60838,11 @@
 
 	var _leaflet = __webpack_require__(714);
 
-	var _earthquakeHelpers = __webpack_require__(1034);
+	var _earthquakeSprite = __webpack_require__(1034);
+
+	var _earthquakeSprite2 = _interopRequireDefault(_earthquakeSprite);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var TRANSITION_SPEED = 0.05;
 
 	var EarthquakesCanvasLayer = exports.EarthquakesCanvasLayer = _canvasLayer.CanvasLayer.extend({
 	  initialize: function initialize(options) {
@@ -60877,19 +60871,23 @@
 	    var _this = this;
 
 	    if (!this._earthquakesToProcess) return;
+	    // First, mark all the sprites as invalid.
 	    this._renderedEarthquakes.forEach(function (eqSprite) {
-	      eqSprite._valid = false;
+	      eqSprite._toRemove = true;
 	    });
+	    // Process new earthquakes array. Create missing sprites
+	    // and mark all the existing ones found in new array as valid (_toRemove = false).
 	    this._earthquakesToProcess.forEach(function (e) {
 	      if (!_this._renderedEarthquakes.has(e.id)) {
 	        _this._addEarthquake(e);
 	      }
 	      var eqSprite = _this._renderedEarthquakes.get(e.id);
-	      eqSprite._visible = e.visible;
-	      eqSprite._valid = true;
+	      eqSprite.targetVisibility = e.visible;
+	      eqSprite._toRemove = false;
 	    });
+	    // Finally, remove sprites that don't have corresponding objects in the new earthquakes array.
 	    this._renderedEarthquakes.forEach(function (eqSprite, id) {
-	      if (!eqSprite._valid) {
+	      if (eqSprite._toRemove) {
 	        _this._container.removeChild(eqSprite);
 	        _this._renderedEarthquakes.delete(id);
 	      }
@@ -60898,15 +60896,7 @@
 	  },
 
 	  _addEarthquake: function _addEarthquake(e) {
-	    var eqSprite = (0, _earthquakeHelpers.earthquakeSprite)(e.geometry.coordinates[2], e.properties.mag);
-	    eqSprite.coordinates = e.geometry.coordinates;
-	    eqSprite.alpha = 0;
-	    eqSprite.scale.x = eqSprite.scale.y = 0;
-	    eqSprite.interactive = true;
-	    eqSprite.buttonMode = true;
-	    //eqSprite.on('mousedown', () => {
-	    //  console.log('click!!!')
-	    //})
+	    var eqSprite = new _earthquakeSprite2.default(e.geometry.coordinates[2], e.properties.mag, e.geometry.coordinates);
 	    this._container.addChild(eqSprite);
 	    this._renderedEarthquakes.set(e.id, eqSprite);
 	  },
@@ -60933,7 +60923,7 @@
 	    this._redraw();
 	  },
 
-	  // This function is really expensive (when we call it for 20k earthquakes).
+	  // This function is really expensive (especially when we call it for 10-20k earthquakes).
 	  // That's why we try to limit position recalculation if it's possible.
 	  latLngToPoint: function latLngToPoint(latLng) {
 	    return this._map.latLngToContainerPoint(latLng);
@@ -60942,45 +60932,27 @@
 	  draw: function draw() {
 	    var _this2 = this;
 
-	    console.time('pixi prep');
 	    var transitionInProgress = false;
 	    this._processNewEarthquakes();
 	    this._renderedEarthquakes.forEach(function (eqSprite) {
+	      // Recalculate position only if it's necessary (expensive).
 	      if (!eqSprite._positionValid) {
 	        var point = _this2.latLngToPoint(eqSprite.coordinates);
 	        eqSprite.position.x = point.x;
 	        eqSprite.position.y = point.y;
 	        eqSprite._positionValid = true;
 	      }
-	      if (eqSprite._visible && eqSprite.alpha < 1) {
-	        eqSprite.visible = true;
-	        eqSprite.alpha += TRANSITION_SPEED;
-	        eqSprite.scale.x += TRANSITION_SPEED;
-	        eqSprite.scale.y += TRANSITION_SPEED;
-	        eqSprite.tint = 0xFFFF00;
+	      // Visibility transition.
+	      eqSprite.transitionStep();
+	      if (eqSprite.transitionInProgress) {
 	        transitionInProgress = true;
-	      } else if (!eqSprite._visible && eqSprite.alpha > 0) {
-	        eqSprite.visible = true;
-	        eqSprite.alpha -= TRANSITION_SPEED;
-	        eqSprite.scale.x -= TRANSITION_SPEED;
-	        eqSprite.scale.y -= TRANSITION_SPEED;
-	        eqSprite.tint = 0xFFFF00;
-	        transitionInProgress = true;
-	      } else if (!eqSprite._visible && eqSprite.alpha === 0) {
-	        // Hide sprite, optimization, as Pixi can skip some calculations.
-	        eqSprite.visible = false;
-	      } else if (eqSprite._visible && eqSprite.alpha === 1) {
-	        eqSprite.tint = 0xFFFFFF;
 	      }
 	    });
-	    console.timeEnd('pixi prep');
-	    console.time('pixi draw');
+	    // PIXI render.
 	    this._renderer.render(this._container);
-	    console.timeEnd('pixi draw');
+	    // Schedule next frame only if there are some ongoing transitions.
 	    if (transitionInProgress) {
-	      this._frame = window.requestAnimationFrame(this.draw);
-	    } else {
-	      this._frame = null;
+	      this.scheduleRedraw();
 	    }
 	  }
 	});
@@ -61356,7 +61328,6 @@
 	  value: true
 	});
 	exports.CanvasLayer = undefined;
-	exports.canvasLayer = canvasLayer;
 
 	var _leaflet = __webpack_require__(714);
 
@@ -61377,14 +61348,18 @@
 
 	  scheduleRedraw: function scheduleRedraw() {
 	    if (this._map && !this._frame && !this._map._animating) {
-	      //this._frame = Util.requestAnimFrame(this._redraw, this)
-	      this._frame = setTimeout(this._redraw, 50);
+	      this._frame = requestAnimationFrame(this._redraw);
 	    }
 	    return this;
 	  },
 
+	  // Overwrite.
+	  draw: function draw() {},
+
+	  // Overwrite.
+	  onAddCallback: function onAddCallback() {},
+
 	  onAdd: function onAdd(map) {
-	    console.log('onAdd');
 	    this._map = map;
 
 	    if (!this._canvas) {
@@ -61403,8 +61378,6 @@
 	    this.onAddCallback();
 	  },
 
-	  onAddCallback: function onAddCallback() {},
-
 	  onRemove: function onRemove(map) {
 	    map.getPanes().overlayPane.removeChild(this._canvas);
 
@@ -61418,10 +61391,6 @@
 	  addTo: function addTo(map) {
 	    map.addLayer(this);
 	    return this;
-	  },
-
-	  draw: function draw() {
-	    // Overwrite this method.
 	  },
 
 	  _initCanvas: function _initCanvas() {
@@ -61474,10 +61443,6 @@
 	    }
 	  }
 	});
-
-	function canvasLayer(drawFunc, options) {
-	  return new CanvasLayer(drawFunc, options);
-	}
 
 /***/ },
 /* 901 */
@@ -90872,8 +90837,28 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.earthquakeTexture = earthquakeTexture;
-	exports.earthquakeSprite = earthquakeSprite;
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(534);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(560);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(561);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(565);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(608);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
 	exports.depthToColor = depthToColor;
 	exports.magnitudeToRadius = magnitudeToRadius;
 
@@ -90883,29 +90868,77 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var TRANSITION_SPEED = 0.035;
 	var TEXTURE_RESOLUTION = 12;
-	var textureCache = {};
 
-	function earthquakeTexture(depth) {
-	  var color = depthToColor(depth);
-	  if (!textureCache[color]) {
-	    var g = new _pixi2.default.Graphics();
-	    g.lineStyle(0.2, 0x000000, 0.2);
-	    g.beginFill(color, 0.8);
-	    g.drawCircle(1, 1, 1);
-	    g.endFill();
-	    textureCache[color] = g.generateTexture(null, TEXTURE_RESOLUTION);
+	var EarthquakeSprite = function (_PIXI$Sprite) {
+	  (0, _inherits3.default)(EarthquakeSprite, _PIXI$Sprite);
+
+	  function EarthquakeSprite(depth, magnitude, coordinates) {
+	    (0, _classCallCheck3.default)(this, EarthquakeSprite);
+
+	    var _this = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(EarthquakeSprite).call(this, earthquakeTexture(depth)));
+
+	    _this._defaultTexture = earthquakeTexture(depth);
+	    _this._transitionTexture = transitionTexture();
+	    _this._radius = magnitudeToRadius(magnitude) / TEXTURE_RESOLUTION;
+	    _this.coordinates = coordinates;
+	    _this.anchor.x = _this.anchor.y = 0.5;
+	    _this.transitionProgress = 0;
+	    return _this;
 	  }
-	  return textureCache[color];
-	}
 
-	function earthquakeSprite(depth, magnitude) {
-	  var eqSprite = new _pixi2.default.Sprite(earthquakeTexture(depth));
-	  eqSprite.anchor.x = eqSprite.anchor.y = 0.5;
-	  eqSprite.scale.x = eqSprite.scale.y = magnitudeToRadius(magnitude) / TEXTURE_RESOLUTION;
-	  return eqSprite;
-	}
+	  (0, _createClass3.default)(EarthquakeSprite, [{
+	    key: 'setScale',
+	    value: function setScale(v) {
+	      this.scale.x = this.scale.y = this._radius * v;
+	    }
+	  }, {
+	    key: 'transitionStep',
 
+
+	    // Performs transition step and returns true if the transition is still in progress.
+	    value: function transitionStep() {
+	      if (this.targetVisibility && this.transitionProgress < 1) {
+	        this.transitionProgress += TRANSITION_SPEED;
+	      } else if (!this.targetVisibility && this.transitionProgress > 0) {
+	        this.transitionProgress -= TRANSITION_SPEED;
+	      }
+	    }
+	  }, {
+	    key: 'targetVisibility',
+	    set: function set(v) {
+	      this._targetVisibility = v;
+	    },
+	    get: function get() {
+	      return this._targetVisibility;
+	    }
+	  }, {
+	    key: 'transitionProgress',
+	    set: function set(v) {
+	      v = Math.min(1, Math.max(0, v));
+	      this._transitionProgress = v;
+	      var t = easeOutBounce(v);
+	      this.setScale(t);
+	      if (this.transitionInProgress) {
+	        this.texture = this._transitionTexture;
+	      } else {
+	        this.texture = this._defaultTexture;
+	      }
+	    },
+	    get: function get() {
+	      return this._transitionProgress;
+	    }
+	  }, {
+	    key: 'transitionInProgress',
+	    get: function get() {
+	      return this.transitionProgress > 0 && this.transitionProgress < 1;
+	    }
+	  }]);
+	  return EarthquakeSprite;
+	}(_pixi2.default.Sprite);
+
+	exports.default = EarthquakeSprite;
 	function depthToColor(depth) {
 	  var depthRange = Math.floor(depth / 100);
 	  switch (depthRange) {
@@ -90932,6 +90965,44 @@
 
 	function magnitudeToRadius(magnitude) {
 	  return 0.9 * Math.pow(1.5, magnitude - 1);
+	}
+
+	var textureCache = {};
+	function earthquakeTexture(depth) {
+	  var color = depthToColor(depth);
+	  if (!textureCache[color]) {
+	    var g = new _pixi2.default.Graphics();
+	    g.lineStyle(0.2, 0x000000, 0.2);
+	    g.beginFill(color, 0.8);
+	    g.drawCircle(1, 1, 1);
+	    g.endFill();
+	    textureCache[color] = g.generateTexture(null, TEXTURE_RESOLUTION);
+	  }
+	  return textureCache[color];
+	}
+
+	function transitionTexture() {
+	  if (!textureCache['transition']) {
+	    var g = new _pixi2.default.Graphics();
+	    g.lineStyle(0.2, 0x000000, 0.2);
+	    g.beginFill(0xFFFFFF, 0.7);
+	    g.drawCircle(1, 1, 1);
+	    g.endFill();
+	    textureCache['transition'] = g.generateTexture(null, TEXTURE_RESOLUTION);
+	  }
+	  return textureCache['transition'];
+	}
+
+	// Generated using:
+	// http://www.timotheegroleau.com/Flash/experiments/easing_function_generator.htm
+	function easeOutBounce(t) {
+	  var b = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+	  var c = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
+	  var d = arguments.length <= 3 || arguments[3] === undefined ? 1 : arguments[3];
+
+	  var ts = (t /= d) * t;
+	  var tc = ts * t;
+	  return b + c * (33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t);
 	}
 
 /***/ },
