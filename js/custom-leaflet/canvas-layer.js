@@ -17,14 +17,18 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
 
   scheduleRedraw: function () {
     if (this._map && !this._frame && !this._map._animating) {
-      //this._frame = Util.requestAnimFrame(this._redraw, this)
-      this._frame = setTimeout(this._redraw, 50)
+      this._frame = requestAnimationFrame(this._redraw)
     }
     return this
   },
 
+  // Overwrite.
+  draw: function () {},
+
+  // Overwrite.
+  onAddCallback: function () {},
+
   onAdd: function (map) {
-    console.log('onAdd')
     this._map = map
 
     if (!this._canvas) {
@@ -43,10 +47,6 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
     this.onAddCallback()
   },
 
-  onAddCallback: function () {
-
-  },
-
   onRemove: function (map) {
     map.getPanes().overlayPane.removeChild(this._canvas)
 
@@ -60,10 +60,6 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
   addTo: function (map) {
     map.addLayer(this)
     return this
-  },
-
-  draw: function () {
-    // Overwrite this method.
   },
 
   _initCanvas: function () {
@@ -116,7 +112,3 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
     }
   }
 })
-
-export function canvasLayer(drawFunc, options) {
-  return new CanvasLayer(drawFunc, options)
-}

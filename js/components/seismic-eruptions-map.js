@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { Map, TileLayer, Marker } from 'react-leaflet'
 import { latLngBounds } from 'leaflet'
-import CanvasEarthquakesLayer from './canvas-earthquakes-layer'
+import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import PlatesLayer from './plates-layer'
 import subregionIcon from '../custom-leaflet/subregion-icon'
 
@@ -91,7 +91,7 @@ export default class SeismicEruptionsMap extends Component {
         <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
-          <CanvasEarthquakesLayer earthquakes={earthquakes}/>
+          <EarthquakesCanvasLayer earthquakes={earthquakes}/>
           {this.renderSubregionButtons()}
         </Map>
         <div className='map-controls'>

@@ -4,19 +4,15 @@ import { MapLayer } from 'react-leaflet'
 import { earthquakesCanvasLayer } from '../custom-leaflet/earthquakes-canvas-layer'
 
 @pureRender
-export default class CanvasEarthquakesLayer extends MapLayer {
+export default class EarthquakesCanvasLayer extends MapLayer {
   componentWillMount() {
     super.componentWillMount();
     this.leafletElement = earthquakesCanvasLayer()
-    this.leafletElement.onAddCallback = () => {
-      this.leafletElement.setEarthquakes(this.props.earthquakes)
-    }
+    this.leafletElement.setEarthquakes(this.props.earthquakes)
   }
 
   componentDidUpdate() {
-    if (this.leafletElement._map) {
-      this.leafletElement.setEarthquakes(this.props.earthquakes)
-    }
+    this.leafletElement.setEarthquakes(this.props.earthquakes)
   }
 
   render() {

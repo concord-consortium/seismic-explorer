@@ -1,9 +1,7 @@
 import { CanvasLayer } from './canvas-layer'
 import PIXI from 'pixi.js'
 import { DomUtil } from 'leaflet'
-import { earthquakeSprite } from './earthquake-helpers'
-
-const TRANSITION_SPEED = 0.05
+import EarthquakeSprite from './earthquake-sprite'
 
 export const EarthquakesCanvasLayer = CanvasLayer.extend({
   initialize: function (options) {
@@ -30,19 +28,23 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
 
   _processNewEarthquakes: function () {
     if (!this._earthquakesToProcess) return
+    // First, mark all the sprites as invalid.
     this._renderedEarthquakes.forEach(eqSprite => {
-      eqSprite._valid = false
+      eqSprite._toRemove = true
     })
+    // Process new earthquakes array. Create missing sprites
+    // and mark all the existing ones found in new array as valid (_toRemove = false).
     this._earthquakesToProcess.forEach(e => {
       if (!this._renderedEarthquakes.has(e.id)) {
         this._addEarthquake(e)
       }
       const eqSprite = this._renderedEarthquakes.get(e.id)
-      eqSprite._visible = e.visible
-      eqSprite._valid = true
+      eqSprite.targetVisibility = e.visible ? 1 : 0
+      eqSprite._toRemove = false
     })
+    // Finally, remove sprites that don't have corresponding objects in the new earthquakes array.
     this._renderedEarthquakes.forEach((eqSprite, id) => {
-      if (!eqSprite._valid) {
+      if (eqSprite._toRemove) {
         this._container.removeChild(eqSprite)
         this._renderedEarthquakes.delete(id)
       }
@@ -51,10 +53,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   _addEarthquake: function (e) {
-    const eqSprite = earthquakeSprite(e.geometry.coordinates[2], e.properties.mag)
-    eqSprite.coordinates = e.geometry.coordinates
-    eqSprite.alpha = 0
-    eqSprite.scale.x = eqSprite.scale.y = 0
+    const eqSprite = new EarthquakeSprite(e.geometry.coordinates[2], e.properties.mag, e.geometry.coordinates)
     this._container.addChild(eqSprite)
     this._renderedEarthquakes.set(e.id, eqSprite)
   },
@@ -81,43 +80,39 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     this._redraw()
   },
 
-  // This function is really expensive (when we call it for 20k earthquakes).
+  // This function is really expensive (especially when we call it for 10-20k earthquakes).
   // That's why we try to limit position recalculation if it's possible.
   latLngToPoint: function(latLng) {
     return this._map.latLngToContainerPoint(latLng)
   },
 
   draw: function () {
-    console.time('pixi prep')
+    const timestamp = performance.now()
+    const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
     let transitionInProgress = false
     this._processNewEarthquakes()
     this._renderedEarthquakes.forEach(eqSprite => {
+      // Recalculate position only if it's necessary (expensive).
       if (!eqSprite._positionValid) {
         const point = this.latLngToPoint(eqSprite.coordinates)
         eqSprite.position.x = point.x
         eqSprite.position.y = point.y
         eqSprite._positionValid = true
       }
-      if (eqSprite._visible && eqSprite.alpha < 1) {
-        eqSprite.alpha += TRANSITION_SPEED
-        eqSprite.scale.x += TRANSITION_SPEED
-        eqSprite.scale.y += TRANSITION_SPEED
-        transitionInProgress = true
-      } else if (!eqSprite._visible && eqSprite.alpha > 0) {
-        eqSprite.alpha -= TRANSITION_SPEED
-        eqSprite.scale.x -= TRANSITION_SPEED
-        eqSprite.scale.y -= TRANSITION_SPEED
+      // Visibility transition.
+      eqSprite.transitionStep(progress)
+      if (eqSprite.transitionInProgress) {
         transitionInProgress = true
       }
     })
-    console.timeEnd('pixi prep')
-    console.time('pixi draw')
+    // PIXI render.
     this._renderer.render(this._container)
-    console.timeEnd('pixi draw')
+    // Schedule next frame only if there are some ongoing transitions.
     if (transitionInProgress) {
-      this._frame = window.requestAnimationFrame(this.draw)
+      this.scheduleRedraw()
+      this._prevTimestamp = timestamp
     } else {
-      this._frame = null
+      this._prevTimestamp = null
     }
   }
 })
