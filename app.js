@@ -60882,7 +60882,7 @@
 	        _this._addEarthquake(e);
 	      }
 	      var eqSprite = _this._renderedEarthquakes.get(e.id);
-	      eqSprite.targetVisibility = e.visible;
+	      eqSprite.targetVisibility = e.visible ? 1 : 0;
 	      eqSprite._toRemove = false;
 	    });
 	    // Finally, remove sprites that don't have corresponding objects in the new earthquakes array.
@@ -60932,6 +60932,8 @@
 	  draw: function draw() {
 	    var _this2 = this;
 
+	    var timestamp = performance.now();
+	    var progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0;
 	    var transitionInProgress = false;
 	    this._processNewEarthquakes();
 	    this._renderedEarthquakes.forEach(function (eqSprite) {
@@ -60943,7 +60945,7 @@
 	        eqSprite._positionValid = true;
 	      }
 	      // Visibility transition.
-	      eqSprite.transitionStep();
+	      eqSprite.transitionStep(progress);
 	      if (eqSprite.transitionInProgress) {
 	        transitionInProgress = true;
 	      }
@@ -60953,6 +60955,9 @@
 	    // Schedule next frame only if there are some ongoing transitions.
 	    if (transitionInProgress) {
 	      this.scheduleRedraw();
+	      this._prevTimestamp = timestamp;
+	    } else {
+	      this._prevTimestamp = null;
 	    }
 	  }
 	});
@@ -90868,7 +90873,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var TRANSITION_SPEED = 0.035;
+	var TRANSITION_TIME = 750;
 	var TEXTURE_RESOLUTION = 12;
 
 	var EarthquakeSprite = function (_PIXI$Sprite) {
@@ -90884,7 +90889,7 @@
 	    _this._radius = magnitudeToRadius(magnitude) / TEXTURE_RESOLUTION;
 	    _this.coordinates = coordinates;
 	    _this.anchor.x = _this.anchor.y = 0.5;
-	    _this.transitionProgress = 0;
+	    _this.transition = 0;
 	    return _this;
 	  }
 
@@ -90893,16 +90898,20 @@
 	    value: function setScale(v) {
 	      this.scale.x = this.scale.y = this._radius * v;
 	    }
+
+	    // 0 or 1
+
 	  }, {
 	    key: 'transitionStep',
 
 
 	    // Performs transition step and returns true if the transition is still in progress.
-	    value: function transitionStep() {
-	      if (this.targetVisibility && this.transitionProgress < 1) {
-	        this.transitionProgress += TRANSITION_SPEED;
-	      } else if (!this.targetVisibility && this.transitionProgress > 0) {
-	        this.transitionProgress -= TRANSITION_SPEED;
+	    value: function transitionStep(progress) {
+	      progress /= TRANSITION_TIME; // map to [0, 1]
+	      if (this.transition < this.targetVisibility) {
+	        this.transition += progress;
+	      } else if (this.transition > this.targetVisibility) {
+	        this.transition -= progress;
 	      }
 	    }
 	  }, {
@@ -90914,10 +90923,10 @@
 	      return this._targetVisibility;
 	    }
 	  }, {
-	    key: 'transitionProgress',
+	    key: 'transition',
 	    set: function set(v) {
 	      v = Math.min(1, Math.max(0, v));
-	      this._transitionProgress = v;
+	      this._transition = v;
 	      var t = easeOutBounce(v);
 	      this.setScale(t);
 	      if (this.transitionInProgress) {
@@ -90927,12 +90936,12 @@
 	      }
 	    },
 	    get: function get() {
-	      return this._transitionProgress;
+	      return this._transition;
 	    }
 	  }, {
 	    key: 'transitionInProgress',
 	    get: function get() {
-	      return this.transitionProgress > 0 && this.transitionProgress < 1;
+	      return this.targetVisibility !== this.transition;
 	    }
 	  }]);
 	  return EarthquakeSprite;
@@ -90996,13 +91005,9 @@
 	// Generated using:
 	// http://www.timotheegroleau.com/Flash/experiments/easing_function_generator.htm
 	function easeOutBounce(t) {
-	  var b = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-	  var c = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
-	  var d = arguments.length <= 3 || arguments[3] === undefined ? 1 : arguments[3];
-
-	  var ts = (t /= d) * t;
+	  var ts = t * t;
 	  var tc = ts * t;
-	  return b + c * (33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t);
+	  return 33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t;
 	}
 
 /***/ },
