@@ -14,6 +14,13 @@ export default class EarthquakeSprite extends PIXI.Sprite {
     this.transition = 0
   }
 
+  onClick(handler) {
+    this.interactive = true
+    this.buttonMode = true
+    this.on('mousedown', handler)
+    this.on('touchstart', handler)
+  }
+
   setScale(v) {
     this.scale.x = this.scale.y = this._radius * v
   }

@@ -8,11 +8,17 @@ export default class EarthquakesCanvasLayer extends MapLayer {
   componentWillMount() {
     super.componentWillMount();
     this.leafletElement = earthquakesCanvasLayer()
-    this.leafletElement.setEarthquakes(this.props.earthquakes)
+    this.setLeafletElementProps()
   }
 
   componentDidUpdate() {
-    this.leafletElement.setEarthquakes(this.props.earthquakes)
+   this.setLeafletElementProps()
+  }
+
+  setLeafletElementProps() {
+    const { earthquakes, earthquakeClick } = this.props
+    this.leafletElement.setEarthquakes(earthquakes)
+    this.leafletElement.onEarthquakeClick(earthquakeClick)
   }
 
   render() {

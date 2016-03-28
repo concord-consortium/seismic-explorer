@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
-import { Map, TileLayer, Marker } from 'react-leaflet'
-import { latLngBounds } from 'leaflet'
+import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import PlatesLayer from './plates-layer'
-import subregionIcon from '../custom-leaflet/subregion-icon'
+import { getCachedSubregionIcon, getCachedInvisibleIcon } from '../custom-leaflet/icons'
+import EarthquakePopup from './earthquake-popup'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
@@ -13,24 +13,17 @@ function scaffoldUrl(subregion) {
   return '#' + window.encodeURIComponent(subregion.properties.scaffold)
 }
 
-// Cache icons. First, it's just fater. Second, it prevents us from unnecessary re-rendering and buttons blinking.
-const _icons = {}
-function getSubregionIcon(label, url) {
-  const iconKey = label + url
-  if (!_icons[iconKey]) {
-    _icons[iconKey] = subregionIcon(label, url)
-  }
-  return _icons[iconKey]
-}
-
 @pureRender
 export default class SeismicEruptionsMap extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      boundsChanged: false
+      boundsChanged: false,
+      selectedEarthquake: null
     }
     this.handleMoveStart = this.handleMoveStart.bind(this)
+    this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
+    this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
     this.fitBounds = this.fitBounds.bind(this)
   }
 
@@ -50,6 +43,14 @@ export default class SeismicEruptionsMap extends Component {
     if (!this._ignoreMovestart) {
       this.setState({boundsChanged: true})
     }
+  }
+
+  handleEarthquakeClick(event, earthquake) {
+    this.setState({selectedEarthquake: earthquake})
+  }
+
+  handleEarthquakePopupClose() {
+    this.setState({selectedEarthquake: null})
   }
 
   fitBounds() {
@@ -78,21 +79,22 @@ export default class SeismicEruptionsMap extends Component {
     const { region } = this.props
     const subregions = region.get('subregions') || []
     return subregions.map((sr, idx) => {
-      return <Marker key={idx} position={sr.geometry.coordinates} icon={getSubregionIcon(sr.properties.label, scaffoldUrl(sr))}/>
+      return <Marker key={idx} position={sr.geometry.coordinates} icon={getCachedSubregionIcon(sr.properties.label, scaffoldUrl(sr))}/>
     })
   }
 
   render() {
     const { region, earthquakes, layers } = this.props
-    const { boundsChanged } = this.state
+    const { boundsChanged, selectedEarthquake } = this.state
     const bounds = region.get('bounds')
     return (
       <div className='seismic-eruptions-map'>
         <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
-          <EarthquakesCanvasLayer earthquakes={earthquakes}/>
+          <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
           {this.renderSubregionButtons()}
+          <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
         </Map>
         <div className='map-controls'>
           {boundsChanged && <div className='map-button' onClick={this.fitBounds}><i className='fa fa-map-marker'/></div>}
