@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet'
+import { Map, TileLayer } from 'react-leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import PlatesLayer from './plates-layer'
-import { getCachedSubregionIcon } from '../custom-leaflet/icons'
+import SubregionButtons from './subregion-buttons'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
-
-function scaffoldUrl(subregion) {
-  return '#' + window.encodeURIComponent(subregion.properties.scaffold)
-}
 
 @pureRender
 export default class SeismicEruptionsMap extends Component {
@@ -29,6 +25,7 @@ export default class SeismicEruptionsMap extends Component {
 
   componentWillUpdate(nextProps) {
     if (this.props.region.get('bounds') !== nextProps.region.get('bounds')) {
+      // This event is fired also when we change bounds property using API call (e.g. when user changes the region).
       this._ignoreMovestart = true
       this.setState({boundsChanged: false})
     }
@@ -39,7 +36,6 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   handleMoveStart() {
-    // This event is fired also when we change bounds property pragmatically (e.g. when user changes the region).
     if (!this._ignoreMovestart) {
       this.setState({boundsChanged: true})
     }
@@ -75,14 +71,6 @@ export default class SeismicEruptionsMap extends Component {
     }
   }
 
-  renderSubregionButtons() {
-    const { region } = this.props
-    const subregions = region.get('subregions') || []
-    return subregions.map((sr, idx) => {
-      return <Marker key={idx} position={sr.geometry.coordinates} icon={getCachedSubregionIcon(sr.properties.label, scaffoldUrl(sr))}/>
-    })
-  }
-
   render() {
     const { region, earthquakes, layers } = this.props
     const { boundsChanged, selectedEarthquake } = this.state
@@ -93,7 +81,7 @@ export default class SeismicEruptionsMap extends Component {
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
           <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
-          {this.renderSubregionButtons()}
+          <SubregionButtons subregions={region.get('subregions')}/>
           <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
         </Map>
         <div className='map-controls'>
