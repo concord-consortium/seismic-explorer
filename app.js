@@ -44330,6 +44330,7 @@
 	    value: function handleMoveStart() {
 	      if (!this._ignoreMovestart) {
 	        this.setState({ boundsChanged: true });
+	        console.log(this.refs.map.getLeafletElement().getBounds());
 	      }
 	    }
 	  }, {
@@ -44385,7 +44386,7 @@
 	        { className: 'seismic-eruptions-map' },
 	        _react2.default.createElement(
 	          _reactLeaflet.Map,
-	          { ref: 'map', className: 'map', bounds: bounds, onLeafletMovestart: this.handleMoveStart },
+	          { ref: 'map', className: 'map', bounds: bounds, onLeafletMovestart: this.handleMoveStart, minZoom: 3 },
 	          this.renderBaseLayer(),
 	          layers.get('plates') && _react2.default.createElement(_platesLayer2.default, null),
 	          _react2.default.createElement(_earthquakesCanvasLayer2.default, { earthquakes: earthquakes, earthquakeClick: this.handleEarthquakeClick }),
