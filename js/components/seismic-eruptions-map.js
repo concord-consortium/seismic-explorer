@@ -96,7 +96,7 @@ export default class SeismicEruptionsMap extends Component {
     const canGoBack = regionsHistory.size > 1 // > 1, as the last entry is the current path
     return (
       <div className='seismic-eruptions-map'>
-        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart} minZoom={3}>
+        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
           <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
