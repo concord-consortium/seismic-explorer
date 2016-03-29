@@ -60918,8 +60918,9 @@
 	      transparent: true,
 	      resolution: window.devicePixelRatio,
 	      // Enables drawing buffer preservation, so toDataUrl can be called on the WebGL context.
-	      // It should ensure that the Snapshot app works.
-	      preserveDrawingBuffer: false
+	      // It should ensure that the Shutterbug app (snapshot) works. Alternatively, we could re-render
+	      // Pixi stage on shutterbug-saycheese event.
+	      preserveDrawingBuffer: true
 	    });
 	    this._renderedEarthquakes = new _map2.default();
 	  },
