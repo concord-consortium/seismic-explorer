@@ -34120,9 +34120,11 @@
 	      var _props = this.props;
 	      var params = _props.params;
 	      var requestData = _props.requestData;
+	      var updateRegionsHistory = _props.updateRegionsHistory;
 	      // params.regionPath is provided by react-router.
 
 	      requestData(params.regionPath);
+	      updateRegionsHistory(params.regionPath);
 	    }
 	  }, {
 	    key: 'renderError',
@@ -34153,6 +34155,7 @@
 	      var layers = _props2.layers;
 	      var animationEnabled = _props2.animationEnabled;
 	      var dataFetching = _props2.dataFetching;
+	      var regionsHistory = _props2.regionsHistory;
 	      // 'with-animation' class enables fancy animation of earthquakes when they are hidden or show.
 	      // Enable it only when user started animation using play button, as it's too slow for manual
 	      // filtering using sliders.
@@ -34164,7 +34167,8 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'map-container ' + (animationEnabled ? ' with-animation' : '') },
-	          _react2.default.createElement(_seismicEruptionsMap2.default, { region: region, earthquakes: earthquakes, layers: layers })
+	          _react2.default.createElement(_seismicEruptionsMap2.default, { region: region, regionsHistory: regionsHistory,
+	            earthquakes: earthquakes, layers: layers })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -34196,7 +34200,8 @@
 	    region: state.get('region'),
 	    layers: state.get('layers'),
 	    animationEnabled: state.get('animationEnabled'),
-	    earthquakes: state.get('filteredEarthquakes')
+	    earthquakes: state.get('filteredEarthquakes'),
+	    regionsHistory: state.get('regionsHistory')
 	  };
 	}
 
@@ -35775,7 +35780,8 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.SET_ANIMATION_ENABLED = exports.SET_PLATES_VISIBLE = exports.SET_BASE_LAYER = exports.SET_FILTER = exports.RECEIVE_ERROR = exports.RECEIVE_EARTHQUAKES = exports.RECEIVE_REGION = exports.RECEIVE_DATA = exports.REQUEST_DATA = exports.INVALIDATE_DATA = undefined;
+	exports.SET_ANIMATION_ENABLED = exports.SET_PLATES_VISIBLE = exports.SET_BASE_LAYER = exports.SET_FILTER = exports.RECEIVE_ERROR = exports.RECEIVE_EARTHQUAKES = exports.RECEIVE_REGION = exports.RECEIVE_DATA = exports.REQUEST_DATA = exports.INVALIDATE_DATA = exports.UPDATE_REGIONS_HISTORY = undefined;
+	exports.updateRegionsHistory = updateRegionsHistory;
 	exports.requestData = requestData;
 	exports.invalidateData = invalidateData;
 	exports.setFilter = setFilter;
@@ -35791,6 +35797,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var UPDATE_REGIONS_HISTORY = exports.UPDATE_REGIONS_HISTORY = 'UPDATE_REGIONS_HISTORY';
 	var INVALIDATE_DATA = exports.INVALIDATE_DATA = 'INVALIDATE_DATA';
 	var REQUEST_DATA = exports.REQUEST_DATA = 'REQUEST_DATA';
 	var RECEIVE_DATA = exports.RECEIVE_DATA = 'RECEIVE_DATA';
@@ -35801,6 +35808,13 @@
 	var SET_BASE_LAYER = exports.SET_BASE_LAYER = 'SET_BASE_LAYER';
 	var SET_PLATES_VISIBLE = exports.SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE';
 	var SET_ANIMATION_ENABLED = exports.SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED';
+
+	function updateRegionsHistory(path) {
+	  return {
+	    type: UPDATE_REGIONS_HISTORY,
+	    path: path
+	  };
+	}
 
 	function requestData(path) {
 	  var dataType = arguments.length <= 1 || arguments[1] === undefined ? 'region' : arguments[1];
@@ -44260,6 +44274,8 @@
 
 	var _class;
 
+	exports.goToRegion = goToRegion;
+
 	var _react = __webpack_require__(295);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -44292,6 +44308,11 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function goToRegion(path) {
+	  // This will update ReactRouter and App component will request a new region data.
+	  window.location.hash = '#/' + window.encodeURIComponent(path);
+	}
+
 	var SeismicEruptionsMap = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
 	  (0, _inherits3.default)(SeismicEruptionsMap, _Component);
 
@@ -44307,6 +44328,8 @@
 	    _this.handleMoveStart = _this.handleMoveStart.bind(_this);
 	    _this.handleEarthquakeClick = _this.handleEarthquakeClick.bind(_this);
 	    _this.handleEarthquakePopupClose = _this.handleEarthquakePopupClose.bind(_this);
+	    _this.handleGoUp = _this.handleGoUp.bind(_this);
+	    _this.handleGoHome = _this.handleGoHome.bind(_this);
 	    _this.fitBounds = _this.fitBounds.bind(_this);
 	    return _this;
 	  }
@@ -44330,7 +44353,6 @@
 	    value: function handleMoveStart() {
 	      if (!this._ignoreMovestart) {
 	        this.setState({ boundsChanged: true });
-	        console.log(this.refs.map.getLeafletElement().getBounds());
 	      }
 	    }
 	  }, {
@@ -44342,6 +44364,21 @@
 	    key: 'handleEarthquakePopupClose',
 	    value: function handleEarthquakePopupClose() {
 	      this.setState({ selectedEarthquake: null });
+	    }
+	  }, {
+	    key: 'handleGoUp',
+	    value: function handleGoUp() {
+	      var regionsHistory = this.props.regionsHistory;
+	      // The last entry in history is the current region, so pick the earlier one (-2 index).
+
+	      goToRegion(regionsHistory.get(-2));
+	    }
+	  }, {
+	    key: 'handleGoHome',
+	    value: function handleGoHome() {
+	      var regionsHistory = this.props.regionsHistory;
+
+	      goToRegion(regionsHistory.first());
 	    }
 	  }, {
 	    key: 'fitBounds',
@@ -44376,11 +44413,13 @@
 	      var region = _props.region;
 	      var earthquakes = _props.earthquakes;
 	      var layers = _props.layers;
+	      var regionsHistory = _props.regionsHistory;
 	      var _state = this.state;
 	      var boundsChanged = _state.boundsChanged;
 	      var selectedEarthquake = _state.selectedEarthquake;
 
 	      var bounds = region.get('bounds');
+	      var canGoBack = regionsHistory.size > 1; // > 1, as the last entry is the current path
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'seismic-eruptions-map' },
@@ -44390,12 +44429,26 @@
 	          this.renderBaseLayer(),
 	          layers.get('plates') && _react2.default.createElement(_platesLayer2.default, null),
 	          _react2.default.createElement(_earthquakesCanvasLayer2.default, { earthquakes: earthquakes, earthquakeClick: this.handleEarthquakeClick }),
-	          _react2.default.createElement(_subregionButtons2.default, { subregions: region.get('subregions') }),
+	          _react2.default.createElement(_subregionButtons2.default, { subregions: region.get('subregions'), onSubregionClick: goToRegion }),
 	          _react2.default.createElement(_earthquakePopup2.default, { earthquake: selectedEarthquake, onPopupClose: this.handleEarthquakePopupClose })
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'map-controls' },
+	          { className: 'map-controls-top' },
+	          canGoBack && _react2.default.createElement(
+	            'div',
+	            { className: 'map-button', onClick: this.handleGoHome },
+	            _react2.default.createElement('i', { className: 'fa fa-home' })
+	          ),
+	          canGoBack && _react2.default.createElement(
+	            'div',
+	            { className: 'map-button', onClick: this.handleGoUp },
+	            _react2.default.createElement('i', { className: 'fa fa-arrow-up' })
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'map-controls-bottom' },
 	          boundsChanged && _react2.default.createElement(
 	            'div',
 	            { className: 'map-button', onClick: this.fitBounds },
@@ -91180,12 +91233,8 @@
 
 	__webpack_require__(1037);
 
-	function buttonMarkup(label, href) {
-	  return '<a class="cc-button" href=' + href + '>' + label + '</a>';
-	}
-
-	function subregionIcon(label, href) {
-	  return new _leaflet.DivIcon({ className: 'subregion-icon', html: buttonMarkup(label, href) });
+	function subregionIcon(label) {
+	  return new _leaflet.DivIcon({ className: 'subregion-icon', html: '<a class="cc-button">' + label + '</a>' });
 	}
 
 	function invisibleIcon() {
@@ -91875,10 +91924,6 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function scaffoldUrl(subregion) {
-	  return '#' + window.encodeURIComponent(subregion.properties.scaffold);
-	}
-
 	var SubregionButtons = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
 	  (0, _inherits3.default)(SubregionButtons, _Component);
 
@@ -91893,12 +91938,18 @@
 	      var _props = this.props;
 	      var map = _props.map;
 	      var subregions = _props.subregions;
+	      var onSubregionClick = _props.onSubregionClick;
 
 	      return _react2.default.createElement(
 	        _reactLeaflet.LayerGroup,
 	        { map: map },
 	        subregions.map(function (sr, idx) {
-	          return _react2.default.createElement(_reactLeaflet.Marker, { key: idx, position: sr.geometry.coordinates, icon: (0, _icons.getCachedSubregionIcon)(sr.properties.label, scaffoldUrl(sr)) });
+	          return _react2.default.createElement(_reactLeaflet.Marker, { key: idx, position: sr.geometry.coordinates,
+	            icon: (0, _icons.getCachedSubregionIcon)(sr.properties.label),
+	            onClick: function onClick() {
+	              return onSubregionClick(sr.properties.scaffold);
+	            }
+	          });
 	        })
 	      );
 	    }
@@ -92000,7 +92051,7 @@
 
 
 	// module
-	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .map-controls {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n}\n.seismic-eruptions-map .map-controls .map-button {\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n}\n.seismic-eruptions-map .map-controls .map-button:hover {\n  background: #f4f4f4;\n}\n", ""]);
+	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .map-controls-top {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n}\n.seismic-eruptions-map .map-controls-bottom {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n}\n.seismic-eruptions-map .map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin-bottom: 4px;\n}\n.seismic-eruptions-map .map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n", ""]);
 
 	// exports
 
@@ -92656,6 +92707,25 @@
 	  }
 	}
 
+	function regionsHistory() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? (0, _immutable.List)() : arguments[0];
+	  var action = arguments[1];
+
+	  switch (action.type) {
+	    case _actions.UPDATE_REGIONS_HISTORY:
+	      var indexOfPath = state.indexOf(action.path);
+	      if (indexOfPath !== -1) {
+	        // If path is in the history, remove all the newer paths (we're going back to the prev region).
+	        return state.slice(0, indexOfPath + 1);
+	      } else {
+	        // Otherwise, just append path to the history (we're going to the subregion).
+	        return state.push(action.path);
+	      }
+	    default:
+	      return state;
+	  }
+	}
+
 	var INITIAL_STATE = (0, _immutable.Map)({
 	  filteredEarthquakes: []
 	});
@@ -92669,7 +92739,7 @@
 	  var newFilters = filters(oldFilters, action);
 	  // We can use simple comparison as we use ImmutableJS structures.
 	  var filtersOrDataUpdated = oldData !== newData || oldFilters !== newFilters;
-	  return state.set('dataStatus', dataStatus(state.get('dataStatus'), action)).set('region', region(state.get('region'), action)).set('layers', layers(state.get('layers'), action)).set('animationEnabled', animationEnabled(state.get('animationEnabled'), action)).set('data', newData).set('filters', newFilters)
+	  return state.set('dataStatus', dataStatus(state.get('dataStatus'), action)).set('region', region(state.get('region'), action)).set('layers', layers(state.get('layers'), action)).set('animationEnabled', animationEnabled(state.get('animationEnabled'), action)).set('regionsHistory', regionsHistory(state.get('regionsHistory'), action)).set('data', newData).set('filters', newFilters)
 	  // Update filtered earthquakes only if data or filters have been changed.
 	  // Otherwise, reuse old data. It ensures that we won't update React components when it's not needed.
 	  .set('filteredEarthquakes', newData && filtersOrDataUpdated ? calcEarthquakes(newData, newFilters) : state.get('filteredEarthquakes'));
