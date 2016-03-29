@@ -44425,7 +44425,7 @@
 	        { className: 'seismic-eruptions-map' },
 	        _react2.default.createElement(
 	          _reactLeaflet.Map,
-	          { ref: 'map', className: 'map', bounds: bounds, onLeafletMovestart: this.handleMoveStart, minZoom: 3 },
+	          { ref: 'map', className: 'map', bounds: bounds, onLeafletMovestart: this.handleMoveStart },
 	          this.renderBaseLayer(),
 	          layers.get('plates') && _react2.default.createElement(_platesLayer2.default, null),
 	          _react2.default.createElement(_earthquakesCanvasLayer2.default, { earthquakes: earthquakes, earthquakeClick: this.handleEarthquakeClick }),
