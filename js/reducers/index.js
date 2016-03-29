@@ -1,7 +1,7 @@
-import Immutable, { Map } from 'immutable'
+import Immutable, { Map, List } from 'immutable'
 import {
   REQUEST_DATA, RECEIVE_DATA, RECEIVE_EARTHQUAKES, RECEIVE_REGION, RECEIVE_ERROR, INVALIDATE_DATA,
-  SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED
+  SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, UPDATE_REGIONS_HISTORY
 } from '../actions'
 
 function dataStatus(state = Map(), action) {
@@ -108,6 +108,22 @@ function animationEnabled(state = false, action) {
   }
 }
 
+function regionsHistory(state = List(), action) {
+  switch (action.type) {
+    case UPDATE_REGIONS_HISTORY:
+      const indexOfPath = state.indexOf(action.path)
+      if (indexOfPath !== -1) {
+        // If path is in the history, remove all the newer paths (we're going back to the prev region).
+        return state.slice(0, indexOfPath + 1)
+      } else {
+        // Otherwise, just append path to the history (we're going to the subregion).
+        return state.push(action.path)
+      }
+    default:
+      return state;
+  }
+}
+
 const INITIAL_STATE = Map({
   filteredEarthquakes: []
 })
@@ -122,6 +138,7 @@ export default function reducer(state = INITIAL_STATE, action) {
               .set('region', region(state.get('region'), action))
               .set('layers', layers(state.get('layers'), action))
               .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
+              .set('regionsHistory', regionsHistory(state.get('regionsHistory'), action))
               .set('data', newData)
               .set('filters', newFilters)
               // Update filtered earthquakes only if data or filters have been changed.

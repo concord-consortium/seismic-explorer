@@ -9,6 +9,11 @@ import SubregionButtons from './subregion-buttons'
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
 
+export function goToRegion(path) {
+  // This will update ReactRouter and App component will request a new region data.
+  window.location.hash = '#/' +  window.encodeURIComponent(path)
+}
+
 @pureRender
 export default class SeismicEruptionsMap extends Component {
   constructor(props) {
@@ -20,6 +25,8 @@ export default class SeismicEruptionsMap extends Component {
     this.handleMoveStart = this.handleMoveStart.bind(this)
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
+    this.handleGoUp = this.handleGoUp.bind(this)
+    this.handleGoHome = this.handleGoHome.bind(this)
     this.fitBounds = this.fitBounds.bind(this)
   }
 
@@ -49,6 +56,17 @@ export default class SeismicEruptionsMap extends Component {
     this.setState({selectedEarthquake: null})
   }
 
+  handleGoUp() {
+    const { regionsHistory } = this.props
+    // The last entry in history is the current region, so pick the earlier one (-2 index).
+    goToRegion(regionsHistory.get(-2))
+  }
+
+  handleGoHome() {
+    const { regionsHistory } = this.props
+    goToRegion(regionsHistory.first())
+  }
+
   fitBounds() {
     const { region } = this.props
     const bounds = region.get('bounds')
@@ -72,19 +90,24 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   render() {
-    const { region, earthquakes, layers } = this.props
+    const { region, earthquakes, layers, regionsHistory } = this.props
     const { boundsChanged, selectedEarthquake } = this.state
     const bounds = region.get('bounds')
+    const canGoBack = regionsHistory.size > 1 // > 1, as the last entry is the current path
     return (
       <div className='seismic-eruptions-map'>
-        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
+        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart} minZoom={3}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
           <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
-          <SubregionButtons subregions={region.get('subregions')}/>
+          <SubregionButtons subregions={region.get('subregions')} onSubregionClick={goToRegion}/>
           <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
         </Map>
-        <div className='map-controls'>
+        <div className='map-controls-top'>
+          {canGoBack && <div className='map-button' onClick={this.handleGoHome}><i className='fa fa-home'/></div>}
+          {canGoBack && <div className='map-button' onClick={this.handleGoUp}><i className='fa fa-arrow-up'/></div>}
+        </div>
+        <div className='map-controls-bottom'>
           {boundsChanged && <div className='map-button' onClick={this.fitBounds}><i className='fa fa-map-marker'/></div>}
         </div>
       </div>

@@ -23,9 +23,10 @@ class App extends Component {
   }
 
   updateRegion() {
-    const { params, requestData } = this.props
+    const { params, requestData, updateRegionsHistory } = this.props
     // params.regionPath is provided by react-router.
     requestData(params.regionPath)
+    updateRegionsHistory(params.regionPath)
   }
 
   renderError() {
@@ -39,7 +40,7 @@ class App extends Component {
   }
 
   renderApp() {
-    const { region, earthquakes, layers, animationEnabled, dataFetching } = this.props
+    const { region, earthquakes, layers, animationEnabled, dataFetching, regionsHistory } = this.props
     // 'with-animation' class enables fancy animation of earthquakes when they are hidden or show.
     // Enable it only when user started animation using play button, as it's too slow for manual
     // filtering using sliders.
@@ -47,7 +48,8 @@ class App extends Component {
       <div>
         {dataFetching && <LoadingIcon/>}
         <div className={`map-container ${animationEnabled ? ' with-animation' : ''}`}>
-          <SeismicEruptionsMap region={region} earthquakes={earthquakes} layers={layers}/>
+          <SeismicEruptionsMap region={region} regionsHistory={regionsHistory}
+                               earthquakes={earthquakes} layers={layers}/>
         </div>
         <div className='controls-container'>
           <Controls/>
@@ -74,7 +76,8 @@ function mapStateToProps(state) {
     region: state.get('region'),
     layers: state.get('layers'),
     animationEnabled: state.get('animationEnabled'),
-    earthquakes: state.get('filteredEarthquakes')
+    earthquakes: state.get('filteredEarthquakes'),
+    regionsHistory: state.get('regionsHistory')
   }
 }
 

@@ -6,25 +6,33 @@
     height: 100%;
   }
 
-  .map-controls {
+  .map-controls-top {
+    position: absolute;
+    left: 10px;
+    top: 80px;
+  }
+
+  .map-controls-bottom {
     position: absolute;
     left: 10px;
     bottom: 10px;
+  }
 
+  .map-button {
+    color: #444;
+    background: #fff;
+    border-radius: 4px;
+    width: 26px;
+    height: 26px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+    cursor: pointer;
+    padding-top: 4px;
+    text-align: center;
+    margin-bottom: 4px;
 
-    .map-button {
-      background: #fff;
-      border-radius: 4px;
-      width: 26px;
-      height: 26px;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-      cursor: pointer;
-      padding-top: 4px;
-      text-align: center;
-
-      &:hover {
-        background: #f4f4f4;
-      }
+    &:hover {
+      background: #f4f4f4;
+      color: #000;
     }
   }
 }

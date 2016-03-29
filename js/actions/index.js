@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch'
 import { fetchJSON } from '../api'
 
+export const UPDATE_REGIONS_HISTORY = 'UPDATE_REGIONS_HISTORY'
 export const INVALIDATE_DATA = 'INVALIDATE_DATA'
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
@@ -11,6 +12,13 @@ export const SET_FILTER = 'SET_FILTER'
 export const SET_BASE_LAYER = 'SET_BASE_LAYER'
 export const SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE'
 export const SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED'
+
+export function updateRegionsHistory(path) {
+  return {
+    type: UPDATE_REGIONS_HISTORY,
+    path: path
+  }
+}
 
 export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
   return dispatch => {
