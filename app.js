@@ -34102,6 +34102,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	window.$ = _jquery2.default;
+	window.jQuery = _jquery2.default;
 
 	var CLASS_NAME = 'seismic-eruptions-app';
 
