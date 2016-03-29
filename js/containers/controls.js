@@ -13,8 +13,8 @@ import '../../css/slider.less'
 
 function sliderDateFormatter(value) {
   const date = new Date(value)
-
-  return `${date.getDay()}/${date.getMonth()}/${date.getFullYear()}`
+  // .getMoth() returns [0, 11] range.
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
 }
 
 function toggleFullscreen() {
