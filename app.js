@@ -60916,7 +60916,10 @@
 	    this._renderer = _pixi2.default.autoDetectRenderer(0, 0, {
 	      view: this._canvas,
 	      transparent: true,
-	      resolution: window.devicePixelRatio
+	      resolution: window.devicePixelRatio,
+	      // Enables drawing buffer preservation, so toDataUrl can be called on the WebGL context.
+	      // It should ensure that the Snapshot app works.
+	      preserveDrawingBuffer: true
 	    });
 	    this._renderedEarthquakes = new _map2.default();
 	  },
@@ -92207,7 +92210,7 @@
 
 
 	// module
-	exports.push([module.id, ".seismic-eruptions-app {\n  font: 16px verdana, helvetica, sans-serif;\n  height: 100%;\n}\n.seismic-eruptions-app .map-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 80px;\n}\n.seismic-eruptions-app .controls-container {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 80px;\n}\n.seismic-eruptions-app .leaflet-control-attribution {\n  display: none;\n}\n.seismic-eruptions-app .error {\n  text-align: center;\n}\n.seismic-eruptions-app .error h1 {\n  margin-top: 5em;\n}\n", ""]);
+	exports.push([module.id, ".seismic-eruptions-app {\n  font: 16px verdana, helvetica, sans-serif;\n  height: 100%;\n}\n.seismic-eruptions-app .map-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 80px;\n}\n.seismic-eruptions-app .controls-container {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 80px;\n  background: #fff;\n}\n.seismic-eruptions-app .leaflet-control-attribution {\n  display: none;\n}\n.seismic-eruptions-app .error {\n  text-align: center;\n}\n.seismic-eruptions-app .error h1 {\n  margin-top: 5em;\n}\n", ""]);
 
 	// exports
 
