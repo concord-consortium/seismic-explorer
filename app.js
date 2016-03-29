@@ -34081,11 +34081,11 @@
 
 	var _seismicEruptionsMap2 = _interopRequireDefault(_seismicEruptionsMap);
 
-	var _loadingIcon = __webpack_require__(1048);
+	var _loadingIcon = __webpack_require__(1049);
 
 	var _loadingIcon2 = _interopRequireDefault(_loadingIcon);
 
-	var _importsJQueryJqueryShutterbug = __webpack_require__(1051);
+	var _importsJQueryJqueryShutterbug = __webpack_require__(1052);
 
 	var _importsJQueryJqueryShutterbug2 = _interopRequireDefault(_importsJQueryJqueryShutterbug);
 
@@ -44303,21 +44303,21 @@
 
 	var _earthquakesCanvasLayer2 = _interopRequireDefault(_earthquakesCanvasLayer);
 
-	var _earthquakePopup = __webpack_require__(1035);
+	var _earthquakePopup = __webpack_require__(1036);
 
 	var _earthquakePopup2 = _interopRequireDefault(_earthquakePopup);
 
-	var _platesLayer = __webpack_require__(1039);
+	var _platesLayer = __webpack_require__(1040);
 
 	var _platesLayer2 = _interopRequireDefault(_platesLayer);
 
-	var _subregionButtons = __webpack_require__(1041);
+	var _subregionButtons = __webpack_require__(1042);
 
 	var _subregionButtons2 = _interopRequireDefault(_subregionButtons);
 
-	__webpack_require__(1042);
+	__webpack_require__(1043);
 
-	__webpack_require__(1046);
+	__webpack_require__(1047);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -60913,6 +60913,10 @@
 
 	var _earthquakeSprite2 = _interopRequireDefault(_earthquakeSprite);
 
+	var _jquery = __webpack_require__(1035);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var EarthquakesCanvasLayer = exports.EarthquakesCanvasLayer = _canvasLayer.CanvasLayer.extend({
@@ -60923,19 +60927,23 @@
 	  },
 
 	  _initCanvas: function _initCanvas() {
+	    var _this = this;
+
 	    _canvasLayer.CanvasLayer.prototype._initCanvas.call(this);
 	    // Init PIXI too.
 	    this._container = new _pixi2.default.Container();
 	    this._renderer = _pixi2.default.autoDetectRenderer(0, 0, {
 	      view: this._canvas,
 	      transparent: true,
-	      resolution: window.devicePixelRatio,
-	      // Enables drawing buffer preservation, so toDataUrl can be called on the WebGL context.
-	      // It should ensure that the Shutterbug app (snapshot) works. Alternatively, we could re-render
-	      // Pixi stage on shutterbug-saycheese event.
-	      preserveDrawingBuffer: true
+	      resolution: window.devicePixelRatio
 	    });
 	    this._renderedEarthquakes = new _map2.default();
+
+	    // Handle snapshots using Shutterbug.
+	    // We need the rendered image to be still be in the WebGL drawing buffer where Shutterbug can see it.
+	    (0, _jquery2.default)(window).on('shutterbug-saycheese', function () {
+	      return _this.draw();
+	    });
 	  },
 
 	  setEarthquakes: function setEarthquakes(earthquakes) {
@@ -60949,7 +60957,7 @@
 	  },
 
 	  _processNewEarthquakes: function _processNewEarthquakes() {
-	    var _this = this;
+	    var _this2 = this;
 
 	    if (!this._earthquakesToProcess) return;
 	    // First, mark all the existing sprites as invalid (to be removed).
@@ -60959,29 +60967,29 @@
 	    // Process new earthquakes array. Create missing sprites
 	    // and mark all earthquakes from the new array as valid (_toRemove = false).
 	    this._earthquakesToProcess.forEach(function (e) {
-	      if (!_this._renderedEarthquakes.has(e.id)) {
-	        _this._addEarthquake(e);
+	      if (!_this2._renderedEarthquakes.has(e.id)) {
+	        _this2._addEarthquake(e);
 	      }
-	      var eqSprite = _this._renderedEarthquakes.get(e.id);
+	      var eqSprite = _this2._renderedEarthquakes.get(e.id);
 	      eqSprite.targetVisibility = e.visible ? 1 : 0;
 	      eqSprite._toRemove = false;
 	    });
 	    // Finally, remove sprites that don't have corresponding objects in the new earthquakes array.
 	    this._renderedEarthquakes.forEach(function (eqSprite, id) {
 	      if (eqSprite._toRemove) {
-	        _this._container.removeChild(eqSprite);
-	        _this._renderedEarthquakes.delete(id);
+	        _this2._container.removeChild(eqSprite);
+	        _this2._renderedEarthquakes.delete(id);
 	      }
 	    });
 	    this._earthquakesToProcess = null;
 	  },
 
 	  _addEarthquake: function _addEarthquake(eq) {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    var eqSprite = new _earthquakeSprite2.default(eq.geometry.coordinates[2], eq.properties.mag, eq.geometry.coordinates);
 	    eqSprite.onClick(function (event) {
-	      return _this2._earthquakeClickHandler(event, eq);
+	      return _this3._earthquakeClickHandler(event, eq);
 	    });
 	    this._container.addChild(eqSprite);
 	    this._renderedEarthquakes.set(eq.id, eqSprite);
@@ -61016,7 +61024,7 @@
 	  },
 
 	  draw: function draw() {
-	    var _this3 = this;
+	    var _this4 = this;
 
 	    var timestamp = performance.now();
 	    var progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0;
@@ -61025,7 +61033,7 @@
 	    this._renderedEarthquakes.forEach(function (eqSprite) {
 	      // Recalculate position only if it's necessary (expensive).
 	      if (!eqSprite._positionValid) {
-	        var point = _this3.latLngToPoint(eqSprite.coordinates);
+	        var point = _this4.latLngToPoint(eqSprite.coordinates);
 	        eqSprite.position.x = point.x;
 	        eqSprite.position.y = point.y;
 	        eqSprite._positionValid = true;
@@ -91108,1150 +91116,6 @@
 /* 1035 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _getPrototypeOf = __webpack_require__(534);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(560);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(561);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(565);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(608);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _class;
-
-	var _react = __webpack_require__(295);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _pureRenderDecorator = __webpack_require__(616);
-
-	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
-
-	var _reactLeaflet = __webpack_require__(713);
-
-	var _icons = __webpack_require__(1036);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var EarthquakePopup = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
-	  (0, _inherits3.default)(EarthquakePopup, _Component);
-
-	  function EarthquakePopup() {
-	    (0, _classCallCheck3.default)(this, EarthquakePopup);
-	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(EarthquakePopup).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(EarthquakePopup, [{
-	    key: 'componentDidUpdate',
-	    value: function componentDidUpdate(prevProps) {
-	      if (prevProps.earthquake !== this.props.earthquake) {
-	        this.refs.marker.getLeafletElement().openPopup();
-	      }
-	    }
-
-	    // For some reason it's impossible to create popup without marker.
-	    // So, this component renders invisible marker with popup instead.
-
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var map = _props.map;
-	      var earthquake = _props.earthquake;
-	      var onPopupClose = _props.onPopupClose;
-
-	      var earthquakePos = earthquake ? earthquake.geometry.coordinates : [0, 0];
-	      return _react2.default.createElement(
-	        _reactLeaflet.Marker,
-	        { ref: 'marker', map: map, position: earthquakePos, icon: (0, _icons.getCachedInvisibleIcon)(), onLeafletPopupclose: onPopupClose },
-	        _react2.default.createElement(
-	          _reactLeaflet.Popup,
-	          { closeOnClick: false },
-	          earthquake && _react2.default.createElement(
-	            'div',
-	            null,
-	            'Place: ',
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              earthquake.properties.place
-	            ),
-	            _react2.default.createElement('br', null),
-	            'Magnitude: ',
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              earthquake.properties.mag.toFixed(1)
-	            ),
-	            _react2.default.createElement('br', null),
-	            'Date: ',
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              date(earthquake.properties.time)
-	            ),
-	            _react2.default.createElement('br', null),
-	            'Depth: ',
-	            _react2.default.createElement(
-	              'b',
-	              null,
-	              earthquake.geometry.coordinates[2],
-	              ' km'
-	            )
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return EarthquakePopup;
-	}(_react.Component)) || _class;
-
-	exports.default = EarthquakePopup;
-
-
-	function date(timestamp) {
-	  var d = new Date(timestamp);
-	  return d.toLocaleString ? d.toLocaleString() : d.toString();
-	}
-
-/***/ },
-/* 1036 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.subregionIcon = subregionIcon;
-	exports.invisibleIcon = invisibleIcon;
-	exports.getCachedSubregionIcon = getCachedSubregionIcon;
-	exports.getCachedInvisibleIcon = getCachedInvisibleIcon;
-
-	var _leaflet = __webpack_require__(714);
-
-	__webpack_require__(1037);
-
-	function subregionIcon(label) {
-	  return new _leaflet.DivIcon({ className: 'subregion-icon', html: '<a class="cc-button">' + label + '</a>' });
-	}
-
-	function invisibleIcon() {
-	  return new _leaflet.DivIcon({ className: 'invisible-icon' });
-	}
-
-	// Cache icons. First, it's just faster. Second, it prevents us from unnecessary re-rendering and buttons blinking.
-	var iconsCache = {};
-
-	function getCachedSubregionIcon(label, url) {
-	  var iconKey = label + url;
-	  if (!iconsCache[iconKey]) iconsCache[iconKey] = subregionIcon(label, url);
-	  return iconsCache[iconKey];
-	}
-
-	function getCachedInvisibleIcon() {
-	  var iconKey = 'invisible-icon';
-	  if (!iconsCache[iconKey]) iconsCache[iconKey] = invisibleIcon();
-	  return iconsCache[iconKey];
-	}
-
-/***/ },
-/* 1037 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(1038);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(647)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./custom-leaflet-icons.less", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./custom-leaflet-icons.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 1038 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(646)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".subregion-icon {\n  width: auto !important;\n  height: auto !important;\n}\n.subregion-icon .cc-button {\n  font-size: 1.2em;\n  white-space: nowrap;\n  color: #fff;\n  cursor: pointer;\n  display: inline-block;\n  font-weight: normal;\n  margin: 0;\n  padding: .3em .6em .2em .6em;\n  text-align: center;\n  text-decoration: none;\n  border-radius: .1875em;\n  box-shadow: 0 3px 0 #e16a3e;\n  background: #eb8723;\n  background: -webkit-linear-gradient(top, #f4b626 0%, #eb8723 100%);\n  background: linear-gradient(top, #f4b626 0%, #eb8723 100%);\n  opacity: 0.6;\n}\n.subregion-icon .cc-button:hover {\n  opacity: 1;\n}\n.invisible-icon {\n  display: none !important;\n}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 1039 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _getPrototypeOf = __webpack_require__(534);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(560);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(561);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(565);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _get2 = __webpack_require__(885);
-
-	var _get3 = _interopRequireDefault(_get2);
-
-	var _inherits2 = __webpack_require__(608);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _class;
-	// Import plugin using imports-loader.
-
-
-	var _react = __webpack_require__(295);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _pureRenderDecorator = __webpack_require__(616);
-
-	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
-
-	var _reactLeaflet = __webpack_require__(713);
-
-	__webpack_require__(1040);
-
-	var _leaflet = __webpack_require__(714);
-
-	var _leaflet2 = _interopRequireDefault(_leaflet);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var _cachedKML = void 0;
-	function getKML() {
-	  if (!_cachedKML) {
-	    _cachedKML = new _leaflet2.default.KML('plates.kml', { async: true });
-	  }
-	  return _cachedKML;
-	}
-
-	var PlatesLayer = (0, _pureRenderDecorator2.default)(_class = function (_LayerGroup) {
-	  (0, _inherits3.default)(PlatesLayer, _LayerGroup);
-
-	  function PlatesLayer(props) {
-	    (0, _classCallCheck3.default)(this, PlatesLayer);
-	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(PlatesLayer).call(this, props));
-	  }
-
-	  (0, _createClass3.default)(PlatesLayer, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      (0, _get3.default)((0, _getPrototypeOf2.default)(PlatesLayer.prototype), 'componentDidMount', this).call(this);
-	      this.leafletElement.addLayer(getKML());
-	    }
-	  }]);
-	  return PlatesLayer;
-	}(_reactLeaflet.LayerGroup)) || _class;
-
-	exports.default = PlatesLayer;
-
-/***/ },
-/* 1040 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*** IMPORTS FROM imports-loader ***/
-	var L = __webpack_require__(714);
-
-	L.KML = L.FeatureGroup.extend({
-		options: {
-			async: true
-		},
-
-		initialize: function (kml, options) {
-			L.Util.setOptions(this, options);
-			this._kml = kml;
-			this._layers = {};
-
-			if (kml) {
-				this.addKML(kml, options, this.options.async);
-			}
-		},
-
-		loadXML: function (url, cb, options, async) {
-			if (async === undefined) async = this.options.async;
-			if (options === undefined) options = this.options;
-
-			var req = new window.XMLHttpRequest();
-			
-			// Check for IE8 and IE9 Fix Cors for those browsers
-			if (req.withCredentials === undefined && typeof window.XDomainRequest !== 'undefined') {
-				var xdr = new window.XDomainRequest();
-				xdr.open('GET', url, async);
-				xdr.onprogress = function () { };
-				xdr.ontimeout = function () { };
-				xdr.onerror = function () { };
-				xdr.onload = function () {
-					if (xdr.responseText) {
-						var xml = new window.ActiveXObject('Microsoft.XMLDOM');
-						xml.loadXML(xdr.responseText);
-						cb(xml, options);
-					}
-				};
-				setTimeout(function () { xdr.send(); }, 0);
-			} else {
-				req.open('GET', url, async);
-				req.setRequestHeader('Accept', 'application/vnd.google-earth.kml+xml');
-				try {
-					req.overrideMimeType('text/xml'); // unsupported by IE
-				} catch (e) { }
-				req.onreadystatechange = function () {
-					if (req.readyState !== 4) return;
-					if (req.status === 200) cb(req.responseXML, options);
-				};
-				req.send(null);
-			}
-		},
-
-		addKML: function (url, options, async) {
-			var _this = this;
-			var cb = function (kml) { _this._addKML(kml); };
-			this.loadXML(url, cb, options, async);
-		},
-
-		_addKML: function (xml) {
-			var layers = L.KML.parseKML(xml);
-			if (!layers || !layers.length) return;
-			for (var i = 0; i < layers.length; i++) {
-				this.fire('addlayer', {
-					layer: layers[i]
-				});
-				this.addLayer(layers[i]);
-			}
-			this.latLngs = L.KML.getLatLngs(xml);
-			this.fire('loaded');
-		},
-
-		latLngs: []
-	});
-
-	L.Util.extend(L.KML, {
-
-		parseKML: function (xml) {
-			var style = this.parseStyles(xml);
-			this.parseStyleMap(xml, style);
-			var el = xml.getElementsByTagName('Folder');
-			var layers = [], l;
-			for (var i = 0; i < el.length; i++) {
-				if (!this._check_folder(el[i])) { continue; }
-				l = this.parseFolder(el[i], style);
-				if (l) { layers.push(l); }
-			}
-			el = xml.getElementsByTagName('Placemark');
-			for (var j = 0; j < el.length; j++) {
-				if (!this._check_folder(el[j])) { continue; }
-				l = this.parsePlacemark(el[j], xml, style);
-				if (l) { layers.push(l); }
-			}
-			el = xml.getElementsByTagName('GroundOverlay');
-			for (var k = 0; k < el.length; k++) {
-				l = this.parseGroundOverlay(el[k]);
-				if (l) { layers.push(l); }
-			}
-			return layers;
-		},
-
-		// Return false if e's first parent Folder is not [folder]
-		// - returns true if no parent Folders
-		_check_folder: function (e, folder) {
-			e = e.parentNode;
-			while (e && e.tagName !== 'Folder')
-			{
-				e = e.parentNode;
-			}
-			return !e || e === folder;
-		},
-
-		parseStyles: function (xml) {
-			var styles = {};
-			var sl = xml.getElementsByTagName('Style');
-			for (var i=0, len=sl.length; i<len; i++) {
-				var style = this.parseStyle(sl[i]);
-				if (style) {
-					var styleName = '#' + style.id;
-					styles[styleName] = style;
-				}
-			}
-			return styles;
-		},
-
-		parseStyle: function (xml) {
-			var style = {}, poptions = {}, ioptions = {}, el, id;
-
-			var attributes = {color: true, width: true, Icon: true, href: true, hotSpot: true};
-
-			function _parse (xml) {
-				var options = {};
-				for (var i = 0; i < xml.childNodes.length; i++) {
-					var e = xml.childNodes[i];
-					var key = e.tagName;
-					if (!attributes[key]) { continue; }
-					if (key === 'hotSpot')
-					{
-						for (var j = 0; j < e.attributes.length; j++) {
-							options[e.attributes[j].name] = e.attributes[j].nodeValue;
-						}
-					} else {
-						var value = e.childNodes[0].nodeValue;
-						if (key === 'color') {
-							options.opacity = parseInt(value.substring(0, 2), 16) / 255.0;
-							options.color = '#' + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
-						} else if (key === 'width') {
-							options.weight = value;
-						} else if (key === 'Icon') {
-							ioptions = _parse(e);
-							if (ioptions.href) { options.href = ioptions.href; }
-						} else if (key === 'href') {
-							options.href = value;
-						}
-					}
-				}
-				return options;
-			}
-
-			el = xml.getElementsByTagName('LineStyle');
-			if (el && el[0]) { style = _parse(el[0]); }
-			el = xml.getElementsByTagName('PolyStyle');
-			if (el && el[0]) { poptions = _parse(el[0]); }
-			if (poptions.color) { style.fillColor = poptions.color; }
-			if (poptions.opacity) { style.fillOpacity = poptions.opacity; }
-			el = xml.getElementsByTagName('IconStyle');
-			if (el && el[0]) { ioptions = _parse(el[0]); }
-			if (ioptions.href) {
-				style.icon = new L.KMLIcon({
-					iconUrl: ioptions.href,
-					shadowUrl: null,
-					anchorRef: {x: ioptions.x, y: ioptions.y},
-					anchorType:	{x: ioptions.xunits, y: ioptions.yunits}
-				});
-			}
-			
-			id = xml.getAttribute('id');
-			if (id && style) {
-				style.id = id;
-			}
-			
-			return style;
-		},
-		
-		parseStyleMap: function (xml, existingStyles) {
-			var sl = xml.getElementsByTagName('StyleMap');
-			
-			for (var i = 0; i < sl.length; i++) {
-				var e = sl[i], el;
-				var smKey, smStyleUrl;
-				
-				el = e.getElementsByTagName('key');
-				if (el && el[0]) { smKey = el[0].textContent; }
-				el = e.getElementsByTagName('styleUrl');
-				if (el && el[0]) { smStyleUrl = el[0].textContent; }
-				
-				if (smKey === 'normal')
-				{
-					existingStyles['#' + e.getAttribute('id')] = existingStyles[smStyleUrl];
-				}
-			}
-			
-			return;
-		},
-
-		parseFolder: function (xml, style) {
-			var el, layers = [], l;
-			el = xml.getElementsByTagName('Folder');
-			for (var i = 0; i < el.length; i++) {
-				if (!this._check_folder(el[i], xml)) { continue; }
-				l = this.parseFolder(el[i], style);
-				if (l) { layers.push(l); }
-			}
-			el = xml.getElementsByTagName('Placemark');
-			for (var j = 0; j < el.length; j++) {
-				if (!this._check_folder(el[j], xml)) { continue; }
-				l = this.parsePlacemark(el[j], xml, style);
-				if (l) { layers.push(l); }
-			}
-			el = xml.getElementsByTagName('GroundOverlay');
-			for (var k = 0; k < el.length; k++) {
-				if (!this._check_folder(el[k], xml)) { continue; }
-				l = this.parseGroundOverlay(el[k]);
-				if (l) { layers.push(l); }
-			}
-			if (!layers.length) { return; }
-			if (layers.length === 1) { return layers[0]; }
-			return new L.FeatureGroup(layers);
-		},
-
-		parsePlacemark: function (place, xml, style, options) {
-			var h, i, j, k, el, il, opts = options || {};
-
-			el = place.getElementsByTagName('styleUrl');
-			for (i = 0; i < el.length; i++) {
-				var url = el[i].childNodes[0].nodeValue;
-				for (var a in style[url]) {
-					opts[a] = style[url][a];
-				}
-			}
-			
-			il = place.getElementsByTagName('Style')[0];
-			if (il) {
-				var inlineStyle = this.parseStyle(place);
-				if (inlineStyle) {
-					for (k in inlineStyle) {
-						opts[k] = inlineStyle[k];
-					}
-				}
-			}
-
-			var multi = ['MultiGeometry', 'MultiTrack', 'gx:MultiTrack'];
-			for (h in multi) {
-				el = place.getElementsByTagName(multi[h]);
-				for (i = 0; i < el.length; i++) {
-					return this.parsePlacemark(el[i], xml, style, opts);
-				}
-			}
-			
-			var layers = [];
-
-			var parse = ['LineString', 'Polygon', 'Point', 'Track', 'gx:Track'];
-			for (j in parse) {
-				var tag = parse[j];
-				el = place.getElementsByTagName(tag);
-				for (i = 0; i < el.length; i++) {
-					var l = this['parse' + tag.replace(/gx:/, '')](el[i], xml, opts);
-					if (l) { layers.push(l); }
-				}
-			}
-
-			if (!layers.length) {
-				return;
-			}
-			var layer = layers[0];
-			if (layers.length > 1) {
-				layer = new L.FeatureGroup(layers);
-			}
-
-			var name, descr = '';
-			el = place.getElementsByTagName('name');
-			if (el.length && el[0].childNodes.length) {
-				name = el[0].childNodes[0].nodeValue;
-			}
-			el = place.getElementsByTagName('description');
-			for (i = 0; i < el.length; i++) {
-				for (j = 0; j < el[i].childNodes.length; j++) {
-					descr = descr + el[i].childNodes[j].nodeValue;
-				}
-			}
-
-			if (name) {
-				layer.on('add', function () {
-					layer.bindPopup('<h2>' + name + '</h2>' + descr);
-				});
-			}
-
-			return layer;
-		},
-
-		parseCoords: function (xml) {
-			var el = xml.getElementsByTagName('coordinates');
-			return this._read_coords(el[0]);
-		},
-
-		parseLineString: function (line, xml, options) {
-			var coords = this.parseCoords(line);
-			if (!coords.length) { return; }
-			return new L.Polyline(coords, options);
-		},
-
-		parseTrack: function (line, xml, options) {
-			var el = xml.getElementsByTagName('gx:coord');
-			if (el.length === 0) { el = xml.getElementsByTagName('coord'); }
-			var coords = [];
-			for (var j = 0; j < el.length; j++) {
-				coords = coords.concat(this._read_gxcoords(el[j]));
-			}
-			if (!coords.length) { return; }
-			return new L.Polyline(coords, options);
-		},
-
-		parsePoint: function (line, xml, options) {
-			var el = line.getElementsByTagName('coordinates');
-			if (!el.length) {
-				return;
-			}
-			var ll = el[0].childNodes[0].nodeValue.split(',');
-			return new L.KMLMarker(new L.LatLng(ll[1], ll[0]), options);
-		},
-
-		parsePolygon: function (line, xml, options) {
-			var el, polys = [], inner = [], i, coords;
-			el = line.getElementsByTagName('outerBoundaryIs');
-			for (i = 0; i < el.length; i++) {
-				coords = this.parseCoords(el[i]);
-				if (coords) {
-					polys.push(coords);
-				}
-			}
-			el = line.getElementsByTagName('innerBoundaryIs');
-			for (i = 0; i < el.length; i++) {
-				coords = this.parseCoords(el[i]);
-				if (coords) {
-					inner.push(coords);
-				}
-			}
-			if (!polys.length) {
-				return;
-			}
-			if (options.fillColor) {
-				options.fill = true;
-			}
-			if (polys.length === 1) {
-				return new L.Polygon(polys.concat(inner), options);
-			}
-			return new L.MultiPolygon(polys, options);
-		},
-
-		getLatLngs: function (xml) {
-			var el = xml.getElementsByTagName('coordinates');
-			var coords = [];
-			for (var j = 0; j < el.length; j++) {
-				// text might span many childNodes
-				coords = coords.concat(this._read_coords(el[j]));
-			}
-			return coords;
-		},
-
-		_read_coords: function (el) {
-			var text = '', coords = [], i;
-			for (i = 0; i < el.childNodes.length; i++) {
-				text = text + el.childNodes[i].nodeValue;
-			}
-			text = text.split(/[\s\n]+/);
-			for (i = 0; i < text.length; i++) {
-				var ll = text[i].split(',');
-				if (ll.length < 2) {
-					continue;
-				}
-				coords.push(new L.LatLng(ll[1], ll[0]));
-			}
-			return coords;
-		},
-
-		_read_gxcoords: function (el) {
-			var text = '', coords = [];
-			text = el.firstChild.nodeValue.split(' ');
-			coords.push(new L.LatLng(text[1], text[0]));
-			return coords;
-		},
-
-		parseGroundOverlay: function (xml) {
-			var latlonbox = xml.getElementsByTagName('LatLonBox')[0];
-			var bounds = new L.LatLngBounds(
-				[
-					latlonbox.getElementsByTagName('south')[0].childNodes[0].nodeValue,
-					latlonbox.getElementsByTagName('west')[0].childNodes[0].nodeValue
-				],
-				[
-					latlonbox.getElementsByTagName('north')[0].childNodes[0].nodeValue,
-					latlonbox.getElementsByTagName('east')[0].childNodes[0].nodeValue
-				]
-			);
-			var attributes = {Icon: true, href: true, color: true};
-			function _parse (xml) {
-				var options = {}, ioptions = {};
-				for (var i = 0; i < xml.childNodes.length; i++) {
-					var e = xml.childNodes[i];
-					var key = e.tagName;
-					if (!attributes[key]) { continue; }
-					var value = e.childNodes[0].nodeValue;
-					if (key === 'Icon') {
-						ioptions = _parse(e);
-						if (ioptions.href) { options.href = ioptions.href; }
-					} else if (key === 'href') {
-						options.href = value;
-					} else if (key === 'color') {
-						options.opacity = parseInt(value.substring(0, 2), 16) / 255.0;
-						options.color = '#' + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
-					}
-				}
-				return options;
-			}
-			var options = {};
-			options = _parse(xml);
-			if (latlonbox.getElementsByTagName('rotation')[0] !== undefined) {
-				var rotation = latlonbox.getElementsByTagName('rotation')[0].childNodes[0].nodeValue;
-				options.rotation = parseFloat(rotation);
-			}
-			return new L.RotatedImageOverlay(options.href, bounds, {opacity: options.opacity, angle: options.rotation});
-		}
-
-	});
-
-	L.KMLIcon = L.Icon.extend({
-		_setIconStyles: function (img, name) {
-			L.Icon.prototype._setIconStyles.apply(this, [img, name]);
-			var options = this.options;
-			this.options.popupAnchor = [0,(-0.83*img.height)];
-			if (options.anchorType.x === 'fraction')
-				img.style.marginLeft = (-options.anchorRef.x * img.width) + 'px';
-			if (options.anchorType.y === 'fraction')
-				img.style.marginTop  = ((-(1 - options.anchorRef.y) * img.height) + 1) + 'px';
-			if (options.anchorType.x === 'pixels')
-				img.style.marginLeft = (-options.anchorRef.x) + 'px';
-			if (options.anchorType.y === 'pixels')
-				img.style.marginTop  = (options.anchorRef.y - img.height + 1) + 'px';
-		}
-	});
-
-
-	L.KMLMarker = L.Marker.extend({
-		options: {
-			icon: new L.KMLIcon.Default()
-		}
-	});
-
-	// Inspired by https://github.com/bbecquet/Leaflet.PolylineDecorator/tree/master/src
-	L.RotatedImageOverlay = L.ImageOverlay.extend({
-		options: {
-			angle: 0
-		},
-		_reset: function () {
-			L.ImageOverlay.prototype._reset.call(this);
-			this._rotate();
-		},
-		_animateZoom: function (e) {
-			L.ImageOverlay.prototype._animateZoom.call(this, e);
-			this._rotate();
-		},
-		_rotate: function () {
-	        if (L.DomUtil.TRANSFORM) {
-	            // use the CSS transform rule if available
-	            this._image.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
-	        } else if (L.Browser.ie) {
-	            // fallback for IE6, IE7, IE8
-	            var rad = this.options.angle * (Math.PI / 180),
-	                costheta = Math.cos(rad),
-	                sintheta = Math.sin(rad);
-	            this._image.style.filter += ' progid:DXImageTransform.Microsoft.Matrix(sizingMethod=\'auto expand\', M11=' + 
-	                costheta + ', M12=' + (-sintheta) + ', M21=' + sintheta + ', M22=' + costheta + ')';                
-	        }
-		},
-		getBounds: function () {
-			return this._bounds;
-		}
-	});
-
-
-
-
-/***/ },
-/* 1041 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _getPrototypeOf = __webpack_require__(534);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(560);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(561);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(565);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(608);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _class;
-
-	var _react = __webpack_require__(295);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _pureRenderDecorator = __webpack_require__(616);
-
-	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
-
-	var _reactLeaflet = __webpack_require__(713);
-
-	var _icons = __webpack_require__(1036);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var SubregionButtons = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
-	  (0, _inherits3.default)(SubregionButtons, _Component);
-
-	  function SubregionButtons() {
-	    (0, _classCallCheck3.default)(this, SubregionButtons);
-	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(SubregionButtons).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(SubregionButtons, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props;
-	      var map = _props.map;
-	      var subregions = _props.subregions;
-	      var onSubregionClick = _props.onSubregionClick;
-
-	      return _react2.default.createElement(
-	        _reactLeaflet.LayerGroup,
-	        { map: map },
-	        subregions.map(function (sr, idx) {
-	          return _react2.default.createElement(_reactLeaflet.Marker, { key: idx, position: sr.geometry.coordinates,
-	            icon: (0, _icons.getCachedSubregionIcon)(sr.properties.label),
-	            onClick: function onClick() {
-	              return onSubregionClick(sr.properties.scaffold);
-	            }
-	          });
-	        })
-	      );
-	    }
-	  }]);
-	  return SubregionButtons;
-	}(_react.Component)) || _class;
-
-	exports.default = SubregionButtons;
-
-
-	SubregionButtons.defaultProps = {
-	  subregions: []
-	};
-
-/***/ },
-/* 1042 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(1043);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(647)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./leaflet.css", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./leaflet.css");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 1043 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(646)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "/* required styles */\n\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n\tposition: absolute;\n\tleft: 0;\n\ttop: 0;\n\t}\n.leaflet-container {\n\toverflow: hidden;\n\t-ms-touch-action: none;\n\ttouch-action: none;\n\t}\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n\t-webkit-user-select: none;\n\t   -moz-user-select: none;\n\t        -ms-user-select: none;\n\t    user-select: none;\n\t-webkit-user-drag: none;\n\t}\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n\tdisplay: block;\n\t}\n/* map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img {\n\tmax-width: none !important;\n\t}\n/* stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer {\n\tmax-width: 15000px !important;\n\t}\n.leaflet-tile {\n\t-webkit-filter: inherit;\n\t        filter: inherit;\n\tvisibility: hidden;\n\t}\n.leaflet-tile-loaded {\n\tvisibility: inherit;\n\t}\n.leaflet-zoom-box {\n\twidth: 0;\n\theight: 0;\n\t}\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg {\n\t-moz-user-select: none;\n\t}\n\n.leaflet-tile-pane    { z-index: 2; }\n.leaflet-objects-pane { z-index: 3; }\n.leaflet-overlay-pane { z-index: 4; }\n.leaflet-shadow-pane  { z-index: 5; }\n.leaflet-marker-pane  { z-index: 6; }\n.leaflet-popup-pane   { z-index: 7; }\n\n.leaflet-vml-shape {\n\twidth: 1px;\n\theight: 1px;\n\t}\n.lvml {\n\tbehavior: url(#default#VML);\n\tdisplay: inline-block;\n\tposition: absolute;\n\t}\n\n\n/* control positioning */\n\n.leaflet-control {\n\tposition: relative;\n\tz-index: 7;\n\tpointer-events: auto;\n\t}\n.leaflet-top,\n.leaflet-bottom {\n\tposition: absolute;\n\tz-index: 1000;\n\tpointer-events: none;\n\t}\n.leaflet-top {\n\ttop: 0;\n\t}\n.leaflet-right {\n\tright: 0;\n\t}\n.leaflet-bottom {\n\tbottom: 0;\n\t}\n.leaflet-left {\n\tleft: 0;\n\t}\n.leaflet-control {\n\tfloat: left;\n\tclear: both;\n\t}\n.leaflet-right .leaflet-control {\n\tfloat: right;\n\t}\n.leaflet-top .leaflet-control {\n\tmargin-top: 10px;\n\t}\n.leaflet-bottom .leaflet-control {\n\tmargin-bottom: 10px;\n\t}\n.leaflet-left .leaflet-control {\n\tmargin-left: 10px;\n\t}\n.leaflet-right .leaflet-control {\n\tmargin-right: 10px;\n\t}\n\n\n/* zoom and fade animations */\n\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n\topacity: 0;\n\t-webkit-transition: opacity 0.2s linear;\n\t        transition: opacity 0.2s linear;\n\t}\n.leaflet-fade-anim .leaflet-tile-loaded,\n.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n\topacity: 1;\n\t}\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n\t-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n\t        transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n\t        transition: transform 0.25s cubic-bezier(0,0,0.25,1);\n\t        transition:         transform 0.25s cubic-bezier(0,0,0.25,1), -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n\t}\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n\t-webkit-transition: none;\n\t        transition: none;\n\t}\n\n.leaflet-zoom-anim .leaflet-zoom-hide {\n\tvisibility: hidden;\n\t}\n\n\n/* cursors */\n\n.leaflet-clickable {\n\tcursor: pointer;\n\t}\n.leaflet-container {\n\tcursor: -webkit-grab;\n\tcursor:    -moz-grab;\n\t}\n.leaflet-popup-pane,\n.leaflet-control {\n\tcursor: auto;\n\t}\n.leaflet-dragging .leaflet-container,\n.leaflet-dragging .leaflet-clickable {\n\tcursor: move;\n\tcursor: -webkit-grabbing;\n\tcursor:    -moz-grabbing;\n\t}\n\n\n/* visual tweaks */\n\n.leaflet-container {\n\tbackground: #ddd;\n\toutline: 0;\n\t}\n.leaflet-container a {\n\tcolor: #0078A8;\n\t}\n.leaflet-container a.leaflet-active {\n\toutline: 2px solid orange;\n\t}\n.leaflet-zoom-box {\n\tborder: 2px dotted #38f;\n\tbackground: rgba(255,255,255,0.5);\n\t}\n\n\n/* general typography */\n.leaflet-container {\n\tfont: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\t}\n\n\n/* general toolbar styles */\n\n.leaflet-bar {\n\tbox-shadow: 0 1px 5px rgba(0,0,0,0.65);\n\tborder-radius: 4px;\n\t}\n.leaflet-bar a,\n.leaflet-bar a:hover {\n\tbackground-color: #fff;\n\tborder-bottom: 1px solid #ccc;\n\twidth: 26px;\n\theight: 26px;\n\tline-height: 26px;\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n\tcolor: black;\n\t}\n.leaflet-bar a,\n.leaflet-control-layers-toggle {\n\tbackground-position: 50% 50%;\n\tbackground-repeat: no-repeat;\n\tdisplay: block;\n\t}\n.leaflet-bar a:hover {\n\tbackground-color: #f4f4f4;\n\t}\n.leaflet-bar a:first-child {\n\tborder-top-left-radius: 4px;\n\tborder-top-right-radius: 4px;\n\t}\n.leaflet-bar a:last-child {\n\tborder-bottom-left-radius: 4px;\n\tborder-bottom-right-radius: 4px;\n\tborder-bottom: none;\n\t}\n.leaflet-bar a.leaflet-disabled {\n\tcursor: default;\n\tbackground-color: #f4f4f4;\n\tcolor: #bbb;\n\t}\n\n.leaflet-touch .leaflet-bar a {\n\twidth: 30px;\n\theight: 30px;\n\tline-height: 30px;\n\t}\n\n\n/* zoom control */\n\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n\tfont: bold 18px 'Lucida Console', Monaco, monospace;\n\ttext-indent: 1px;\n\t}\n.leaflet-control-zoom-out {\n\tfont-size: 20px;\n\t}\n\n.leaflet-touch .leaflet-control-zoom-in {\n\tfont-size: 22px;\n\t}\n.leaflet-touch .leaflet-control-zoom-out {\n\tfont-size: 24px;\n\t}\n\n\n/* layers control */\n\n.leaflet-control-layers {\n\tbox-shadow: 0 1px 5px rgba(0,0,0,0.4);\n\tbackground: #fff;\n\tborder-radius: 5px;\n\t}\n.leaflet-control-layers-toggle {\n\tbackground-image: url(" + __webpack_require__(1044) + ");\n\twidth: 36px;\n\theight: 36px;\n\t}\n.leaflet-retina .leaflet-control-layers-toggle {\n\tbackground-image: url(" + __webpack_require__(1045) + ");\n\tbackground-size: 26px 26px;\n\t}\n.leaflet-touch .leaflet-control-layers-toggle {\n\twidth: 44px;\n\theight: 44px;\n\t}\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n\tdisplay: none;\n\t}\n.leaflet-control-layers-expanded .leaflet-control-layers-list {\n\tdisplay: block;\n\tposition: relative;\n\t}\n.leaflet-control-layers-expanded {\n\tpadding: 6px 10px 6px 6px;\n\tcolor: #333;\n\tbackground: #fff;\n\t}\n.leaflet-control-layers-selector {\n\tmargin-top: 2px;\n\tposition: relative;\n\ttop: 1px;\n\t}\n.leaflet-control-layers label {\n\tdisplay: block;\n\t}\n.leaflet-control-layers-separator {\n\theight: 0;\n\tborder-top: 1px solid #ddd;\n\tmargin: 5px -10px 5px -6px;\n\t}\n\n\n/* attribution and scale controls */\n\n.leaflet-container .leaflet-control-attribution {\n\tbackground: #fff;\n\tbackground: rgba(255, 255, 255, 0.7);\n\tmargin: 0;\n\t}\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n\tpadding: 0 5px;\n\tcolor: #333;\n\t}\n.leaflet-control-attribution a {\n\ttext-decoration: none;\n\t}\n.leaflet-control-attribution a:hover {\n\ttext-decoration: underline;\n\t}\n.leaflet-container .leaflet-control-attribution,\n.leaflet-container .leaflet-control-scale {\n\tfont-size: 11px;\n\t}\n.leaflet-left .leaflet-control-scale {\n\tmargin-left: 5px;\n\t}\n.leaflet-bottom .leaflet-control-scale {\n\tmargin-bottom: 5px;\n\t}\n.leaflet-control-scale-line {\n\tborder: 2px solid #777;\n\tborder-top: none;\n\tline-height: 1.1;\n\tpadding: 2px 5px 1px;\n\tfont-size: 11px;\n\twhite-space: nowrap;\n\toverflow: hidden;\n\tbox-sizing: content-box;\n\n\tbackground: #fff;\n\tbackground: rgba(255, 255, 255, 0.5);\n\t}\n.leaflet-control-scale-line:not(:first-child) {\n\tborder-top: 2px solid #777;\n\tborder-bottom: none;\n\tmargin-top: -2px;\n\t}\n.leaflet-control-scale-line:not(:first-child):not(:last-child) {\n\tborder-bottom: 2px solid #777;\n\t}\n\n.leaflet-touch .leaflet-control-attribution,\n.leaflet-touch .leaflet-control-layers,\n.leaflet-touch .leaflet-bar {\n\tbox-shadow: none;\n\t}\n.leaflet-touch .leaflet-control-layers,\n.leaflet-touch .leaflet-bar {\n\tborder: 2px solid rgba(0,0,0,0.2);\n\tbackground-clip: padding-box;\n\t}\n\n\n/* popup */\n\n.leaflet-popup {\n\tposition: absolute;\n\ttext-align: center;\n\t}\n.leaflet-popup-content-wrapper {\n\tpadding: 1px;\n\ttext-align: left;\n\tborder-radius: 12px;\n\t}\n.leaflet-popup-content {\n\tmargin: 13px 19px;\n\tline-height: 1.4;\n\t}\n.leaflet-popup-content p {\n\tmargin: 18px 0;\n\t}\n.leaflet-popup-tip-container {\n\tmargin: 0 auto;\n\twidth: 40px;\n\theight: 20px;\n\tposition: relative;\n\toverflow: hidden;\n\t}\n.leaflet-popup-tip {\n\twidth: 17px;\n\theight: 17px;\n\tpadding: 1px;\n\n\tmargin: -10px auto 0;\n\n\t-webkit-transform: rotate(45deg);\n\t        transform: rotate(45deg);\n\t}\n.leaflet-popup-content-wrapper,\n.leaflet-popup-tip {\n\tbackground: white;\n\n\tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);\n\t}\n.leaflet-container a.leaflet-popup-close-button {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tpadding: 4px 4px 0 0;\n\ttext-align: center;\n\twidth: 18px;\n\theight: 14px;\n\tfont: 16px/14px Tahoma, Verdana, sans-serif;\n\tcolor: #c3c3c3;\n\ttext-decoration: none;\n\tfont-weight: bold;\n\tbackground: transparent;\n\t}\n.leaflet-container a.leaflet-popup-close-button:hover {\n\tcolor: #999;\n\t}\n.leaflet-popup-scrolled {\n\toverflow: auto;\n\tborder-bottom: 1px solid #ddd;\n\tborder-top: 1px solid #ddd;\n\t}\n\n.leaflet-oldie .leaflet-popup-content-wrapper {\n\tzoom: 1;\n\t}\n.leaflet-oldie .leaflet-popup-tip {\n\twidth: 24px;\n\tmargin: 0 auto;\n\n\t-ms-filter: \"progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)\";\n\tfilter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);\n\t}\n.leaflet-oldie .leaflet-popup-tip-container {\n\tmargin-top: -1px;\n\t}\n\n.leaflet-oldie .leaflet-control-zoom,\n.leaflet-oldie .leaflet-control-layers,\n.leaflet-oldie .leaflet-popup-content-wrapper,\n.leaflet-oldie .leaflet-popup-tip {\n\tborder: 1px solid #999;\n\t}\n\n\n/* div icon */\n\n.leaflet-div-icon {\n\tbackground: #fff;\n\tborder: 1px solid #666;\n\t}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 1044 */
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,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"
-
-/***/ },
-/* 1045 */
-/***/ function(module, exports) {
-
-	module.exports = "data:image/png;base64,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"
-
-/***/ },
-/* 1046 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(1047);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(647)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./seismic-eruptions-map.less", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./seismic-eruptions-map.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 1047 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(646)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .map-controls-top {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n}\n.seismic-eruptions-map .map-controls-bottom {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n}\n.seismic-eruptions-map .map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin-bottom: 4px;\n}\n.seismic-eruptions-map .map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 1048 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _getPrototypeOf = __webpack_require__(534);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(560);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(561);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(565);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(608);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _class;
-
-	var _react = __webpack_require__(295);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _pureRenderDecorator = __webpack_require__(616);
-
-	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
-
-	__webpack_require__(1049);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var STEPS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
-
-	var LoadingIcon = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
-	  (0, _inherits3.default)(LoadingIcon, _Component);
-
-	  function LoadingIcon() {
-	    (0, _classCallCheck3.default)(this, LoadingIcon);
-	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(LoadingIcon).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(LoadingIcon, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'loading-icon-container' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'loading-icon' },
-	          STEPS.map(function (angle) {
-	            return _react2.default.createElement('div', { key: angle, className: 'element', style: { transform: 'rotate(' + angle + 'deg) translate(0,-60px)' } });
-	          })
-	        )
-	      );
-	    }
-	  }]);
-	  return LoadingIcon;
-	}(_react.Component)) || _class;
-
-	exports.default = LoadingIcon;
-
-/***/ },
-/* 1049 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(1050);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(647)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./loading-icon.less", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./loading-icon.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 1050 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(646)();
-	// imports
-
-
-	// module
-	exports.push([module.id, "@-webkit-keyframes uil-default-anim {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n@keyframes uil-default-anim {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.loading-icon-container {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  text-align: center;\n  background: rgba(0, 0, 0, 0.5);\n  z-index: 1000;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.loading-icon {\n  display: inline-block;\n  position: relative;\n  background: none;\n  width: 200px;\n  height: 200px;\n}\n.loading-icon .element {\n  top: 80px;\n  left: 93px;\n  width: 14px;\n  height: 40px;\n  background: #ff9200;\n  border-radius: 10px;\n  position: absolute;\n}\n.loading-icon div:nth-of-type(1) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.5s;\n  animation-delay: -0.5s;\n}\n.loading-icon div:nth-of-type(2) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.41666667s;\n  animation-delay: -0.41666667s;\n}\n.loading-icon div:nth-of-type(3) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.33333333s;\n  animation-delay: -0.33333333s;\n}\n.loading-icon div:nth-of-type(4) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.25s;\n  animation-delay: -0.25s;\n}\n.loading-icon div:nth-of-type(5) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.16666667s;\n  animation-delay: -0.16666667s;\n}\n.loading-icon div:nth-of-type(6) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.08333333s;\n  animation-delay: -0.08333333s;\n}\n.loading-icon div:nth-of-type(7) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0s;\n  animation-delay: 0s;\n}\n.loading-icon div:nth-of-type(8) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.08333333333333337s;\n  animation-delay: 0.08333333333333337s;\n}\n.loading-icon div:nth-of-type(9) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.16666666666666663s;\n  animation-delay: 0.16666666666666663s;\n}\n.loading-icon div:nth-of-type(10) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.25s;\n  animation-delay: 0.25s;\n}\n.loading-icon div:nth-of-type(11) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.33333333333333337s;\n  animation-delay: 0.33333333333333337s;\n}\n.loading-icon div:nth-of-type(12) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.41666666666666663s;\n  animation-delay: 0.41666666666666663s;\n}\n", ""]);
-
-	// exports
-
-
-/***/ },
-/* 1051 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*** IMPORTS FROM imports-loader ***/
-	var jQuery = __webpack_require__(1052);
-
-	var ShutterbugWorker = __webpack_require__(1053);
-
-	function parseSnapshotArguments(arguments) {
-	  // Remember that selector is anything accepted by jQuery, it can be DOM element too.
-	  var selector;
-	  var doneCallback;
-	  var dstSelector;
-	  var options = {};
-	  function assignSecondArgument(arg) {
-	    if (typeof arg === 'string')        { dstSelector  = arg; }
-	    else if (typeof arg === 'function') { doneCallback = arg; }
-	    else if (typeof arg === 'object')   { options      = arg; }
-	  }
-	  if (arguments.length === 3) {
-	    options = arguments[2];
-	    assignSecondArgument(arguments[1]);
-	    selector = arguments[0];
-	  } else if (arguments.length === 2) {
-	    assignSecondArgument(arguments[1]);
-	    selector = arguments[0];
-	  } else if (arguments.length === 1) {
-	    options = arguments[0];
-	  }
-	  if (selector)     { options.selector    = selector; }
-	  if (doneCallback) { options.done        = doneCallback; }
-	  if (dstSelector)  { options.dstSelector = dstSelector; }
-	  return options;
-	}
-
-	module.exports = {
-	  snapshot: function() {
-	    var options = parseSnapshotArguments(arguments);
-	    var worker = new ShutterbugWorker(options);
-	    worker.getDomSnapshot();
-	  },
-
-	  enable: function(selector) {
-	    this.disable();
-	    selector = selector || 'body';
-	    this._iframeWorker = new ShutterbugWorker({selector: selector});
-	    this._iframeWorker.enableIframeCommunication();
-	  },
-
-	  disable: function() {
-	    if (this._iframeWorker) {
-	      this._iframeWorker.disableIframeCommunication();
-	    }
-	  }
-	};
-
-
-
-/***/ },
-/* 1052 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	 * jQuery JavaScript Library v2.2.2
 	 * http://jquery.com/
@@ -102097,10 +100961,1154 @@
 
 
 /***/ },
+/* 1036 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(534);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(560);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(561);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(565);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(608);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _class;
+
+	var _react = __webpack_require__(295);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pureRenderDecorator = __webpack_require__(616);
+
+	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
+
+	var _reactLeaflet = __webpack_require__(713);
+
+	var _icons = __webpack_require__(1037);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var EarthquakePopup = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
+	  (0, _inherits3.default)(EarthquakePopup, _Component);
+
+	  function EarthquakePopup() {
+	    (0, _classCallCheck3.default)(this, EarthquakePopup);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(EarthquakePopup).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(EarthquakePopup, [{
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      if (prevProps.earthquake !== this.props.earthquake) {
+	        this.refs.marker.getLeafletElement().openPopup();
+	      }
+	    }
+
+	    // For some reason it's impossible to create popup without marker.
+	    // So, this component renders invisible marker with popup instead.
+
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var map = _props.map;
+	      var earthquake = _props.earthquake;
+	      var onPopupClose = _props.onPopupClose;
+
+	      var earthquakePos = earthquake ? earthquake.geometry.coordinates : [0, 0];
+	      return _react2.default.createElement(
+	        _reactLeaflet.Marker,
+	        { ref: 'marker', map: map, position: earthquakePos, icon: (0, _icons.getCachedInvisibleIcon)(), onLeafletPopupclose: onPopupClose },
+	        _react2.default.createElement(
+	          _reactLeaflet.Popup,
+	          { closeOnClick: false },
+	          earthquake && _react2.default.createElement(
+	            'div',
+	            null,
+	            'Place: ',
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              earthquake.properties.place
+	            ),
+	            _react2.default.createElement('br', null),
+	            'Magnitude: ',
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              earthquake.properties.mag.toFixed(1)
+	            ),
+	            _react2.default.createElement('br', null),
+	            'Date: ',
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              date(earthquake.properties.time)
+	            ),
+	            _react2.default.createElement('br', null),
+	            'Depth: ',
+	            _react2.default.createElement(
+	              'b',
+	              null,
+	              earthquake.geometry.coordinates[2],
+	              ' km'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return EarthquakePopup;
+	}(_react.Component)) || _class;
+
+	exports.default = EarthquakePopup;
+
+
+	function date(timestamp) {
+	  var d = new Date(timestamp);
+	  return d.toLocaleString ? d.toLocaleString() : d.toString();
+	}
+
+/***/ },
+/* 1037 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.subregionIcon = subregionIcon;
+	exports.invisibleIcon = invisibleIcon;
+	exports.getCachedSubregionIcon = getCachedSubregionIcon;
+	exports.getCachedInvisibleIcon = getCachedInvisibleIcon;
+
+	var _leaflet = __webpack_require__(714);
+
+	__webpack_require__(1038);
+
+	function subregionIcon(label) {
+	  return new _leaflet.DivIcon({ className: 'subregion-icon', html: '<a class="cc-button">' + label + '</a>' });
+	}
+
+	function invisibleIcon() {
+	  return new _leaflet.DivIcon({ className: 'invisible-icon' });
+	}
+
+	// Cache icons. First, it's just faster. Second, it prevents us from unnecessary re-rendering and buttons blinking.
+	var iconsCache = {};
+
+	function getCachedSubregionIcon(label, url) {
+	  var iconKey = label + url;
+	  if (!iconsCache[iconKey]) iconsCache[iconKey] = subregionIcon(label, url);
+	  return iconsCache[iconKey];
+	}
+
+	function getCachedInvisibleIcon() {
+	  var iconKey = 'invisible-icon';
+	  if (!iconsCache[iconKey]) iconsCache[iconKey] = invisibleIcon();
+	  return iconsCache[iconKey];
+	}
+
+/***/ },
+/* 1038 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(1039);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(647)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./custom-leaflet-icons.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./custom-leaflet-icons.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 1039 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(646)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".subregion-icon {\n  width: auto !important;\n  height: auto !important;\n}\n.subregion-icon .cc-button {\n  font-size: 1.2em;\n  white-space: nowrap;\n  color: #fff;\n  cursor: pointer;\n  display: inline-block;\n  font-weight: normal;\n  margin: 0;\n  padding: .3em .6em .2em .6em;\n  text-align: center;\n  text-decoration: none;\n  border-radius: .1875em;\n  box-shadow: 0 3px 0 #e16a3e;\n  background: #eb8723;\n  background: -webkit-linear-gradient(top, #f4b626 0%, #eb8723 100%);\n  background: linear-gradient(top, #f4b626 0%, #eb8723 100%);\n  opacity: 0.6;\n}\n.subregion-icon .cc-button:hover {\n  opacity: 1;\n}\n.invisible-icon {\n  display: none !important;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 1040 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(534);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(560);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(561);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(565);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _get2 = __webpack_require__(885);
+
+	var _get3 = _interopRequireDefault(_get2);
+
+	var _inherits2 = __webpack_require__(608);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _class;
+	// Import plugin using imports-loader.
+
+
+	var _react = __webpack_require__(295);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pureRenderDecorator = __webpack_require__(616);
+
+	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
+
+	var _reactLeaflet = __webpack_require__(713);
+
+	__webpack_require__(1041);
+
+	var _leaflet = __webpack_require__(714);
+
+	var _leaflet2 = _interopRequireDefault(_leaflet);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var _cachedKML = void 0;
+	function getKML() {
+	  if (!_cachedKML) {
+	    _cachedKML = new _leaflet2.default.KML('plates.kml', { async: true });
+	  }
+	  return _cachedKML;
+	}
+
+	var PlatesLayer = (0, _pureRenderDecorator2.default)(_class = function (_LayerGroup) {
+	  (0, _inherits3.default)(PlatesLayer, _LayerGroup);
+
+	  function PlatesLayer(props) {
+	    (0, _classCallCheck3.default)(this, PlatesLayer);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(PlatesLayer).call(this, props));
+	  }
+
+	  (0, _createClass3.default)(PlatesLayer, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      (0, _get3.default)((0, _getPrototypeOf2.default)(PlatesLayer.prototype), 'componentDidMount', this).call(this);
+	      this.leafletElement.addLayer(getKML());
+	    }
+	  }]);
+	  return PlatesLayer;
+	}(_reactLeaflet.LayerGroup)) || _class;
+
+	exports.default = PlatesLayer;
+
+/***/ },
+/* 1041 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*** IMPORTS FROM imports-loader ***/
+	var L = __webpack_require__(714);
+
+	L.KML = L.FeatureGroup.extend({
+		options: {
+			async: true
+		},
+
+		initialize: function (kml, options) {
+			L.Util.setOptions(this, options);
+			this._kml = kml;
+			this._layers = {};
+
+			if (kml) {
+				this.addKML(kml, options, this.options.async);
+			}
+		},
+
+		loadXML: function (url, cb, options, async) {
+			if (async === undefined) async = this.options.async;
+			if (options === undefined) options = this.options;
+
+			var req = new window.XMLHttpRequest();
+			
+			// Check for IE8 and IE9 Fix Cors for those browsers
+			if (req.withCredentials === undefined && typeof window.XDomainRequest !== 'undefined') {
+				var xdr = new window.XDomainRequest();
+				xdr.open('GET', url, async);
+				xdr.onprogress = function () { };
+				xdr.ontimeout = function () { };
+				xdr.onerror = function () { };
+				xdr.onload = function () {
+					if (xdr.responseText) {
+						var xml = new window.ActiveXObject('Microsoft.XMLDOM');
+						xml.loadXML(xdr.responseText);
+						cb(xml, options);
+					}
+				};
+				setTimeout(function () { xdr.send(); }, 0);
+			} else {
+				req.open('GET', url, async);
+				req.setRequestHeader('Accept', 'application/vnd.google-earth.kml+xml');
+				try {
+					req.overrideMimeType('text/xml'); // unsupported by IE
+				} catch (e) { }
+				req.onreadystatechange = function () {
+					if (req.readyState !== 4) return;
+					if (req.status === 200) cb(req.responseXML, options);
+				};
+				req.send(null);
+			}
+		},
+
+		addKML: function (url, options, async) {
+			var _this = this;
+			var cb = function (kml) { _this._addKML(kml); };
+			this.loadXML(url, cb, options, async);
+		},
+
+		_addKML: function (xml) {
+			var layers = L.KML.parseKML(xml);
+			if (!layers || !layers.length) return;
+			for (var i = 0; i < layers.length; i++) {
+				this.fire('addlayer', {
+					layer: layers[i]
+				});
+				this.addLayer(layers[i]);
+			}
+			this.latLngs = L.KML.getLatLngs(xml);
+			this.fire('loaded');
+		},
+
+		latLngs: []
+	});
+
+	L.Util.extend(L.KML, {
+
+		parseKML: function (xml) {
+			var style = this.parseStyles(xml);
+			this.parseStyleMap(xml, style);
+			var el = xml.getElementsByTagName('Folder');
+			var layers = [], l;
+			for (var i = 0; i < el.length; i++) {
+				if (!this._check_folder(el[i])) { continue; }
+				l = this.parseFolder(el[i], style);
+				if (l) { layers.push(l); }
+			}
+			el = xml.getElementsByTagName('Placemark');
+			for (var j = 0; j < el.length; j++) {
+				if (!this._check_folder(el[j])) { continue; }
+				l = this.parsePlacemark(el[j], xml, style);
+				if (l) { layers.push(l); }
+			}
+			el = xml.getElementsByTagName('GroundOverlay');
+			for (var k = 0; k < el.length; k++) {
+				l = this.parseGroundOverlay(el[k]);
+				if (l) { layers.push(l); }
+			}
+			return layers;
+		},
+
+		// Return false if e's first parent Folder is not [folder]
+		// - returns true if no parent Folders
+		_check_folder: function (e, folder) {
+			e = e.parentNode;
+			while (e && e.tagName !== 'Folder')
+			{
+				e = e.parentNode;
+			}
+			return !e || e === folder;
+		},
+
+		parseStyles: function (xml) {
+			var styles = {};
+			var sl = xml.getElementsByTagName('Style');
+			for (var i=0, len=sl.length; i<len; i++) {
+				var style = this.parseStyle(sl[i]);
+				if (style) {
+					var styleName = '#' + style.id;
+					styles[styleName] = style;
+				}
+			}
+			return styles;
+		},
+
+		parseStyle: function (xml) {
+			var style = {}, poptions = {}, ioptions = {}, el, id;
+
+			var attributes = {color: true, width: true, Icon: true, href: true, hotSpot: true};
+
+			function _parse (xml) {
+				var options = {};
+				for (var i = 0; i < xml.childNodes.length; i++) {
+					var e = xml.childNodes[i];
+					var key = e.tagName;
+					if (!attributes[key]) { continue; }
+					if (key === 'hotSpot')
+					{
+						for (var j = 0; j < e.attributes.length; j++) {
+							options[e.attributes[j].name] = e.attributes[j].nodeValue;
+						}
+					} else {
+						var value = e.childNodes[0].nodeValue;
+						if (key === 'color') {
+							options.opacity = parseInt(value.substring(0, 2), 16) / 255.0;
+							options.color = '#' + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
+						} else if (key === 'width') {
+							options.weight = value;
+						} else if (key === 'Icon') {
+							ioptions = _parse(e);
+							if (ioptions.href) { options.href = ioptions.href; }
+						} else if (key === 'href') {
+							options.href = value;
+						}
+					}
+				}
+				return options;
+			}
+
+			el = xml.getElementsByTagName('LineStyle');
+			if (el && el[0]) { style = _parse(el[0]); }
+			el = xml.getElementsByTagName('PolyStyle');
+			if (el && el[0]) { poptions = _parse(el[0]); }
+			if (poptions.color) { style.fillColor = poptions.color; }
+			if (poptions.opacity) { style.fillOpacity = poptions.opacity; }
+			el = xml.getElementsByTagName('IconStyle');
+			if (el && el[0]) { ioptions = _parse(el[0]); }
+			if (ioptions.href) {
+				style.icon = new L.KMLIcon({
+					iconUrl: ioptions.href,
+					shadowUrl: null,
+					anchorRef: {x: ioptions.x, y: ioptions.y},
+					anchorType:	{x: ioptions.xunits, y: ioptions.yunits}
+				});
+			}
+			
+			id = xml.getAttribute('id');
+			if (id && style) {
+				style.id = id;
+			}
+			
+			return style;
+		},
+		
+		parseStyleMap: function (xml, existingStyles) {
+			var sl = xml.getElementsByTagName('StyleMap');
+			
+			for (var i = 0; i < sl.length; i++) {
+				var e = sl[i], el;
+				var smKey, smStyleUrl;
+				
+				el = e.getElementsByTagName('key');
+				if (el && el[0]) { smKey = el[0].textContent; }
+				el = e.getElementsByTagName('styleUrl');
+				if (el && el[0]) { smStyleUrl = el[0].textContent; }
+				
+				if (smKey === 'normal')
+				{
+					existingStyles['#' + e.getAttribute('id')] = existingStyles[smStyleUrl];
+				}
+			}
+			
+			return;
+		},
+
+		parseFolder: function (xml, style) {
+			var el, layers = [], l;
+			el = xml.getElementsByTagName('Folder');
+			for (var i = 0; i < el.length; i++) {
+				if (!this._check_folder(el[i], xml)) { continue; }
+				l = this.parseFolder(el[i], style);
+				if (l) { layers.push(l); }
+			}
+			el = xml.getElementsByTagName('Placemark');
+			for (var j = 0; j < el.length; j++) {
+				if (!this._check_folder(el[j], xml)) { continue; }
+				l = this.parsePlacemark(el[j], xml, style);
+				if (l) { layers.push(l); }
+			}
+			el = xml.getElementsByTagName('GroundOverlay');
+			for (var k = 0; k < el.length; k++) {
+				if (!this._check_folder(el[k], xml)) { continue; }
+				l = this.parseGroundOverlay(el[k]);
+				if (l) { layers.push(l); }
+			}
+			if (!layers.length) { return; }
+			if (layers.length === 1) { return layers[0]; }
+			return new L.FeatureGroup(layers);
+		},
+
+		parsePlacemark: function (place, xml, style, options) {
+			var h, i, j, k, el, il, opts = options || {};
+
+			el = place.getElementsByTagName('styleUrl');
+			for (i = 0; i < el.length; i++) {
+				var url = el[i].childNodes[0].nodeValue;
+				for (var a in style[url]) {
+					opts[a] = style[url][a];
+				}
+			}
+			
+			il = place.getElementsByTagName('Style')[0];
+			if (il) {
+				var inlineStyle = this.parseStyle(place);
+				if (inlineStyle) {
+					for (k in inlineStyle) {
+						opts[k] = inlineStyle[k];
+					}
+				}
+			}
+
+			var multi = ['MultiGeometry', 'MultiTrack', 'gx:MultiTrack'];
+			for (h in multi) {
+				el = place.getElementsByTagName(multi[h]);
+				for (i = 0; i < el.length; i++) {
+					return this.parsePlacemark(el[i], xml, style, opts);
+				}
+			}
+			
+			var layers = [];
+
+			var parse = ['LineString', 'Polygon', 'Point', 'Track', 'gx:Track'];
+			for (j in parse) {
+				var tag = parse[j];
+				el = place.getElementsByTagName(tag);
+				for (i = 0; i < el.length; i++) {
+					var l = this['parse' + tag.replace(/gx:/, '')](el[i], xml, opts);
+					if (l) { layers.push(l); }
+				}
+			}
+
+			if (!layers.length) {
+				return;
+			}
+			var layer = layers[0];
+			if (layers.length > 1) {
+				layer = new L.FeatureGroup(layers);
+			}
+
+			var name, descr = '';
+			el = place.getElementsByTagName('name');
+			if (el.length && el[0].childNodes.length) {
+				name = el[0].childNodes[0].nodeValue;
+			}
+			el = place.getElementsByTagName('description');
+			for (i = 0; i < el.length; i++) {
+				for (j = 0; j < el[i].childNodes.length; j++) {
+					descr = descr + el[i].childNodes[j].nodeValue;
+				}
+			}
+
+			if (name) {
+				layer.on('add', function () {
+					layer.bindPopup('<h2>' + name + '</h2>' + descr);
+				});
+			}
+
+			return layer;
+		},
+
+		parseCoords: function (xml) {
+			var el = xml.getElementsByTagName('coordinates');
+			return this._read_coords(el[0]);
+		},
+
+		parseLineString: function (line, xml, options) {
+			var coords = this.parseCoords(line);
+			if (!coords.length) { return; }
+			return new L.Polyline(coords, options);
+		},
+
+		parseTrack: function (line, xml, options) {
+			var el = xml.getElementsByTagName('gx:coord');
+			if (el.length === 0) { el = xml.getElementsByTagName('coord'); }
+			var coords = [];
+			for (var j = 0; j < el.length; j++) {
+				coords = coords.concat(this._read_gxcoords(el[j]));
+			}
+			if (!coords.length) { return; }
+			return new L.Polyline(coords, options);
+		},
+
+		parsePoint: function (line, xml, options) {
+			var el = line.getElementsByTagName('coordinates');
+			if (!el.length) {
+				return;
+			}
+			var ll = el[0].childNodes[0].nodeValue.split(',');
+			return new L.KMLMarker(new L.LatLng(ll[1], ll[0]), options);
+		},
+
+		parsePolygon: function (line, xml, options) {
+			var el, polys = [], inner = [], i, coords;
+			el = line.getElementsByTagName('outerBoundaryIs');
+			for (i = 0; i < el.length; i++) {
+				coords = this.parseCoords(el[i]);
+				if (coords) {
+					polys.push(coords);
+				}
+			}
+			el = line.getElementsByTagName('innerBoundaryIs');
+			for (i = 0; i < el.length; i++) {
+				coords = this.parseCoords(el[i]);
+				if (coords) {
+					inner.push(coords);
+				}
+			}
+			if (!polys.length) {
+				return;
+			}
+			if (options.fillColor) {
+				options.fill = true;
+			}
+			if (polys.length === 1) {
+				return new L.Polygon(polys.concat(inner), options);
+			}
+			return new L.MultiPolygon(polys, options);
+		},
+
+		getLatLngs: function (xml) {
+			var el = xml.getElementsByTagName('coordinates');
+			var coords = [];
+			for (var j = 0; j < el.length; j++) {
+				// text might span many childNodes
+				coords = coords.concat(this._read_coords(el[j]));
+			}
+			return coords;
+		},
+
+		_read_coords: function (el) {
+			var text = '', coords = [], i;
+			for (i = 0; i < el.childNodes.length; i++) {
+				text = text + el.childNodes[i].nodeValue;
+			}
+			text = text.split(/[\s\n]+/);
+			for (i = 0; i < text.length; i++) {
+				var ll = text[i].split(',');
+				if (ll.length < 2) {
+					continue;
+				}
+				coords.push(new L.LatLng(ll[1], ll[0]));
+			}
+			return coords;
+		},
+
+		_read_gxcoords: function (el) {
+			var text = '', coords = [];
+			text = el.firstChild.nodeValue.split(' ');
+			coords.push(new L.LatLng(text[1], text[0]));
+			return coords;
+		},
+
+		parseGroundOverlay: function (xml) {
+			var latlonbox = xml.getElementsByTagName('LatLonBox')[0];
+			var bounds = new L.LatLngBounds(
+				[
+					latlonbox.getElementsByTagName('south')[0].childNodes[0].nodeValue,
+					latlonbox.getElementsByTagName('west')[0].childNodes[0].nodeValue
+				],
+				[
+					latlonbox.getElementsByTagName('north')[0].childNodes[0].nodeValue,
+					latlonbox.getElementsByTagName('east')[0].childNodes[0].nodeValue
+				]
+			);
+			var attributes = {Icon: true, href: true, color: true};
+			function _parse (xml) {
+				var options = {}, ioptions = {};
+				for (var i = 0; i < xml.childNodes.length; i++) {
+					var e = xml.childNodes[i];
+					var key = e.tagName;
+					if (!attributes[key]) { continue; }
+					var value = e.childNodes[0].nodeValue;
+					if (key === 'Icon') {
+						ioptions = _parse(e);
+						if (ioptions.href) { options.href = ioptions.href; }
+					} else if (key === 'href') {
+						options.href = value;
+					} else if (key === 'color') {
+						options.opacity = parseInt(value.substring(0, 2), 16) / 255.0;
+						options.color = '#' + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
+					}
+				}
+				return options;
+			}
+			var options = {};
+			options = _parse(xml);
+			if (latlonbox.getElementsByTagName('rotation')[0] !== undefined) {
+				var rotation = latlonbox.getElementsByTagName('rotation')[0].childNodes[0].nodeValue;
+				options.rotation = parseFloat(rotation);
+			}
+			return new L.RotatedImageOverlay(options.href, bounds, {opacity: options.opacity, angle: options.rotation});
+		}
+
+	});
+
+	L.KMLIcon = L.Icon.extend({
+		_setIconStyles: function (img, name) {
+			L.Icon.prototype._setIconStyles.apply(this, [img, name]);
+			var options = this.options;
+			this.options.popupAnchor = [0,(-0.83*img.height)];
+			if (options.anchorType.x === 'fraction')
+				img.style.marginLeft = (-options.anchorRef.x * img.width) + 'px';
+			if (options.anchorType.y === 'fraction')
+				img.style.marginTop  = ((-(1 - options.anchorRef.y) * img.height) + 1) + 'px';
+			if (options.anchorType.x === 'pixels')
+				img.style.marginLeft = (-options.anchorRef.x) + 'px';
+			if (options.anchorType.y === 'pixels')
+				img.style.marginTop  = (options.anchorRef.y - img.height + 1) + 'px';
+		}
+	});
+
+
+	L.KMLMarker = L.Marker.extend({
+		options: {
+			icon: new L.KMLIcon.Default()
+		}
+	});
+
+	// Inspired by https://github.com/bbecquet/Leaflet.PolylineDecorator/tree/master/src
+	L.RotatedImageOverlay = L.ImageOverlay.extend({
+		options: {
+			angle: 0
+		},
+		_reset: function () {
+			L.ImageOverlay.prototype._reset.call(this);
+			this._rotate();
+		},
+		_animateZoom: function (e) {
+			L.ImageOverlay.prototype._animateZoom.call(this, e);
+			this._rotate();
+		},
+		_rotate: function () {
+	        if (L.DomUtil.TRANSFORM) {
+	            // use the CSS transform rule if available
+	            this._image.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
+	        } else if (L.Browser.ie) {
+	            // fallback for IE6, IE7, IE8
+	            var rad = this.options.angle * (Math.PI / 180),
+	                costheta = Math.cos(rad),
+	                sintheta = Math.sin(rad);
+	            this._image.style.filter += ' progid:DXImageTransform.Microsoft.Matrix(sizingMethod=\'auto expand\', M11=' + 
+	                costheta + ', M12=' + (-sintheta) + ', M21=' + sintheta + ', M22=' + costheta + ')';                
+	        }
+		},
+		getBounds: function () {
+			return this._bounds;
+		}
+	});
+
+
+
+
+/***/ },
+/* 1042 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(534);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(560);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(561);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(565);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(608);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _class;
+
+	var _react = __webpack_require__(295);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pureRenderDecorator = __webpack_require__(616);
+
+	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
+
+	var _reactLeaflet = __webpack_require__(713);
+
+	var _icons = __webpack_require__(1037);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SubregionButtons = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
+	  (0, _inherits3.default)(SubregionButtons, _Component);
+
+	  function SubregionButtons() {
+	    (0, _classCallCheck3.default)(this, SubregionButtons);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(SubregionButtons).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(SubregionButtons, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props;
+	      var map = _props.map;
+	      var subregions = _props.subregions;
+	      var onSubregionClick = _props.onSubregionClick;
+
+	      return _react2.default.createElement(
+	        _reactLeaflet.LayerGroup,
+	        { map: map },
+	        subregions.map(function (sr, idx) {
+	          return _react2.default.createElement(_reactLeaflet.Marker, { key: idx, position: sr.geometry.coordinates,
+	            icon: (0, _icons.getCachedSubregionIcon)(sr.properties.label),
+	            onClick: function onClick() {
+	              return onSubregionClick(sr.properties.scaffold);
+	            }
+	          });
+	        })
+	      );
+	    }
+	  }]);
+	  return SubregionButtons;
+	}(_react.Component)) || _class;
+
+	exports.default = SubregionButtons;
+
+
+	SubregionButtons.defaultProps = {
+	  subregions: []
+	};
+
+/***/ },
+/* 1043 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(1044);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(647)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./leaflet.css", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/autoprefixer-loader/index.js!./leaflet.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 1044 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(646)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "/* required styles */\n\n.leaflet-map-pane,\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow,\n.leaflet-tile-pane,\n.leaflet-tile-container,\n.leaflet-overlay-pane,\n.leaflet-shadow-pane,\n.leaflet-marker-pane,\n.leaflet-popup-pane,\n.leaflet-overlay-pane svg,\n.leaflet-zoom-box,\n.leaflet-image-layer,\n.leaflet-layer {\n\tposition: absolute;\n\tleft: 0;\n\ttop: 0;\n\t}\n.leaflet-container {\n\toverflow: hidden;\n\t-ms-touch-action: none;\n\ttouch-action: none;\n\t}\n.leaflet-tile,\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n\t-webkit-user-select: none;\n\t   -moz-user-select: none;\n\t        -ms-user-select: none;\n\t    user-select: none;\n\t-webkit-user-drag: none;\n\t}\n.leaflet-marker-icon,\n.leaflet-marker-shadow {\n\tdisplay: block;\n\t}\n/* map is broken in FF if you have max-width: 100% on tiles */\n.leaflet-container img {\n\tmax-width: none !important;\n\t}\n/* stupid Android 2 doesn't understand \"max-width: none\" properly */\n.leaflet-container img.leaflet-image-layer {\n\tmax-width: 15000px !important;\n\t}\n.leaflet-tile {\n\t-webkit-filter: inherit;\n\t        filter: inherit;\n\tvisibility: hidden;\n\t}\n.leaflet-tile-loaded {\n\tvisibility: inherit;\n\t}\n.leaflet-zoom-box {\n\twidth: 0;\n\theight: 0;\n\t}\n/* workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=888319 */\n.leaflet-overlay-pane svg {\n\t-moz-user-select: none;\n\t}\n\n.leaflet-tile-pane    { z-index: 2; }\n.leaflet-objects-pane { z-index: 3; }\n.leaflet-overlay-pane { z-index: 4; }\n.leaflet-shadow-pane  { z-index: 5; }\n.leaflet-marker-pane  { z-index: 6; }\n.leaflet-popup-pane   { z-index: 7; }\n\n.leaflet-vml-shape {\n\twidth: 1px;\n\theight: 1px;\n\t}\n.lvml {\n\tbehavior: url(#default#VML);\n\tdisplay: inline-block;\n\tposition: absolute;\n\t}\n\n\n/* control positioning */\n\n.leaflet-control {\n\tposition: relative;\n\tz-index: 7;\n\tpointer-events: auto;\n\t}\n.leaflet-top,\n.leaflet-bottom {\n\tposition: absolute;\n\tz-index: 1000;\n\tpointer-events: none;\n\t}\n.leaflet-top {\n\ttop: 0;\n\t}\n.leaflet-right {\n\tright: 0;\n\t}\n.leaflet-bottom {\n\tbottom: 0;\n\t}\n.leaflet-left {\n\tleft: 0;\n\t}\n.leaflet-control {\n\tfloat: left;\n\tclear: both;\n\t}\n.leaflet-right .leaflet-control {\n\tfloat: right;\n\t}\n.leaflet-top .leaflet-control {\n\tmargin-top: 10px;\n\t}\n.leaflet-bottom .leaflet-control {\n\tmargin-bottom: 10px;\n\t}\n.leaflet-left .leaflet-control {\n\tmargin-left: 10px;\n\t}\n.leaflet-right .leaflet-control {\n\tmargin-right: 10px;\n\t}\n\n\n/* zoom and fade animations */\n\n.leaflet-fade-anim .leaflet-tile,\n.leaflet-fade-anim .leaflet-popup {\n\topacity: 0;\n\t-webkit-transition: opacity 0.2s linear;\n\t        transition: opacity 0.2s linear;\n\t}\n.leaflet-fade-anim .leaflet-tile-loaded,\n.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {\n\topacity: 1;\n\t}\n\n.leaflet-zoom-anim .leaflet-zoom-animated {\n\t-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n\t        transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n\t        transition: transform 0.25s cubic-bezier(0,0,0.25,1);\n\t        transition:         transform 0.25s cubic-bezier(0,0,0.25,1), -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);\n\t}\n.leaflet-zoom-anim .leaflet-tile,\n.leaflet-pan-anim .leaflet-tile,\n.leaflet-touching .leaflet-zoom-animated {\n\t-webkit-transition: none;\n\t        transition: none;\n\t}\n\n.leaflet-zoom-anim .leaflet-zoom-hide {\n\tvisibility: hidden;\n\t}\n\n\n/* cursors */\n\n.leaflet-clickable {\n\tcursor: pointer;\n\t}\n.leaflet-container {\n\tcursor: -webkit-grab;\n\tcursor:    -moz-grab;\n\t}\n.leaflet-popup-pane,\n.leaflet-control {\n\tcursor: auto;\n\t}\n.leaflet-dragging .leaflet-container,\n.leaflet-dragging .leaflet-clickable {\n\tcursor: move;\n\tcursor: -webkit-grabbing;\n\tcursor:    -moz-grabbing;\n\t}\n\n\n/* visual tweaks */\n\n.leaflet-container {\n\tbackground: #ddd;\n\toutline: 0;\n\t}\n.leaflet-container a {\n\tcolor: #0078A8;\n\t}\n.leaflet-container a.leaflet-active {\n\toutline: 2px solid orange;\n\t}\n.leaflet-zoom-box {\n\tborder: 2px dotted #38f;\n\tbackground: rgba(255,255,255,0.5);\n\t}\n\n\n/* general typography */\n.leaflet-container {\n\tfont: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;\n\t}\n\n\n/* general toolbar styles */\n\n.leaflet-bar {\n\tbox-shadow: 0 1px 5px rgba(0,0,0,0.65);\n\tborder-radius: 4px;\n\t}\n.leaflet-bar a,\n.leaflet-bar a:hover {\n\tbackground-color: #fff;\n\tborder-bottom: 1px solid #ccc;\n\twidth: 26px;\n\theight: 26px;\n\tline-height: 26px;\n\tdisplay: block;\n\ttext-align: center;\n\ttext-decoration: none;\n\tcolor: black;\n\t}\n.leaflet-bar a,\n.leaflet-control-layers-toggle {\n\tbackground-position: 50% 50%;\n\tbackground-repeat: no-repeat;\n\tdisplay: block;\n\t}\n.leaflet-bar a:hover {\n\tbackground-color: #f4f4f4;\n\t}\n.leaflet-bar a:first-child {\n\tborder-top-left-radius: 4px;\n\tborder-top-right-radius: 4px;\n\t}\n.leaflet-bar a:last-child {\n\tborder-bottom-left-radius: 4px;\n\tborder-bottom-right-radius: 4px;\n\tborder-bottom: none;\n\t}\n.leaflet-bar a.leaflet-disabled {\n\tcursor: default;\n\tbackground-color: #f4f4f4;\n\tcolor: #bbb;\n\t}\n\n.leaflet-touch .leaflet-bar a {\n\twidth: 30px;\n\theight: 30px;\n\tline-height: 30px;\n\t}\n\n\n/* zoom control */\n\n.leaflet-control-zoom-in,\n.leaflet-control-zoom-out {\n\tfont: bold 18px 'Lucida Console', Monaco, monospace;\n\ttext-indent: 1px;\n\t}\n.leaflet-control-zoom-out {\n\tfont-size: 20px;\n\t}\n\n.leaflet-touch .leaflet-control-zoom-in {\n\tfont-size: 22px;\n\t}\n.leaflet-touch .leaflet-control-zoom-out {\n\tfont-size: 24px;\n\t}\n\n\n/* layers control */\n\n.leaflet-control-layers {\n\tbox-shadow: 0 1px 5px rgba(0,0,0,0.4);\n\tbackground: #fff;\n\tborder-radius: 5px;\n\t}\n.leaflet-control-layers-toggle {\n\tbackground-image: url(" + __webpack_require__(1045) + ");\n\twidth: 36px;\n\theight: 36px;\n\t}\n.leaflet-retina .leaflet-control-layers-toggle {\n\tbackground-image: url(" + __webpack_require__(1046) + ");\n\tbackground-size: 26px 26px;\n\t}\n.leaflet-touch .leaflet-control-layers-toggle {\n\twidth: 44px;\n\theight: 44px;\n\t}\n.leaflet-control-layers .leaflet-control-layers-list,\n.leaflet-control-layers-expanded .leaflet-control-layers-toggle {\n\tdisplay: none;\n\t}\n.leaflet-control-layers-expanded .leaflet-control-layers-list {\n\tdisplay: block;\n\tposition: relative;\n\t}\n.leaflet-control-layers-expanded {\n\tpadding: 6px 10px 6px 6px;\n\tcolor: #333;\n\tbackground: #fff;\n\t}\n.leaflet-control-layers-selector {\n\tmargin-top: 2px;\n\tposition: relative;\n\ttop: 1px;\n\t}\n.leaflet-control-layers label {\n\tdisplay: block;\n\t}\n.leaflet-control-layers-separator {\n\theight: 0;\n\tborder-top: 1px solid #ddd;\n\tmargin: 5px -10px 5px -6px;\n\t}\n\n\n/* attribution and scale controls */\n\n.leaflet-container .leaflet-control-attribution {\n\tbackground: #fff;\n\tbackground: rgba(255, 255, 255, 0.7);\n\tmargin: 0;\n\t}\n.leaflet-control-attribution,\n.leaflet-control-scale-line {\n\tpadding: 0 5px;\n\tcolor: #333;\n\t}\n.leaflet-control-attribution a {\n\ttext-decoration: none;\n\t}\n.leaflet-control-attribution a:hover {\n\ttext-decoration: underline;\n\t}\n.leaflet-container .leaflet-control-attribution,\n.leaflet-container .leaflet-control-scale {\n\tfont-size: 11px;\n\t}\n.leaflet-left .leaflet-control-scale {\n\tmargin-left: 5px;\n\t}\n.leaflet-bottom .leaflet-control-scale {\n\tmargin-bottom: 5px;\n\t}\n.leaflet-control-scale-line {\n\tborder: 2px solid #777;\n\tborder-top: none;\n\tline-height: 1.1;\n\tpadding: 2px 5px 1px;\n\tfont-size: 11px;\n\twhite-space: nowrap;\n\toverflow: hidden;\n\tbox-sizing: content-box;\n\n\tbackground: #fff;\n\tbackground: rgba(255, 255, 255, 0.5);\n\t}\n.leaflet-control-scale-line:not(:first-child) {\n\tborder-top: 2px solid #777;\n\tborder-bottom: none;\n\tmargin-top: -2px;\n\t}\n.leaflet-control-scale-line:not(:first-child):not(:last-child) {\n\tborder-bottom: 2px solid #777;\n\t}\n\n.leaflet-touch .leaflet-control-attribution,\n.leaflet-touch .leaflet-control-layers,\n.leaflet-touch .leaflet-bar {\n\tbox-shadow: none;\n\t}\n.leaflet-touch .leaflet-control-layers,\n.leaflet-touch .leaflet-bar {\n\tborder: 2px solid rgba(0,0,0,0.2);\n\tbackground-clip: padding-box;\n\t}\n\n\n/* popup */\n\n.leaflet-popup {\n\tposition: absolute;\n\ttext-align: center;\n\t}\n.leaflet-popup-content-wrapper {\n\tpadding: 1px;\n\ttext-align: left;\n\tborder-radius: 12px;\n\t}\n.leaflet-popup-content {\n\tmargin: 13px 19px;\n\tline-height: 1.4;\n\t}\n.leaflet-popup-content p {\n\tmargin: 18px 0;\n\t}\n.leaflet-popup-tip-container {\n\tmargin: 0 auto;\n\twidth: 40px;\n\theight: 20px;\n\tposition: relative;\n\toverflow: hidden;\n\t}\n.leaflet-popup-tip {\n\twidth: 17px;\n\theight: 17px;\n\tpadding: 1px;\n\n\tmargin: -10px auto 0;\n\n\t-webkit-transform: rotate(45deg);\n\t        transform: rotate(45deg);\n\t}\n.leaflet-popup-content-wrapper,\n.leaflet-popup-tip {\n\tbackground: white;\n\n\tbox-shadow: 0 3px 14px rgba(0,0,0,0.4);\n\t}\n.leaflet-container a.leaflet-popup-close-button {\n\tposition: absolute;\n\ttop: 0;\n\tright: 0;\n\tpadding: 4px 4px 0 0;\n\ttext-align: center;\n\twidth: 18px;\n\theight: 14px;\n\tfont: 16px/14px Tahoma, Verdana, sans-serif;\n\tcolor: #c3c3c3;\n\ttext-decoration: none;\n\tfont-weight: bold;\n\tbackground: transparent;\n\t}\n.leaflet-container a.leaflet-popup-close-button:hover {\n\tcolor: #999;\n\t}\n.leaflet-popup-scrolled {\n\toverflow: auto;\n\tborder-bottom: 1px solid #ddd;\n\tborder-top: 1px solid #ddd;\n\t}\n\n.leaflet-oldie .leaflet-popup-content-wrapper {\n\tzoom: 1;\n\t}\n.leaflet-oldie .leaflet-popup-tip {\n\twidth: 24px;\n\tmargin: 0 auto;\n\n\t-ms-filter: \"progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)\";\n\tfilter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);\n\t}\n.leaflet-oldie .leaflet-popup-tip-container {\n\tmargin-top: -1px;\n\t}\n\n.leaflet-oldie .leaflet-control-zoom,\n.leaflet-oldie .leaflet-control-layers,\n.leaflet-oldie .leaflet-popup-content-wrapper,\n.leaflet-oldie .leaflet-popup-tip {\n\tborder: 1px solid #999;\n\t}\n\n\n/* div icon */\n\n.leaflet-div-icon {\n\tbackground: #fff;\n\tborder: 1px solid #666;\n\t}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 1045 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 1046 */
+/***/ function(module, exports) {
+
+	module.exports = "data:image/png;base64,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"
+
+/***/ },
+/* 1047 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(1048);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(647)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./seismic-eruptions-map.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./seismic-eruptions-map.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 1048 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(646)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .map-controls-top {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n}\n.seismic-eruptions-map .map-controls-bottom {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n}\n.seismic-eruptions-map .map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin-bottom: 4px;\n}\n.seismic-eruptions-map .map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 1049 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _getPrototypeOf = __webpack_require__(534);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(560);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(561);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(565);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(608);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _class;
+
+	var _react = __webpack_require__(295);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pureRenderDecorator = __webpack_require__(616);
+
+	var _pureRenderDecorator2 = _interopRequireDefault(_pureRenderDecorator);
+
+	__webpack_require__(1050);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var STEPS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
+
+	var LoadingIcon = (0, _pureRenderDecorator2.default)(_class = function (_Component) {
+	  (0, _inherits3.default)(LoadingIcon, _Component);
+
+	  function LoadingIcon() {
+	    (0, _classCallCheck3.default)(this, LoadingIcon);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(LoadingIcon).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(LoadingIcon, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'loading-icon-container' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'loading-icon' },
+	          STEPS.map(function (angle) {
+	            return _react2.default.createElement('div', { key: angle, className: 'element', style: { transform: 'rotate(' + angle + 'deg) translate(0,-60px)' } });
+	          })
+	        )
+	      );
+	    }
+	  }]);
+	  return LoadingIcon;
+	}(_react.Component)) || _class;
+
+	exports.default = LoadingIcon;
+
+/***/ },
+/* 1050 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(1051);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(647)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./loading-icon.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./loading-icon.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 1051 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(646)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "@-webkit-keyframes uil-default-anim {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n@keyframes uil-default-anim {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n.loading-icon-container {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  text-align: center;\n  background: rgba(0, 0, 0, 0.5);\n  z-index: 1000;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n  -webkit-justify-content: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.loading-icon {\n  display: inline-block;\n  position: relative;\n  background: none;\n  width: 200px;\n  height: 200px;\n}\n.loading-icon .element {\n  top: 80px;\n  left: 93px;\n  width: 14px;\n  height: 40px;\n  background: #ff9200;\n  border-radius: 10px;\n  position: absolute;\n}\n.loading-icon div:nth-of-type(1) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.5s;\n  animation-delay: -0.5s;\n}\n.loading-icon div:nth-of-type(2) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.41666667s;\n  animation-delay: -0.41666667s;\n}\n.loading-icon div:nth-of-type(3) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.33333333s;\n  animation-delay: -0.33333333s;\n}\n.loading-icon div:nth-of-type(4) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.25s;\n  animation-delay: -0.25s;\n}\n.loading-icon div:nth-of-type(5) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.16666667s;\n  animation-delay: -0.16666667s;\n}\n.loading-icon div:nth-of-type(6) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: -0.08333333s;\n  animation-delay: -0.08333333s;\n}\n.loading-icon div:nth-of-type(7) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0s;\n  animation-delay: 0s;\n}\n.loading-icon div:nth-of-type(8) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.08333333333333337s;\n  animation-delay: 0.08333333333333337s;\n}\n.loading-icon div:nth-of-type(9) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.16666666666666663s;\n  animation-delay: 0.16666666666666663s;\n}\n.loading-icon div:nth-of-type(10) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.25s;\n  animation-delay: 0.25s;\n}\n.loading-icon div:nth-of-type(11) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.33333333333333337s;\n  animation-delay: 0.33333333333333337s;\n}\n.loading-icon div:nth-of-type(12) {\n  -webkit-animation: uil-default-anim 1s linear infinite;\n  animation: uil-default-anim 1s linear infinite;\n  -webkit-animation-delay: 0.41666666666666663s;\n  animation-delay: 0.41666666666666663s;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 1052 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*** IMPORTS FROM imports-loader ***/
+	var jQuery = __webpack_require__(1035);
+
+	var ShutterbugWorker = __webpack_require__(1053);
+
+	function parseSnapshotArguments(arguments) {
+	  // Remember that selector is anything accepted by jQuery, it can be DOM element too.
+	  var selector;
+	  var doneCallback;
+	  var dstSelector;
+	  var options = {};
+	  function assignSecondArgument(arg) {
+	    if (typeof arg === 'string')        { dstSelector  = arg; }
+	    else if (typeof arg === 'function') { doneCallback = arg; }
+	    else if (typeof arg === 'object')   { options      = arg; }
+	  }
+	  if (arguments.length === 3) {
+	    options = arguments[2];
+	    assignSecondArgument(arguments[1]);
+	    selector = arguments[0];
+	  } else if (arguments.length === 2) {
+	    assignSecondArgument(arguments[1]);
+	    selector = arguments[0];
+	  } else if (arguments.length === 1) {
+	    options = arguments[0];
+	  }
+	  if (selector)     { options.selector    = selector; }
+	  if (doneCallback) { options.done        = doneCallback; }
+	  if (dstSelector)  { options.dstSelector = dstSelector; }
+	  return options;
+	}
+
+	module.exports = {
+	  snapshot: function() {
+	    var options = parseSnapshotArguments(arguments);
+	    var worker = new ShutterbugWorker(options);
+	    worker.getDomSnapshot();
+	  },
+
+	  enable: function(selector) {
+	    this.disable();
+	    selector = selector || 'body';
+	    this._iframeWorker = new ShutterbugWorker({selector: selector});
+	    this._iframeWorker.enableIframeCommunication();
+	  },
+
+	  disable: function() {
+	    if (this._iframeWorker) {
+	      this._iframeWorker.disableIframeCommunication();
+	    }
+	  }
+	};
+
+
+
+/***/ },
 /* 1053 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = typeof jQuery !== 'undefined' ? jQuery : __webpack_require__(1052);
+	var $ = typeof jQuery !== 'undefined' ? jQuery : __webpack_require__(1035);
 	var htmlTools      = __webpack_require__(1054);
 	var DEFAULT_SERVER = __webpack_require__(1055);
 
@@ -102485,7 +102493,7 @@
 /* 1054 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var $ = typeof jQuery !== 'undefined' ? jQuery : __webpack_require__(1052);
+	var $ = typeof jQuery !== 'undefined' ? jQuery : __webpack_require__(1035);
 
 	module.exports = {
 	  cloneDomItem: function($elem, elemTag) {
