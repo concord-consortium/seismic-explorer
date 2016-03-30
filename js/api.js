@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { fakeRegion, fakeDataset } from './fake-data'
 
 class Cache {
   constructor() {
@@ -23,6 +24,9 @@ class Cache {
 const cache = new Cache()
 
 export function fetchJSON(path) {
+  if (path.startsWith('_fake')) {
+    return fakeData(path)
+  }
   if (cache.has(path)) {
     return new Promise(resolve => {
       resolve(cache.get(path))
@@ -47,4 +51,18 @@ function checkStatus(response) {
   } else {
     throw new APIError(response.statusText, response)
   }
+}
+
+function fakeData(path) {
+  return new Promise(resolve => {
+    const info = path.split('=')
+    const type = info[0]
+    const count = info[1]
+    if (type === '_fake') {
+      resolve(fakeRegion(count))
+    }
+    if (type === '_fake_dataset') {
+      resolve(fakeDataset(count))
+    }
+  })
 }

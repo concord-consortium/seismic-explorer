@@ -34,7 +34,7 @@ function region(state = Map(), action) {
         [data.maxLatitude, data.maxLongitude]
       ]
       return state.set('bounds', bounds)
-                  .set('subregions', polygonToPoint(data.features))
+                  .set('subregions', polygonToPoint(data.features || []))
                   .set('restricted', data.restrictedView)
     default:
       return state
@@ -176,6 +176,7 @@ const swapCoords = (data) => {
 
 const polygonToPoint = (data) => {
   data.forEach(polygon => {
+    if (polygon.geometry.type === 'Point') return
     const coords = polygon.geometry.coordinates[0]
     let avgLat = 0
     let avgLong = 0
