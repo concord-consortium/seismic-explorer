@@ -5,14 +5,22 @@ import * as actions from '../actions'
 import Controls from './controls'
 import SeismicEruptionsMap from '../components/seismic-eruptions-map'
 import LoadingIcon from '../components/loading-icon'
+import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
 
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
 
+const APP_CLASS_NAME = 'seismic-eruptions-app'
+
 @pureRender
 class App extends Component {
   componentDidMount() {
+    enableShutterbug(APP_CLASS_NAME)
     this.updateRegion()
+  }
+
+  componentWillUnmount() {
+    disableShutterbug()
   }
 
   componentDidUpdate(prevProps) {
@@ -61,7 +69,7 @@ class App extends Component {
   render() {
     const { error } = this.props
     return (
-      <div className='seismic-eruptions-app'>
+      <div className={APP_CLASS_NAME}>
         {error ? this.renderError() : this.renderApp()}
       </div>
     )

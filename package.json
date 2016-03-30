@@ -45,6 +45,7 @@
     "font-awesome": "^4.5.0",
     "immutable": "^3.7.6",
     "isomorphic-fetch": "^2.2.1",
+    "jquery": "^2.2.2",
     "leaflet": "^0.7.7",
     "leaflet-plugins": "^1.5.2",
     "pixi.js": "^3.0.10",
@@ -59,6 +60,7 @@
     "redux": "^3.3.1",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^1.0.3",
-    "screenfull": "^3.0.0"
+    "screenfull": "^3.0.0",
+    "shutterbug": "^0.6.0"
   }
 }

@@ -20,6 +20,12 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
       resolution: window.devicePixelRatio
     })
     this._renderedEarthquakes = new Map()
+
+    // [ Shutterbug support ]
+    // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
+    // so .toDataUrl returns correct image. This method is used by shutterbug-support.js module.
+    this._canvas.canvas3D = true
+    this._canvas.render = this.render.bind(this)
   },
 
   setEarthquakes: function (earthquakes) {
@@ -112,8 +118,6 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
         transitionInProgress = true
       }
     })
-    // PIXI render.
-    this._renderer.render(this._container)
     // Schedule next frame only if there are some ongoing transitions.
     if (transitionInProgress) {
       this.scheduleRedraw()
@@ -121,6 +125,12 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     } else {
       this._prevTimestamp = null
     }
+    this.render()
+  },
+
+  // PIXI render.
+  render: function () {
+    this._renderer.render(this._container)
   }
 })
 
