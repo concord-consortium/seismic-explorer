@@ -92242,7 +92242,7 @@
 	// after snapshot has been taken.
 	function beforeSnapshotHandler() {
 	  var oldTransforms = new _map2.default();
-	  var leafletChildren = (0, _from2.default)(document.querySelectorAll('.leaflet-container *'));
+	  var leafletChildren = (0, _from2.default)(document.querySelectorAll('.leaflet-map-pane, .leaflet-marker-icon'));
 	  leafletChildren.forEach(function (elem) {
 	    var coords = !!elem.style[TRANSFORM] && getCoordsFromTransform(elem.style[TRANSFORM]);
 	    if (coords) {
