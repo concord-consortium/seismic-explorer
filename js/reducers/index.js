@@ -41,12 +41,11 @@ function region(state = Map(), action) {
   }
 }
 
-function data(state = null, action) {
+function data(state = [], action) {
   switch (action.type) {
     case RECEIVE_EARTHQUAKES:
       // Don't use ImmutableJS - this data is too big and it would also affect filtering time.
-      // .revert() to sort earthquakes by time.
-      return swapCoords(action.response.features).reverse()
+      return sortByTime(swapCoords(action.response.features))
     case RECEIVE_REGION:
       // Cleanup earthquakes when region is changed, as sometimes the same earthquake (with the same ID)
       // might have different coordinates, depending on region. It would confuse rendering components.
@@ -67,13 +66,12 @@ const INITIAL_FILTERS = Map({
 function filters(state = INITIAL_FILTERS, action) {
   switch (action.type) {
     case RECEIVE_EARTHQUAKES:
-      const times = action.response.features.map(eq => eq.properties.time)
-      const minDataTime = Math.min(...times)
-      const maxDataTime = Math.max(...times)
-      return state.set('minTime', minDataTime)
-                  .set('maxTime', minDataTime)
-                  .set('minTimeLimit', minDataTime)
-                  .set('maxTimeLimit', maxDataTime)
+      const time = timeRange(action.response.features)
+      return state.set('minTime', time.min)
+                  // It's intentional, no earthquakes should be visible when they're loaded.
+                  .set('maxTime', time.min)
+                  .set('minTimeLimit', time.min)
+                  .set('maxTimeLimit', time.max)
     case SET_FILTER:
       return state.set(action.name, action.value)
     default:
@@ -154,14 +152,16 @@ const calcEarthquakes = (data, filters) => {
   // Two important notes:
   // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
   // - Yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
-  const result = data.map(eq => {
+  const result = []
+  for (let i = 0, len = data.length; i < len; i++) {
+    const eq = data[i]
     const props = eq.properties
     eq.visible = props.mag > minMag &&
                  props.mag < maxMag &&
                  props.time > minTime &&
                  props.time < maxTime
-    return eq
-  })
+    result.push(eq)
+  }
   return result
 }
 
@@ -172,6 +172,10 @@ const swapCoords = (data) => {
     point.geometry.coordinates[1] = tmp
   })
   return data
+}
+
+const sortByTime = (data) => {
+  return data.sort((a, b) => a.properties.time - b.properties.time)
 }
 
 const polygonToPoint = (data) => {
@@ -189,4 +193,14 @@ const polygonToPoint = (data) => {
     polygon.geometry.type = 'Point'
   })
   return data
+}
+
+const timeRange = (data) => {
+  let min = Infinity
+  let max = -Infinity
+  data.forEach(eq => {
+    if (eq.properties.time > max) max = eq.properties.time
+    if (eq.properties.time < min) min = eq.properties.time
+  })
+  return {min, max}
 }
