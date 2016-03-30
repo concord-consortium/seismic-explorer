@@ -92230,7 +92230,7 @@
 	window.$ = _jquery2.default;
 
 	var TRANSFORM = _leaflet2.default.DomUtil.TRANSFORM;
-	var TRANSLATE_REGEXP = /translate(3d)?\((\d+px), (\d+px)/;
+	var TRANSLATE_REGEXP = /translate(3d)?\((-?\d+px), (-?\d+px)/;
 
 	function enableShutterbug(appClassName) {
 	  _shutterbug2.default.enable('.' + appClassName);
@@ -92244,11 +92244,11 @@
 
 	// Note that PhantomJS doesn't support 3D transforms that are extensively used by Leaflet maps.
 	// This function replaces `transform: translate3d(10px, 20px, ...)` with `left: 10px; top: 20px`
-	// for element which require that (map pane, markers). It also setups handler that restores
+	// for element which require that (map pane, markers). It also setups a handler that restores
 	// the original styles after snapshot has been taken.
 	function beforeSnapshotHandler() {
 	  var oldTransforms = new _map2.default();
-	  (0, _from2.default)(document.querySelectorAll('.leaflet-map-pane, .leaflet-marker-icon', '.leaflet-canvas-layer')).forEach(function (elem) {
+	  (0, _from2.default)(document.querySelectorAll('.leaflet-container *')).forEach(function (elem) {
 	    var coords = !!elem.style[TRANSFORM] && getCoordsFromTransform(elem.style[TRANSFORM]);
 	    if (coords) {
 	      oldTransforms.set(elem, elem.style[TRANSFORM]);
