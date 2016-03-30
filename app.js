@@ -92221,7 +92221,13 @@
 
 	var _leaflet2 = _interopRequireDefault(_leaflet);
 
+	var _jquery = __webpack_require__(1056);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	window.$ = _jquery2.default;
 
 	var TRANSFORM = _leaflet2.default.DomUtil.TRANSFORM;
 	var TRANSLATE_REGEXP = /translate(3d)?\((\d+px), (\d+px)/;
@@ -92242,7 +92248,7 @@
 	// the original styles after snapshot has been taken.
 	function beforeSnapshotHandler() {
 	  var oldTransforms = new _map2.default();
-	  (0, _from2.default)(document.querySelectorAll('.leaflet-map-pane, .leaflet-marker-icon')).forEach(function (elem) {
+	  (0, _from2.default)(document.querySelectorAll('.leaflet-map-pane, .leaflet-marker-icon', '.leaflet-canvas-layer')).forEach(function (elem) {
 	    var coords = !!elem.style[TRANSFORM] && getCoordsFromTransform(elem.style[TRANSFORM]);
 	    if (coords) {
 	      oldTransforms.set(elem, elem.style[TRANSFORM]);
