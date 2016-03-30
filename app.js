@@ -92238,12 +92238,11 @@
 
 	// Note that PhantomJS doesn't support 3D transforms that are extensively used by Leaflet maps.
 	// This function replaces `transform: translate3d(10px, 20px, ...)` with `left: 10px; top: 20px`
-	// for every single child of the leaflet map. It also setups handler that restores the original styles
-	// after snapshot has been taken.
+	// for element which require that (map pane, markers). It also setups handler that restores
+	// the original styles after snapshot has been taken.
 	function beforeSnapshotHandler() {
 	  var oldTransforms = new _map2.default();
-	  var leafletChildren = (0, _from2.default)(document.querySelectorAll('.leaflet-map-pane, .leaflet-marker-icon'));
-	  leafletChildren.forEach(function (elem) {
+	  (0, _from2.default)(document.querySelectorAll('.leaflet-map-pane, .leaflet-marker-icon')).forEach(function (elem) {
 	    var coords = !!elem.style[TRANSFORM] && getCoordsFromTransform(elem.style[TRANSFORM]);
 	    if (coords) {
 	      oldTransforms.set(elem, elem.style[TRANSFORM]);
@@ -92251,11 +92250,13 @@
 	      elem.style.left = coords.left;
 	      elem.style.top = coords.top;
 	    }
-	    // It's necessary re-render 3D canvas when snapshot is taken, so .toDataUrl returns the correct image.
-	    // In this case, it's most likely the earthquake-canvas-layer which exposes those custom properties
-	    // (but other canvases can follow this convention in case of need).
-	    if (elem.canvas3D && elem.render) {
-	      elem.render();
+	  });
+	  // It's necessary re-render 3D canvas when snapshot is taken, so .toDataUrl returns the correct image.
+	  // In this case, it's most likely the earthquake-canvas-layer which exposes those custom properties
+	  // (but other canvases can follow this convention in case of need).
+	  (0, _from2.default)(document.querySelectorAll('canvas')).forEach(function (canvas) {
+	    if (canvas.canvas3D && canvas.render) {
+	      canvas.render();
 	    }
 	  });
 
