@@ -92071,7 +92071,7 @@
 
 
 	// module
-	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .map-controls-top {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin-bottom: 4px;\n}\n.seismic-eruptions-map .map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n", ""]);
+	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .map-controls-top {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  font-size: 16px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin-bottom: 4px;\n}\n.seismic-eruptions-map .map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n", ""]);
 
 	// exports
 
