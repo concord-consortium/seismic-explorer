@@ -34108,8 +34108,8 @@
 	  (0, _createClass3.default)(App, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.updateRegion();
 	      (0, _shutterbugSupport.enableShutterbug)(APP_CLASS_NAME);
+	      this.updateRegion();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -44166,7 +44166,7 @@
 
 
 	// module
-	exports.push([module.id, ".controls {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  -webkit-flex-wrap: nowrap;\n  -ms-flex-wrap: nowrap;\n  flex-wrap: nowrap;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n}\n.controls .center {\n  -webkit-box-flex: 5;\n  -webkit-flex: 5 1 auto;\n  -ms-flex: 5 1 auto;\n  flex: 5 1 auto;\n  margin: 0 30px;\n}\n.controls img {\n  height: 60px;\n  margin: 0 10px;\n}\n.controls .animation-button,\n.controls .settings-icon,\n.controls .fullscreen-icon {\n  margin: 0 15px;\n  display: inline-block;\n  font-size: 3.5em;\n  cursor: pointer;\n  color: #777;\n}\n.controls .animation-button:hover,\n.controls .settings-icon:hover,\n.controls .fullscreen-icon:hover {\n  color: #000;\n}\n.controls .settings {\n  position: fixed;\n  right: 0;\n  bottom: 80px;\n  background: white;\n  padding: 0.5em 1em;\n  width: 480px;\n  border-top-left-radius: 10px;\n  color: #444;\n  -webkit-transition: right 750ms;\n  transition: right 750ms;\n}\n.controls .settings.hidden {\n  right: -700px;\n}\n.controls .settings > div {\n  margin: 20px;\n}\n.controls .settings h2 {\n  margin-bottom: 1em;\n}\n.controls .settings select {\n  margin-left: 10px;\n}\n.controls .settings .rc-slider {\n  font-size: 0.6em;\n  width: 400px;\n  margin: 15px 5px;\n}\n", ""]);
+	exports.push([module.id, ".controls {\n  width: 100%;\n  height: 100%;\n  overflow: hidden;\n  -webkit-flex-wrap: nowrap;\n  -ms-flex-wrap: nowrap;\n  flex-wrap: nowrap;\n  -webkit-box-align: center;\n  -webkit-align-items: center;\n  -ms-flex-align: center;\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: -ms-flexbox;\n  display: flex;\n}\n.controls .center {\n  -webkit-box-flex: 5;\n  -webkit-flex: 5 1 auto;\n  -ms-flex: 5 1 auto;\n  flex: 5 1 auto;\n  margin: 0 30px;\n}\n.controls img {\n  width: 9em;\n  margin-left: 0.5em;\n}\n.controls .animation-button,\n.controls .settings-icon,\n.controls .fullscreen-icon {\n  margin: 0 0.2em;\n  display: inline-block;\n  font-size: 3.5em;\n  cursor: pointer;\n  color: #777;\n}\n.controls .animation-button:hover,\n.controls .settings-icon:hover,\n.controls .fullscreen-icon:hover {\n  color: #000;\n}\n.controls .settings {\n  position: fixed;\n  right: 0;\n  bottom: 4.5em;\n  background: white;\n  padding: 0.5em 1em;\n  max-width: 100%;\n  border-top-left-radius: 10px;\n  color: #444;\n  -webkit-transition: right 750ms;\n  transition: right 750ms;\n}\n.controls .settings.hidden {\n  right: -700px;\n}\n.controls .settings > div {\n  margin: 20px;\n}\n.controls .settings h2 {\n  margin-bottom: 1em;\n}\n.controls .settings select {\n  margin-left: 10px;\n}\n.controls .settings .rc-slider {\n  font-size: 0.6em;\n  width: 99%;\n  margin: 1em 0.5em;\n}\n", ""]);
 
 	// exports
 
@@ -92221,13 +92221,7 @@
 
 	var _leaflet2 = _interopRequireDefault(_leaflet);
 
-	var _jquery = __webpack_require__(1056);
-
-	var _jquery2 = _interopRequireDefault(_jquery);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	window.$ = _jquery2.default;
 
 	var TRANSFORM = _leaflet2.default.DomUtil.TRANSFORM;
 	var TRANSLATE_REGEXP = /translate(3d)?\((-?\d+px), (-?\d+px)/;
@@ -102735,7 +102729,7 @@
 
 
 	// module
-	exports.push([module.id, ".seismic-eruptions-app {\n  font: 16px verdana, helvetica, sans-serif;\n  height: 100%;\n}\n.seismic-eruptions-app .map-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 80px;\n}\n.seismic-eruptions-app .controls-container {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 80px;\n  background: #fff;\n}\n.seismic-eruptions-app .leaflet-control-attribution {\n  display: none;\n}\n.seismic-eruptions-app .error {\n  text-align: center;\n}\n.seismic-eruptions-app .error h1 {\n  margin-top: 5em;\n}\n", ""]);
+	exports.push([module.id, ".seismic-eruptions-app {\n  font: 16px verdana, helvetica, sans-serif;\n  height: 100%;\n}\n@media (max-width: 700px) {\n  .seismic-eruptions-app {\n    font-size: 12px;\n  }\n}\n.seismic-eruptions-app .map-container {\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 4.5em;\n}\n.seismic-eruptions-app .controls-container {\n  position: absolute;\n  bottom: 0;\n  left: 0;\n  right: 0;\n  height: 4.5em;\n  background: #fff;\n}\n.seismic-eruptions-app .leaflet-control-attribution {\n  display: none;\n}\n.seismic-eruptions-app .error {\n  text-align: center;\n}\n.seismic-eruptions-app .error h1 {\n  margin-top: 5em;\n}\n", ""]);
 
 	// exports
 
