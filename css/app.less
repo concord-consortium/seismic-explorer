@@ -2,12 +2,16 @@
   font: 16px verdana, helvetica, sans-serif;
   height: 100%;
 
+  @media (max-width: 700px) {
+    font-size: 12px;
+  }
+
   .map-container {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 80px;
+    bottom: 4.5em;
   }
 
   .controls-container {
@@ -15,7 +19,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: 4.5em;
+    background: #fff;
   }
 
   .leaflet-control-attribution {
