@@ -6,6 +6,11 @@
     height: 100%;
   }
 
+  .earthquakes-canvas-layer {
+    /* z-index = 1, so earthquakes are above other overlays (e.g. plate boundaries), but under the buttons */
+    z-index: 1;
+  }
+
   .map-controls-top {
     position: absolute;
     left: 10px;

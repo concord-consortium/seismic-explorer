@@ -12,6 +12,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
 
   _initCanvas: function () {
     CanvasLayer.prototype._initCanvas.call(this)
+    DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer')
     // Init PIXI too.
     this._container = new PIXI.Container()
     this._renderer = PIXI.autoDetectRenderer(0, 0, {
