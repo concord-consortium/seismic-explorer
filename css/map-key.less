@@ -1,0 +1,58 @@
+.map-key {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.map-key-content {
+  background: #fff;
+  padding: 0.5em 1em;
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+
+  .map-key-close {
+    font-size: 18px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: #777;
+    cursor: pointer;
+    float: right;
+    &:hover {
+      color: #000;
+    }
+  }
+
+  table {
+    margin: 0;
+    td, th {
+      text-align: left;
+    }
+    margin-bottom: 0.5em;
+  }
+
+  table.magnitude-density {
+    td:nth-child(1), td:nth-child(2), td:nth-child(3) {
+      width: 60px;
+    }
+  }
+
+  table.boundaries {
+    td:nth-child(1) {
+      width: 30px;
+    }
+  }
+
+  .earthquake-color {
+    width: 25px;
+    height: 25px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.35);
+  }
+
+  .boundary-color {
+    width: 12px;
+    height: 25px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.35);
+  }
+}

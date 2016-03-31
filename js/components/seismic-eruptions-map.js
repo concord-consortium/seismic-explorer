@@ -5,6 +5,7 @@ import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import PlatesLayer from './plates-layer'
 import SubregionButtons from './subregion-buttons'
+import MapKey from './map-key'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
@@ -110,6 +111,7 @@ export default class SeismicEruptionsMap extends Component {
         <div className='map-controls-bottom'>
           {boundsChanged && <div className='map-button' onClick={this.fitBounds}><i className='fa fa-map-marker'/></div>}
         </div>
+        <MapKey showBoundariesInfo={layers.get('plates')}/>
       </div>
     )
   }
