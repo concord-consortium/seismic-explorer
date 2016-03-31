@@ -1,5 +1,6 @@
 import Shutterbug from 'shutterbug'
 import L from 'leaflet'
+import $ from 'jquery'
 
 const TRANSFORM = L.DomUtil.TRANSFORM
 const TRANSLATE_REGEXP = /translate(3d)?\((-?\d+px), (-?\d+px)/
@@ -19,38 +20,35 @@ export function disableShutterbug() {
 // for element which require that (map pane, markers). It also setups a handler that restores
 // the original styles after snapshot has been taken.
 function beforeSnapshotHandler() {
-  const oldTransforms = new Map()
+  const oldStyles = new Map()
   Array.from(document.querySelectorAll('.leaflet-container *')).forEach(elem => {
-    const coords = !!elem.style[TRANSFORM] && getCoordsFromTransform(elem.style[TRANSFORM])
-    if (coords) {
-      oldTransforms.set(elem, elem.style[TRANSFORM])
+    if (!!elem.style[TRANSFORM]) {
+      oldStyles.set(elem, {
+        transform: elem.style[TRANSFORM],
+        left: elem.style.left,
+        top: elem.style.top
+      })
+      const position = $(elem).position()
       elem.style[TRANSFORM] = ''
-      elem.style.left = coords.left
-      elem.style.top = coords.top
+      elem.style.left = position.left + 'px'
+      elem.style.top = position.top + 'px'
     }
   })
   // It's necessary re-render 3D canvas when snapshot is taken, so .toDataUrl returns the correct image.
   // In this case, it's most likely the earthquake-canvas-layer which exposes those custom properties
   // (but other canvases can follow this convention in case of need).
-  Array.from(document.querySelectorAll('canvas')).forEach(canvas => {
-    if (canvas.canvas3D && canvas.render) {
-      canvas.render()
-    }
+  Array.from(document.querySelectorAll('.canvas-3d')).forEach(canvas => {
+    if (canvas.render) canvas.render()
   })
 
   // Setup cleanup function executed after snapshot has been taken.
   Shutterbug.on('asyouwere', afterSnapshotHandler)
   function afterSnapshotHandler() {
-    oldTransforms.forEach((transform, elem) => {
-      elem.style[TRANSFORM] = transform
-      elem.style.left = ''
-      elem.style.top = ''
+    oldStyles.forEach((oldStyle, elem) => {
+      elem.style[TRANSFORM] = oldStyle.transform
+      elem.style.left = oldStyle.left
+      elem.style.top = oldStyle.top
     })
     Shutterbug.off('asyouwere', afterSnapshotHandler)
   }
-}
-
-function getCoordsFromTransform(transformString) {
-  const match = transformString.match(TRANSLATE_REGEXP)
-  return match && {left: match[2], top: match[3]}
 }

@@ -25,7 +25,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     // [ Shutterbug support ]
     // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
     // so .toDataUrl returns correct image. This method is used by shutterbug-support.js module.
-    this._canvas.canvas3D = true
+    DomUtil.addClass(this._canvas, 'canvas-3d')
     this._canvas.render = this.render.bind(this)
   },
 
