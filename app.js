@@ -61024,7 +61024,7 @@
 	    // [ Shutterbug support ]
 	    // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
 	    // so .toDataUrl returns correct image. This method is used by shutterbug-support.js module.
-	    this._canvas.canvas3D = true;
+	    _leaflet.DomUtil.addClass(this._canvas, 'canvas-3d');
 	    this._canvas.render = this.render.bind(this);
 	  },
 
@@ -92756,10 +92756,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	window.$ = _jquery2.default;
-
 	var TRANSFORM = _leaflet2.default.DomUtil.TRANSFORM;
-	var TRANSLATE_REGEXP = /translate3d\((-?\d+px), (-?\d+px)/;
+	var TRANSLATE_REGEXP = /translate(3d)?\((-?\d+px), (-?\d+px)/;
 
 	function enableShutterbug(appClassName) {
 	  _shutterbug2.default.enable('.' + appClassName);
@@ -92776,36 +92774,37 @@
 	// for element which require that (map pane, markers). It also setups a handler that restores
 	// the original styles after snapshot has been taken.
 	function beforeSnapshotHandler() {
-	  var oldTransforms = new _map2.default();
+	  var oldStyles = new _map2.default();
 	  (0, _from2.default)(document.querySelectorAll('.leaflet-container *')).forEach(function (elem) {
-	    var coords = !!elem.style[TRANSFORM] && getCoordsFromTransform(elem.style[TRANSFORM]);
-	    if (coords) {
-	      oldTransforms.set(elem, elem.style[TRANSFORM]);
-	      elem.style[TRANSFORM] = 'translate(' + coords.left + ', ' + coords.top + ')';
+	    if (!!elem.style[TRANSFORM]) {
+	      oldStyles.set(elem, {
+	        transform: elem.style[TRANSFORM],
+	        left: elem.style.left,
+	        top: elem.style.top
+	      });
+	      var position = (0, _jquery2.default)(elem).position();
+	      elem.style[TRANSFORM] = '';
+	      elem.style.left = position.left + 'px';
+	      elem.style.top = position.top + 'px';
 	    }
 	  });
 	  // It's necessary re-render 3D canvas when snapshot is taken, so .toDataUrl returns the correct image.
 	  // In this case, it's most likely the earthquake-canvas-layer which exposes those custom properties
 	  // (but other canvases can follow this convention in case of need).
-	  (0, _from2.default)(document.querySelectorAll('canvas')).forEach(function (canvas) {
-	    if (canvas.canvas3D && canvas.render) {
-	      canvas.render();
-	    }
+	  (0, _from2.default)(document.querySelectorAll('.canvas-3d')).forEach(function (canvas) {
+	    if (canvas.render) canvas.render();
 	  });
 
 	  // Setup cleanup function executed after snapshot has been taken.
 	  _shutterbug2.default.on('asyouwere', afterSnapshotHandler);
 	  function afterSnapshotHandler() {
-	    oldTransforms.forEach(function (transform, elem) {
-	      elem.style[TRANSFORM] = transform;
+	    oldStyles.forEach(function (oldStyle, elem) {
+	      elem.style[TRANSFORM] = oldStyle.transform;
+	      elem.style.left = oldStyle.left;
+	      elem.style.top = oldStyle.top;
 	    });
 	    _shutterbug2.default.off('asyouwere', afterSnapshotHandler);
 	  }
-	}
-
-	function getCoordsFromTransform(transformString) {
-	  var match = transformString.match(TRANSLATE_REGEXP);
-	  return match && { left: match[1], top: match[2] };
 	}
 
 /***/ },
