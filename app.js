@@ -61011,6 +61011,7 @@
 
 	  _initCanvas: function _initCanvas() {
 	    _canvasLayer.CanvasLayer.prototype._initCanvas.call(this);
+	    _leaflet.DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer');
 	    // Init PIXI too.
 	    this._container = new _pixi2.default.Container();
 	    this._renderer = _pixi2.default.autoDetectRenderer(0, 0, {
@@ -92599,7 +92600,7 @@
 
 
 	// module
-	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .map-controls-top {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  font-size: 16px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin-bottom: 4px;\n}\n.seismic-eruptions-map .map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n", ""]);
+	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .earthquakes-canvas-layer {\n  /* z-index = 1, so earthquakes are above other overlays (e.g. plate boundaries), but under the buttons */\n  z-index: 1;\n}\n.seismic-eruptions-map .map-controls-top {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  width: 26px;\n  height: 26px;\n  font-size: 16px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin-bottom: 4px;\n}\n.seismic-eruptions-map .map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n", ""]);
 
 	// exports
 
@@ -92749,10 +92750,16 @@
 
 	var _leaflet2 = _interopRequireDefault(_leaflet);
 
+	var _jquery = __webpack_require__(1060);
+
+	var _jquery2 = _interopRequireDefault(_jquery);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	window.$ = _jquery2.default;
+
 	var TRANSFORM = _leaflet2.default.DomUtil.TRANSFORM;
-	var TRANSLATE_REGEXP = /translate(3d)?\((-?\d+px), (-?\d+px)/;
+	var TRANSLATE_REGEXP = /translate3d\((-?\d+px), (-?\d+px)/;
 
 	function enableShutterbug(appClassName) {
 	  _shutterbug2.default.enable('.' + appClassName);
@@ -92774,9 +92781,7 @@
 	    var coords = !!elem.style[TRANSFORM] && getCoordsFromTransform(elem.style[TRANSFORM]);
 	    if (coords) {
 	      oldTransforms.set(elem, elem.style[TRANSFORM]);
-	      elem.style[TRANSFORM] = '';
-	      elem.style.left = coords.left;
-	      elem.style.top = coords.top;
+	      elem.style[TRANSFORM] = 'translate(' + coords.left + ', ' + coords.top + ')';
 	    }
 	  });
 	  // It's necessary re-render 3D canvas when snapshot is taken, so .toDataUrl returns the correct image.
@@ -92793,8 +92798,6 @@
 	  function afterSnapshotHandler() {
 	    oldTransforms.forEach(function (transform, elem) {
 	      elem.style[TRANSFORM] = transform;
-	      elem.style.left = '';
-	      elem.style.top = '';
 	    });
 	    _shutterbug2.default.off('asyouwere', afterSnapshotHandler);
 	  }
@@ -92802,7 +92805,7 @@
 
 	function getCoordsFromTransform(transformString) {
 	  var match = transformString.match(TRANSLATE_REGEXP);
-	  return match && { left: match[2], top: match[3] };
+	  return match && { left: match[1], top: match[2] };
 	}
 
 /***/ },
