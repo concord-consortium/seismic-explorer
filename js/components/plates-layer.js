@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
-import { LayerGroup } from 'react-leaflet'
+import { MapLayer } from 'react-leaflet'
 // Import plugin using imports-loader.
 import 'imports?L=leaflet!leaflet-plugins/layer/vector/KML'
 import L from 'leaflet'
@@ -14,13 +14,13 @@ function getKML() {
 }
 
 @pureRender
-export default class PlatesLayer extends LayerGroup {
-  constructor(props) {
-    super(props)
+export default class PlatesLayer extends MapLayer {
+  componentWillMount() {
+    super.componentWillMount();
+    this.leafletElement = getKML()
   }
 
-  componentDidMount() {
-    super.componentDidMount()
-    this.leafletElement.addLayer(getKML())
+  render() {
+    return null
   }
 }
