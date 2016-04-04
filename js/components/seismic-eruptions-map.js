@@ -156,11 +156,11 @@ export default class SeismicEruptionsMap extends Component {
           {mode === 'cross-section' && <CrossSectionLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>}
         </Map>
         <div className='map-controls-top-left'>
-          {canGoBack && <MapButton onClick={this.handleGoHome}><i className='fa fa-home'/></MapButton>}
-          {canGoBack && <MapButton onClick={this.handleGoUp}><i className='fa fa-arrow-up'/></MapButton>}
+          {canGoBack && <MapButton onClick={this.handleGoHome} icon='home'/>}
+          {canGoBack && <MapButton onClick={this.handleGoUp} icon='arrow-up'/>}
         </div>
         <div className='map-controls-bottom-left'>
-          {boundsChanged && <MapButton onClick={this.fitBounds}><i className='fa fa-map-marker'/></MapButton>}
+          {boundsChanged && <MapButton onClick={this.fitBounds} icon='map-marker'/>}
         </div>
         <div className='map-controls-bottom-right'>
           {mode === '2d' &&
@@ -170,11 +170,11 @@ export default class SeismicEruptionsMap extends Component {
           }
           {mode === 'cross-section' &&
             <div>
-              <MapButton onClick={this.toggle3DMode} disabled={!canOpen3D}>
-                <span><i className='fa fa-cube'/> Open 3D view {!canOpen3D && '(draw a cross section line first!)'}</span>
+              <MapButton onClick={this.toggle3DMode} disabled={!canOpen3D} icon='cube'>
+                <span> Open 3D view {!canOpen3D && '(draw a cross section line first!)'}</span>
               </MapButton>
-              <MapButton onClick={this.toggleCrossSectionMode}>
-                <span><i className='fa fa-close'/> Cancel</span>
+              <MapButton onClick={this.toggleCrossSectionMode} icon='close'>
+                <span> Cancel</span>
               </MapButton>
             </div>
           }
