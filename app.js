@@ -44661,7 +44661,7 @@
 	              'span',
 	              null,
 	              _react2.default.createElement('i', { className: 'fa fa-paint-brush' }),
-	              ' Draw a cross-section and open 3D view'
+	              ' Draw a cross section line and open 3D view'
 	            )
 	          ),
 	          mode === 'cross-section' && _react2.default.createElement(
@@ -44675,7 +44675,7 @@
 	                null,
 	                _react2.default.createElement('i', { className: 'fa fa-cube' }),
 	                ' Open 3D view ',
-	                !canOpen3D && '(draw cross-section first!)'
+	                !canOpen3D && '(draw a cross section line first!)'
 	              )
 	            ),
 	            _react2.default.createElement(
