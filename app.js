@@ -44631,25 +44631,13 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'map-controls-top-left' },
-	          canGoBack && _react2.default.createElement(
-	            _mapButton2.default,
-	            { onClick: this.handleGoHome },
-	            _react2.default.createElement('i', { className: 'fa fa-home' })
-	          ),
-	          canGoBack && _react2.default.createElement(
-	            _mapButton2.default,
-	            { onClick: this.handleGoUp },
-	            _react2.default.createElement('i', { className: 'fa fa-arrow-up' })
-	          )
+	          canGoBack && _react2.default.createElement(_mapButton2.default, { onClick: this.handleGoHome, icon: 'home' }),
+	          canGoBack && _react2.default.createElement(_mapButton2.default, { onClick: this.handleGoUp, icon: 'arrow-up' })
 	        ),
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'map-controls-bottom-left' },
-	          boundsChanged && _react2.default.createElement(
-	            _mapButton2.default,
-	            { onClick: this.fitBounds },
-	            _react2.default.createElement('i', { className: 'fa fa-map-marker' })
-	          )
+	          boundsChanged && _react2.default.createElement(_mapButton2.default, { onClick: this.fitBounds, icon: 'map-marker' })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -44669,22 +44657,20 @@
 	            null,
 	            _react2.default.createElement(
 	              _mapButton2.default,
-	              { onClick: this.toggle3DMode, disabled: !canOpen3D },
+	              { onClick: this.toggle3DMode, disabled: !canOpen3D, icon: 'cube' },
 	              _react2.default.createElement(
 	                'span',
 	                null,
-	                _react2.default.createElement('i', { className: 'fa fa-cube' }),
 	                ' Open 3D view ',
 	                !canOpen3D && '(draw a cross section line first!)'
 	              )
 	            ),
 	            _react2.default.createElement(
 	              _mapButton2.default,
-	              { onClick: this.toggleCrossSectionMode },
+	              { onClick: this.toggleCrossSectionMode, icon: 'close' },
 	              _react2.default.createElement(
 	                'span',
 	                null,
-	                _react2.default.createElement('i', { className: 'fa fa-close' }),
 	                ' Cancel'
 	              )
 	            )
@@ -92947,10 +92933,13 @@
 	      var onClick = _props.onClick;
 	      var disabled = _props.disabled;
 	      var children = _props.children;
+	      var icon = _props.icon;
 
+	      console.log(children);
 	      return _react2.default.createElement(
 	        'div',
-	        { className: 'map-button ' + (disabled ? 'disabled' : ''), onClick: onClick },
+	        { className: 'map-button ' + (disabled ? 'disabled' : '') + ' ' + (icon && !children ? 'icon-only' : ''), onClick: onClick },
+	        icon && _react2.default.createElement('i', { className: 'fa fa-' + icon }),
 	        children
 	      );
 	    }
@@ -92995,7 +92984,7 @@
 
 
 	// module
-	exports.push([module.id, ".map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  padding: 10px 10px 6px 10px;\n  font-size: 16px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  padding-top: 4px;\n  text-align: center;\n  margin: 4px;\n}\n.map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n.map-button.disabled {\n  color: #999;\n  pointer-events: none;\n  cursor: default;\n  opacity: 0.9;\n}\n", ""]);
+	exports.push([module.id, ".map-button {\n  color: #444;\n  background: #fff;\n  border-radius: 4px;\n  padding: 4px 10px 6px 10px;\n  font-size: 16px;\n  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);\n  cursor: pointer;\n  text-align: center;\n  margin: 4px;\n}\n.map-button.icon-only {\n  width: 26px;\n  height: 26px;\n  padding: 4px 0 0 0;\n}\n.map-button:hover {\n  background: #f4f4f4;\n  color: #000;\n}\n.map-button.disabled {\n  color: #999;\n  pointer-events: none;\n  cursor: default;\n  opacity: 0.9;\n}\n", ""]);
 
 	// exports
 
@@ -93159,7 +93148,7 @@
 
 
 	// module
-	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n  /* Earthquakes should be above SVG elements (plate boundaries) */\n  /* Set of styles applied only when user enters cross section drawing mode */\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .leaflet-overlay-pane svg {\n  z-index: 0;\n}\n.seismic-eruptions-map .leaflet-overlay-pane .earthquakes-canvas-layer {\n  z-index: 1;\n}\n.seismic-eruptions-map.mode-cross-section {\n  /* Earthquakes should be below SVG elements (cross-section line). Also, they shouldn't be clickable. */\n}\n.seismic-eruptions-map.mode-cross-section .leaflet-map-pane {\n  cursor: crosshair;\n}\n.seismic-eruptions-map.mode-cross-section .subregion-icon {\n  display: none;\n}\n.seismic-eruptions-map.mode-cross-section .leaflet-overlay-pane svg {\n  z-index: 1;\n}\n.seismic-eruptions-map.mode-cross-section .leaflet-overlay-pane .earthquakes-canvas-layer {\n  z-index: 0;\n}\n.seismic-eruptions-map .map-controls-top-left {\n  position: absolute;\n  left: 10px;\n  top: 80px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom-left {\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom-right {\n  position: absolute;\n  right: 10px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom-right .map-button {\n  display: inline-block;\n}\n", ""]);
+	exports.push([module.id, ".seismic-eruptions-map {\n  position: relative;\n  height: 100%;\n  /* Earthquakes should be above SVG elements (plate boundaries) */\n  /* Set of styles applied only when user enters cross section drawing mode */\n}\n.seismic-eruptions-map .map {\n  height: 100%;\n}\n.seismic-eruptions-map .leaflet-overlay-pane svg {\n  z-index: 0;\n}\n.seismic-eruptions-map .leaflet-overlay-pane .earthquakes-canvas-layer {\n  z-index: 1;\n}\n.seismic-eruptions-map.mode-cross-section {\n  /* Earthquakes should be below SVG elements (cross-section line). Also, they shouldn't be clickable. */\n}\n.seismic-eruptions-map.mode-cross-section .leaflet-map-pane {\n  cursor: crosshair;\n}\n.seismic-eruptions-map.mode-cross-section .subregion-icon {\n  display: none;\n}\n.seismic-eruptions-map.mode-cross-section .leaflet-overlay-pane svg {\n  z-index: 1;\n}\n.seismic-eruptions-map.mode-cross-section .leaflet-overlay-pane .earthquakes-canvas-layer {\n  z-index: 0;\n}\n.seismic-eruptions-map .map-controls-top-left {\n  position: absolute;\n  left: 6px;\n  top: 80px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom-left {\n  position: absolute;\n  left: 6px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom-right {\n  position: absolute;\n  right: 6px;\n  bottom: 10px;\n  z-index: 100;\n}\n.seismic-eruptions-map .map-controls-bottom-right .map-button {\n  display: inline-block;\n}\n", ""]);
 
 	// exports
 
