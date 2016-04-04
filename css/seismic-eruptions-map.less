@@ -6,41 +6,58 @@
     height: 100%;
   }
 
-  .earthquakes-canvas-layer {
-    /* z-index = 1, so earthquakes are above other overlays (e.g. plate boundaries), but under the buttons */
-    z-index: 1;
+  /* Earthquakes should be above SVG elements (plate boundaries) */
+  .leaflet-overlay-pane {
+    svg {
+      z-index: 0;
+    }
+    .earthquakes-canvas-layer {
+      z-index: 1;
+    }
   }
 
-  .map-controls-top {
+  /* Set of styles applied only when user enters cross section drawing mode */
+  &.mode-cross-section {
+    .leaflet-map-pane {
+      cursor: crosshair;
+    }
+
+    .subregion-icon {
+      display: none;
+    }
+
+    /* Earthquakes should be below SVG elements (cross-section line). Also, they shouldn't be clickable. */
+    .leaflet-overlay-pane {
+      svg {
+        z-index: 1;
+      }
+      .earthquakes-canvas-layer {
+        z-index: 0;
+      }
+    }
+  }
+
+  .map-controls-top-left {
     position: absolute;
     left: 10px;
     top: 80px;
     z-index: 100;
   }
 
-  .map-controls-bottom {
+  .map-controls-bottom-left {
     position: absolute;
     left: 10px;
     bottom: 10px;
     z-index: 100;
   }
 
-  .map-button {
-    color: #444;
-    background: #fff;
-    border-radius: 4px;
-    width: 26px;
-    height: 26px;
-    font-size: 16px;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-    cursor: pointer;
-    padding-top: 4px;
-    text-align: center;
-    margin-bottom: 4px;
-
-    &:hover {
-      background: #f4f4f4;
-      color: #000;
+  .map-controls-bottom-right {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 100;
+    .map-button {
+      display: inline-block;
     }
   }
 }

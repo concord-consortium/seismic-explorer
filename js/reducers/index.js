@@ -1,7 +1,8 @@
 import Immutable, { Map, List } from 'immutable'
 import {
   REQUEST_DATA, RECEIVE_DATA, RECEIVE_EARTHQUAKES, RECEIVE_REGION, RECEIVE_ERROR, INVALIDATE_DATA,
-  SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, UPDATE_REGIONS_HISTORY
+  SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, UPDATE_REGIONS_HISTORY, SET_MODE,
+  SET_CROSS_SECTION_POINT
 } from '../actions'
 
 function dataStatus(state = Map(), action) {
@@ -122,6 +123,25 @@ function regionsHistory(state = List(), action) {
   }
 }
 
+// '2d', 'cross-section', '3d'
+function mode(state = '2d', action) {
+  switch (action.type) {
+    case SET_MODE:
+      return action.value
+    default:
+      return state;
+  }
+}
+
+function crossSectionPoints(state = List(), action) {
+  switch (action.type) {
+    case SET_CROSS_SECTION_POINT:
+      return state.set(action.index, action.latLng)
+    default:
+      return state;
+  }
+}
+
 const INITIAL_STATE = Map({
   filteredEarthquakes: []
 })
@@ -137,6 +157,8 @@ export default function reducer(state = INITIAL_STATE, action) {
               .set('layers', layers(state.get('layers'), action))
               .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
               .set('regionsHistory', regionsHistory(state.get('regionsHistory'), action))
+              .set('mode', mode(state.get('mode'), action))
+              .set('crossSectionPoints', crossSectionPoints(state.get('crossSectionPoints'), action))
               .set('data', newData)
               .set('filters', newFilters)
               // Update filtered earthquakes only if data or filters have been changed.

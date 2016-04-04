@@ -12,6 +12,8 @@ export const SET_FILTER = 'SET_FILTER'
 export const SET_BASE_LAYER = 'SET_BASE_LAYER'
 export const SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE'
 export const SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED'
+export const SET_MODE = 'SET_MODE'
+export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
 
 export function updateRegionsHistory(path) {
   return {
@@ -106,5 +108,21 @@ export function setAnimationEnabled(value) {
   return {
     type: SET_ANIMATION_ENABLED,
     value
+  }
+}
+
+// '2d', 'cross-section' or '3d'
+export function setMode(value) {
+  return {
+    type: SET_MODE,
+    value
+  }
+}
+
+export function setCrossSectionPoint(index, latLng) {
+  return {
+    type: SET_CROSS_SECTION_POINT,
+    index,
+    latLng
   }
 }

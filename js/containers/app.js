@@ -48,7 +48,8 @@ class App extends Component {
   }
 
   renderApp() {
-    const { region, earthquakes, layers, animationEnabled, dataFetching, regionsHistory } = this.props
+    const { region, earthquakes, layers, animationEnabled, dataFetching, crossSectionPoints,
+            regionsHistory, mode, setMode, setCrossSectionPoint } = this.props
     // 'with-animation' class enables fancy animation of earthquakes when they are hidden or show.
     // Enable it only when user started animation using play button, as it's too slow for manual
     // filtering using sliders.
@@ -56,8 +57,9 @@ class App extends Component {
       <div>
         {dataFetching && <LoadingIcon/>}
         <div className={`map-container ${animationEnabled ? ' with-animation' : ''}`}>
-          <SeismicEruptionsMap region={region} regionsHistory={regionsHistory}
-                               earthquakes={earthquakes} layers={layers}/>
+          <SeismicEruptionsMap region={region} regionsHistory={regionsHistory} earthquakes={earthquakes} layers={layers}
+                               crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}
+                               mode={mode} setMode={setMode}/>
         </div>
         <div className='controls-container'>
           <Controls/>
@@ -80,12 +82,14 @@ function mapStateToProps(state) {
   return {
     error: state.getIn(['dataStatus', 'error']),
     dataFetching: state.getIn(['dataStatus', 'isFetching']),
+    mode: state.get('mode'),
     filters: state.get('filters'),
     region: state.get('region'),
     layers: state.get('layers'),
     animationEnabled: state.get('animationEnabled'),
     earthquakes: state.get('filteredEarthquakes'),
-    regionsHistory: state.get('regionsHistory')
+    regionsHistory: state.get('regionsHistory'),
+    crossSectionPoints: state.get('crossSectionPoints')
   }
 }
 
