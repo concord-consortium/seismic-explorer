@@ -10,15 +10,15 @@ export function invisibleIcon() {
   return new DivIcon({className: 'invisible-icon'})
 }
 
-export function circleIcon() {
-  return new DivIcon({className: 'circle-icon'})
+export function circleIcon(label) {
+  return new DivIcon({className: 'circle-icon', html: label})
 }
 
 // Cache icons. First, it's just faster. Second, it prevents us from unnecessary re-rendering and buttons blinking.
 const iconsCache = {}
 
 export function getCachedSubregionIcon(label, url) {
-  const iconKey = label + url
+  const iconKey = 'subregion' + label + url
   if (!iconsCache[iconKey]) iconsCache[iconKey] = subregionIcon(label, url)
   return iconsCache[iconKey]
 }
@@ -30,8 +30,8 @@ export function getCachedInvisibleIcon() {
 }
 
 
-export function getCachedCircleIcon() {
-  const iconKey = 'circle-icon'
+export function getCachedCircleIcon(label) {
+  const iconKey = 'circle-icon' + label
   if (!iconsCache[iconKey]) iconsCache[iconKey] = circleIcon()
   return iconsCache[iconKey]
 }
