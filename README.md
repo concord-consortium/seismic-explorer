@@ -1,5 +1,16 @@
 # Seismic Eruptions
 
+Latest **stable** version:
+
+http://models-resources.concord.org/seismic-eruptions/index.html
+
+Latest **development** version:
+
+http://models-resources.concord.org/seismic-eruptions/branch/master/index.html
+
+Old versions can be accessed via `/version/<tag>` path, e.g.:
+
+http://models-resources.concord.org/seismic-eruptions/version/0.1.0/index.html
 
 ## Development
 
