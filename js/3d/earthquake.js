@@ -1,5 +1,5 @@
 import THREE from 'three'
-import { depthToColor, magnitudeToRadius, easeOutBounce, TRANSITION_TIME } from '../custom-leaflet/earthquake-sprite'
+import { depthToColor, magnitudeToRadius, easeOutBounce, TRANSITION_TIME } from '../earthquake-properties'
 
 const TRANSITION_COLOR = 0xFFFFFF
 
