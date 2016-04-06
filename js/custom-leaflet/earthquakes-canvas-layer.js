@@ -15,7 +15,8 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer')
     // Init PIXI too.
     this._container = new PIXI.Container()
-    this._renderer = PIXI.autoDetectRenderer(0, 0, {
+    // PIXI.autoDetectRenderer may cause some memory leaks and warnings about too many WebGL contexts.
+    this._renderer = new PIXI.WebGLRenderer(0, 0, {
       view: this._canvas,
       transparent: true,
       resolution: window.devicePixelRatio
@@ -27,6 +28,13 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     // so .toDataUrl returns correct image. This method is used by shutterbug-support.js module.
     DomUtil.addClass(this._canvas, 'canvas-3d')
     this._canvas.render = this.render.bind(this)
+  },
+
+  onRemove: function (map) {
+    CanvasLayer.prototype.onRemove.call(this, map)
+    // Very important, without it, there's a significant memory leak (each time this layer is added and removed,
+    // what may happen quite often).
+    this._renderer.destroy()
   },
 
   setEarthquakes: function (earthquakes) {

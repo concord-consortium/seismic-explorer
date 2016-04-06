@@ -68,6 +68,9 @@ function filters(state = INITIAL_FILTERS, action) {
   switch (action.type) {
     case RECEIVE_EARTHQUAKES:
       const time = timeRange(action.response.features)
+      // Extend time range a bit, so we don't filter out the first and the last earthquake.
+      time.min -= 1
+      time.max += 1
       return state.set('minTime', time.min)
                   // It's intentional, no earthquakes should be visible when they're loaded.
                   .set('maxTime', time.min)

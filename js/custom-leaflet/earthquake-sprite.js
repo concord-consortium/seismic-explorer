@@ -1,6 +1,6 @@
 import PIXI from 'pixi.js'
 
-const TRANSITION_TIME = 750
+export const TRANSITION_TIME = 750
 const TEXTURE_RESOLUTION = 12
 
 export default class EarthquakeSprite extends PIXI.Sprite {
@@ -115,7 +115,7 @@ function transitionTexture() {
 
 // Generated using:
 // http://www.timotheegroleau.com/Flash/experiments/easing_function_generator.htm
-function easeOutBounce(t) {
+export function easeOutBounce(t) {
   let ts = t * t
   let tc = ts * t
   return 33 * tc * ts + -106 * ts * ts + 126 * tc + -67 * ts + 15 * t

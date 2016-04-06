@@ -39,7 +39,7 @@ module.exports = {
     postLoaders: [
       {
         include: path.resolve(__dirname, 'node_modules/pixi.js'),
-        loader: 'transform?brfs'
+        loader: 'transform/cacheable?brfs'
       }
     ]
   },

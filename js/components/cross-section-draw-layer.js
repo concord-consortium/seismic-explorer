@@ -68,7 +68,7 @@ export default class CrossSectionLayer extends Component {
         {point1 && <Marker position={point1} draggable={true} icon={circleIcon('P1')} onLeafletDrag={this.setPoint1}/>}
         {point2 && <Marker position={point2} draggable={true} icon={circleIcon('P2')} onLeafletDrag={this.setPoint2}/>}
         {point1 && point2 && <Polyline clickable={false} className='cross-section-line' positions={[point1, point2]} color='#fff' opacity={1}/>}
-        {rect && <Polygon positions={rect} clickable={false} color='#fff' weight={2} onLeafletDrag={() => console.log('kkk')}/>}
+        {rect && <Polygon positions={rect} clickable={false} color='#fff' weight={2}/>}
       </LayerGroup>
     )
   }

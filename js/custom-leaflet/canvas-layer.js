@@ -25,9 +25,6 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
   // Overwrite.
   draw: function () {},
 
-  // Overwrite.
-  onAddCallback: function () {},
-
   onAdd: function (map) {
     this._map = map
 
@@ -44,7 +41,6 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
     }
 
     this._reset()
-    this.onAddCallback()
   },
 
   onRemove: function (map) {

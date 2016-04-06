@@ -42,7 +42,7 @@ function long() {
 }
 
 function depth() {
-  return 10
+  return 600 * Math.random()
 }
 
 function magnitude() {

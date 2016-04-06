@@ -14,6 +14,17 @@
     bottom: 4.5em;
   }
 
+  /* Move Leaflet map under the 3D view in 3D mode */
+  .mode-3d .seismic-eruptions-map {
+    z-index: -1;
+  }
+
+  .cross-section-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
   .controls-container {
     position: absolute;
     bottom: 0;

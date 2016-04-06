@@ -6,7 +6,7 @@ import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import PlatesLayer from './plates-layer'
 import SubregionButtons from './subregion-buttons'
-import CrossSectionLayer from './cross-section-layer'
+import CrossSectionDrawLayer from './cross-section-draw-layer'
 import MapKey from './map-key'
 import MapButton from './map-button'
 import addTouchSupport from '../custom-leaflet/touch-support'
@@ -42,6 +42,10 @@ export default class SeismicEruptionsMap extends Component {
 
   get map() {
     return this.refs.map.getLeafletElement()
+  }
+
+  latLngToPoint(latLng) {
+    return this.map.latLngToContainerPoint(latLng)
   }
 
   componentDidMount() {
@@ -108,9 +112,8 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   toggle3DMode() {
-    // 3D mode is not implemented yet.
-    //const { setMode } = this.props
-    // if (this.canOpen3D()) setMode('3d')
+    const { setMode } = this.props
+    if (this.canOpen3D()) setMode('3d')
   }
 
   canGoBack() {
@@ -150,10 +153,15 @@ export default class SeismicEruptionsMap extends Component {
         <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
-          <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
+          {mode !== '3d' &&
+            /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
+            <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
+          }
           <SubregionButtons subregions={region.get('subregions')} onSubregionClick={goToRegion}/>
           <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
-          {mode === 'cross-section' && <CrossSectionLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>}
+          {mode === 'cross-section' &&
+            <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>
+          }
         </Map>
         <div className='map-controls-top-left'>
           {canGoBack && <MapButton onClick={this.handleGoHome} icon='home'/>}

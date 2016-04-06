@@ -32,6 +32,7 @@
     "json-loader": "^0.5.4",
     "less": "^2.6.0",
     "less-loader": "^2.2.2",
+    "raw-loader": "^0.5.1",
     "style-loader": "^0.13.0",
     "transform-loader": "^0.2.3",
     "url-loader": "^0.5.7",
@@ -61,6 +62,7 @@
     "redux-logger": "^2.6.1",
     "redux-thunk": "^1.0.3",
     "screenfull": "^3.0.0",
-    "shutterbug": "^0.6.0"
+    "shutterbug": "^0.6.0",
+    "three": "^0.75.0"
   }
 }
