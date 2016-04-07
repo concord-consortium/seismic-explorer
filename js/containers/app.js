@@ -79,7 +79,8 @@ class App extends Component {
                                setCrossSectionPoint={setCrossSectionPoint}
                                mode={mode} setMode={setMode}/>
           {mode === '3d' &&
-            <CrossSection3D earthquakes={earthquakes} latLngToPoint={this.latLngToPoint} setMode={setMode}/>
+            <CrossSection3D earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
+                            latLngToPoint={this.latLngToPoint} setMode={setMode}/>
           }
         </div>
         <div className='controls-container'>

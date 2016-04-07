@@ -11,8 +11,10 @@ export default class {
     this.color = depthToColor(data.geometry.coordinates[2])
     this.size = magnitudeToDiameter(data.properties.mag)
 
-    this.idx = idx
+    // Particle system attributes (position, customColor, size). See earthquakes.js.
     this.attributes = attributes
+    // Index in attribute arrays.
+    this.idx = idx
 
     this.targetVisibility = data.visible ? 1 : 0
     this.transition = 0

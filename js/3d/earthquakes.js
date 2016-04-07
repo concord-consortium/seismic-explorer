@@ -5,7 +5,7 @@ import Earthquake from './earthquake'
 import PIXI from 'pixi.js'
 
 const TEXTURE_RESOLUTION = 128
-const MAX_COUNT = 200000
+const MAX_COUNT = 100000
 
 export default class {
   constructor(latLngDepthToPoint) {
@@ -36,7 +36,6 @@ export default class {
 
     this.particles = new THREE.Points(geometry, material)
 
-    this._data = []
     this._renderedEarthquakes = []
   }
 
@@ -86,10 +85,11 @@ export default class {
 }
 
 function getTexture() {
-    const g = new PIXI.Graphics()
-    g.lineStyle(0.06, 0x000000, 1)
-    g.beginFill(0xFFFFFF, 1)
-    g.drawCircle(0.5, 0.5, 0.47)
-    g.endFill()
-    return g.generateTexture(null, TEXTURE_RESOLUTION).baseTexture.source
+  // Use PIXI to draw a circle and return canvas that can be used as a texture source by THREE.
+  const g = new PIXI.Graphics()
+  g.lineStyle(0.06, 0x000000, 1)
+  g.beginFill(0xFFFFFF, 1)
+  g.drawCircle(0.5, 0.5, 0.47)
+  g.endFill()
+  return g.generateTexture(null, TEXTURE_RESOLUTION).baseTexture.source
 }
