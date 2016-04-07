@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
-import { magnitudeToRadius, depthToColor } from '../custom-leaflet/earthquake-sprite'
+import { magnitudeToRadius, depthToColor } from '../earthquake-properties'
 
 import '../../css/map-key.less'
 
@@ -35,11 +35,11 @@ export default class MapKey extends Component {
           <tbody>
             <tr><th colSpan='2'>Magnitude</th><th colSpan='2'>Depth</th></tr>
             <tr><td>{circle(3)}</td><td>3</td><td>{earthquakeColor(50)}</td><td>0-100 km</td></tr>
-            <tr><td>{circle(4)}</td><td>4</td><td>{earthquakeColor(150)}</td><td>100-200 km</td></tr>
-            <tr><td>{circle(5)}</td><td>5</td><td>{earthquakeColor(250)}</td><td>200-300 km</td></tr>
-            <tr><td>{circle(6)}</td><td>6</td><td>{earthquakeColor(350)}</td><td>300-400 km</td></tr>
-            <tr><td>{circle(7)}</td><td>7</td><td>{earthquakeColor(450)}</td><td>400-500 km</td></tr>
-            <tr><td>{circle(8)}</td><td>8</td><td>{earthquakeColor(550)}</td><td>> 500 km</td></tr>
+            <tr><td>{circle(5)}</td><td>5</td><td>{earthquakeColor(150)}</td><td>100-200 km</td></tr>
+            <tr><td>{circle(6)}</td><td>6</td><td>{earthquakeColor(250)}</td><td>200-300 km</td></tr>
+            <tr><td>{circle(7)}</td><td>7</td><td>{earthquakeColor(350)}</td><td>300-400 km</td></tr>
+            <tr><td>{circle(8)}</td><td>8</td><td>{earthquakeColor(450)}</td><td>400-500 km</td></tr>
+            <tr><td>{circle(9)}</td><td>9</td><td>{earthquakeColor(550)}</td><td>> 500 km</td></tr>
           </tbody>
         </table>
         { showBoundariesInfo &&
@@ -61,8 +61,8 @@ export default class MapKey extends Component {
 }
 
 function circle(magnitude) {
-  return <svg xmlns='http://www.w3.org/2000/svg' width='34' height='34'>
-           <circle cx='17' cy='17' r={magnitudeToRadius(magnitude)} stroke='black' fill='rgba(0,0,0,0)'/>
+  return <svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'>
+           <circle cx='24' cy='24' r={magnitudeToRadius(magnitude)} stroke='black' fill='rgba(0,0,0,0)'/>
          </svg>
 }
 
