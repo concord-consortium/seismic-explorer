@@ -4,6 +4,7 @@ import {
   SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, UPDATE_REGIONS_HISTORY, SET_MODE,
   SET_CROSS_SECTION_POINT
 } from '../actions'
+import { swapCoords, sortByTime, polygonToPoint, timeRange } from '../data/helpers'
 
 function dataStatus(state = Map(), action) {
   switch (action.type) {
@@ -62,7 +63,8 @@ const INITIAL_FILTERS = Map({
   minTime: 0,
   maxTime: 0,
   minTimeLimit: 0,
-  maxTimeLimit: 0
+  maxTimeLimit: 0,
+  crossSection: false
 })
 function filters(state = INITIAL_FILTERS, action) {
   switch (action.type) {
@@ -145,16 +147,7 @@ function crossSectionPoints(state = List(), action) {
   }
 }
 
-const INITIAL_STATE = Map({
-  filteredEarthquakes: []
-})
-export default function reducer(state = INITIAL_STATE, action) {
-  const oldData = state.get('data')
-  const newData = data(oldData, action)
-  const oldFilters = state.get('filters')
-  const newFilters = filters(oldFilters, action)
-  // We can use simple comparison as we use ImmutableJS structures.
-  const filtersOrDataUpdated = oldData !== newData || oldFilters !== newFilters
+export default function reducer(state = Map(), action) {
   return state.set('dataStatus', dataStatus(state.get('dataStatus'), action))
               .set('region', region(state.get('region'), action))
               .set('layers', layers(state.get('layers'), action))
@@ -162,70 +155,6 @@ export default function reducer(state = INITIAL_STATE, action) {
               .set('regionsHistory', regionsHistory(state.get('regionsHistory'), action))
               .set('mode', mode(state.get('mode'), action))
               .set('crossSectionPoints', crossSectionPoints(state.get('crossSectionPoints'), action))
-              .set('data', newData)
-              .set('filters', newFilters)
-              // Update filtered earthquakes only if data or filters have been changed.
-              // Otherwise, reuse old data. It ensures that we won't update React components when it's not needed.
-              .set('filteredEarthquakes', newData && filtersOrDataUpdated ? calcEarthquakes(newData, newFilters) : state.get('filteredEarthquakes'))
-}
-
-const calcEarthquakes = (data, filters) => {
-  const minMag = filters.get('minMag')
-  const maxMag = filters.get('maxMag')
-  const minTime = filters.get('minTime')
-  const maxTime = filters.get('maxTime')
-  // Two important notes:
-  // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
-  // - Yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
-  const result = []
-  for (let i = 0, len = data.length; i < len; i++) {
-    const eq = data[i]
-    const props = eq.properties
-    eq.visible = props.mag > minMag &&
-                 props.mag < maxMag &&
-                 props.time > minTime &&
-                 props.time < maxTime
-    result.push(eq)
-  }
-  return result
-}
-
-const swapCoords = (data) => {
-  data.forEach(point => {
-    const tmp = point.geometry.coordinates[0]
-    point.geometry.coordinates[0] = point.geometry.coordinates[1]
-    point.geometry.coordinates[1] = tmp
-  })
-  return data
-}
-
-const sortByTime = (data) => {
-  return data.sort((a, b) => a.properties.time - b.properties.time)
-}
-
-const polygonToPoint = (data) => {
-  data.forEach(polygon => {
-    if (polygon.geometry.type === 'Point') return
-    const coords = polygon.geometry.coordinates[0]
-    let avgLat = 0
-    let avgLong = 0
-    coords.forEach(c => {
-      avgLong += c[0]
-      avgLat += c[1]
-    })
-    polygon.geometry.coordinates[0] = avgLat / coords.length
-    polygon.geometry.coordinates[1] = avgLong / coords.length
-    polygon.geometry.type = 'Point'
-  })
-  return data
-}
-
-const timeRange = (data) => {
-  let min = Infinity
-  let max = -Infinity
-  data.forEach(eq => {
-    if (eq.properties.time > max) max = eq.properties.time
-    if (eq.properties.time < min) min = eq.properties.time
-  })
-  return {min, max}
+              .set('data', data(state.get('data'), action))
+              .set('filters', filters(state.get('filters'), action))
 }

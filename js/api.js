@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch'
-import { fakeRegion, fakeDataset } from './fake-data'
+import { fakeRegion, fakeDataset } from './data/fake-data'
 
 class Cache {
   constructor() {

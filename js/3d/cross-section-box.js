@@ -1,5 +1,5 @@
 import THREE from 'three'
-import { crossSectionRectangle } from '../core'
+import crossSectionRectangle from '../core/cross-section-rectangle'
 
 const BOX_DEPTH = 700 // km
 const POINT_SIZE = 40 // px

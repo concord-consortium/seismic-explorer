@@ -2,14 +2,7 @@ import L from 'leaflet'
 
 const CROSS_SECTION_RECTANGLE_ASPECT_RATIO = 0.4
 
-// Converts Leaflet.LatLng or Leaflet.Point to array.
-export function pointToArray(point) {
-  if (point.lat !== undefined) return [point.lat, point.lng]
-  if (point.x !== undefined) return [point.x, point.y]
-  return point
-}
-
-export function crossSectionRectangle(point1, point2) {
+export default function crossSectionRectangle(point1, point2) {
   if (!point1 || !point2) return null
   // Projection is necessary, as otherwise rectangle wouldn't look like rectangle on the map.
   point1 = project(point1)
@@ -19,6 +12,13 @@ export function crossSectionRectangle(point1, point2) {
   const middle2 = pointBetween(point2, point1, ratio)
   return [unproject(rotate(point1, middle1, 90)), unproject(rotate(point1, middle1, -90)),
           unproject(rotate(point2, middle2, 90)), unproject(rotate(point2, middle2, -90))]
+}
+
+// Converts Leaflet.LatLng or Leaflet.Point to array.
+export function pointToArray(point) {
+  if (point.lat !== undefined) return [point.lat, point.lng]
+  if (point.x !== undefined) return [point.x, point.y]
+  return point
 }
 
 function project(latLngArray) {

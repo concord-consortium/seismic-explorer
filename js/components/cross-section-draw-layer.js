@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { LayerGroup, Marker, Polyline, Polygon } from 'react-leaflet'
 import { circleIcon, getCachedCircleIcon } from '../custom-leaflet/icons'
-import { pointToArray, crossSectionRectangle } from '../core'
+import crossSectionRectangle, { pointToArray } from '../core/cross-section-rectangle'
 
 const MOUSE_DOWN = 'mousedown touchstart'
 const MOUSE_MOVE = 'mousemove touchmove'

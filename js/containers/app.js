@@ -7,6 +7,7 @@ import SeismicEruptionsMap from '../components/seismic-eruptions-map'
 import CrossSection3D from '../components/cross-section-3d'
 import LoadingIcon from '../components/loading-icon'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
+import filteredEarthquakes from '../core/filtered-earthquakes'
 
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
@@ -69,7 +70,7 @@ class App extends Component {
 
   renderApp() {
     const { region, earthquakes, layers, dataFetching, crossSectionPoints,
-            regionsHistory, mode, setMode, setCrossSectionPoint } = this.props
+            regionsHistory, mode, setMode, setCrossSectionPoint, setFilter } = this.props
     return (
       <div>
         {dataFetching && <LoadingIcon/>}
@@ -77,7 +78,7 @@ class App extends Component {
           <SeismicEruptionsMap ref='map' region={region} regionsHistory={regionsHistory} earthquakes={earthquakes}
                                layers={layers} crossSectionPoints={crossSectionPoints}
                                setCrossSectionPoint={setCrossSectionPoint}
-                               mode={mode} setMode={setMode}/>
+                               mode={mode} setMode={setMode} setFilter={setFilter}/>
           {mode === '3d' &&
             <CrossSection3D earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
                             latLngToPoint={this.latLngToPoint} setMode={setMode}/>
@@ -108,7 +109,7 @@ function mapStateToProps(state) {
     filters: state.get('filters'),
     region: state.get('region'),
     layers: state.get('layers'),
-    earthquakes: state.get('filteredEarthquakes'),
+    earthquakes: filteredEarthquakes(state),
     regionsHistory: state.get('regionsHistory'),
     crossSectionPoints: state.get('crossSectionPoints')
   }
