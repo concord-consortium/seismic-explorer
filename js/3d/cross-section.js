@@ -9,6 +9,7 @@ const MAX_DEPTH = 800
 const renderer = new THREE.WebGLRenderer()
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setClearColor(0x000000, 1)
+renderer.autoClear = false
 
 export default class {
   constructor(parentEl) {
@@ -73,7 +74,12 @@ export default class {
     this.controls.update()
     this.earthquakes.update(progress)
     this.crossSectionBox.update(this.camera)
+
+    renderer.clear()
     renderer.render(this.scene, this.camera)
+    renderer.clearDepth()
+    renderer.render(this.sceneOverlay, this.camera)
+
     this._prevTimestamp = timestamp
   }
 
@@ -99,8 +105,10 @@ export default class {
 
   _initScene() {
     this.scene = new THREE.Scene()
-    this.scene.add(this.earthquakes.particles)
+    this.sceneOverlay = new THREE.Scene()
+    this.scene.add(this.earthquakes.root)
     this.scene.add(this.crossSectionBox.root)
+    this.sceneOverlay.add(this.crossSectionBox.overlay)
   }
 
   _initCamera() {

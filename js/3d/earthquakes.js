@@ -2,9 +2,7 @@ import THREE from 'three'
 import vertexShader from 'raw!./earthquakes-vertex.glsl'
 import fragmentShader from 'raw!./earthquakes-fragment.glsl'
 import Earthquake from './earthquake'
-import PIXI from 'pixi.js'
 
-const TEXTURE_RESOLUTION = 128
 const MAX_COUNT = 100000
 
 export default class {
@@ -21,8 +19,7 @@ export default class {
     geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1))
 
     // Texture defines base shape.
-    this.texture = new THREE.Texture(getTexture())
-    this.texture.needsUpdate = true
+    this.texture = getTexture()
 
     var material = new THREE.ShaderMaterial({
       uniforms: {
@@ -34,14 +31,14 @@ export default class {
       alphaTest: 0.5,
     })
 
-    this.particles = new THREE.Points(geometry, material)
+    this.root = new THREE.Points(geometry, material)
 
     this._renderedEarthquakes = []
   }
 
   destroy() {
-    this.particles.geometry.dispose()
-    this.particles.material.dispose()
+    this.root.geometry.dispose()
+    this.root.material.dispose()
     this.texture.dispose()
   }
 
@@ -64,15 +61,15 @@ export default class {
       console.warn('Too many earthquakes! Some earthquakes will not be displayed.')
       data = data.splice(0, MAX_COUNT)
     }
-    const attributes = this.particles.geometry.attributes
+    const attributes = this.root.geometry.attributes
     for (let i = 0, length = data.length; i < length; i++) {
-      const eq = data[i]
-      if (!this._renderedEarthquakes[i] || this._renderedEarthquakes[i].id !== eq.id) {
-        const point = this.latLngDepthToPoint(eq.geometry.coordinates)
-        this._renderedEarthquakes[i] = new Earthquake(eq, i, attributes)
+      const eqData = data[i]
+      if (!this._renderedEarthquakes[i] || this._renderedEarthquakes[i].id !== eqData.id) {
+        const point = this.latLngDepthToPoint(eqData.geometry.coordinates)
+        this._renderedEarthquakes[i] = new Earthquake(eqData, i, attributes)
         this._renderedEarthquakes[i].setPositionAttr(point)
       }
-      this._renderedEarthquakes[i].targetVisibility = eq.visible ? 1 : 0
+      this._renderedEarthquakes[i].targetVisibility = eqData.visible ? 1 : 0
     }
     // Reset old data.
     for (let i = data.length, length = this._renderedEarthquakes.length; i < length; i++) {
@@ -85,11 +82,20 @@ export default class {
 }
 
 function getTexture() {
-  // Use PIXI to draw a circle and return canvas that can be used as a texture source by THREE.
-  const g = new PIXI.Graphics()
-  g.lineStyle(0.06, 0x000000, 1)
-  g.beginFill(0xFFFFFF, 1)
-  g.drawCircle(0.5, 0.5, 0.47)
-  g.endFill()
-  return g.generateTexture(null, TEXTURE_RESOLUTION).baseTexture.source
+  const size = 128
+  const strokeWidth = size * 0.06
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  // Point
+  ctx.arc(size / 2, size / 2, size / 2 - strokeWidth / 2, 0, 2 * Math.PI)
+  ctx.fillStyle = '#fff'
+  ctx.fill()
+  ctx.lineWidth = strokeWidth
+  ctx.strokeStyle = '#000'
+  ctx.stroke()
+  const texture = new THREE.Texture(canvas)
+  texture.needsUpdate = true
+  return texture
 }

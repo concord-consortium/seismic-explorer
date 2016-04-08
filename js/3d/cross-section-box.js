@@ -2,7 +2,7 @@ import THREE from 'three'
 import { crossSectionRectangle } from '../core'
 
 const BOX_DEPTH = 700 // km
-const POINT_RADIUS = window.devicePixelRatio * 5
+const POINT_SIZE = 40 // px
 
 export default class {
   constructor(latLngDepthToPoint) {
@@ -16,18 +16,22 @@ export default class {
       transparent: true,
       opacity: 0.2
     })
-    this.circleMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      side: THREE.DoubleSide
-    })
+    this.point1Texture = getPointTexture('P1')
+    this.point2Texture = getPointTexture('P2')
+    this.point1Material = new THREE.SpriteMaterial({map: this.point1Texture})
+    this.point2Material = new THREE.SpriteMaterial({map: this.point2Texture})
     this.root = new THREE.Object3D()
+    this.overlay = new THREE.Object3D()
   }
 
   destroy() {
     this.lineMaterial.dispose()
     this.boxMaterial.dispose()
     this.planeMaterial.dispose()
-    this.circleMaterial.dispose()
+    this.point1Material.dispose()
+    this.point2Material.dispose()
+    this.point1Texture.dispose()
+    this.point2Texture.dispose()
     this.destroyGeometry()
   }
 
@@ -35,24 +39,20 @@ export default class {
     if (this.lineGeometry) this.lineGeometry.dispose()
     if (this.boxGeometry) this.boxGeometry.dispose()
     if (this.planeGeometry) this.planeGeometry.dispose()
-    if (this.circleGeometry) this.circleGeometry.dispose()
   }
 
   setData(crossSectionPoints) {
     this.destroyGeometry()
     const p1 = this.latLngDepthToPoint(crossSectionPoints.get(0))
     const p2 = this.latLngDepthToPoint(crossSectionPoints.get(1))
-    const rect = crossSectionRectangle(crossSectionPoints.get(0), crossSectionPoints.get(1))
-      .map(this.latLngDepthToPoint)
+    const rect = crossSectionRectangle(crossSectionPoints.get(0), crossSectionPoints.get(1)).map(this.latLngDepthToPoint)
     this.replaceLine(p1, p2)
     this.replaceBox(rect)
     this.replacePlane(rect)
-    this.replaceCircles(p1, p2)
+    this.replacePoints(p1, p2)
   }
 
   update(camera) {
-    if (this.circle1) this.circle1.lookAt(camera.position)
-    if (this.circle2) this.circle2.lookAt(camera.position)
   }
 
   replaceLine(p1, p2) {
@@ -101,17 +101,42 @@ export default class {
     this.root.add(this.plane)
   }
 
-  replaceCircles(p1, p2) {
-    if (this.circle1) this.root.remove(this.circle1)
-    if (this.circle2) this.root.remove(this.circle2)
-    this.circleGeometry = new THREE.CircleGeometry(POINT_RADIUS, 16)
-    this.circle1 = new THREE.Mesh(this.circleGeometry, this.circleMaterial)
-    this.circle2 = new THREE.Mesh(this.circleGeometry, this.circleMaterial)
-    this.circle1.position.copy(p1)
-    this.circle2.position.copy(p2)
-    this.root.add(this.circle1)
-    this.root.add(this.circle2)
+  replacePoints(p1, p2) {
+    if (this.point1) this.overlay.remove(this.point1)
+    if (this.point2) this.overlay.remove(this.point2)
+    this.point1 = new THREE.Sprite(this.point1Material)
+    this.point2 = new THREE.Sprite(this.point2Material)
+    this.point1.position.copy(p1)
+    this.point2.position.copy(p2)
+    this.point1.scale.set(POINT_SIZE, POINT_SIZE, 1)
+    this.point2.scale.set(POINT_SIZE, POINT_SIZE, 1)
+    this.overlay.add(this.point1)
+    this.overlay.add(this.point2)
   }
 }
 
-
+function getPointTexture(label) {
+  const size = 64
+  const shadowBlur = size / 4
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  // Point
+  ctx.arc(size / 2, size / 2, size / 2 - shadowBlur, 0, 2 * Math.PI)
+  ctx.fillStyle = '#fff'
+  ctx.shadowColor = 'rgba(0,0,0,0.6)'
+  ctx.shadowBlur = shadowBlur
+  ctx.fill()
+  // Label
+  ctx.fillStyle = '#444'
+  ctx.shadowBlur = 0
+  ctx.shadowColor = 'rgba(0,0,0,0)'
+  ctx.font = `${size * 0.3}px verdana, helvetica, sans-serif`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(label, size / 2, size / 2)
+  const texture = new THREE.Texture(canvas)
+  texture.needsUpdate = true
+  return texture
+}

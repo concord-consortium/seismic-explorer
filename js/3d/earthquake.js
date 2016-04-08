@@ -17,7 +17,7 @@ export default class {
     this.idx = idx
 
     this.targetVisibility = data.visible ? 1 : 0
-    this.transition = 0
+    this.transition = this.targetVisibility
   }
 
   destroy() {
