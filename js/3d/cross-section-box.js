@@ -1,7 +1,7 @@
 import THREE from 'three'
 import crossSectionRectangle from '../core/cross-section-rectangle'
 
-const BOX_DEPTH = 700 // km
+export const BOX_DEPTH = 700 // km
 const POINT_SIZE = 40 // px
 
 export default class {
@@ -53,6 +53,9 @@ export default class {
   }
 
   update(camera) {
+    const pointSize = POINT_SIZE / camera.zoom
+    this.point1.scale.set(pointSize, pointSize, 1)
+    this.point2.scale.set(pointSize, pointSize, 1)
   }
 
   replaceLine(p1, p2) {

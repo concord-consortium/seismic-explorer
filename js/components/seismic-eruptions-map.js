@@ -161,8 +161,8 @@ export default class SeismicEruptionsMap extends Component {
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
           }
-          <SubregionButtons subregions={region.get('subregions')} onSubregionClick={goToRegion}/>
-          <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
+          {mode === '2d' && <SubregionButtons subregions={region.get('subregions')} onSubregionClick={goToRegion}/>}
+          {mode === '2d' && <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>}
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>
           }
