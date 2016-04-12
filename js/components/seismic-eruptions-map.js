@@ -112,12 +112,8 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   toggle3DMode() {
-    const { setMode, setFilter } = this.props
-    if (this.canOpen3D()) {
-      setMode('3d')
-      // Apply cross section box filtering with a small delay, so there's a nice animation visible.
-      setTimeout(() => setFilter('crossSection', true), 500)
-    }
+    const { setMode } = this.props
+    if (this.canOpen3D()) setMode('3d')
   }
 
   canGoBack() {

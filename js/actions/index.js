@@ -113,9 +113,18 @@ export function setAnimationEnabled(value) {
 
 // '2d', 'cross-section' or '3d'
 export function setMode(value) {
-  return {
-    type: SET_MODE,
-    value
+  return dispatch => {
+    dispatch({
+      type: SET_MODE,
+      value
+    })
+    // Mode change should automatically enable or disable cross section region filtering.
+    if (value === '3d') {
+      // Apply cross section box filtering with a small delay, so there's a nice animation visible.
+      setTimeout(() => dispatch(setFilter('crossSection', true)), 500)
+    } else {
+      dispatch(setFilter('crossSection', false))
+    }
   }
 }
 

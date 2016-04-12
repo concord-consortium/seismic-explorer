@@ -2,6 +2,7 @@ import THREE from 'three'
 import 'imports?THREE=three!three/examples/js/controls/OrbitControls'
 import Earthquakes from './earthquakes'
 import CrossSectionBox from './cross-section-box'
+import Camera from './camera'
 
 const MAX_DEPTH = 800
 
@@ -13,72 +14,55 @@ renderer.autoClear = false
 
 export default class {
   constructor(parentEl) {
-    this.latLngDepthToPoint = this.latLngDepthToPoint.bind(this)
-    this._depthScale = 1
-
     parentEl.appendChild(renderer.domElement)
-    // Dimensions will be set in .resize() call.
-    this.camera = new THREE.OrthographicCamera(0, 0, 0, 0, 0.01, 1e6)
-    // Change default up orientation that affects orbit controls.
-    // Assume that Z coord defines depth of the earthquakes.
-    this.camera.up = new THREE.Vector3(0, 0, 1)
-    this.controls = new THREE.OrbitControls(this.camera, renderer.domElement)
-    this.earthquakes = new Earthquakes(this.latLngDepthToPoint)
-    this.crossSectionBox = new CrossSectionBox(this.latLngDepthToPoint)
+    this.props = {}
+    this.camera = new Camera(renderer.domElement)
+    this.earthquakes = new Earthquakes()
+    this.crossSectionBox = new CrossSectionBox()
     this.resize()
     this._initScene()
-    this._initCamera()
+    // Look at the center of the screen, make sure that 3D view lines up with the 2D map.
+    this.camera.setInitialCamPosition(this._width / 2, this._height / 2)
   }
 
   destroy() {
     // Prevent memory leaks.
     this.earthquakes.destroy()
     this.crossSectionBox.destroy()
-  }
-
-  // latLngDepth is an array: [latitude, longitude, depthInKm]
-  latLngDepthToPoint(latLngDepth) {
-    const point = this._latLngToPoint(latLngDepth)
-    return new THREE.Vector3(
-      point.x,
-      this._height - point.y,
-      this._depthScale * (-latLngDepth[2] || 0)
-    )
-  }
-
-  // Depth scaling is be proportional to the the cross section line length and user's screen aspect ratio.
-  // It ensures that when we zoom in to see the whole cross section box from the side, we'll still see
-  // earthquakes (and other geometry) at MAX_DEPTH.
-  calcDepthScale(crossSectionPoints) {
-    // latLngDepthToPoint uses this._depthScale that we try to calculate, but it doesn't matter.
-    // We're interested only in distance between those points on the XY plane.
-    const p1 = this.latLngDepthToPoint(crossSectionPoints.get(0))
-    const p2 = this.latLngDepthToPoint(crossSectionPoints.get(1))
-    const aspectRatio = this._width / this._height
-    this._depthScale = p1.distanceTo(p2) / aspectRatio / MAX_DEPTH
+    this.camera.destroy()
   }
 
   setProps(newProps) {
-    this._latLngToPoint = newProps.latLngToPoint
-    this.calcDepthScale(newProps.crossSectionPoints)
+    const latLngDepthToPoint = getLatLngDepthToPoint(
+      newProps.latLngToPoint,
+      newProps.crossSectionPoints,
+      this._width, this._height
+    )
 
-    this.earthquakes.setData(newProps.earthquakes)
-    // Create cross section box which has depth proportional to the user's screen aspect ratio.
-    // It ensures that box will nicely fill the whole screen when we zoom in.
-    this.crossSectionBox.setData(newProps.crossSectionPoints)
+    if (this.props.earthquakes !== newProps.earthquakes) {
+      this.earthquakes.setData(newProps.earthquakes, latLngDepthToPoint)
+    }
+    if (this.props.crossSectionPoints !== newProps.crossSectionPoints) {
+      this.crossSectionBox.setData(newProps.crossSectionPoints, latLngDepthToPoint)
+      // .lookAtCrossSection starts an animation.
+      this.camera.lookAtCrossSection(newProps.crossSectionPoints, latLngDepthToPoint)
+    }
+    this.props = newProps
   }
 
   render(timestamp) {
     const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
+
     this.resize()
-    this.controls.update()
+
+    this.camera.update()
     this.earthquakes.update(progress)
-    this.crossSectionBox.update(this.camera)
+    this.crossSectionBox.update(this.camera.zoom)
 
     renderer.clear()
-    renderer.render(this.scene, this.camera)
+    renderer.render(this.scene, this.camera.camera)
     renderer.clearDepth()
-    renderer.render(this.sceneOverlay, this.camera)
+    renderer.render(this.sceneOverlay, this.camera.camera)
 
     this._prevTimestamp = timestamp
   }
@@ -90,14 +74,7 @@ export default class {
     const newHeight = parent.clientHeight
     if (newWidth !== this._width || newHeight !== this._height) {
       renderer.setSize(newWidth, newHeight)
-      const w = newWidth * 0.5
-      const h = newHeight * 0.5
-      this.camera.left = -w
-      this.camera.right = w
-      this.camera.top = h
-      this.camera.bottom = -h
-      this.camera.updateProjectionMatrix()
-
+      this.camera.setSize(newWidth, newHeight)
       this._width = newWidth
       this._height = newHeight
     }
@@ -110,16 +87,27 @@ export default class {
     this.scene.add(this.crossSectionBox.root)
     this.sceneOverlay.add(this.crossSectionBox.overlay)
   }
+}
 
-  _initCamera() {
-    const w = this._width * 0.5
-    const h = this._height * 0.5
-    this.camera.position.x = w
-    this.camera.position.y = h
-    this.camera.position.z = 1000
-    this.camera.updateProjectionMatrix()
-    this.controls.rotateSpeed = 0.5
-    this.controls.zoomSpeed = 0.3
-    this.controls.target = new THREE.Vector3(w, h, this._height * -0.4)
+// Returns a function that converts [lat, lng, depth] into 3D coordinates (instance of THREE.Vector3).
+// This function depends on latLngToPoint function provided by Leaflet map, cross section box dimensions
+// and screen width and height.
+// Depth scaling is be proportional to the the cross section line length and user's screen aspect ratio.
+// It ensures that when we zoom in to see the whole cross section box from the side, we'll still see
+// earthquakes (and other geometry) at MAX_DEPTH.
+function getLatLngDepthToPoint(latLngToPoint, crossSectionPoints, width, height) {
+  const p1 = latLngToPoint(crossSectionPoints.get(0))
+  const p2 = latLngToPoint(crossSectionPoints.get(1))
+  const aspectRatio = width / height
+  const depthScale = p1.distanceTo(p2) / aspectRatio / MAX_DEPTH
+
+  // latLngDepth is an array: [latitude, longitude, depthInKm]
+  return function(latLngDepth) {
+    const point = latLngToPoint(latLngDepth)
+    return new THREE.Vector3(
+      point.x,
+      height - point.y,
+      depthScale * (-latLngDepth[2] || 0)
+    )
   }
 }

@@ -6,9 +6,7 @@ import Earthquake from './earthquake'
 const MAX_COUNT = 100000
 
 export default class {
-  constructor(latLngDepthToPoint) {
-    this.latLngDepthToPoint = latLngDepthToPoint
-
+  constructor() {
     const positions = new Float32Array(MAX_COUNT * 3)
     const colors = new Float32Array(MAX_COUNT * 3)
     const sizes = new Float32Array(MAX_COUNT)
@@ -42,8 +40,9 @@ export default class {
     this.texture.dispose()
   }
 
-  setData(data) {
+  setData(data, latLngDepthToPoint) {
     this._dataToProcess = data
+    this._latLngDepthToPoint = latLngDepthToPoint
   }
 
   update(progress) {
@@ -65,7 +64,7 @@ export default class {
     for (let i = 0, length = data.length; i < length; i++) {
       const eqData = data[i]
       if (!this._renderedEarthquakes[i] || this._renderedEarthquakes[i].id !== eqData.id) {
-        const point = this.latLngDepthToPoint(eqData.geometry.coordinates)
+        const point = this._latLngDepthToPoint(eqData.geometry.coordinates)
         this._renderedEarthquakes[i] = new Earthquake(eqData, i, attributes)
         this._renderedEarthquakes[i].setPositionAttr(point)
       }
