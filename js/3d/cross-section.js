@@ -45,7 +45,7 @@ export default class {
     if (this.props.crossSectionPoints !== newProps.crossSectionPoints) {
       this.crossSectionBox.setData(newProps.crossSectionPoints, latLngDepthToPoint)
       // .lookAtCrossSection starts an animation.
-      this.camera.lookAtCrossSection(newProps.crossSectionPoints, latLngDepthToPoint)
+      this.camera.lookAtCrossSection(newProps.crossSectionPoints, latLngDepthToPoint, this._width)
     }
     this.props = newProps
   }
