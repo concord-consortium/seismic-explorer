@@ -50,6 +50,14 @@ export default class {
     this.props = newProps
   }
 
+  onCameraChange(callback) {
+    this.camera.onChange(callback)
+  }
+
+  resetCamera() {
+    this.camera.reset()
+  }
+
   render(timestamp) {
     const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
 

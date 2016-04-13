@@ -1,4 +1,3 @@
-import fetch from 'isomorphic-fetch'
 import { fetchJSON } from '../api'
 
 export const UPDATE_REGIONS_HISTORY = 'UPDATE_REGIONS_HISTORY'
@@ -14,6 +13,8 @@ export const SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE'
 export const SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED'
 export const SET_MODE = 'SET_MODE'
 export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
+export const MARK_2D_VIEW_MODIFIED = 'MARK_2D_VIEW_MODIFIED'
+export const MARK_3D_VIEW_MODIFIED = 'MARK_3D_VIEW_MODIFIED'
 
 export function updateRegionsHistory(path) {
   return {
@@ -133,5 +134,21 @@ export function setCrossSectionPoint(index, latLng) {
     type: SET_CROSS_SECTION_POINT,
     index,
     latLng
+  }
+}
+
+// When user drags a map.
+export function mark2DViewModified(value) {
+  return {
+    type: MARK_2D_VIEW_MODIFIED,
+    value
+  }
+}
+
+// When user rotates camera.
+export function mark3DViewModified(value) {
+  return {
+    type: MARK_3D_VIEW_MODIFIED,
+    value
   }
 }

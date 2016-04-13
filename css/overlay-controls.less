@@ -1,0 +1,36 @@
+.overlay-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+
+  .controls {
+    position: absolute;
+    z-index: 100;
+    pointer-events: auto;
+  }
+
+  .top {
+    top: 10px;
+    &.left {
+      /* Leave room for Leaflet zoom buttons */
+     top: 80px;
+    }
+  }
+  .left {
+    left: 6px;
+  }
+  .bottom {
+    bottom: 10px;
+  }
+  .right {
+    right: 6px;
+  }
+  .inline {
+    .overlay-button {
+      display: inline-block;
+    }
+  }
+}

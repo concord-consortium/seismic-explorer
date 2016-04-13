@@ -10,6 +10,10 @@ export default class TweenManager {
   }
 
   add(tween) {
+    tween.onComplete(() => {
+      const idx = this.tweens.indexOf(tween)
+      this.tweens.splice(idx, 1)
+    })
     this.tweens.push(tween)
     return tween
   }
@@ -17,5 +21,9 @@ export default class TweenManager {
   stopAll() {
     this.tweens.forEach(t => t.stop())
     this.tweens = []
+  }
+
+  get animationInProgress() {
+    return this.tweens.length > 0
   }
 }

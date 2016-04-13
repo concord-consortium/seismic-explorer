@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
-import Controls from './controls'
+import OverlayControls from './overlay-controls'
+import BottomControls from './bottom-controls'
 import SeismicEruptionsMap from '../components/seismic-eruptions-map'
 import CrossSection3D from '../components/cross-section-3d'
 import LoadingIcon from '../components/loading-icon'
@@ -19,6 +20,7 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.latLngToPoint = this.latLngToPoint.bind(this)
+    this.resetView = this.resetView.bind(this)
   }
 
   componentDidMount() {
@@ -68,24 +70,33 @@ class App extends Component {
     return this.refs.map.latLngToPoint(latLng)
   }
 
+  resetView() {
+    const { mode } = this.props
+    if (mode !== '3d') {
+      this.refs.map.fitBounds()
+    } else {
+      this.refs.view3d.resetCamera()
+    }
+  }
+
   renderApp() {
     const { region, earthquakes, layers, dataFetching, crossSectionPoints,
-            regionsHistory, mode, setMode, setCrossSectionPoint, setFilter } = this.props
+            mark2DViewModified, mark3DViewModified, regionsHistory, mode, setCrossSectionPoint } = this.props
     return (
       <div>
         {dataFetching && <LoadingIcon/>}
         <div className={`map-container mode-${mode}`}>
           <SeismicEruptionsMap ref='map' region={region} regionsHistory={regionsHistory} earthquakes={earthquakes}
-                               layers={layers} crossSectionPoints={crossSectionPoints}
-                               setCrossSectionPoint={setCrossSectionPoint}
-                               mode={mode} setMode={setMode} setFilter={setFilter}/>
+                               mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
+                               setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}/>
           {mode === '3d' &&
-            <CrossSection3D earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
-                            latLngToPoint={this.latLngToPoint} setMode={setMode}/>
+            <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
+                            latLngToPoint={this.latLngToPoint} mark3DViewModified={mark3DViewModified}/>
           }
+          <OverlayControls resetView={this.resetView}/>
         </div>
-        <div className='controls-container'>
-          <Controls/>
+        <div className='bottom-controls-container'>
+          <BottomControls/>
         </div>
       </div>
     )

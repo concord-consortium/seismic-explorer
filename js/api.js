@@ -38,6 +38,11 @@ export function fetchJSON(path) {
     .then(response => cache.set(path, response))
 }
 
+export function goToRegion(path) {
+  // This will update ReactRouter and App component will request a new region data.
+  window.location.hash = '#/' +  window.encodeURIComponent(path)
+}
+
 export class APIError {
   constructor(statusText, response) {
     this.message = statusText

@@ -31,6 +31,13 @@ export default class Camera {
     this.tweens.update()
     this.controls.update()
   }
+
+  onChange(callback) {
+    this.controls.addEventListener('change', () => {
+      // Don't call onChange callback when we animate camera. Do it only when user modifies it.
+      if (!this.tweens.animationInProgress) callback()
+    })
+  }
   
   setSize(width, height) {
     const w2 = width * 0.5
@@ -84,7 +91,7 @@ export default class Camera {
     t3.chain(t4)
   }
 
-  resetView() {
+  reset() {
     // Reset is possible only when the initial animation has finished and we calculated the final view.
     if (!this._finalSideView || !this._finalZoom) return
     this.tweens.add(this.animateCamPos(this._finalSideView)).start()
@@ -108,6 +115,9 @@ export default class Camera {
     return new TWEEN.Tween(this.camera.position)
       .to(finalCamPos, 750)
       .easing(TWEEN.Easing.Cubic.InOut)
+      .onUpdate(() => {
+        this.controls.update()
+      })
   }
 
   animateZoom(finalCamZoom) {
@@ -116,6 +126,7 @@ export default class Camera {
       .easing(TWEEN.Easing.Cubic.InOut)
       .onUpdate(() => {
         this.camera.updateProjectionMatrix()
+        this.controls.update()
       })
   }
 

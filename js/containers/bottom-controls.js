@@ -7,7 +7,7 @@ import Slider from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
 
-import '../../css/controls.less'
+import '../../css/bottom-controls.less'
 import 'rc-slider/assets/index.css'
 import '../../css/slider.less'
 
@@ -26,7 +26,7 @@ function toggleFullscreen() {
 }
 
 @pureRender
-class Controls extends Component {
+class BottomControls extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -109,7 +109,7 @@ class Controls extends Component {
     const { settingsVisible, fullscreen } = this.state
 
     return (
-      <div className='controls'>
+      <div className='bottom-controls'>
         <img src={ccLogoSrc}/>
         <AnimationButton ref='playButton' animationEnabled={animationEnabled} speed={this.animSpeed} value={filters.get('maxTime')}
                          onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}/>
@@ -157,4 +157,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, actions)(Controls)
+export default connect(mapStateToProps, actions)(BottomControls)

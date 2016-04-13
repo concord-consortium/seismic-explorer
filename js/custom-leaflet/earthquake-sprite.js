@@ -4,14 +4,15 @@ import { depthToColor, magnitudeToRadius, easeOutBounce, TRANSITION_TIME } from 
 const TEXTURE_RESOLUTION = 12
 
 export default class EarthquakeSprite extends PIXI.Sprite {
-  constructor(depth, magnitude, coordinates) {
+  constructor(depth, magnitude, coordinates, visible) {
     super(earthquakeTexture(depth))
     this._defaultTexture = earthquakeTexture(depth)
     this._transitionTexture = transitionTexture()
     this._radius = magnitudeToRadius(magnitude) / TEXTURE_RESOLUTION
     this.coordinates = coordinates
     this.anchor.x = this.anchor.y = 0.5
-    this.transition = 0
+    this.targetVisibility = visible ? 1 : 0
+    this.transition = this.targetVisibility
   }
 
   onClick(handler) {

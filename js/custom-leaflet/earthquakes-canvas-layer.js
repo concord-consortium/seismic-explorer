@@ -74,7 +74,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   _addEarthquake: function (eq) {
-    const eqSprite = new EarthquakeSprite(eq.geometry.coordinates[2], eq.properties.mag, eq.geometry.coordinates)
+    const eqSprite = new EarthquakeSprite(eq.geometry.coordinates[2], eq.properties.mag, eq.geometry.coordinates, eq.visible)
     eqSprite.onClick((event) => this._earthquakeClickHandler(event, eq))
     this._container.addChild(eqSprite)
     this._renderedEarthquakes.set(eq.id, eqSprite)

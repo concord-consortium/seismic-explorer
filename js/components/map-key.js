@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { magnitudeToRadius, depthToColor } from '../earthquake-properties'
+import OverlayButton from './overlay-button'
 
 import '../../css/map-key.less'
 
@@ -27,9 +28,9 @@ export default class MapKey extends Component {
     const { showBoundariesInfo } = this.props
     const { opened } = this.state
     return !opened ?
-      <div className='map-key map-button' onClick={this.open}><i className='fa fa-info'/></div>
+      <OverlayButton icon='info' onClick={this.open}/>
       :
-      <div className='map-key map-key-content'>
+      <div className='map-key-content'>
         <i onClick={this.hide} className='map-key-close fa fa-close'/>
         <table className='magnitude-density'>
           <tbody>

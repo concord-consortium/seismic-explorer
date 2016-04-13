@@ -1,8 +1,8 @@
-import Immutable, { Map, List } from 'immutable'
+import { Map, List, Set } from 'immutable'
 import {
   REQUEST_DATA, RECEIVE_DATA, RECEIVE_EARTHQUAKES, RECEIVE_REGION, RECEIVE_ERROR, INVALIDATE_DATA,
   SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, UPDATE_REGIONS_HISTORY, SET_MODE,
-  SET_CROSS_SECTION_POINT
+  SET_CROSS_SECTION_POINT, MARK_2D_VIEW_MODIFIED, MARK_3D_VIEW_MODIFIED
 } from '../actions'
 import { swapCoords, sortByTime, polygonToPoint, timeRange } from '../data/helpers'
 
@@ -147,6 +147,17 @@ function crossSectionPoints(state = List(), action) {
   }
 }
 
+function changedViews(state = Set(), action) {
+  switch (action.type) {
+    case MARK_2D_VIEW_MODIFIED:
+      return action.value ? state.add('2d') : state.remove('2d')
+    case MARK_3D_VIEW_MODIFIED:
+      return action.value ? state.add('3d') : state.remove('3d')
+    default:
+      return state;
+  }
+}
+
 export default function reducer(state = Map(), action) {
   return state.set('dataStatus', dataStatus(state.get('dataStatus'), action))
               .set('region', region(state.get('region'), action))
@@ -157,4 +168,5 @@ export default function reducer(state = Map(), action) {
               .set('crossSectionPoints', crossSectionPoints(state.get('crossSectionPoints'), action))
               .set('data', data(state.get('data'), action))
               .set('filters', filters(state.get('filters'), action))
+              .set('changedViews', changedViews(state.get('changedViews'), action))
 }
