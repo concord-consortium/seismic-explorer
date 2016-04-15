@@ -17,6 +17,7 @@ export default class Camera {
     this.controls = new THREE.OrbitControls(this.camera, domElement)
     this.controls.rotateSpeed = 0.5
     this.controls.zoomSpeed = 0.4
+    this.controls.maxPolarAngle = 0.75 * Math.PI
     this.controls.enablePan = false
 
     this.tweens = new TweenManager()
