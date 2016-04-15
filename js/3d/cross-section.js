@@ -23,6 +23,14 @@ export default class {
     this._initScene()
     // Look at the center of the screen, make sure that 3D view lines up with the 2D map.
     this.camera.setInitialCamPosition(this._width / 2, this._height / 2)
+
+    // [ Shutterbug support ]
+    // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
+    // so .toDataUrl returns correct image. This method is used by shutterbug-support.js module.
+    if (renderer.domElement.className.indexOf('canvas-3d') === -1) {
+      renderer.domElement.className += ' canvas-3d'
+    }
+    renderer.domElement.render = this.render.bind(this)
   }
 
   destroy() {
@@ -58,7 +66,7 @@ export default class {
     this.camera.reset()
   }
 
-  render(timestamp) {
+  render(timestamp = performance.now()) {
     const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
 
     this.resize()
