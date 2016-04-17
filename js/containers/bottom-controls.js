@@ -33,8 +33,8 @@ class BottomControls extends Component {
       settingsVisible: false,
       fullscreen: false
     }
-    this.handleMaxTime = this.handleMaxTime.bind(this)
-    this.handleMinMag = this.handleMinMag.bind(this)
+    this.handleTimeRange = this.handleTimeRange.bind(this)
+    this.handleMagRange = this.handleMagRange.bind(this)
     this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
     this.handlePlateLayerChange = this.handlePlateLayerChange.bind(this)
     this.handleAnimStep = this.handleAnimStep.bind(this)
@@ -50,14 +50,16 @@ class BottomControls extends Component {
     }
   }
 
-  handleMaxTime(value) {
+  handleTimeRange(value) {
     const { setFilter } = this.props
-    setFilter('maxTime', value)
+    setFilter('minTime', value[0])
+    setFilter('maxTime', value[1])
   }
 
-  handleMinMag(value) {
+  handleMagRange(value) {
     const { setFilter } = this.props
-    setFilter('minMag', value)
+    setFilter('minMag', value[0])
+    setFilter('maxMag', value[1])
   }
 
   handleBaseLayerChange(event) {
@@ -114,8 +116,9 @@ class BottomControls extends Component {
         <AnimationButton ref='playButton' animationEnabled={animationEnabled} speed={this.animSpeed} value={filters.get('maxTime')}
                          onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}/>
         <div className='center'>
-          <Slider className='slider-big' min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step={86400}
-                  value={filters.get('maxTime')} onChange={this.handleMaxTime} tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
+          <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step={86400}
+                  value={[filters.get('minTime'), filters.get('maxTime')]} onChange={this.handleTimeRange}
+                  tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
         </div>
         <div className='settings-icon' onClick={this.toggleSettings}>
           <i className='fa fa-gear'/>
@@ -139,9 +142,11 @@ class BottomControls extends Component {
             <input type='checkbox' checked={layers.get('plates')} onChange={this.handlePlateLayerChange}/> Show plate boundaries
           </div>
           <div>
-            <div>Only show earthquakes magnitude <strong>{filters.get('minMag').toFixed(1)}</strong> or stronger</div>
-            <Slider className='big-slider' min={0} max={10} step={0.1} value={filters.get('minMag')}
-                    onChange={this.handleMinMag} marks={{0: 0, 10: 10}}/>
+            <div>
+              Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
+            </div>
+            <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
+                    onChange={this.handleMagRange} marks={{0: 0, 10: 10}}/>
           </div>
         </div>
       </div>
