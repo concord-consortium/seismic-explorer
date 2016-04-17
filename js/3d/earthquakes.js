@@ -40,7 +40,7 @@ export default class {
     this.texture.dispose()
   }
 
-  setData(data, latLngDepthToPoint) {
+  setProps(data, latLngDepthToPoint) {
     this._dataToProcess = data
     this._latLngDepthToPoint = latLngDepthToPoint
   }

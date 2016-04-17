@@ -10,6 +10,8 @@ export default function crossSectionRectangle(point1, point2) {
   const ratio = CROSS_SECTION_RECTANGLE_ASPECT_RATIO / 2
   const middle1 = pointBetween(point1, point2, ratio)
   const middle2 = pointBetween(point2, point1, ratio)
+  // Note that order of points is important. Some code depends on it (3D view).
+  // So, if these calculations are ever changed, make sure that order of points is the same!
   return [unproject(rotate(point1, middle1, 90)), unproject(rotate(point1, middle1, -90)),
           unproject(rotate(point2, middle2, 90)), unproject(rotate(point2, middle2, -90))]
 }

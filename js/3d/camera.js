@@ -6,6 +6,7 @@ import TweenManager from '../tween-manager'
 const DISTANCE_FROM_TARGET = 1000
 const TARGET_ANGLE = Math.PI * 0.485
 const TARGET_Z_OFFSET = 50
+const FINAL_ZOOM = 0.88 // 1 means that cross section box takes the whole screen
 
 export default class Camera {
   constructor(domElement) {
@@ -79,7 +80,7 @@ export default class Camera {
     )
     // Save final camera position and zoom, so user can reset view later.
     this._finalSideView = side(p1, p2, targetZ + TARGET_Z_OFFSET)
-    this._finalZoom = 0.9 * width / p1.distanceTo(p2)
+    this._finalZoom = FINAL_ZOOM * width / p1.distanceTo(p2)
 
     const t1 = this.tweens.add(this.animateCamAndTargetPos(centerView, targetZ))
     const t2 = this.tweens.add(this.animateCamPos(initialSideView))

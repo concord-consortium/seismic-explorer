@@ -1,11 +1,15 @@
 import THREE from 'three'
 import crossSectionRectangle from '../core/cross-section-rectangle'
+import ZLabels from './z-labels'
 
-export const BOX_DEPTH = 700 // km
+export const BOX_DEPTH = 800 // km
 const POINT_SIZE = 40 // px
 
 export default class {
   constructor() {
+    this.root = new THREE.Object3D()
+    this.overlay = new THREE.Object3D()
+
     this.lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 4})
     this.boxMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 1})
     this.planeMaterial = new THREE.MeshBasicMaterial({
@@ -18,8 +22,9 @@ export default class {
     this.point2Texture = getPointTexture('P2')
     this.point1Material = new THREE.SpriteMaterial({map: this.point1Texture})
     this.point2Material = new THREE.SpriteMaterial({map: this.point2Texture})
-    this.root = new THREE.Object3D()
-    this.overlay = new THREE.Object3D()
+
+    this.zLabels = new ZLabels(BOX_DEPTH)
+    this.overlay.add(this.zLabels.root)
   }
 
   destroy() {
@@ -30,6 +35,7 @@ export default class {
     this.point2Material.dispose()
     this.point1Texture.dispose()
     this.point2Texture.dispose()
+    this.zLabels.destroy()
     this.destroyGeometry()
   }
 
@@ -39,16 +45,17 @@ export default class {
     if (this.planeGeometry) this.planeGeometry.dispose()
   }
 
-  setData(crossSectionPoints, latLngDepthToPoint) {
+  setProps(crossSectionPoints, latLngDepthToPoint) {
     this.destroyGeometry()
     const p1 = latLngDepthToPoint(crossSectionPoints.get(0))
     const p2 = latLngDepthToPoint(crossSectionPoints.get(1))
     const rect = crossSectionRectangle(crossSectionPoints.get(0), crossSectionPoints.get(1)).map(latLngDepthToPoint)
     const boxDepth = latLngDepthToPoint([0, 0, BOX_DEPTH]).z
-    this.createLine(p1, p2)
-    this.createBox(rect, boxDepth)
-    this.createPlane(rect)
-    this.createPoints(p1, p2)
+    this.setupLine(p1, p2)
+    this.setupBox(rect, boxDepth)
+    this.setupPlane(rect)
+    this.setupPoints(p1, p2)
+    this.setupZLabels(p1.x < p2.x ? rect[0] : rect[2], boxDepth)
   }
 
   update(zoom) {
@@ -57,7 +64,7 @@ export default class {
     this.point2.scale.set(pointSize, pointSize, 1)
   }
 
-  createLine(p1, p2) {
+  setupLine(p1, p2) {
     if (this.line) this.root.remove(this.line)
     this.lineGeometry = new THREE.Geometry()
     this.lineGeometry.vertices = [p1, p2]
@@ -65,7 +72,7 @@ export default class {
     this.root.add(this.line)
   }
 
-  createBox(rect, boxDepth) {
+  setupBox(rect, boxDepth) {
     if (this.box) this.root.remove(this.box)
     const rectBottom = rect.map(v => v.clone().setZ(boxDepth))
     this.boxGeometry = new THREE.Geometry()
@@ -90,7 +97,7 @@ export default class {
     this.root.add(this.box)
   }
 
-  createPlane(rect) {
+  setupPlane(rect) {
     if (this.plane) this.root.remove(this.plane)
     this.planeGeometry = new THREE.Geometry()
     this.planeGeometry.vertices = rect
@@ -102,7 +109,7 @@ export default class {
     this.root.add(this.plane)
   }
 
-  createPoints(p1, p2) {
+  setupPoints(p1, p2) {
     if (this.point1) this.overlay.remove(this.point1)
     if (this.point2) this.overlay.remove(this.point2)
     this.point1 = new THREE.Sprite(this.point1Material)
@@ -113,6 +120,11 @@ export default class {
     this.point2.scale.set(POINT_SIZE, POINT_SIZE, 1)
     this.overlay.add(this.point1)
     this.overlay.add(this.point2)
+  }
+
+  setupZLabels(origin, boxDepth) {
+    this.zLabels.root.position.copy(origin)
+    this.zLabels.setProps(boxDepth)
   }
 }
 

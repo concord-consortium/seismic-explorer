@@ -4,7 +4,7 @@ import Earthquakes from './earthquakes'
 import CrossSectionBox from './cross-section-box'
 import Camera from './camera'
 
-const MAX_DEPTH = 800
+const MAX_DEPTH = 900
 
 // Share one renderer to avoid memory leaks (I couldn't fix them in other way).
 const renderer = new THREE.WebGLRenderer()
@@ -48,10 +48,10 @@ export default class {
     )
 
     if (this.props.earthquakes !== newProps.earthquakes) {
-      this.earthquakes.setData(newProps.earthquakes, latLngDepthToPoint)
+      this.earthquakes.setProps(newProps.earthquakes, latLngDepthToPoint)
     }
     if (this.props.crossSectionPoints !== newProps.crossSectionPoints) {
-      this.crossSectionBox.setData(newProps.crossSectionPoints, latLngDepthToPoint)
+      this.crossSectionBox.setProps(newProps.crossSectionPoints, latLngDepthToPoint)
       // .lookAtCrossSection starts an animation.
       this.camera.lookAtCrossSection(newProps.crossSectionPoints, latLngDepthToPoint, this._width)
     }
