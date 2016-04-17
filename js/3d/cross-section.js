@@ -5,6 +5,7 @@ import CrossSectionBox from './cross-section-box'
 import Camera from './camera'
 
 const MAX_DEPTH = 900
+const FINAL_ZOOM = 0.88 // 1 means that cross section box takes the whole screen
 
 // Share one renderer to avoid memory leaks (I couldn't fix them in other way).
 const renderer = new THREE.WebGLRenderer()
@@ -51,9 +52,10 @@ export default class {
       this.earthquakes.setProps(newProps.earthquakes, latLngDepthToPoint)
     }
     if (this.props.crossSectionPoints !== newProps.crossSectionPoints) {
-      this.crossSectionBox.setProps(newProps.crossSectionPoints, latLngDepthToPoint)
+      const finalZoom = this._finalZoom(newProps.crossSectionPoints, latLngDepthToPoint)
+      this.crossSectionBox.setProps(newProps.crossSectionPoints, finalZoom, latLngDepthToPoint)
       // .lookAtCrossSection starts an animation.
-      this.camera.lookAtCrossSection(newProps.crossSectionPoints, latLngDepthToPoint, this._width)
+      this.camera.lookAtCrossSection(newProps.crossSectionPoints, finalZoom, latLngDepthToPoint)
     }
     this.props = newProps
   }
@@ -102,6 +104,12 @@ export default class {
     this.scene.add(this.earthquakes.root)
     this.scene.add(this.crossSectionBox.root)
     this.sceneOverlay.add(this.crossSectionBox.overlay)
+  }
+  
+  _finalZoom(crossSectionPoints, latLngDepthToPoint) {
+    const p1 = latLngDepthToPoint(crossSectionPoints.get(0))
+    const p2 = latLngDepthToPoint(crossSectionPoints.get(1))
+    return FINAL_ZOOM * this._width / p1.distanceTo(p2)
   }
 }
 

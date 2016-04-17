@@ -5,8 +5,7 @@ import TweenManager from '../tween-manager'
 
 const DISTANCE_FROM_TARGET = 1000
 const TARGET_ANGLE = Math.PI * 0.485
-const TARGET_Z_OFFSET = 50
-const FINAL_ZOOM = 0.88 // 1 means that cross section box takes the whole screen
+const TARGET_Z_OFFSET = 85
 
 export default class Camera {
   constructor(domElement) {
@@ -60,27 +59,29 @@ export default class Camera {
     this.controls.target = new THREE.Vector3(x, y, 0)
   }
 
-  lookAtCrossSection(crossSectionPoints, latLngDepthToPoint, width) {
+  lookAtCrossSection(crossSectionPoints, finalZoom, latLngDepthToPoint) {
     this.tweens.stopAll()
 
     const p1 = latLngDepthToPoint(crossSectionPoints.get(0))
     const p2 = latLngDepthToPoint(crossSectionPoints.get(1))
+    const pLeft = leftPoint(p1, p2)
+    const pRight = rightPoint(p1, p2)
     // Set target Z coordinate in the middle of the cross section box.
     const targetZ = latLngDepthToPoint([0, 0, BOX_DEPTH * 0.5]).z
 
     // Lock angles, so user cannot look at the back side of the cross section.
-    this.controls.minAzimuthAngle = azimuthAngle(p1, p2, 'min')
-    this.controls.maxAzimuthAngle = azimuthAngle(p1, p2, 'max')
+    this.controls.minAzimuthAngle = azimuthAngle(pLeft, pRight, 'min')
+    this.controls.maxAzimuthAngle = azimuthAngle(pLeft, pRight, 'max')
 
-    const centerView = center(p1, p2)
+    const centerView = center(pLeft, pRight)
     const initialSideView = new THREE.Vector3(
       centerView.x,
       centerView.y - DISTANCE_FROM_TARGET,
       targetZ + TARGET_Z_OFFSET
     )
     // Save final camera position and zoom, so user can reset view later.
-    this._finalSideView = side(p1, p2, targetZ + TARGET_Z_OFFSET)
-    this._finalZoom = FINAL_ZOOM * width / p1.distanceTo(p2)
+    this._finalSideView = side(pLeft, pRight, targetZ + TARGET_Z_OFFSET)
+    this._finalZoom = finalZoom
 
     const t1 = this.tweens.add(this.animateCamAndTargetPos(centerView, targetZ))
     const t2 = this.tweens.add(this.animateCamPos(initialSideView))
@@ -137,25 +138,26 @@ export default class Camera {
   }
 }
 
-// p1, p2 are instances of THREE.Vector3
-function center(p1, p2) {
-  return p1.clone().lerp(p2, 0.5).setZ(DISTANCE_FROM_TARGET)
+function leftPoint(point1, point2) {
+  return point1.x < point2.x ? point1 : point2
 }
 
-function side(p1, p2, z) {
-  const c = center(p1, p2)
-  const angle = p1.x < p2.x ? TARGET_ANGLE : -TARGET_ANGLE
-  const dir = p1.clone().sub(p2).applyAxisAngle(new THREE.Vector3(0, 0, 1), angle).setLength(DISTANCE_FROM_TARGET)
+function rightPoint(point1, point2) {
+  return point1.x < point2.x ? point2 : point1
+}
+
+function center(pLeft, pRight) {
+  return pLeft.clone().lerp(pRight, 0.5).setZ(DISTANCE_FROM_TARGET)
+}
+
+function side(pLeft, pRight, z) {
+  const c = center(pLeft, pRight)
+  const dir = pLeft.clone().sub(pRight).applyAxisAngle(new THREE.Vector3(0, 0, 1), TARGET_ANGLE).setLength(DISTANCE_FROM_TARGET)
   return c.add(dir).setZ(z)
 }
 
-function azimuthAngle(p1, p2, type) {
-  if (p1.x >= p2.x) {
-    const tmp = p1
-    p1 = p2
-    p2 = tmp
-  }
-  const v1 = type === 'min' ? p1.clone().sub(p2) : p2.clone().sub(p1)
+function azimuthAngle(pLeft, pRight, type) {
+  const v1 = type === 'min' ? pLeft.clone().sub(pRight) : pRight.clone().sub(pLeft)
   const v2 = new THREE.Vector3(0, -1, 0)
   const sign = type === 'min' ? -1 : 1
   return sign * 1.01 * v2.angleTo(v1)

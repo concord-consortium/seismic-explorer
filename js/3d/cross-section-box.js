@@ -1,6 +1,7 @@
 import THREE from 'three'
 import crossSectionRectangle from '../core/cross-section-rectangle'
-import ZLabels from './z-labels'
+import TickMarks from './tick-marks'
+import { latLng } from 'leaflet'
 
 export const BOX_DEPTH = 800 // km
 const POINT_SIZE = 40 // px
@@ -23,8 +24,8 @@ export default class {
     this.point1Material = new THREE.SpriteMaterial({map: this.point1Texture})
     this.point2Material = new THREE.SpriteMaterial({map: this.point2Texture})
 
-    this.zLabels = new ZLabels(BOX_DEPTH)
-    this.overlay.add(this.zLabels.root)
+    this.tickMarks = new TickMarks(BOX_DEPTH)
+    this.overlay.add(this.tickMarks.root)
   }
 
   destroy() {
@@ -35,7 +36,7 @@ export default class {
     this.point2Material.dispose()
     this.point1Texture.dispose()
     this.point2Texture.dispose()
-    this.zLabels.destroy()
+    this.tickMarks.destroy()
     this.destroyGeometry()
   }
 
@@ -45,17 +46,20 @@ export default class {
     if (this.planeGeometry) this.planeGeometry.dispose()
   }
 
-  setProps(crossSectionPoints, latLngDepthToPoint) {
+  setProps(crossSectionPoints, finalZoom, latLngDepthToPoint) {
     this.destroyGeometry()
-    const p1 = latLngDepthToPoint(crossSectionPoints.get(0))
-    const p2 = latLngDepthToPoint(crossSectionPoints.get(1))
-    const rect = crossSectionRectangle(crossSectionPoints.get(0), crossSectionPoints.get(1)).map(latLngDepthToPoint)
+    const p1LatLng = crossSectionPoints.get(0)
+    const p2LatLng = crossSectionPoints.get(1)
+    const p1 = latLngDepthToPoint(p1LatLng)
+    const p2 = latLngDepthToPoint(p2LatLng)
+    const rectLatLng = crossSectionRectangle(p1LatLng, p2LatLng)
+    const rect = rectLatLng.map(latLngDepthToPoint)
     const boxDepth = latLngDepthToPoint([0, 0, BOX_DEPTH]).z
     this.setupLine(p1, p2)
     this.setupBox(rect, boxDepth)
     this.setupPlane(rect)
     this.setupPoints(p1, p2)
-    this.setupZLabels(p1.x < p2.x ? rect[0] : rect[2], boxDepth)
+    this.setupTickMarks(rect, boxDepth, rectLatLng, finalZoom)
   }
 
   update(zoom) {
@@ -122,9 +126,35 @@ export default class {
     this.overlay.add(this.point2)
   }
 
-  setupZLabels(origin, boxDepth) {
-    this.zLabels.root.position.copy(origin)
-    this.zLabels.setProps(boxDepth)
+  setupTickMarks(rect, boxDepth, rectLatLng, finalZoom) {
+    // Note that order of rectangle points is strictly defined and based on what we should see in 3D view.
+    // See: cross-section-rectangle.js
+    const lengthKm = latLng(rectLatLng[3]).distanceTo(latLng(rectLatLng[0])) / 1000 // m -> km
+    const widthKm = latLng(rectLatLng[1]).distanceTo(latLng(rectLatLng[0])) / 1000 // m -> km
+    const lengthVector = rect[3].clone().sub(rect[0])
+    const widthVector = rect[1].clone().sub(rect[0])
+    // Make sure that labels always have constant size when camera zooms in.
+    const labelSize = POINT_SIZE * 0.5 / finalZoom
+    this.tickMarks.setProps({
+      origin: rect[0],
+      lengthVector: lengthVector,
+      widthVector: widthVector,
+      depthVector: new THREE.Vector3(0, 0, boxDepth),
+      format: function (val, type) {
+        switch(type) {
+          case 'depth':
+            return Math.abs(Math.round(val * BOX_DEPTH / boxDepth)) + 'km'
+          case 'length':
+            return Math.round(val * lengthKm / lengthVector.length()) + 'km'
+          case 'width':
+            return Math.round(val * widthKm / widthVector.length()) + 'km'
+        }
+      },
+      lengthTicks: 6,
+      widthTicks: 1,
+      depthTicks: 4,
+      labelSize: labelSize
+    })
   }
 }
 
