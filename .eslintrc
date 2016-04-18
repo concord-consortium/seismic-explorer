@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "eslint-config-airbnb"
+  ],
+  "parser": "babel-eslint",
+  "rules": {
+    "react/prop-types": 0,
+    "react/prefer-stateless-function": 0,
+    "semi": ["error", "never"],
+    "comma-dangle": ["error", "never"],
+    "max-len": ["warn", 160],
+    "prefer-template": 0
+  }
+}
