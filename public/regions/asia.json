@@ -1,8 +1,8 @@
 {
   "datasets":["datasets/asia.json"],
-  "maxLatitude": 77,
+  "maxLatitude": 55,
   "maxLongitude": 190,
-  "minLatitude": 40,
+  "minLatitude": 10,
   "minLongitude": 3,
   "restrictedView":true,
   "type": "FeatureCollection",

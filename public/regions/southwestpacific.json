@@ -1,10 +1,10 @@
 {
   "datasets":["datasets/southwestpacific.json"],
   "maxLatitude": 22,
-  "maxLongitude": -120,
+  "maxLongitude": 240,
   "minLatitude": -66,
-  "minLongitude": -256,
-  "restrictedView":true,
+  "minLongitude": 104,
+  "restrictedView": true,
   "type": "FeatureCollection",
   "features": []
 }
