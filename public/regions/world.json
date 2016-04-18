@@ -1,10 +1,9 @@
 {
   "datasets":["datasets/world.json"],
-  "minLatitude":-20,
-  "minLongitude":-90,
-  "maxLatitude":60,
-  "maxLongitude":30,
-  "restrictedView":true,
+  "minLatitude": -60,
+  "minLongitude": -120,
+  "maxLatitude": 60,
+  "maxLongitude": 120,
   "type": "FeatureCollection",
   "features": [
     {
