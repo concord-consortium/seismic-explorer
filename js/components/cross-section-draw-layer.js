@@ -6,7 +6,7 @@ import crossSectionRectangle, { pointToArray } from '../core/cross-section-recta
 
 const MOUSE_DOWN = 'mousedown touchstart'
 const MOUSE_MOVE = 'mousemove touchmove'
-const MOVE_UP = 'mouseup touchend touchcancel touchleave'
+const MOVE_UP = 'mouseup touchend'
 
 @pureRender
 export default class CrossSectionLayer extends Component {

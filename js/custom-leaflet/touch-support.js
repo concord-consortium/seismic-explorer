@@ -10,17 +10,12 @@ const TouchExtend = L.Handler.extend({
     L.DomEvent.on(this._container, 'touchstart', this._onTouchEvent, this)
     L.DomEvent.on(this._container, 'touchmove', this._onTouchEvent, this)
     L.DomEvent.on(this._container, 'touchend', this._onTouchEnd, this)
-    L.DomEvent.on(this._container, 'touchcancel', this._onTouchEnd, this)
-    L.DomEvent.on(this._container, 'touchleave', this._onTouchEnd, this)
-
   },
 
   removeHooks: function() {
     L.DomEvent.off(this._container, 'touchstart', this._onTouchEvent)
     L.DomEvent.off(this._container, 'touchmove', this._onTouchEvent)
     L.DomEvent.off(this._container, 'touchend', this._onTouchEnd)
-    L.DomEvent.off(this._container, 'touchcancel', this._onTouchEnd)
-    L.DomEvent.off(this._container, 'touchleave', this._onTouchEnd)
   },
 
   _onTouchEvent: function(e) {
