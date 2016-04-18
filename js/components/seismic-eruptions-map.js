@@ -53,6 +53,18 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   componentDidUpdate() {
+    const { selectedEarthquake } = this.state
+    const { earthquakes } = this.props
+    if (selectedEarthquake) {
+      let found = false
+      // Check if selected earthquake is still present and visible.
+      earthquakes.forEach(e => {
+        if (e.id === selectedEarthquake.id && e.visible) found = true
+      })
+      // Reset it if not.
+      if (!found) this.setState({selectedEarthquake: null})
+    }
+    // Listen to movestart events triggered by user again.
     this._ignoreMovestart = false
   }
 
@@ -105,8 +117,12 @@ export default class SeismicEruptionsMap extends Component {
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
           }
-          {mode === '2d' && <SubregionButtons subregions={region.get('subregions')}/>}
-          {mode === '2d' && <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>}
+          {mode === '2d' &&
+            <SubregionButtons subregions={region.get('subregions')}/>
+          }
+          {mode === '2d' && selectedEarthquake &&
+            <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
+          }
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>
           }

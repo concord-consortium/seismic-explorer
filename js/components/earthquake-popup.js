@@ -5,28 +5,41 @@ import { getCachedInvisibleIcon } from '../custom-leaflet/icons'
 
 @pureRender
 export default class EarthquakePopup extends Component {
-  componentDidUpdate(prevProps) {
-    if (prevProps.earthquake !== this.props.earthquake) {
-      this.refs.marker.getLeafletElement().openPopup()
-    }
+  constructor(props) {
+    super(props)
+    this.onPopupClose = this.onPopupClose.bind(this)
+  }
+
+  componentDidMount() {
+    this.refs.marker.getLeafletElement().openPopup()
+  }
+
+  onPopupClose() {
+    const { onPopupClose } = this.props
+    // Delay callback execution. Otherwise, if the callbacks removes this component from parent,
+    // there's a conflict with Leaflet method that closes the popup - it's getting confused
+    // that parent is undefined already.
+    setTimeout(() => {
+      onPopupClose()
+    }, 1)
   }
 
   // For some reason it's impossible to create popup without marker.
   // So, this component renders invisible marker with popup instead.
   render() {
-    const { map, earthquake, onPopupClose } = this.props
-    const earthquakePos = earthquake ? earthquake.geometry.coordinates : [0, 0]
+    const { map, earthquake } = this.props
+    const earthquakePos = earthquake.geometry.coordinates
     return (
-      <Marker ref='marker' map={map} position={earthquakePos} icon={getCachedInvisibleIcon()} onLeafletPopupclose={onPopupClose}>
+      <Marker ref='marker' map={map} position={earthquakePos}
+              icon={getCachedInvisibleIcon()}
+              onLeafletPopupclose={this.onPopupClose}>
         <Popup closeOnClick={false}>
-          {earthquake &&
-            <div>
-              Place: <b>{earthquake.properties.place}</b><br/>
-              Magnitude: <b>{earthquake.properties.mag.toFixed(1)}</b><br/>
-              Date: <b>{date(earthquake.properties.time)}</b><br/>
-              Depth: <b>{earthquake.geometry.coordinates[2]} km</b>
-            </div>
-          }
+          <div>
+            Place: <b>{earthquake.properties.place}</b><br/>
+            Magnitude: <b>{earthquake.properties.mag.toFixed(1)}</b><br/>
+            Date: <b>{date(earthquake.properties.time)}</b><br/>
+            Depth: <b>{earthquake.geometry.coordinates[2]} km</b>
+          </div>
         </Popup>
       </Marker>
     )
