@@ -1,4 +1,3 @@
-import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { MapLayer } from 'react-leaflet'
 import { earthquakesCanvasLayer } from '../custom-leaflet/earthquakes-canvas-layer'
@@ -6,13 +5,13 @@ import { earthquakesCanvasLayer } from '../custom-leaflet/earthquakes-canvas-lay
 @pureRender
 export default class EarthquakesCanvasLayer extends MapLayer {
   componentWillMount() {
-    super.componentWillMount();
+    super.componentWillMount()
     this.leafletElement = earthquakesCanvasLayer()
     this.setLeafletElementProps()
   }
 
   componentDidUpdate() {
-   this.setLeafletElementProps()
+    this.setLeafletElementProps()
   }
 
   setLeafletElementProps() {

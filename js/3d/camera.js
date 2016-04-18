@@ -7,6 +7,31 @@ const DISTANCE_FROM_TARGET = 1000
 const TARGET_ANGLE = Math.PI * 0.485
 const TARGET_Z_OFFSET = 85
 
+function leftPoint(point1, point2) {
+  return point1.x < point2.x ? point1 : point2
+}
+
+function rightPoint(point1, point2) {
+  return point1.x < point2.x ? point2 : point1
+}
+
+function center(pLeft, pRight) {
+  return pLeft.clone().lerp(pRight, 0.5).setZ(DISTANCE_FROM_TARGET)
+}
+
+function side(pLeft, pRight, z) {
+  const c = center(pLeft, pRight)
+  const dir = pLeft.clone().sub(pRight).applyAxisAngle(new THREE.Vector3(0, 0, 1), TARGET_ANGLE).setLength(DISTANCE_FROM_TARGET)
+  return c.add(dir).setZ(z)
+}
+
+function azimuthAngle(pLeft, pRight, type) {
+  const v1 = type === 'min' ? pLeft.clone().sub(pRight) : pRight.clone().sub(pLeft)
+  const v2 = new THREE.Vector3(0, -1, 0)
+  const sign = type === 'min' ? -1 : 1
+  return sign * 1.01 * v2.angleTo(v1)
+}
+
 export default class Camera {
   constructor(domElement) {
     // Dimensions will be set in .resize() call.
@@ -39,7 +64,7 @@ export default class Camera {
       if (!this.tweens.animationInProgress) callback()
     })
   }
-  
+
   setSize(width, height) {
     const w2 = width * 0.5
     const h2 = height * 0.5
@@ -125,7 +150,7 @@ export default class Camera {
 
   animateZoom(finalCamZoom) {
     return new TWEEN.Tween(this.camera)
-      .to({zoom: finalCamZoom}, 750)
+      .to({ zoom: finalCamZoom }, 750)
       .easing(TWEEN.Easing.Cubic.InOut)
       .onUpdate(() => {
         this.camera.updateProjectionMatrix()
@@ -136,29 +161,4 @@ export default class Camera {
   get zoom() {
     return this.camera.zoom
   }
-}
-
-function leftPoint(point1, point2) {
-  return point1.x < point2.x ? point1 : point2
-}
-
-function rightPoint(point1, point2) {
-  return point1.x < point2.x ? point2 : point1
-}
-
-function center(pLeft, pRight) {
-  return pLeft.clone().lerp(pRight, 0.5).setZ(DISTANCE_FROM_TARGET)
-}
-
-function side(pLeft, pRight, z) {
-  const c = center(pLeft, pRight)
-  const dir = pLeft.clone().sub(pRight).applyAxisAngle(new THREE.Vector3(0, 0, 1), TARGET_ANGLE).setLength(DISTANCE_FROM_TARGET)
-  return c.add(dir).setZ(z)
-}
-
-function azimuthAngle(pLeft, pRight, type) {
-  const v1 = type === 'min' ? pLeft.clone().sub(pRight) : pRight.clone().sub(pLeft)
-  const v2 = new THREE.Vector3(0, -1, 0)
-  const sign = type === 'min' ? -1 : 1
-  return sign * 1.01 * v2.angleTo(v1)
 }

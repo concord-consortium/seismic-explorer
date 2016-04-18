@@ -65,7 +65,7 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
     canvas.style[originProp] = '50% 50%'
 
     let size = this._map.getSize()
-    canvas.width  = size.x
+    canvas.width = size.x
     canvas.height = size.y
     canvas.style.width = size.x + 'px'
     canvas.style.height = size.y + 'px'

@@ -1,9 +1,29 @@
+/* eslint no-console: ["error", { allow: ["warn"] }] */
 import THREE from 'three'
 import vertexShader from 'raw!./earthquakes-vertex.glsl'
 import fragmentShader from 'raw!./earthquakes-fragment.glsl'
 import Earthquake from './earthquake'
 
 const MAX_COUNT = 100000
+
+function getTexture() {
+  const size = 128
+  const strokeWidth = size * 0.06
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  // Point
+  ctx.arc(size / 2, size / 2, size / 2 - strokeWidth / 2, 0, 2 * Math.PI)
+  ctx.fillStyle = '#fff'
+  ctx.fill()
+  ctx.lineWidth = strokeWidth
+  ctx.strokeStyle = '#000'
+  ctx.stroke()
+  const texture = new THREE.Texture(canvas)
+  texture.needsUpdate = true
+  return texture
+}
 
 export default class {
   constructor() {
@@ -19,14 +39,14 @@ export default class {
     // Texture defines base shape.
     this.texture = getTexture()
 
-    var material = new THREE.ShaderMaterial({
+    const material = new THREE.ShaderMaterial({
       uniforms: {
-        color: {type: 'c', value: new THREE.Color(0xffffff)},
-        texture: {type: 't', value: this.texture}
+        color: { type: 'c', value: new THREE.Color(0xffffff) },
+        texture: { type: 't', value: this.texture }
       },
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
-      alphaTest: 0.5,
+      vertexShader,
+      fragmentShader,
+      alphaTest: 0.5
     })
 
     this.root = new THREE.Points(geometry, material)
@@ -78,23 +98,4 @@ export default class {
 
     this._dataToProcess = null
   }
-}
-
-function getTexture() {
-  const size = 128
-  const strokeWidth = size * 0.06
-  const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size
-  const ctx = canvas.getContext('2d')
-  // Point
-  ctx.arc(size / 2, size / 2, size / 2 - strokeWidth / 2, 0, 2 * Math.PI)
-  ctx.fillStyle = '#fff'
-  ctx.fill()
-  ctx.lineWidth = strokeWidth
-  ctx.strokeStyle = '#000'
-  ctx.stroke()
-  const texture = new THREE.Texture(canvas)
-  texture.needsUpdate = true
-  return texture
 }

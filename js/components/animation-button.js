@@ -23,16 +23,16 @@ export default class AnimationButton extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.stopAnimation()
+  }
+
   animationEnabledChanged() {
     if (this.props.animationEnabled) {
       this.startAnimation()
     } else {
       this.stopAnimation()
     }
-  }
-
-  componentWillUnmount() {
-    this.stopAnimation()
   }
 
   startAnimation() {
@@ -70,8 +70,8 @@ export default class AnimationButton extends Component {
   render() {
     const { onClick } = this.props
     return (
-      <div className='animation-button'>
-        <i className={this.icon} onClick={onClick}/>
+      <div className="animation-button">
+        <i className={this.icon} onClick={onClick} />
       </div>
     )
   }

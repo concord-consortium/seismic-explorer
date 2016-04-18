@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { LayerGroup, Marker, Polyline, Polygon } from 'react-leaflet'
-import { circleIcon, getCachedCircleIcon } from '../custom-leaflet/icons'
+import { getCachedCircleIcon } from '../custom-leaflet/icons'
 import crossSectionRectangle, { pointToArray } from '../core/cross-section-rectangle'
 
 const MOUSE_DOWN = 'mousedown touchstart'
@@ -30,20 +30,6 @@ export default class CrossSectionLayer extends Component {
     map.off(MOUSE_DOWN, this.drawStart)
   }
 
-  drawStart(event) {
-    const { map } = this.props
-    this.setPoint1(event)
-    this.setPoint2(event)
-    map.on(MOUSE_MOVE, this.setPoint2)
-    map.on(MOVE_UP, this.drawEnd)
-  }
-
-  drawEnd() {
-    const { map } = this.props
-    map.off(MOUSE_MOVE, this.setPoint2)
-    map.off(MOVE_UP, this.drawEnd)
-  }
-
   setPoint1(event) {
     const { setCrossSectionPoint } = this.props
     // Event might be either Leaflet mouse event or Leaflet drag event.
@@ -58,6 +44,20 @@ export default class CrossSectionLayer extends Component {
     setCrossSectionPoint(1, pointToArray(latLng))
   }
 
+  drawEnd() {
+    const { map } = this.props
+    map.off(MOUSE_MOVE, this.setPoint2)
+    map.off(MOVE_UP, this.drawEnd)
+  }
+
+  drawStart(event) {
+    const { map } = this.props
+    this.setPoint1(event)
+    this.setPoint2(event)
+    map.on(MOUSE_MOVE, this.setPoint2)
+    map.on(MOVE_UP, this.drawEnd)
+  }
+
   render() {
     const { map, crossSectionPoints } = this.props
     const point1 = crossSectionPoints.get(0)
@@ -65,10 +65,10 @@ export default class CrossSectionLayer extends Component {
     const rect = crossSectionRectangle(point1, point2)
     return (
       <LayerGroup map={map}>
-        {point1 && <Marker position={point1} draggable={true} icon={circleIcon('P1')} onLeafletDrag={this.setPoint1}/>}
-        {point2 && <Marker position={point2} draggable={true} icon={circleIcon('P2')} onLeafletDrag={this.setPoint2}/>}
-        {point1 && point2 && <Polyline clickable={false} className='cross-section-line' positions={[point1, point2]} color='#fff' opacity={1}/>}
-        {rect && <Polygon positions={rect} clickable={false} color='#fff' weight={2}/>}
+        {point1 && <Marker position={point1} draggable icon={getCachedCircleIcon('P1')} onLeafletDrag={this.setPoint1} />}
+        {point2 && <Marker position={point2} draggable icon={getCachedCircleIcon('P2')} onLeafletDrag={this.setPoint2} />}
+        {point1 && point2 && <Polyline clickable={false} className="cross-section-line" positions={[point1, point2]} color="#fff" opacity={1} />}
+        {rect && <Polygon positions={rect} clickable={false} color="#fff" weight={2} />}
       </LayerGroup>
     )
   }

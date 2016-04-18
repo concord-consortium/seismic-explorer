@@ -1,3 +1,5 @@
+/* eslint no-param-reassign: 0 */
+
 export function swapCoords(data) {
   data.forEach(point => {
     const tmp = point.geometry.coordinates[0]
@@ -35,5 +37,5 @@ export function timeRange(data) {
     if (eq.properties.time > max) max = eq.properties.time
     if (eq.properties.time < min) min = eq.properties.time
   })
-  return {min, max}
+  return { min, max }
 }

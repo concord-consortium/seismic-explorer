@@ -9,7 +9,7 @@ export default class OverlayButton extends Component {
     const { onClick, disabled, children, icon } = this.props
     return (
       <div className={`overlay-button ${disabled ? 'disabled' : ''} ${icon && !children ? 'icon-only' : ''}`} onClick={onClick}>
-        {icon && <i className={`fa fa-${icon}`}/>}
+        {icon && <i className={`fa fa-${icon}`} />}
         {children}
       </div>
     )

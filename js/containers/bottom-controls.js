@@ -45,7 +45,7 @@ class BottomControls extends Component {
   componentDidMount() {
     if (screenfull.enabled) {
       document.addEventListener(screenfull.raw.fullscreenchange, () => {
-        this.setState({fullscreen: screenfull.isFullscreen})
+        this.setState({ fullscreen: screenfull.isFullscreen })
       })
     }
   }
@@ -74,11 +74,12 @@ class BottomControls extends Component {
 
   handleAnimStep(newValue) {
     const { filters, setFilter, setAnimationEnabled } = this.props
-    if (newValue > filters.get('maxTimeLimit')) {
-      newValue = filters.get('maxTimeLimit')
+    let maxTime = newValue
+    if (maxTime > filters.get('maxTimeLimit')) {
+      maxTime = filters.get('maxTimeLimit')
       setAnimationEnabled(false)
     }
-    setFilter('maxTime', newValue)
+    setFilter('maxTime', maxTime)
   }
 
   handleAnimBtnClick() {
@@ -88,7 +89,7 @@ class BottomControls extends Component {
 
   toggleSettings() {
     const { settingsVisible } = this.state
-    this.setState({settingsVisible: !settingsVisible})
+    this.setState({ settingsVisible: !settingsVisible })
   }
 
   get dateMarks() {
@@ -111,21 +112,23 @@ class BottomControls extends Component {
     const { settingsVisible, fullscreen } = this.state
 
     return (
-      <div className='bottom-controls'>
-        <img src={ccLogoSrc}/>
-        <AnimationButton ref='playButton' animationEnabled={animationEnabled} speed={this.animSpeed} value={filters.get('maxTime')}
-                         onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}/>
-        <div className='center'>
-          <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step={86400}
-                  value={[filters.get('minTime'), filters.get('maxTime')]} onChange={this.handleTimeRange}
-                  tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
+      <div className="bottom-controls">
+        <img alt="cc-logo" src={ccLogoSrc} />
+        <AnimationButton ref="playButton" animationEnabled={animationEnabled} speed={this.animSpeed} value={filters.get('maxTime')}
+          onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}
+        />
+        <div className="center">
+          <Slider className="slider-big" range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step={86400}
+            value={[filters.get('minTime'), filters.get('maxTime')]} onChange={this.handleTimeRange}
+            tipFormatter={sliderDateFormatter} marks={this.dateMarks}
+          />
         </div>
-        <div className='settings-icon' onClick={this.toggleSettings}>
-          <i className='fa fa-gear'/>
+        <div className="settings-icon" onClick={this.toggleSettings}>
+          <i className="fa fa-gear" />
         </div>
         {screenfull.enabled &&
-          <div className='fullscreen-icon' onClick={toggleFullscreen}>
-            <i className={`fa ${fullscreen ? 'fa-compress' : 'fa-arrows-alt'}`}/>
+          <div className="fullscreen-icon" onClick={toggleFullscreen}>
+            <i className={`fa ${fullscreen ? 'fa-compress' : 'fa-arrows-alt'}`} />
           </div>
         }
         <div className={`settings ${settingsVisible ? '' : 'hidden'}`}>
@@ -133,20 +136,21 @@ class BottomControls extends Component {
           <div>
             Displayed map type
             <select value={layers.get('base')} onChange={this.handleBaseLayerChange}>
-              <option value='satellite'>Satellite</option>
-              <option value='street'>Street</option>
-              <option value='earthquake-density'>Earthquake density</option>
+              <option value="satellite">Satellite</option>
+              <option value="street">Street</option>
+              <option value="earthquake-density">Earthquake density</option>
             </select>
           </div>
           <div>
-            <input type='checkbox' checked={layers.get('plates')} onChange={this.handlePlateLayerChange}/> Show plate boundaries
+            <input type="checkbox" checked={layers.get('plates')} onChange={this.handlePlateLayerChange} /> Show plate boundaries
           </div>
           <div>
             <div>
               Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
             </div>
             <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
-                    onChange={this.handleMagRange} marks={{0: 0, 10: 10}}/>
+              onChange={this.handleMagRange} marks={{ 0: 0, 10: 10 }}
+            />
           </div>
         </div>
       </div>

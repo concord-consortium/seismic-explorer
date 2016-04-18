@@ -5,6 +5,25 @@ import OverlayButton from './overlay-button'
 
 import '../../css/map-key.less'
 
+function toHexStr(d) {
+  const hex = Number(d).toString(16)
+  return '#000000'.substr(0, 7 - hex.length) + hex
+}
+
+function circle(magnitude) {
+  return (<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+    <circle cx="24" cy="24" r={magnitudeToRadius(magnitude)} stroke="black" fill="rgba(0,0,0,0)" />
+  </svg>)
+}
+
+function earthquakeColor(depth) {
+  return <div className="earthquake-color" style={{ backgroundColor: toHexStr(depthToColor(depth)) }}></div>
+}
+
+function boundaryColor(color) {
+  return <div className="boundary-color" style={{ backgroundColor: color }}></div>
+}
+
 @pureRender
 export default class MapKey extends Component {
   constructor(props) {
@@ -17,24 +36,24 @@ export default class MapKey extends Component {
   }
 
   open() {
-    this.setState({opened: true})
+    this.setState({ opened: true })
   }
 
   hide() {
-    this.setState({opened: false})
+    this.setState({ opened: false })
   }
 
   render() {
     const { showBoundariesInfo } = this.props
     const { opened } = this.state
     return !opened ?
-      <OverlayButton icon='info' onClick={this.open}/>
+      <OverlayButton icon="info" onClick={this.open} />
       :
-      <div className='map-key-content'>
-        <i onClick={this.hide} className='map-key-close fa fa-close'/>
-        <table className='magnitude-density'>
+      <div className="map-key-content">
+        <i onClick={this.hide} className="map-key-close fa fa-close" />
+        <table className="magnitude-density">
           <tbody>
-            <tr><th colSpan='2'>Magnitude</th><th colSpan='2'>Depth</th></tr>
+            <tr><th colSpan="2">Magnitude</th><th colSpan="2">Depth</th></tr>
             <tr><td>{circle(3)}</td><td>3</td><td>{earthquakeColor(50)}</td><td>0-100 km</td></tr>
             <tr><td>{circle(5)}</td><td>5</td><td>{earthquakeColor(150)}</td><td>100-200 km</td></tr>
             <tr><td>{circle(6)}</td><td>6</td><td>{earthquakeColor(250)}</td><td>200-300 km</td></tr>
@@ -44,9 +63,9 @@ export default class MapKey extends Component {
           </tbody>
         </table>
         { showBoundariesInfo &&
-          <table className='boundaries'>
+          <table className="boundaries">
             <tbody>
-            <tr><th colSpan='2'>Plate boundaries</th></tr>
+            <tr><th colSpan="2">Plate boundaries</th></tr>
             <tr><td>{boundaryColor('#ffffff')}</td><td>Continental Convergent Boundary</td></tr>
             <tr><td>{boundaryColor('#a83800')}</td><td>Continental Transform Fault</td></tr>
             <tr><td>{boundaryColor('#ffff00')}</td><td>Continental Rift Boundary</td></tr>
@@ -59,23 +78,4 @@ export default class MapKey extends Component {
         }
       </div>
   }
-}
-
-function circle(magnitude) {
-  return <svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'>
-           <circle cx='24' cy='24' r={magnitudeToRadius(magnitude)} stroke='black' fill='rgba(0,0,0,0)'/>
-         </svg>
-}
-
-function earthquakeColor(depth) {
-  return <div className='earthquake-color' style={{backgroundColor: toHexStr(depthToColor(depth))}}></div>
-}
-
-function boundaryColor(color) {
-  return <div className='boundary-color' style={{backgroundColor: color}}></div>
-}
-
-function toHexStr(d) {
-  const hex = Number(d).toString(16)
-  return "#000000".substr(0, 7 - hex.length) + hex
 }

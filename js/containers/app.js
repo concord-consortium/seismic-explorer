@@ -32,15 +32,15 @@ class App extends Component {
     window.setMode = setMode
   }
 
-  componentWillUnmount() {
-    disableShutterbug()
-  }
-
   componentDidUpdate(prevProps) {
     // params.regionPath is provided by react-router.
     if (prevProps.params.regionPath !== this.props.params.regionPath) {
       this.updateRegion()
     }
+  }
+
+  componentWillUnmount() {
+    disableShutterbug()
   }
 
   updateRegion() {
@@ -50,16 +50,6 @@ class App extends Component {
     updateRegionsHistory(params.regionPath)
     // Go back to 2D mode, 3D doesn't support region change.
     setMode('2d')
-  }
-
-  renderError() {
-    const { error } = this.props
-    return (
-      <div className='error'>
-        <h1>ERROR</h1>
-        <div>{error.message}</div>
-      </div>
-    )
   }
 
   // Very important method in this app. It ensures that both 2D map and 3D view are perfectly aligned.
@@ -79,24 +69,36 @@ class App extends Component {
     }
   }
 
+  renderError() {
+    const { error } = this.props
+    return (
+      <div className="error">
+        <h1>ERROR</h1>
+        <div>{error.message}</div>
+      </div>
+    )
+  }
+
   renderApp() {
     const { region, earthquakes, layers, dataFetching, crossSectionPoints,
             mark2DViewModified, mark3DViewModified, regionsHistory, mode, setCrossSectionPoint } = this.props
     return (
       <div>
-        {dataFetching && <LoadingIcon/>}
+        {dataFetching && <LoadingIcon />}
         <div className={`map-container mode-${mode}`}>
-          <SeismicEruptionsMap ref='map' region={region} regionsHistory={regionsHistory} earthquakes={earthquakes}
-                               mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
-                               setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}/>
+          <SeismicEruptionsMap ref="map" region={region} regionsHistory={regionsHistory} earthquakes={earthquakes}
+            mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
+            setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
+          />
           {mode === '3d' &&
-            <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
-                            latLngToPoint={this.latLngToPoint} mark3DViewModified={mark3DViewModified}/>
+            <CrossSection3D ref="view3d" earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
+              latLngToPoint={this.latLngToPoint} mark3DViewModified={mark3DViewModified}
+            />
           }
-          <OverlayControls resetView={this.resetView}/>
+          <OverlayControls resetView={this.resetView} />
         </div>
-        <div className='bottom-controls-container'>
-          <BottomControls/>
+        <div className="bottom-controls-container">
+          <BottomControls />
         </div>
       </div>
     )

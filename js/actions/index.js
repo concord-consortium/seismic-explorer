@@ -1,3 +1,4 @@
+/* eslint no-use-before-define: 0 */
 import { fetchJSON } from '../api'
 
 export const UPDATE_REGIONS_HISTORY = 'UPDATE_REGIONS_HISTORY'
@@ -19,34 +20,7 @@ export const MARK_3D_VIEW_MODIFIED = 'MARK_3D_VIEW_MODIFIED'
 export function updateRegionsHistory(path) {
   return {
     type: UPDATE_REGIONS_HISTORY,
-    path: path
-  }
-}
-
-export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
-  return dispatch => {
-    dispatch({type: REQUEST_DATA})
-    fetchJSON(path)
-      .then(
-        response => dispatch(receiveData(response, dataType)),
-        error => dispatch(receiveError(error))
-      )
-  }
-}
-
-function receiveData(response, dataType) {
-  return dispatch => {
-    dispatch({
-      type: RECEIVE_DATA,
-      dataType,
-      receivedAt: Date.now()
-    })
-    switch(dataType) {
-      case 'region':
-        return dispatch(receiveRegion(response))
-      case 'earthquakes':
-        return dispatch(receiveEarthquakes(response))
-    }
+    path
   }
 }
 
@@ -54,7 +28,7 @@ function receiveRegion(response) {
   return dispatch => {
     dispatch({
       type: RECEIVE_REGION,
-      response: response,
+      response,
       receivedAt: Date.now()
     })
     response.datasets.forEach(earthquakesPath =>
@@ -66,21 +40,50 @@ function receiveRegion(response) {
 function receiveEarthquakes(response) {
   return {
     type: RECEIVE_EARTHQUAKES,
-    response: response,
+    response,
     receivedAt: Date.now()
+  }
+}
+
+function receiveData(response, dataType) {
+  return dispatch => {
+    dispatch({
+      type: RECEIVE_DATA,
+      dataType,
+      receivedAt: Date.now()
+    })
+    switch (dataType) {
+      case 'region':
+        return dispatch(receiveRegion(response))
+      case 'earthquakes':
+        return dispatch(receiveEarthquakes(response))
+      default:
+        throw new Error('Unknown type')
+    }
   }
 }
 
 function receiveError(response) {
   return {
     type: RECEIVE_ERROR,
-    response: response,
+    response,
     receivedAt: Date.now()
   }
 }
 
+export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
+  return dispatch => {
+    dispatch({ type: REQUEST_DATA })
+    fetchJSON(path)
+      .then(
+        response => dispatch(receiveData(response, dataType)),
+        error => dispatch(receiveError(error))
+      )
+  }
+}
+
 export function invalidateData() {
-  return {type: INVALIDATE_DATA}
+  return { type: INVALIDATE_DATA }
 }
 
 export function setFilter(name, value) {

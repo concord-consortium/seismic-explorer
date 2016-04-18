@@ -2,7 +2,7 @@ export const TRANSITION_TIME = 750
 
 export function depthToColor(depth) {
   const depthRange = Math.floor(depth / 100)
-  switch(depthRange) {
+  switch (depthRange) {
     case 0: // 0 - 100
       return 0xFF0A00
     case 1: // 100 - 200

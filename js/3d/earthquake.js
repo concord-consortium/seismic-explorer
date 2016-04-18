@@ -5,6 +5,12 @@ const TRANSITION_COLOR = 0xFFFFFF
 
 const colorHelper = new THREE.Color()
 
+function magnitudeToDiameter(mag) {
+  // * 2 because size describes diameter, not radius. It ensures that both 2D and 3D view use
+  // exactly the same dimensions.
+  return window.devicePixelRatio * 2 * magnitudeToRadius(mag)
+}
+
 export default class {
   constructor(data, idx, attributes) {
     this.id = data.id
@@ -25,8 +31,8 @@ export default class {
     this.setSizeAttr(0)
   }
 
-  set transition(v) {
-    v = Math.min(1, Math.max(0, v))
+  set transition(value) {
+    const v = Math.min(1, Math.max(0, value))
     this._transition = v
     const t = easeOutBounce(v)
     this.setSizeAttr(t * this.size)
@@ -43,11 +49,11 @@ export default class {
 
   // Performs transition step and returns true if the transition is still in progress.
   transitionStep(progress) {
-    progress /= TRANSITION_TIME // map to [0, 1]
+    const p = progress / TRANSITION_TIME // map to [0, 1]
     if (this.transition < this.targetVisibility) {
-      this.transition += progress
+      this.transition += p
     } else if (this.transition > this.targetVisibility) {
-      this.transition -= progress
+      this.transition -= p
     }
   }
 
@@ -74,10 +80,4 @@ export default class {
     this.attributes.customColor.needsUpdate = true
     this._oldColorAttr = val
   }
-}
-
-function magnitudeToDiameter(mag) {
-  // * 2 because size describes diameter, not radius. It ensures that both 2D and 3D view use
-  // exactly the same dimensions.
-  return window.devicePixelRatio * 2 * magnitudeToRadius(mag)
 }

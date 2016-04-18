@@ -96,7 +96,7 @@ function layers(state = INITIAL_LAYERS, action) {
     case SET_PLATES_VISIBLE:
       return state.set('plates', action.value)
     default:
-      return state;
+      return state
   }
 }
 
@@ -108,7 +108,7 @@ function animationEnabled(state = false, action) {
       // Disable animation when user changes region.
       return false
     default:
-      return state;
+      return state
   }
 }
 
@@ -124,7 +124,7 @@ function regionsHistory(state = List(), action) {
         return state.push(action.path)
       }
     default:
-      return state;
+      return state
   }
 }
 
@@ -134,7 +134,7 @@ function mode(state = '2d', action) {
     case SET_MODE:
       return action.value
     default:
-      return state;
+      return state
   }
 }
 
@@ -143,7 +143,7 @@ function crossSectionPoints(state = List(), action) {
     case SET_CROSS_SECTION_POINT:
       return state.set(action.index, action.latLng)
     default:
-      return state;
+      return state
   }
 }
 
@@ -154,7 +154,7 @@ function changedViews(state = Set(), action) {
     case MARK_3D_VIEW_MODIFIED:
       return action.value ? state.add('3d') : state.remove('3d')
     default:
-      return state;
+      return state
   }
 }
 

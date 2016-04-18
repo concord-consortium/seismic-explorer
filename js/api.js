@@ -23,6 +23,34 @@ class Cache {
 
 const cache = new Cache()
 
+export class APIError {
+  constructor(statusText, response) {
+    this.message = statusText
+    this.response = response
+  }
+}
+
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response
+  }
+  throw new APIError(response.statusText, response)
+}
+
+function fakeData(path) {
+  return new Promise(resolve => {
+    const info = path.split('=')
+    const type = info[0]
+    const count = info[1]
+    if (type === '_fake') {
+      resolve(fakeRegion(count))
+    }
+    if (type === '_fake_dataset') {
+      resolve(fakeDataset(count))
+    }
+  })
+}
+
 export function fetchJSON(path) {
   if (path.startsWith('_fake')) {
     return fakeData(path)
@@ -40,34 +68,5 @@ export function fetchJSON(path) {
 
 export function goToRegion(path) {
   // This will update ReactRouter and App component will request a new region data.
-  window.location.hash = '#/' +  window.encodeURIComponent(path)
-}
-
-export class APIError {
-  constructor(statusText, response) {
-    this.message = statusText
-    this.response = response
-  }
-}
-
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response
-  } else {
-    throw new APIError(response.statusText, response)
-  }
-}
-
-function fakeData(path) {
-  return new Promise(resolve => {
-    const info = path.split('=')
-    const type = info[0]
-    const count = info[1]
-    if (type === '_fake') {
-      resolve(fakeRegion(count))
-    }
-    if (type === '_fake_dataset') {
-      resolve(fakeDataset(count))
-    }
-  })
+  window.location.hash = '#/' + window.encodeURIComponent(path)
 }

@@ -15,6 +15,10 @@ import '../../css/seismic-eruptions-map.less'
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
 
+function createSVGOverlayLayer(map) {
+  map.addLayer(new Circle([0, 0], 0, { opacity: 0, fillOpacity: 0 }))
+}
+
 @pureRender
 export default class SeismicEruptionsMap extends Component {
   constructor(props) {
@@ -25,14 +29,6 @@ export default class SeismicEruptionsMap extends Component {
     this.handleMoveStart = this.handleMoveStart.bind(this)
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
-  }
-
-  get map() {
-    return this.refs.map.getLeafletElement()
-  }
-
-  latLngToPoint(latLng) {
-    return this.map.latLngToContainerPoint(latLng)
   }
 
   componentDidMount() {
@@ -62,10 +58,18 @@ export default class SeismicEruptionsMap extends Component {
         if (e.id === selectedEarthquake.id && e.visible) found = true
       })
       // Reset it if not.
-      if (!found) this.setState({selectedEarthquake: null})
+      if (!found) this.setState({ selectedEarthquake: null })
     }
     // Listen to movestart events triggered by user again.
     this._ignoreMovestart = false
+  }
+
+  get map() {
+    return this.refs.map.getLeafletElement()
+  }
+
+  latLngToPoint(latLng) {
+    return this.map.latLngToContainerPoint(latLng)
   }
 
   handleMoveStart() {
@@ -76,11 +80,11 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   handleEarthquakeClick(event, earthquake) {
-    this.setState({selectedEarthquake: earthquake})
+    this.setState({ selectedEarthquake: earthquake })
   }
 
   handleEarthquakePopupClose() {
-    this.setState({selectedEarthquake: null})
+    this.setState({ selectedEarthquake: null })
   }
 
   fitBounds() {
@@ -93,14 +97,15 @@ export default class SeismicEruptionsMap extends Component {
     // #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same
     // component instance when we switch between maps with subdomains and without.
     const { layers } = this.props
-    switch(layers.get('base')) {
-      case 'satellite':
-        return <TileLayer key='with-subdomains' url='http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png'
-                          subdomains={['otile1', 'otile2', 'otile3', 'otile4']}/>
+    switch (layers.get('base')) {
       case 'street':
-        return <TileLayer key='no-subdomains' url='http://{s}.tile.osm.org/{z}/{x}/{y}.png'/>
+        return <TileLayer key="no-subdomains" url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" />
       case 'earthquake-density':
-        return <TileLayer key='no-subdomains' url='http://{s}.tiles.mapbox.com/v3/bclc-apec.map-rslgvy56/{z}/{x}/{y}.png'/>
+        return <TileLayer key="no-subdomains" url="http://{s}.tiles.mapbox.com/v3/bclc-apec.map-rslgvy56/{z}/{x}/{y}.png" />
+      default: // 'satellite'
+        return (<TileLayer key="with-subdomains" url="http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png"
+          subdomains={['otile1', 'otile2', 'otile3', 'otile4']}
+        />)
     }
   }
 
@@ -110,21 +115,21 @@ export default class SeismicEruptionsMap extends Component {
     const bounds = region.get('bounds')
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
+        <Map ref="map" className="map" bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
           {this.renderBaseLayer()}
-          {layers.get('plates') && <PlatesLayer/>}
+          {layers.get('plates') && <PlatesLayer />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
-            <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
+            <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick} />
           }
           {mode === '2d' &&
-            <SubregionButtons subregions={region.get('subregions')}/>
+            <SubregionButtons subregions={region.get('subregions')} />
           }
           {mode === '2d' && selectedEarthquake &&
-            <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
+            <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose} />
           }
           {mode === 'cross-section' &&
-            <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>
+            <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
         </Map>
       </div>
@@ -132,6 +137,3 @@ export default class SeismicEruptionsMap extends Component {
   }
 }
 
-function createSVGOverlayLayer(map) {
-  map.addLayer(new Circle([0,0], 0, {opacity: 0, fillOpacity: 0}))
-}

@@ -2,23 +2,6 @@ import L from 'leaflet'
 
 const CROSS_SECTION_RECTANGLE_ASPECT_RATIO = 0.4
 
-// Note that order of returned points matters and is defined by what user should see in the 3D view.
-// [0] - left point, close to the observer
-// [1] - left point, far from the observer
-// [2] - right point, far from the observer
-// [3] - right point, close to the observer
-export default function crossSectionRectangle(point1, point2) {
-  if (!point1 || !point2) return null
-  // Projection is necessary, as otherwise rectangle wouldn't look like rectangle on the map.
-  const pLeft = leftPoint(project(point1), project(point2))
-  const pRight = rightPoint(project(point1), project(point2))
-  const ratio = CROSS_SECTION_RECTANGLE_ASPECT_RATIO / 2
-  const middle1 = pointBetween(pLeft, pRight, ratio)
-  const middle2 = pointBetween(pRight, pLeft, ratio)
-  return [unproject(rotate(pLeft, middle1, 90)), unproject(rotate(pLeft, middle1, -90)),
-          unproject(rotate(pRight, middle2, 90)), unproject(rotate(pRight, middle2, -90))]
-}
-
 // Converts Leaflet.LatLng or Leaflet.Point to array.
 export function pointToArray(point) {
   if (point.lat !== undefined) return [point.lat, point.lng]
@@ -58,4 +41,21 @@ function rotate(center, point, angle) {
   const nx = (cos * (point[0] - center[0])) + (sin * (point[1] - center[1])) + center[0]
   const ny = (cos * (point[1] - center[1])) - (sin * (point[0] - center[0])) + center[1]
   return [nx, ny]
+}
+
+// Note that order of returned points matters and is defined by what user should see in the 3D view.
+// [0] - left point, close to the observer
+// [1] - left point, far from the observer
+// [2] - right point, far from the observer
+// [3] - right point, close to the observer
+export default function crossSectionRectangle(point1, point2) {
+  if (!point1 || !point2) return null
+  // Projection is necessary, as otherwise rectangle wouldn't look like rectangle on the map.
+  const pLeft = leftPoint(project(point1), project(point2))
+  const pRight = rightPoint(project(point1), project(point2))
+  const ratio = CROSS_SECTION_RECTANGLE_ASPECT_RATIO / 2
+  const middle1 = pointBetween(pLeft, pRight, ratio)
+  const middle2 = pointBetween(pRight, pLeft, ratio)
+  return [unproject(rotate(pLeft, middle1, 90)), unproject(rotate(pLeft, middle1, -90)),
+          unproject(rotate(pRight, middle2, 90)), unproject(rotate(pRight, middle2, -90))]
 }

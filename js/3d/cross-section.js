@@ -13,6 +13,29 @@ renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setClearColor(0x000000, 1)
 renderer.autoClear = false
 
+// Returns a function that converts [lat, lng, depth] into 3D coordinates (instance of THREE.Vector3).
+// This function depends on latLngToPoint function provided by Leaflet map, cross section box dimensions
+// and screen width and height.
+// Depth scaling is be proportional to the the cross section line length and user's screen aspect ratio.
+// It ensures that when we zoom in to see the whole cross section box from the side, we'll still see
+// earthquakes (and other geometry) at MAX_DEPTH.
+function getLatLngDepthToPoint(latLngToPoint, crossSectionPoints, width, height) {
+  const p1 = latLngToPoint(crossSectionPoints.get(0))
+  const p2 = latLngToPoint(crossSectionPoints.get(1))
+  const aspectRatio = width / height
+  const depthScale = p1.distanceTo(p2) / aspectRatio / MAX_DEPTH
+
+  // latLngDepth is an array: [latitude, longitude, depthInKm]
+  return function latLngDepthToPoint(latLngDepth) {
+    const point = latLngToPoint(latLngDepth)
+    return new THREE.Vector3(
+      point.x,
+      height - point.y,
+      depthScale * (-latLngDepth[2] || 0)
+    )
+  }
+}
+
 export default class {
   constructor(parentEl) {
     parentEl.appendChild(renderer.domElement)
@@ -68,6 +91,7 @@ export default class {
     this.camera.reset()
   }
 
+  /* eslint-disable */
   render(timestamp = performance.now()) {
     const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
 
@@ -84,6 +108,7 @@ export default class {
 
     this._prevTimestamp = timestamp
   }
+  /* eslint-enable */
 
   // Resizes canvas to fill its parent.
   resize() {
@@ -105,33 +130,10 @@ export default class {
     this.scene.add(this.crossSectionBox.root)
     this.sceneOverlay.add(this.crossSectionBox.overlay)
   }
-  
+
   _finalZoom(crossSectionPoints, latLngDepthToPoint) {
     const p1 = latLngDepthToPoint(crossSectionPoints.get(0))
     const p2 = latLngDepthToPoint(crossSectionPoints.get(1))
     return FINAL_ZOOM * this._width / p1.distanceTo(p2)
-  }
-}
-
-// Returns a function that converts [lat, lng, depth] into 3D coordinates (instance of THREE.Vector3).
-// This function depends on latLngToPoint function provided by Leaflet map, cross section box dimensions
-// and screen width and height.
-// Depth scaling is be proportional to the the cross section line length and user's screen aspect ratio.
-// It ensures that when we zoom in to see the whole cross section box from the side, we'll still see
-// earthquakes (and other geometry) at MAX_DEPTH.
-function getLatLngDepthToPoint(latLngToPoint, crossSectionPoints, width, height) {
-  const p1 = latLngToPoint(crossSectionPoints.get(0))
-  const p2 = latLngToPoint(crossSectionPoints.get(1))
-  const aspectRatio = width / height
-  const depthScale = p1.distanceTo(p2) / aspectRatio / MAX_DEPTH
-
-  // latLngDepth is an array: [latitude, longitude, depthInKm]
-  return function(latLngDepth) {
-    const point = latLngToPoint(latLngDepth)
-    return new THREE.Vector3(
-      point.x,
-      height - point.y,
-      depthScale * (-latLngDepth[2] || 0)
-    )
   }
 }

@@ -15,8 +15,8 @@ const DEFAULT_REGION = 'regions/world.json'
 render(
   <Provider store={store}>
     <Router history={appHistory}>
-      <Route path='/:regionPath' component={App}/>
-      <Redirect from='/' to={`/${window.encodeURIComponent(DEFAULT_REGION)}`}/>
+      <Route path="/:regionPath" component={App} />
+      <Redirect from="/" to={`/${window.encodeURIComponent(DEFAULT_REGION)}`} />
     </Router>
   </Provider>,
   document.getElementById('app')

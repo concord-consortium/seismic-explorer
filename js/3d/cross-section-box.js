@@ -6,13 +6,39 @@ import { latLng } from 'leaflet'
 export const BOX_DEPTH = 800 // km
 const POINT_SIZE = 40 // px
 
+function getPointTexture(label) {
+  const size = 64
+  const shadowBlur = size / 4
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  // Point
+  ctx.arc(size / 2, size / 2, size / 2 - shadowBlur, 0, 2 * Math.PI)
+  ctx.fillStyle = '#fff'
+  ctx.shadowColor = 'rgba(0,0,0,0.6)'
+  ctx.shadowBlur = shadowBlur
+  ctx.fill()
+  // Label
+  ctx.fillStyle = '#444'
+  ctx.shadowBlur = 0
+  ctx.shadowColor = 'rgba(0,0,0,0)'
+  ctx.font = `${size * 0.3}px verdana, helvetica, sans-serif`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(label, size / 2, size / 2)
+  const texture = new THREE.Texture(canvas)
+  texture.needsUpdate = true
+  return texture
+}
+
 export default class {
   constructor() {
     this.root = new THREE.Object3D()
     this.overlay = new THREE.Object3D()
 
-    this.lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 4})
-    this.boxMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 1})
+    this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 4 })
+    this.boxMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 1 })
     this.planeMaterial = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       side: THREE.DoubleSide,
@@ -21,8 +47,8 @@ export default class {
     })
     this.point1Texture = getPointTexture('P1')
     this.point2Texture = getPointTexture('P2')
-    this.point1Material = new THREE.SpriteMaterial({map: this.point1Texture})
-    this.point2Material = new THREE.SpriteMaterial({map: this.point2Texture})
+    this.point1Material = new THREE.SpriteMaterial({ map: this.point1Texture })
+    this.point2Material = new THREE.SpriteMaterial({ map: this.point2Texture })
 
     this.tickMarks = new TickMarks(BOX_DEPTH)
     this.overlay.add(this.tickMarks.root)
@@ -95,7 +121,7 @@ export default class {
       rect[0], rectBottom[0],
       rect[1], rectBottom[1],
       rect[2], rectBottom[2],
-      rect[3], rectBottom[3],
+      rect[3], rectBottom[3]
     ]
     this.box = new THREE.LineSegments(this.boxGeometry, this.boxMaterial)
     this.root.add(this.box)
@@ -137,49 +163,23 @@ export default class {
     const labelSize = POINT_SIZE * 0.5 / finalZoom
     this.tickMarks.setProps({
       origin: rect[0],
-      lengthVector: lengthVector,
-      widthVector: widthVector,
+      lengthVector,
+      widthVector,
       depthVector: new THREE.Vector3(0, 0, boxDepth),
-      format: function (val, type) {
-        switch(type) {
+      format(val, type) {
+        switch (type) {
           case 'depth':
             return Math.abs(Math.round(val * BOX_DEPTH / boxDepth)) + 'km'
           case 'length':
             return Math.round(val * lengthKm / lengthVector.length()) + 'km'
-          case 'width':
+          default:
             return Math.round(val * widthKm / widthVector.length()) + 'km'
         }
       },
       lengthTicks: 6,
       widthTicks: 1,
       depthTicks: 4,
-      labelSize: labelSize
+      labelSize
     })
   }
-}
-
-function getPointTexture(label) {
-  const size = 64
-  const shadowBlur = size / 4
-  const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size
-  const ctx = canvas.getContext('2d')
-  // Point
-  ctx.arc(size / 2, size / 2, size / 2 - shadowBlur, 0, 2 * Math.PI)
-  ctx.fillStyle = '#fff'
-  ctx.shadowColor = 'rgba(0,0,0,0.6)'
-  ctx.shadowBlur = shadowBlur
-  ctx.fill()
-  // Label
-  ctx.fillStyle = '#444'
-  ctx.shadowBlur = 0
-  ctx.shadowColor = 'rgba(0,0,0,0)'
-  ctx.font = `${size * 0.3}px verdana, helvetica, sans-serif`
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.fillText(label, size / 2, size / 2)
-  const texture = new THREE.Texture(canvas)
-  texture.needsUpdate = true
-  return texture
 }

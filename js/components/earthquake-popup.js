@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
-import { MapLayer, Marker, Popup } from 'react-leaflet'
+import { Marker, Popup } from 'react-leaflet'
 import { getCachedInvisibleIcon } from '../custom-leaflet/icons'
+
+function date(timestamp) {
+  const d = new Date(timestamp)
+  return d.toLocaleString ? d.toLocaleString() : d.toString()
+}
 
 @pureRender
 export default class EarthquakePopup extends Component {
@@ -30,23 +35,18 @@ export default class EarthquakePopup extends Component {
     const { map, earthquake } = this.props
     const earthquakePos = earthquake.geometry.coordinates
     return (
-      <Marker ref='marker' map={map} position={earthquakePos}
-              icon={getCachedInvisibleIcon()}
-              onLeafletPopupclose={this.onPopupClose}>
+      <Marker ref="marker" map={map} position={earthquakePos} icon={getCachedInvisibleIcon()}
+        onLeafletPopupclose={this.onPopupClose}
+      >
         <Popup closeOnClick={false}>
           <div>
-            Place: <b>{earthquake.properties.place}</b><br/>
-            Magnitude: <b>{earthquake.properties.mag.toFixed(1)}</b><br/>
-            Date: <b>{date(earthquake.properties.time)}</b><br/>
+            Place: <b>{earthquake.properties.place}</b><br />
+            Magnitude: <b>{earthquake.properties.mag.toFixed(1)}</b><br />
+            Date: <b>{date(earthquake.properties.time)}</b><br />
             Depth: <b>{earthquake.geometry.coordinates[2]} km</b>
           </div>
         </Popup>
       </Marker>
     )
   }
-}
-
-function date(timestamp) {
-  const d = new Date(timestamp)
-  return d.toLocaleString ? d.toLocaleString() : d.toString()
 }

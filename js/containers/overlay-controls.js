@@ -19,17 +19,6 @@ class OverlayControls extends Component {
     this.setCrossSectionDrawMode = this.setCrossSectionDrawMode.bind(this)
   }
 
-  handleGoUp() {
-    const { regionsHistory } = this.props
-    // The last entry in history is the current region, so pick the earlier one (-2 index).
-    goToRegion(regionsHistory.get(-2))
-  }
-
-  handleGoHome() {
-    const { regionsHistory } = this.props
-    goToRegion(regionsHistory.first())
-  }
-
   set2DMode() {
     const { setMode, setCrossSectionPoint } = this.props
     // Remove cross section points when user cancels cross-section drawing.
@@ -46,6 +35,17 @@ class OverlayControls extends Component {
   set3DMode() {
     const { setMode } = this.props
     if (this.canOpen3D()) setMode('3d')
+  }
+
+  handleGoHome() {
+    const { regionsHistory } = this.props
+    goToRegion(regionsHistory.first())
+  }
+
+  handleGoUp() {
+    const { regionsHistory } = this.props
+    // The last entry in history is the current region, so pick the earlier one (-2 index).
+    goToRegion(regionsHistory.get(-2))
   }
 
   canGoBack() {
@@ -65,42 +65,42 @@ class OverlayControls extends Component {
     const canOpen3D = this.canOpen3D()
     const viewChanged = mode !== '3d' && changedViews.has('2d') || mode === '3d' && changedViews.has('3d')
     return (
-      <div className='overlay-controls'>
-        <div className='controls top left'>
+      <div className="overlay-controls">
+        <div className="controls top left">
           {mode !== '3d' && canGoBack &&
             <div>
-              <OverlayButton onClick={this.handleGoHome} icon='home'/>
-              <OverlayButton onClick={this.handleGoUp} icon='arrow-up'/>
+              <OverlayButton onClick={this.handleGoHome} icon="home" />
+              <OverlayButton onClick={this.handleGoUp} icon="arrow-up" />
             </div>
           }
         </div>
-        <div className='controls bottom left'>
-          {viewChanged && <OverlayButton onClick={resetView} icon='map-marker'/>}
+        <div className="controls bottom left">
+          {viewChanged && <OverlayButton onClick={resetView} icon="map-marker" />}
         </div>
-        <div className='controls bottom right inline'>
+        <div className="controls bottom right inline">
           {mode === '2d' &&
-            <OverlayButton onClick={this.setCrossSectionDrawMode} icon='paint-brush'>
+            <OverlayButton onClick={this.setCrossSectionDrawMode} icon="paint-brush">
               Draw a cross section line and open 3D view
             </OverlayButton>
           }
           {mode === 'cross-section' &&
             <div>
-              <OverlayButton onClick={this.set3DMode} disabled={!canOpen3D} icon='cube'>
+              <OverlayButton onClick={this.set3DMode} disabled={!canOpen3D} icon="cube">
                 Open 3D view {!canOpen3D && '(draw a cross section line first!)'}
               </OverlayButton>
-              <OverlayButton onClick={this.set2DMode} icon='close'>
+              <OverlayButton onClick={this.set2DMode} icon="close">
                 Cancel
               </OverlayButton>
             </div>
           }
           {mode === '3d' &&
-            <OverlayButton onClick={this.set2DMode} icon='map'>
+            <OverlayButton onClick={this.set2DMode} icon="map">
               Go back to 2D map
             </OverlayButton>
           }
         </div>
-        <div className='controls top right'>
-          <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'}/>
+        <div className="controls top right">
+          <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'} />
         </div>
       </div>
     )

@@ -4,7 +4,7 @@ import CrossSection from '../3d/cross-section'
 export default class CrossSection3D extends React.Component {
   constructor(props) {
     super(props)
-    this.rafCallback = this.rafCallback.bind(this);
+    this.rafCallback = this.rafCallback.bind(this)
   }
 
   componentDidMount() {
@@ -19,11 +19,6 @@ export default class CrossSection3D extends React.Component {
     })
   }
 
-  componentWillUnmount() {
-    cancelAnimationFrame(this._rafId)
-    this.externalView.destroy()
-  }
-
   componentWillReceiveProps(nextProps) {
     this.externalView.setProps(nextProps)
   }
@@ -31,6 +26,11 @@ export default class CrossSection3D extends React.Component {
   shouldComponentUpdate() {
     // Never update component as it's based on canvas.
     return false
+  }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this._rafId)
+    this.externalView.destroy()
   }
 
   // requestAnimationFrame callback.
@@ -47,7 +47,7 @@ export default class CrossSection3D extends React.Component {
 
   render() {
     return (
-      <div ref='container' className='cross-section-3d' style={{width: '100%', height: '100%'}}>
+      <div ref="container" className="cross-section-3d" style={{ width: '100%', height: '100%' }}>
         {/* Canvas will be inserted here by the external view. */}
       </div>
     )

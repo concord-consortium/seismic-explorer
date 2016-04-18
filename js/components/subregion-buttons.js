@@ -10,12 +10,12 @@ export default class SubregionButtons extends Component {
     const { map, subregions } = this.props
     return (
       <LayerGroup map={map}>
-        {subregions.map((sr, idx) => {
-          return <Marker key={idx} position={sr.geometry.coordinates}
-                         icon={getCachedSubregionIcon(sr.properties.label)}
-                         onClick={() => goToRegion(sr.properties.scaffold)}
-          />
-        })}
+        {subregions.map((sr, idx) =>
+          (<Marker key={idx} position={sr.geometry.coordinates}
+            icon={getCachedSubregionIcon(sr.properties.label)}
+            onClick={() => goToRegion(sr.properties.scaffold)}
+          />)
+        )}
       </LayerGroup>
     )
   }
