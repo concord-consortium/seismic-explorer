@@ -91,7 +91,8 @@ class App extends Component {
                                setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}/>
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
-                            latLngToPoint={this.latLngToPoint} mark3DViewModified={mark3DViewModified}/>
+                            mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
+                            mark3DViewModified={mark3DViewModified}/>
           }
           <OverlayControls resetView={this.resetView}/>
         </div>

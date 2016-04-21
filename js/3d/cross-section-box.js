@@ -2,9 +2,27 @@ import THREE from 'three'
 import crossSectionRectangle from '../core/cross-section-rectangle'
 import TickMarks from './tick-marks'
 import { latLng } from 'leaflet'
+import mapTexture from './map-texture'
 
 export const BOX_DEPTH = 800 // km
 const POINT_SIZE = 40 // px
+// Adjust box lines and top plane a bit, so they're not overlapping. It can cause small artificats.
+// It also ensures that each earthquake is below the plane.
+const TOP_RECT_Z_OFFSET = 5 // km
+const TOP_PLANE_Z_OFFSET = -2.5 // km
+
+// Map becomes more visible when user looks directly at it.
+function mapOpacity(polarAngle) {
+  const PI2 = Math.PI * 0.5
+  let v
+  if (polarAngle < PI2) {
+    v = Math.pow((PI2 - polarAngle) / PI2, 0.3)
+  } else {
+    v = Math.pow((polarAngle - PI2) / (Math.PI * 0.25), 0.2)
+  }
+  v = Math.min(1, v)
+  return 0.85 * v
+}
 
 export default class {
   constructor() {
@@ -13,12 +31,6 @@ export default class {
 
     this.lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 4})
     this.boxMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 1})
-    this.planeMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.2
-    })
     this.point1Texture = getPointTexture('P1')
     this.point2Texture = getPointTexture('P2')
     this.point1Material = new THREE.SpriteMaterial({map: this.point1Texture})
@@ -29,15 +41,18 @@ export default class {
   }
 
   destroy() {
+    // Static resources, created in constructor.
     this.lineMaterial.dispose()
     this.boxMaterial.dispose()
-    this.planeMaterial.dispose()
     this.point1Material.dispose()
     this.point2Material.dispose()
     this.point1Texture.dispose()
     this.point2Texture.dispose()
     this.tickMarks.destroy()
     this.destroyGeometry()
+    // Dynamic resources, created when properties are set.
+    if (this.planeMaterial) this.planeMaterial.dispose()
+    if (this.planeTexture) this.planeTexture.dispose()
   }
 
   destroyGeometry() {
@@ -46,26 +61,32 @@ export default class {
     if (this.planeGeometry) this.planeGeometry.dispose()
   }
 
-  setProps(crossSectionPoints, finalZoom, latLngDepthToPoint) {
+  setProps(crossSectionPoints, mapType, finalZoom, latLngDepthToPoint) {
     this.destroyGeometry()
+    const boxDepth = latLngDepthToPoint([0, 0, BOX_DEPTH]).z
+    const rectZOffset = latLngDepthToPoint([0, 0, -TOP_RECT_Z_OFFSET]).z
+    const planeZOffset = latLngDepthToPoint([0, 0, -TOP_PLANE_Z_OFFSET]).z
     const p1LatLng = crossSectionPoints.get(0)
     const p2LatLng = crossSectionPoints.get(1)
     const p1 = latLngDepthToPoint(p1LatLng)
     const p2 = latLngDepthToPoint(p2LatLng)
+    p1.z += rectZOffset
+    p2.z += rectZOffset
     const rectLatLng = crossSectionRectangle(p1LatLng, p2LatLng)
-    const rect = rectLatLng.map(latLngDepthToPoint)
-    const boxDepth = latLngDepthToPoint([0, 0, BOX_DEPTH]).z
+    const rect = rectLatLng.map(latLngDepthToPoint).map(v => v.setZ(v.z + rectZOffset))
+
     this.setupLine(p1, p2)
     this.setupBox(rect, boxDepth)
-    this.setupPlane(rect)
+    this.setupPlane(rect, planeZOffset, rectLatLng, mapType)
     this.setupPoints(p1, p2)
     this.setupTickMarks(rect, boxDepth, rectLatLng, finalZoom)
   }
 
-  update(zoom) {
+  update(zoom, polarAngle) {
     const pointSize = POINT_SIZE / zoom
     this.point1.scale.set(pointSize, pointSize, 1)
     this.point2.scale.set(pointSize, pointSize, 1)
+    this.planeMaterial.opacity = mapOpacity(polarAngle)
   }
 
   setupLine(p1, p2) {
@@ -95,20 +116,38 @@ export default class {
       rect[0], rectBottom[0],
       rect[1], rectBottom[1],
       rect[2], rectBottom[2],
-      rect[3], rectBottom[3],
+      rect[3], rectBottom[3]
     ]
     this.box = new THREE.LineSegments(this.boxGeometry, this.boxMaterial)
     this.root.add(this.box)
   }
 
-  setupPlane(rect) {
+  setupPlane(rect, planeZOffset, rectLatLng, mapType) {
     if (this.plane) this.root.remove(this.plane)
+    if (this.planeTexture) {
+      this.planeTexture.dispose()
+      this.planeMaterial.dispose()
+    }
+    const mapTextureData = mapTexture(rectLatLng, mapType)
+    this.planeTexture = mapTextureData.texture
+    this.planeMaterial = new THREE.MeshBasicMaterial({
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.75,
+      map: this.planeTexture
+    })
     this.planeGeometry = new THREE.Geometry()
-    this.planeGeometry.vertices = rect
+    this.planeGeometry.vertices = rect.map(v => v.clone().setZ(v.z + planeZOffset))
     this.planeGeometry.faces = [
-      new THREE.Face3(0, 1, 2),
-      new THREE.Face3(0, 2, 3)
+      new THREE.Face3(0, 2, 1),
+      new THREE.Face3(0, 3, 2)
     ]
+    this.planeGeometry.computeFaceNormals()
+    this.planeGeometry.computeVertexNormals()
+    this.planeGeometry.faceVertexUvs = [[]]
+    const uvs = mapTextureData.uvs
+    this.planeGeometry.faceVertexUvs[0][0] = [uvs[0], uvs[2], uvs[1]]
+    this.planeGeometry.faceVertexUvs[0][1] = [uvs[0], uvs[3], uvs[2]]
     this.plane = new THREE.Mesh(this.planeGeometry, this.planeMaterial)
     this.root.add(this.plane)
   }

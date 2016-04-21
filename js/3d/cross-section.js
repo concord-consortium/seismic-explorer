@@ -47,15 +47,18 @@ export default class {
       newProps.crossSectionPoints,
       this._width, this._height
     )
+    const finalZoom = this._finalZoom(newProps.crossSectionPoints, latLngDepthToPoint)
 
     if (this.props.earthquakes !== newProps.earthquakes) {
       this.earthquakes.setProps(newProps.earthquakes, latLngDepthToPoint)
     }
     if (this.props.crossSectionPoints !== newProps.crossSectionPoints) {
-      const finalZoom = this._finalZoom(newProps.crossSectionPoints, latLngDepthToPoint)
-      this.crossSectionBox.setProps(newProps.crossSectionPoints, finalZoom, latLngDepthToPoint)
+      this.crossSectionBox.setProps(newProps.crossSectionPoints, newProps.mapType, finalZoom, latLngDepthToPoint)
       // .lookAtCrossSection starts an animation.
       this.camera.lookAtCrossSection(newProps.crossSectionPoints, finalZoom, latLngDepthToPoint)
+    }
+    if (this.props.mapType !== newProps.mapType) {
+      this.crossSectionBox.setProps(newProps.crossSectionPoints, newProps.mapType, finalZoom, latLngDepthToPoint)
     }
     this.props = newProps
   }
@@ -75,7 +78,7 @@ export default class {
 
     this.camera.update()
     this.earthquakes.update(progress)
-    this.crossSectionBox.update(this.camera.zoom)
+    this.crossSectionBox.update(this.camera.zoom, this.camera.polarAngle)
 
     renderer.clear()
     renderer.render(this.scene, this.camera.camera)

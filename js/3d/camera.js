@@ -136,6 +136,13 @@ export default class Camera {
   get zoom() {
     return this.camera.zoom
   }
+
+  get polarAngle() {
+    // this.controls.getPolarAngle() seems to be broken in r75
+    const v1 = new THREE.Vector3(0, 0, 1)
+    const v2 = this.camera.position.clone().sub(this.controls.target).normalize()
+    return v2.angleTo(v1)
+  }
 }
 
 function leftPoint(point1, point2) {
