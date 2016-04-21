@@ -107,7 +107,7 @@ class BottomControls extends Component {
   }
 
   render() {
-    const { animationEnabled, filters, layers } = this.props
+    const { animationEnabled, filters, layers, mode } = this.props
     const { settingsVisible, fullscreen } = this.state
 
     return (
@@ -138,9 +138,11 @@ class BottomControls extends Component {
               <option value='earthquake-density'>Earthquake density</option>
             </select>
           </div>
-          <div>
-            <input type='checkbox' checked={layers.get('plates')} onChange={this.handlePlateLayerChange}/> Show plate boundaries
-          </div>
+          {mode !== '3d' &&
+            <div>
+              <input type='checkbox' checked={layers.get('plates')} onChange={this.handlePlateLayerChange}/> Show plate boundaries
+            </div>
+          }
           <div>
             <div>
               Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
@@ -158,6 +160,7 @@ function mapStateToProps(state) {
   return {
     filters: state.get('filters'),
     layers: state.get('layers'),
+    mode: state.get('mode'),
     animationEnabled: state.get('animationEnabled')
   }
 }
