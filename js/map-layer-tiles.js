@@ -13,18 +13,18 @@ export const layerInfo = [
     subdomains: ['a', 'b', 'c']
   },
   {
-    type: 'physical',
-    name: 'Physical',
-    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
-    maxZoom: 8,
-    subdomains: ['a', 'b', 'c']
+    type: 'relief',
+    name: 'Relief',
+    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
+    maxZoom: 13,
+    subdomains: []
   },
   {
     type: 'ocean-basemap',
     name: 'Ocean basemap',
     url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
-	  attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+    attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
     maxZoom: 13,
     subdomains: []
   },

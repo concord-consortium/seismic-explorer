@@ -95,7 +95,7 @@ export default class SeismicEruptionsMap extends Component {
     // component instance when we switch between maps with subdomains and without.
     const { layers } = this.props
     const layer = mapLayer(layers.get('base'))
-    return <TileLayer key={layers.get('base')} url={layer.url} subdomains={layer.subdomains}/>
+    return <TileLayer key={layers.get('base') } url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution} />
   }
 
   render() {
@@ -104,7 +104,7 @@ export default class SeismicEruptionsMap extends Component {
     const bounds = region.get('bounds')
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart}>
+        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart} zoom={3} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
           {mode !== '3d' &&
