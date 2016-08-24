@@ -8,7 +8,7 @@ import PlatesLayer from './plates-layer'
 import SubregionButtons from './subregion-buttons'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
-import { layerInfo } from '../map-layer-tiles'
+import { mapLayer } from '../map-layer-tiles'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
@@ -94,7 +94,7 @@ export default class SeismicEruptionsMap extends Component {
     // #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same
     // component instance when we switch between maps with subdomains and without.
     const { layers } = this.props
-    const layer = layerInfo[layers.get('base')]
+    const layer = mapLayer(layers.get('base'))
     return <TileLayer key={layers.get('base')} url={layer.url} subdomains={layer.subdomains}/>
   }
 

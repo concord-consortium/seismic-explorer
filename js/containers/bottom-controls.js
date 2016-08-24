@@ -6,6 +6,7 @@ import AnimationButton from '../components/animation-button'
 import Slider from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
+import { layerInfo } from '../map-layer-tiles'
 
 import '../../css/bottom-controls.less'
 import 'rc-slider/assets/index.css'
@@ -124,6 +125,15 @@ class BottomControls extends Component {
     }
     return marks
   }
+  get mapLayerOptions() {
+    let layerOpts = []
+    let layerTypes = layerInfo.map(m => m.type)
+    let layerNames = layerInfo.map(m => m.name)
+    for (let i = 0; i < layerTypes.length; i++){
+      layerOpts.push(<option key={i} value={layerTypes[i]}>{layerNames[i]}</option>)
+    }
+    return layerOpts
+  }
 
   get animSpeed() {
     const { filters } = this.props
@@ -156,10 +166,8 @@ class BottomControls extends Component {
           <h2>Settings</h2>
           <div>
             Displayed map type
-            <select value={layers.get('base')} onChange={this.handleBaseLayerChange}>
-              <option value='satellite'>Satellite</option>
-              <option value='street'>Street</option>
-              <option value='earthquake-density'>Earthquake density</option>
+            <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
+              {this.mapLayerOptions}
             </select>
           </div>
           {mode !== '3d' &&
