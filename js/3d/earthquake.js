@@ -41,7 +41,6 @@ export default class {
     return this.targetVisibility !== this.transition
   }
 
-  // Performs transition step and returns true if the transition is still in progress.
   transitionStep(progress) {
     progress /= TRANSITION_TIME // map to [0, 1]
     if (this.transition < this.targetVisibility) {

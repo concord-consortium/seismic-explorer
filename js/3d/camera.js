@@ -8,13 +8,14 @@ const TARGET_ANGLE = Math.PI * 0.485
 const TARGET_Z_OFFSET = 85
 
 export default class Camera {
-  constructor(domElement) {
+  constructor(domElement, controlsEnabled) {
     // Dimensions will be set in .resize() call.
     this.camera = new THREE.OrthographicCamera(0, 0, 0, 0, 0.01, 1e6)
     // Change default up orientation that affects orbit controls.
     // Assume that Z coord defines depth of the earthquakes.
     this.camera.up = new THREE.Vector3(0, 0, 1)
     this.controls = new THREE.OrbitControls(this.camera, domElement)
+    this.controls.enabled = controlsEnabled
     this.controls.rotateSpeed = 0.5
     this.controls.zoomSpeed = 0.4
     this.controls.maxPolarAngle = 0.75 * Math.PI
