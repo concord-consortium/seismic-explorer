@@ -9,6 +9,7 @@ import screenfull from 'screenfull'
 import { layerInfo } from '../map-layer-tiles'
 
 import '../../css/bottom-controls.less'
+import '../../css/settings-controls.less'
 import 'rc-slider/assets/index.css'
 import '../../css/slider.less'
 
@@ -50,7 +51,6 @@ class BottomControls extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      settingsVisible: false,
       fullscreen: false
     }
     this.handleTimeRange = this.handleTimeRange.bind(this)
@@ -59,7 +59,6 @@ class BottomControls extends Component {
     this.handlePlateLayerChange = this.handlePlateLayerChange.bind(this)
     this.handleAnimStep = this.handleAnimStep.bind(this)
     this.handleAnimBtnClick = this.handleAnimBtnClick.bind(this)
-    this.toggleSettings = this.toggleSettings.bind(this)
   }
 
   componentDidMount() {
@@ -106,11 +105,6 @@ class BottomControls extends Component {
     setAnimationEnabled(!animationEnabled)
   }
 
-  toggleSettings() {
-    const { settingsVisible } = this.state
-    this.setState({settingsVisible: !settingsVisible})
-  }
-
   get dateMarks() {
     const { filters } = this.props
     const min = filters.get('minTimeLimit')
@@ -142,28 +136,28 @@ class BottomControls extends Component {
 
   render() {
     const { animationEnabled, filters, layers, mode } = this.props
-    const { settingsVisible, fullscreen } = this.state
+    const { fullscreen } = this.state
 
     return (
-      <div className='bottom-controls'>
-        <img src={ccLogoSrc}/>
-        <AnimationButton ref='playButton' animationEnabled={animationEnabled} speed={this.animSpeed} value={filters.get('maxTime')}
-                         onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}/>
-        <div className='center'>
-          <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step={86400}
-                  value={[filters.get('minTime'), filters.get('maxTime')]} onChange={this.handleTimeRange}
-                  tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
-        </div>
-        <div className='settings-icon' onClick={this.toggleSettings}>
-          <i className='fa fa-gear'/>
-        </div>
-        {screenfull.enabled &&
-          <div className='fullscreen-icon' onClick={toggleFullscreen}>
-            <i className={`fa ${fullscreen ? 'fa-compress' : 'fa-arrows-alt'}`}/>
+      <div>
+        <div className='bottom-controls'>
+          <img src={ccLogoSrc}/>
+          <AnimationButton ref='playButton' animationEnabled={animationEnabled} speed={this.animSpeed} value={filters.get('maxTime')}
+                          onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}/>
+          <div className='center'>
+            <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step={86400}
+                    value={[filters.get('minTime'), filters.get('maxTime')]} onChange={this.handleTimeRange}
+                    tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
           </div>
-        }
-        <div className={`settings ${settingsVisible ? '' : 'hidden'}`}>
-          <h2>Settings</h2>
+          {screenfull.enabled &&
+            <div className='fullscreen-icon' onClick={toggleFullscreen}>
+              <i className={`fa ${fullscreen ? 'fa-compress' : 'fa-arrows-alt'}`}/>
+            </div>
+          }
+        </div>
+        <div className={'settings'}>
+          <i className='fa fa-gear'/>
+          <h2>Map Settings</h2>
           <div>
             Displayed map type
             <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
@@ -172,15 +166,18 @@ class BottomControls extends Component {
           </div>
           {mode !== '3d' &&
             <div>
-              <input type='checkbox' checked={layers.get('plates')} onChange={this.handlePlateLayerChange}/> Show plate boundaries
+              <label htmlFor='plate-border-box'>Show plate boundaries</label>
+              <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange} id='plate-border-box'/>
             </div>
           }
-          <div>
+          <div className={'mag-range-slider'}>
             <div>
-              Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
+              Show earthquakes with magnitude <br/>between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
             </div>
-            <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
-                    onChange={this.handleMagRange} marks={{0: 0, 10: 10}}/>
+            <div>
+              <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
+                onChange={this.handleMagRange} marks={{ 0: 0, 10: 10 }}/>
+            </div>
           </div>
         </div>
       </div>
