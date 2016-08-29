@@ -17,13 +17,43 @@
   }
 
   .animation-button, .settings-icon, .fullscreen-icon {
-    margin: 0 0.2em;
+    margin: 0.5em 0.5em;
+    font-size: 1.5em;
+    height: 1.5em;
+    width: 1.5em;
+    line-height: 1.5em;
     display: inline-block;
-    font-size: 3.5em;
+    text-align:center;
     cursor: pointer;
     color: #777;
+    background-color: #eeeeee;
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fbfbfb), color-stop(100%, #bcbec0));
+    background-image: -webkit-linear-gradient(top, #fbfbfb, #bcbec0);
+    background-image: -moz-linear-gradient(top, #fbfbfb, #bcbec0);
+    background-image: -ms-linear-gradient(top, #fbfbfb, #bcbec0);
+    background-image: -o-linear-gradient(top, #fbfbfb, #bcbec0);
+    background-image: linear-gradient(top, #fbfbfb, #bcbec0);
+    border-radius: 0.6em;
     &:hover {
-      color: #000;
+      color: #444;
+      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fbfbfb), color-stop(100%, #d8d8d8));
+      background-image: -webkit-linear-gradient(top, #fff, #d8d8d8);
+      background-image: -moz-linear-gradient(top, #fff, #d8d8d8);
+      background-image: -ms-linear-gradient(top, #fff, #d8d8d8);
+      background-image: -o-linear-gradient(top, #fff, #d8d8d8);
+      background-image: linear-gradient(top, #fff, #d8d8d8);
+    }
+  }
+  .fullscreen-icon {
+    background-image: url("http://lab-framework.concord.org/version/1.12.0/lab/resources/layout/fullscreen.svg");
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 1.5em;
+    border-radius: 0;
+    color: transparent;
+
+    &:hover {
+      background-image: url("http://lab-framework.concord.org/version/1.12.0/lab/resources/layout/fullscreen-dark.svg");
     }
   }
 }

@@ -151,16 +151,17 @@ class BottomControls extends Component {
           </div>
           {screenfull.enabled &&
             <div className='fullscreen-icon' onClick={toggleFullscreen}>
-              <i className={`fa ${fullscreen ? 'fa-compress' : 'fa-arrows-alt'}`}/>
             </div>
           }
         </div>
         <div className={'settings'}>
           <i className='fa fa-gear'/>
           <h2>Map Settings</h2>
-          <div>
+          <div className={'map-type-label'}>
             Displayed map type
-            <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
+          </div>
+          <div>
+             <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
               {this.mapLayerOptions}
             </select>
           </div>
@@ -170,14 +171,12 @@ class BottomControls extends Component {
               <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange} id='plate-border-box'/>
             </div>
           }
-          <div className={'mag-range-slider'}>
-            <div>
-              Show earthquakes with magnitude <br/>between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
-            </div>
-            <div>
+          <div>
+              Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
+          </div>
+          <div>
               <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
                 onChange={this.handleMagRange} marks={{ 0: 0, 10: 10 }}/>
-            </div>
           </div>
         </div>
       </div>
