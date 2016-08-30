@@ -31,7 +31,7 @@ function sliderTickFormatter(valueMin, valueMax) {
   let decade = minDecade
 
   while (decade <= maxDate) {
-    tickMarks[decade.getTime()] = { style: "tickMark", label: decade.getUTCFullYear() }
+    tickMarks[decade.getTime()] = { label: decade.getUTCFullYear() }
     // increment decade by 10 years
     decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
   }
@@ -110,8 +110,8 @@ class BottomControls extends Component {
     const min = filters.get('minTimeLimit')
     const max = filters.get('maxTimeLimit')
     let marks = {
-      [min]: { style: "dateMarker", label: sliderDateFormatter(min) },
-      [max]: { style: "dateMarker", label: sliderDateFormatter(max) }
+      [min]: { label: sliderDateFormatter(min) },
+      [max]: { label: sliderDateFormatter(max) }
     }
     if (min != 0 && max != 0) {
       // add tick marks for each decade between min and max
