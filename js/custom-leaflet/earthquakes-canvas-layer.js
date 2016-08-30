@@ -13,7 +13,6 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   _initCanvas: function () {
     this.externalView = new TopView()
     CanvasLayer.prototype._initCanvas.call(this, this.externalView.canvas)
-
     DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer')
   },
 
@@ -29,10 +28,8 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   setEarthquakes: function (earthquakes) {
-    if (this.externalView) {
-      this.externalView.setProps({earthquakes, latLngToPoint: this.latLngToPoint})
-      this.scheduleRedraw()
-    }
+    this._earthquakesToProcess = earthquakes
+    this.scheduleRedraw()
   },
 
   onEarthquakeClick: function (handler) {
@@ -64,6 +61,10 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   draw: function () {
+    if (this._earthquakesToProcess) {
+      this.externalView.setProps({earthquakes: this._earthquakesToProcess, latLngToPoint: this.latLngToPoint})
+      this._earthquakesToProcess = null
+    }
     const transitionInPgoress = this.externalView.render()
     if (transitionInPgoress) {
       this.scheduleRedraw()
