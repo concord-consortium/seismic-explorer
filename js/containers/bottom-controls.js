@@ -120,13 +120,7 @@ class BottomControls extends Component {
     return marks
   }
   get mapLayerOptions() {
-    let layerOpts = []
-    let layerTypes = layerInfo.map(m => m.type)
-    let layerNames = layerInfo.map(m => m.name)
-    for (let i = 0; i < layerTypes.length; i++){
-      layerOpts.push(<option key={i} value={layerTypes[i]}>{layerNames[i]}</option>)
-    }
-    return layerOpts
+    return layerInfo.map((m, idx) => <option key={idx} value={m.type}>{m.name}</option>)
   }
 
   get animSpeed() {
@@ -174,7 +168,7 @@ class BottomControls extends Component {
           <div>
               Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
           </div>
-          <div>
+          <div className={'mag-slider'}>
               <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
                 onChange={this.handleMagRange} marks={{ 0: 0, 10: 10 }}/>
           </div>
