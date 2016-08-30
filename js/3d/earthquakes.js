@@ -45,6 +45,13 @@ export default class {
     this._latLngDepthToPoint = latLngDepthToPoint
   }
 
+  earthquakeAt(x, y) {
+    for (let i = this._renderedEarthquakes.length - 1; i >= 0; i--) {
+      if (this._renderedEarthquakes[i].hitTest(x, y)) return this._renderedEarthquakes[i].data
+    }
+    return null
+  }
+
   update(progress) {
     let transitionInProgress = false
     this._processNewData()

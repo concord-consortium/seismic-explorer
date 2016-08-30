@@ -1,5 +1,5 @@
 import { CanvasLayer } from './canvas-layer'
-import { DomUtil } from 'leaflet'
+import { DomUtil, DomEvent } from 'leaflet'
 import TopView from '../3d/top-view'
 
 export const EarthquakesCanvasLayer = CanvasLayer.extend({
@@ -7,6 +7,8 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     CanvasLayer.prototype.initialize.call(this, options)
     this.draw = this.draw.bind(this)
     this.latLngToPoint = this.latLngToPoint.bind(this)
+    this._onMouseMove = this._onMouseMove.bind(this)
+    this._onMouseClick = this._onMouseClick.bind(this)
     this._earthquakeClickHandler = function (event, earthquakeData) {}
   },
 
@@ -18,13 +20,32 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
 
   onAdd: function (map) {
     CanvasLayer.prototype.onAdd.call(this, map)
+    DomEvent.on(this._canvas, 'mousemove', this._onMouseMove, this)
+    DomEvent.on(this._canvas, 'click', this._onMouseClick, this)
   },
 
   onRemove: function (map) {
     CanvasLayer.prototype.onRemove.call(this, map)
+    DomEvent.off(this._canvas, 'mousemove', this._onMouseMove)
+    DomEvent.off(this._canvas, 'click', this._onMouseClick)
     // Very important, without it, there's a significant memory leak (each time this layer is added and removed,
     // what may happen quite often).
     this.externalView.destroy()
+  },
+
+  _onMouseMove: function (e) {
+    if (this.externalView.earthquakeAt(e.clientX, e.clientY)) {
+      this._canvas.style.cursor = 'pointer'
+    } else {
+      this._canvas.style.cursor = 'inherit'
+    }
+  },
+
+  _onMouseClick: function (e) {
+    const eqData = this.externalView.earthquakeAt(e.clientX, e.clientY)
+    if (eqData) {
+      this._earthquakeClickHandler(e, eqData)
+    }
   },
 
   setEarthquakes: function (earthquakes) {

@@ -10,6 +10,7 @@ export default class {
     this.id = data.id
     this.color = depthToColor(data.geometry.coordinates[2])
     this.size = magnitudeToDiameter(data.properties.mag)
+    this.data = data
 
     // Particle system attributes (position, customColor, size). See earthquakes.js.
     this.attributes = attributes
@@ -23,6 +24,15 @@ export default class {
   destroy() {
     // There's an assumption that points that have size = 0 are invisible (see GLSL shaders code).
     this.setSizeAttr(0)
+  }
+
+  // Checks if (x, y) point hits rendered earthquake shape.
+  hitTest(x, y) {
+    const radius = this.attributes.size.array[this.idx] * 0.25
+    if (radius === 0) return false
+    const xDiff = this.attributes.position.array[this.idx * 3] - x
+    const yDiff = this.attributes.position.array[this.idx * 3 + 1] - y
+    return xDiff * xDiff + yDiff * yDiff <= radius * radius
   }
 
   set transition(v) {

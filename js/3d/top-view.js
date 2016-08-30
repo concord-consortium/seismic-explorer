@@ -40,6 +40,10 @@ export default class {
     this.props = newProps
   }
 
+  earthquakeAt(x, y) {
+    return this.earthquakes.earthquakeAt(x, this._height - y)
+  }
+
   invalidatePositions() {
     this.earthquakes.invalidatePositions()
   }
