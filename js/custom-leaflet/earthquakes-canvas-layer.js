@@ -1,40 +1,51 @@
 import { CanvasLayer } from './canvas-layer'
-import PIXI from 'pixi.js'
-import { DomUtil } from 'leaflet'
-import EarthquakeSprite from './earthquake-sprite'
+import { DomUtil, DomEvent } from 'leaflet'
+import TopView from '../3d/top-view'
 
 export const EarthquakesCanvasLayer = CanvasLayer.extend({
   initialize: function (options) {
     CanvasLayer.prototype.initialize.call(this, options)
     this.draw = this.draw.bind(this)
+    this.latLngToPoint = this.latLngToPoint.bind(this)
+    this._onMouseMove = this._onMouseMove.bind(this)
+    this._onMouseClick = this._onMouseClick.bind(this)
     this._earthquakeClickHandler = function (event, earthquakeData) {}
   },
 
   _initCanvas: function () {
-    CanvasLayer.prototype._initCanvas.call(this)
+    this.externalView = new TopView()
+    CanvasLayer.prototype._initCanvas.call(this, this.externalView.canvas)
     DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer')
-    // Init PIXI too.
-    this._container = new PIXI.Container()
-    // PIXI.autoDetectRenderer may cause some memory leaks and warnings about too many WebGL contexts.
-    this._renderer = new PIXI.WebGLRenderer(0, 0, {
-      view: this._canvas,
-      transparent: true,
-      resolution: window.devicePixelRatio
-    })
-    this._renderedEarthquakes = new Map()
+  },
 
-    // [ Shutterbug support ]
-    // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
-    // so .toDataUrl returns correct image. This method is used by shutterbug-support.js module.
-    DomUtil.addClass(this._canvas, 'canvas-3d')
-    this._canvas.render = this.render.bind(this)
+  onAdd: function (map) {
+    CanvasLayer.prototype.onAdd.call(this, map)
+    DomEvent.on(this._canvas, 'mousemove', this._onMouseMove, this)
+    DomEvent.on(this._canvas, 'click', this._onMouseClick, this)
   },
 
   onRemove: function (map) {
     CanvasLayer.prototype.onRemove.call(this, map)
+    DomEvent.off(this._canvas, 'mousemove', this._onMouseMove)
+    DomEvent.off(this._canvas, 'click', this._onMouseClick)
     // Very important, without it, there's a significant memory leak (each time this layer is added and removed,
     // what may happen quite often).
-    this._renderer.destroy()
+    this.externalView.destroy()
+  },
+
+  _onMouseMove: function (e) {
+    if (this.externalView.earthquakeAt(e.clientX, e.clientY)) {
+      this._canvas.style.cursor = 'pointer'
+    } else {
+      this._canvas.style.cursor = 'inherit'
+    }
+  },
+
+  _onMouseClick: function (e) {
+    const eqData = this.externalView.earthquakeAt(e.clientX, e.clientY)
+    if (eqData) {
+      this._earthquakeClickHandler(e, eqData)
+    }
   },
 
   setEarthquakes: function (earthquakes) {
@@ -42,48 +53,12 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     this.scheduleRedraw()
   },
 
-  // Handler should accept Pixi event and earthquake JSON data.
   onEarthquakeClick: function (handler) {
     this._earthquakeClickHandler = handler || function (event, earthquakeData) {}
   },
 
-  _processNewEarthquakes: function () {
-    if (!this._earthquakesToProcess) return
-    // First, mark all the existing sprites as invalid (to be removed).
-    this._renderedEarthquakes.forEach(eqSprite => {
-      eqSprite._toRemove = true
-    })
-    // Process new earthquakes array. Create missing sprites
-    // and mark all earthquakes from the new array as valid (_toRemove = false).
-    this._earthquakesToProcess.forEach(e => {
-      if (!this._renderedEarthquakes.has(e.id)) {
-        this._addEarthquake(e)
-      }
-      const eqSprite = this._renderedEarthquakes.get(e.id)
-      eqSprite.targetVisibility = e.visible ? 1 : 0
-      eqSprite._toRemove = false
-    })
-    // Finally, remove sprites that don't have corresponding objects in the new earthquakes array.
-    this._renderedEarthquakes.forEach((eqSprite, id) => {
-      if (eqSprite._toRemove) {
-        this._container.removeChild(eqSprite)
-        this._renderedEarthquakes.delete(id)
-      }
-    })
-    this._earthquakesToProcess = null
-  },
-
-  _addEarthquake: function (eq) {
-    const eqSprite = new EarthquakeSprite(eq.geometry.coordinates[2], eq.properties.mag, eq.geometry.coordinates, eq.visible)
-    eqSprite.onClick((event) => this._earthquakeClickHandler(event, eq))
-    this._container.addChild(eqSprite)
-    this._renderedEarthquakes.set(eq.id, eqSprite)
-  },
-
   _invalidatePositions: function () {
-    this._renderedEarthquakes.forEach(eqSprite => {
-      eqSprite._positionValid = false
-    })
+    this.externalView.invalidatePositions()
   },
 
   _reset: function () {
@@ -93,9 +68,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     let size = this._map.getSize()
 
     if (this._canvas.width !== size.x || this._canvas.width !== size.y) {
-      this._renderer.resize(size.x, size.y)
-      this._canvas.style.width = size.x + 'px'
-      this._canvas.style.height = size.y + 'px'
+      this.externalView.setSize(size.x, size.y)
     }
 
     this._invalidatePositions()
@@ -109,37 +82,14 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   draw: function () {
-    const timestamp = performance.now()
-    const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
-    let transitionInProgress = false
-    this._processNewEarthquakes()
-    this._renderedEarthquakes.forEach(eqSprite => {
-      // Recalculate position only if it's necessary (expensive).
-      if (!eqSprite._positionValid) {
-        const point = this.latLngToPoint(eqSprite.coordinates)
-        eqSprite.position.x = point.x
-        eqSprite.position.y = point.y
-        eqSprite._positionValid = true
-      }
-      // Visibility transition.
-      eqSprite.transitionStep(progress)
-      if (eqSprite.transitionInProgress) {
-        transitionInProgress = true
-      }
-    })
-    // Schedule next frame only if there are some ongoing transitions.
-    if (transitionInProgress) {
-      this.scheduleRedraw()
-      this._prevTimestamp = timestamp
-    } else {
-      this._prevTimestamp = null
+    if (this._earthquakesToProcess) {
+      this.externalView.setProps({earthquakes: this._earthquakesToProcess, latLngToPoint: this.latLngToPoint})
+      this._earthquakesToProcess = null
     }
-    this.render()
-  },
-
-  // PIXI render.
-  render: function () {
-    this._renderer.render(this._container)
+    const transitionInPgoress = this.externalView.render()
+    if (transitionInPgoress) {
+      this.scheduleRedraw()
+    }
   }
 })
 

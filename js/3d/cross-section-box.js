@@ -6,7 +6,7 @@ import mapTexture from './map-texture'
 
 export const BOX_DEPTH = 800 // km
 const POINT_SIZE = 40 // px
-// Adjust box lines and top plane a bit, so they're not overlapping. It can cause small artificats.
+// Adjust box lines and top plane a bit, so they're not overlapping. It can cause small artifacts.
 // It also ensures that each earthquake is below the plane.
 const TOP_RECT_Z_OFFSET = 5 // km
 const TOP_PLANE_Z_OFFSET = -2.5 // km

@@ -1,5 +1,5 @@
 import React from 'react'
-import CrossSection from '../3d/cross-section'
+import CrossSection from '../3d/cross-section-view'
 
 export default class CrossSection3D extends React.Component {
   constructor(props) {

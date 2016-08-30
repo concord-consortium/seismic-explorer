@@ -58,9 +58,11 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
     return this
   },
 
-  _initCanvas: function () {
-    let canvas = this._canvas = DomUtil.create('canvas', 'leaflet-canvas-layer leaflet-layer')
-
+  _initCanvas: function (canvas = null) {
+    if (!canvas) {
+      canvas = DomUtil.create('canvas')
+    }
+    this._canvas = canvas
     let originProp = DomUtil.testProp(['transformOrigin', 'WebkitTransformOrigin', 'msTransformOrigin'])
     canvas.style[originProp] = '50% 50%'
 
@@ -71,7 +73,7 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
     canvas.style.height = size.y + 'px'
 
     let animated = this._map.options.zoomAnimation && Browser.any3d
-    DomUtil.addClass(canvas, 'leaflet-zoom-' + (animated ? 'animated' : 'hide'))
+    DomUtil.addClass(canvas, 'leaflet-canvas-layer leaflet-layer leaflet-zoom-' + (animated ? 'animated' : 'hide'))
   },
 
   _reset: function () {

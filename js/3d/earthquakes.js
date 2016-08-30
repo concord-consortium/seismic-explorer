@@ -3,7 +3,7 @@ import vertexShader from 'raw!./earthquakes-vertex.glsl'
 import fragmentShader from 'raw!./earthquakes-fragment.glsl'
 import Earthquake from './earthquake'
 
-const MAX_COUNT = 100000
+const MAX_COUNT = 200000
 
 export default class {
   constructor() {
@@ -45,11 +45,28 @@ export default class {
     this._latLngDepthToPoint = latLngDepthToPoint
   }
 
+  earthquakeAt(x, y) {
+    for (let i = this._renderedEarthquakes.length - 1; i >= 0; i--) {
+      if (this._renderedEarthquakes[i].hitTest(x, y)) return this._renderedEarthquakes[i].data
+    }
+    return null
+  }
+
   update(progress) {
+    let transitionInProgress = false
     this._processNewData()
     for (let i = 0, length = this._renderedEarthquakes.length; i < length; i++) {
       const eq = this._renderedEarthquakes[i]
       eq.transitionStep(progress)
+      if (eq.transitionInProgress) transitionInProgress = true
+    }
+    return transitionInProgress
+  }
+
+  invalidatePositions() {
+    for (let i = 0, len = this._renderedEarthquakes.length; i < len; i++) {
+      const point = this._latLngDepthToPoint(this._currentData[i].geometry.coordinates)
+      this._renderedEarthquakes[i].setPositionAttr(point)
     }
   }
 
@@ -76,6 +93,7 @@ export default class {
     }
     this._renderedEarthquakes.length = data.length
 
+    this._currentData = data
     this._dataToProcess = null
   }
 }
