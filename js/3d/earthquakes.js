@@ -63,7 +63,8 @@ export default class {
     return transitionInProgress
   }
 
-  invalidatePositions() {
+  invalidatePositions(latLngDepthToPoint) {
+    this._latLngDepthToPoint = latLngDepthToPoint
     for (let i = 0, len = this._renderedEarthquakes.length; i < len; i++) {
       const point = this._latLngDepthToPoint(this._currentData[i].geometry.coordinates)
       this._renderedEarthquakes[i].setPositionAttr(point)

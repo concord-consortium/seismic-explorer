@@ -33,8 +33,11 @@ export default class {
   }
 
   setProps(newProps) {
-    const latLngDepthToPoint = getLatLngDepthToPoint(newProps.latLngToPoint, this._height)
+    if (newProps.latLngToPoint) {
+      this.props.latLngToPoint = newProps.latLngToPoint
+    }
     if (this.props.earthquakes !== newProps.earthquakes) {
+      const latLngDepthToPoint = getLatLngDepthToPoint(this.props.latLngToPoint, this._height)
       this.earthquakes.setProps(newProps.earthquakes, latLngDepthToPoint)
     }
     this.props = newProps
@@ -42,10 +45,6 @@ export default class {
 
   earthquakeAt(x, y) {
     return this.earthquakes.earthquakeAt(x, this._height - y)
-  }
-
-  invalidatePositions() {
-    this.earthquakes.invalidatePositions()
   }
 
   // Renders scene and returns true if some transitions are in progress (e.g. earthquakes visibility transition).
@@ -66,6 +65,8 @@ export default class {
       this._width = newWidth
       this._height = newHeight
       this.camera.setInitialCamPosition(newWidth / 2, newHeight / 2)
+      // getLatLngDepthToPoint needs to be updated since the window has changed its height.
+      this.earthquakes.invalidatePositions(getLatLngDepthToPoint(this.props.latLngToPoint, this._height))
     }
   }
 

@@ -57,21 +57,12 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     this._earthquakeClickHandler = handler || function (event, earthquakeData) {}
   },
 
-  _invalidatePositions: function () {
-    this.externalView.invalidatePositions()
-  },
-
   _reset: function () {
     let topLeft = this._map.containerPointToLayerPoint([0, 0])
     DomUtil.setPosition(this._canvas, topLeft)
 
     let size = this._map.getSize()
-
-    if (this._canvas.width !== size.x || this._canvas.width !== size.y) {
-      this.externalView.setSize(size.x, size.y)
-    }
-
-    this._invalidatePositions()
+    this.externalView.setSize(size.x, size.y)
     this._redraw()
   },
 
