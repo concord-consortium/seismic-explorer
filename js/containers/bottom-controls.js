@@ -128,6 +128,10 @@ class BottomControls extends Component {
     return (filters.get('maxTimeLimit') - filters.get('minTimeLimit')) / 15000
   }
 
+  get fullscreenIconStyle() {
+    return this.state.fullscreen? 'fullscreen-icon fullscreen' : 'fullscreen-icon';
+  }
+
   render() {
     const { animationEnabled, filters, layers, mode } = this.props
     const { fullscreen } = this.state
@@ -144,7 +148,7 @@ class BottomControls extends Component {
                     tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
           </div>
           {screenfull.enabled &&
-            <div className='fullscreen-icon' onClick={toggleFullscreen}>
+            <div className={this.fullscreenIconStyle} onClick={toggleFullscreen}>
             </div>
           }
         </div>

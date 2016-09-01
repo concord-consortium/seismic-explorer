@@ -35,7 +35,7 @@
     }
   }
   .fullscreen-icon {
-    background-image: url("http://lab-framework.concord.org/version/1.12.0/lab/resources/layout/fullscreen.svg");
+    background-image: url("icons/fullscreen.svg");
     background-color: transparent;
     background-repeat: no-repeat;
     background-size: 1.5em;
@@ -43,7 +43,14 @@
     color: transparent;
 
     &:hover {
-      background-image: url("http://lab-framework.concord.org/version/1.12.0/lab/resources/layout/fullscreen-dark.svg");
+      background-image: url("icons/fullscreen-dark.svg");
+    }
+
+    &.fullscreen{
+      background-image: url("icons/fullscreen-exit.svg");
+      &:hover {
+        background-image: url("icons/fullscreen-exit-dark.svg");
+      }
     }
   }
 }
