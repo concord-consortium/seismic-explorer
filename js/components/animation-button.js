@@ -64,7 +64,7 @@ export default class AnimationButton extends Component {
   get icon() {
     const { animationEnabled } = this.props
     // FontAwesome class name.
-    return animationEnabled ? 'fa fa-stop-circle' : 'fa fa-play-circle'
+    return animationEnabled ? 'fa fa-stop' : 'fa fa-play'
   }
 
   render() {

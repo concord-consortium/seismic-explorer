@@ -1,6 +1,6 @@
 .bottom-controls {
   width: 100%;
-  height: 100%;
+  padding-bottom:0.2em;
   overflow: hidden;
   flex-wrap: nowrap;
   align-items: center;
@@ -17,48 +17,40 @@
   }
 
   .animation-button, .settings-icon, .fullscreen-icon {
-    margin: 0 0.2em;
+    margin: 0.5em 0.5em;
+    font-size: 1.5em;
+    height: 1.5em;
+    width: 1.5em;
+    line-height: 1.5em;
     display: inline-block;
-    font-size: 3.5em;
+    text-align:center;
     cursor: pointer;
     color: #777;
+    background-color: #eeeeee;
+    background-image: linear-gradient(top, #fbfbfb, #bcbec0);
+    border-radius: 0.6em;
     &:hover {
-      color: #000;
+      color: #444;
+      background-image: linear-gradient(top, #fff, #d8d8d8);
     }
   }
+  .fullscreen-icon {
+    background-image: url("icons/fullscreen.svg");
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 1.5em;
+    border-radius: 0;
+    color: transparent;
 
-  .settings {
-    z-index: 200;
-    position: fixed;
-    right: 0;
-    bottom: 4.5em;
-    background: white;
-    padding: 0.5em 1em;
-    min-width: 33em;
-    max-width: 100%;
-    border-top-left-radius: 10px;
-    color: #444;
-    transition: right 750ms;
-    &.hidden {
-      right: -700px;
+    &:hover {
+      background-image: url("icons/fullscreen-dark.svg");
     }
 
-    & > div {
-      margin: 20px;
-    }
-
-    h2 {
-      margin-bottom: 1em;
-    }
-
-    select {
-      margin-left: 10px;
-    }
-
-    .rc-slider {
-      font-size: 0.6em;
-      width: 93%;
-      margin: 1em 0.5em;
+    &.fullscreen{
+      background-image: url("icons/fullscreen-exit.svg");
+      &:hover {
+        background-image: url("icons/fullscreen-exit-dark.svg");
+      }
     }
   }
 }

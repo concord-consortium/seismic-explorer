@@ -1,20 +1,45 @@
-export const layerInfo = {
-  'satellite': {
-    url: 'http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png',
-    subdomains: ['otile1', 'otile2', 'otile3', 'otile4']
+export const layerInfo = [
+  {
+    type: 'satellite',
+    name: 'Satellite',
+    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+    subdomains: []
   },
-  'street': {
+  {
+    type: 'street',
+    name: 'Street',
     url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
     subdomains: ['a', 'b', 'c']
   },
-  'earthquake-density': {
+  {
+    type: 'relief',
+    name: 'Relief',
+    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
+    maxZoom: 13,
+    subdomains: []
+  },
+  {
+    type: 'ocean-basemap',
+    name: 'Ocean basemap',
+    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+    maxZoom: 13,
+    subdomains: []
+  },
+  {
+    type: 'earthquake-density',
+    name: 'Earthquake density',
     url: 'http://{s}.tiles.mapbox.com/v3/bclc-apec.map-rslgvy56/{z}/{x}/{y}.png',
     subdomains: ['a', 'b', 'c']
   }
+]
+export function mapLayer(layerType) {
+  return layerInfo.filter(m => m.type == layerType)[0]
 }
-
 export function tileUrl(layerType, zoom, x, y) {
-  const layer = layerInfo[layerType]
+  const layer = mapLayer(layerType)
   const url = layer.url
   const subdomains = layer.subdomains
   const subdomain = subdomains[Math.floor(Math.random() * subdomains.length)]
