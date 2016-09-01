@@ -63,6 +63,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
 
     let size = this._map.getSize()
     this.externalView.setSize(size.x, size.y)
+    this.externalView.invalidatePositions()
     this._redraw()
   },
 

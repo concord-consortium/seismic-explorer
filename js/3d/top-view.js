@@ -65,9 +65,11 @@ export default class {
       this._width = newWidth
       this._height = newHeight
       this.camera.setInitialCamPosition(newWidth / 2, newHeight / 2)
-      // getLatLngDepthToPoint needs to be updated since the window has changed its height.
-      this.earthquakes.invalidatePositions(getLatLngDepthToPoint(this.props.latLngToPoint, this._height))
     }
+  }
+
+  invalidatePositions() {
+    this.earthquakes.invalidatePositions(getLatLngDepthToPoint(this.props.latLngToPoint, this._height))
   }
 
   _initScene() {
