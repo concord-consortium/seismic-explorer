@@ -1,10 +1,12 @@
 import { fakeDataset } from './data/fake-data'
 import { sortByTime, swapCoords } from './data/helpers'
 import { tile2lat, tile2lng } from './map-tile-helpers'
+import { MAX_TIME, MIN_TIME } from './earthquake-properties'
 
+const CACHE_MAX_SIZE = 50 // tiles stored locally
 class Cache {
   constructor() {
-    this.data = {}
+    this.data = new Map()
   }
 
   key(tile) {
@@ -12,16 +14,24 @@ class Cache {
   }
 
   get(tile) {
-    return this.data[this.key(tile)]
+    return this.data.get(this.key(tile))
   }
 
   set(tile, json) {
-    this.data[this.key(tile)] = json
+    this.data.set(this.key(tile), json)
+    this._limitDataSize()
     return json
   }
 
   has(tile) {
-    return !!this.data[this.key(tile)]
+    return this.data.has(this.key(tile))
+  }
+
+  _limitDataSize() {
+    for (const key of this.data.keys()) {
+      if (this.data.size < CACHE_MAX_SIZE) return
+      this.data.delete(key)
+    }
   }
 }
 
@@ -35,14 +45,19 @@ export function getFromCache(tile) {
   return cache.get(tile)
 }
 
-const USGS_LIMIT = 20000
+const USGS_LIMIT = 12000
 function getAPIPath(tile) {
+  const formatDate = date => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  const minDate = formatDate(new Date(MIN_TIME))
+  const maxDate = formatDate(new Date(MAX_TIME))
   const minLng = tile2lng(tile.x, tile.zoom)
   const maxLng = tile2lng(tile.x + 1, tile.zoom)
   const maxLat = tile2lat(tile.y, tile.zoom)
   const minLat = tile2lat(tile.y + 1, tile.zoom)
   const minMag = Math.max(7 - tile.zoom, 2) // so 5 for the world view (zoom = 2) and lower values for next ones.
-  return `http://earthquake.usgs.gov/fdsnws/event/1/query.geojson?starttime=1980-01-01&endtime=2016-01-01&maxlatitude=${maxLat}&minlatitude=${minLat}&maxlongitude=${maxLng}&minlongitude=${minLng}&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`
+  return `http://earthquake.usgs.gov/fdsnws/event/1/query.geojson?starttime=${minDate}&endtime=${maxDate}` +
+         `&maxlatitude=${maxLat}&minlatitude=${minLat}&maxlongitude=${maxLng}&minlongitude=${minLng}` +
+         `&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`
 }
 
 export function fetchTile(tile, idx) {
