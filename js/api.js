@@ -1,46 +1,61 @@
-import fetch from 'isomorphic-fetch'
-import { fakeRegion, fakeDataset } from './data/fake-data'
+import { fakeDataset } from './data/fake-data'
+import { sortByTime, swapCoords } from './data/helpers'
+import { tile2lat, tile2lng } from './map-tile-helpers'
 
 class Cache {
   constructor() {
     this.data = {}
   }
 
-  // Use JSON.stringify and JSON.parse to ensure that data is copied and can't be mutated by client code.
-  get(path) {
-    return JSON.parse(this.data[path])
+  key(tile) {
+    return `${tile.zoom}-${tile.x}-${tile.y}`
   }
 
-  set(path, json) {
-    this.data[path] = JSON.stringify(json)
+  get(tile) {
+    return this.data[this.key(tile)]
+  }
+
+  set(tile, json) {
+    this.data[this.key(tile)] = json
     return json
   }
 
-  has(path) {
-    return !!this.data[path]
+  has(tile) {
+    return !!this.data[this.key(tile)]
   }
 }
 
 const cache = new Cache()
 
-export function fetchJSON(path) {
-  if (path.startsWith('_fake')) {
-    return fakeData(path)
-  }
-  if (cache.has(path)) {
-    return new Promise(resolve => {
-      resolve(cache.get(path))
-    })
-  }
-  return fetch(path)
-    .then(checkStatus)
-    .then(response => response.json())
-    .then(response => cache.set(path, response))
+export function isInCache(tile) {
+  return cache.has(tile)
 }
 
-export function goToRegion(path) {
-  // This will update ReactRouter and App component will request a new region data.
-  window.location.hash = '#/' +  window.encodeURIComponent(path)
+export function getFromCache(tile) {
+  return cache.get(tile)
+}
+
+const USGS_LIMIT = 20000
+function getAPIPath(tile) {
+  const minLng = tile2lng(tile.x, tile.zoom)
+  const maxLng = tile2lng(tile.x + 1, tile.zoom)
+  const maxLat = tile2lat(tile.y, tile.zoom)
+  const minLat = tile2lat(tile.y + 1, tile.zoom)
+  const minMag = Math.max(7 - tile.zoom, 2) // so 5 for the world view (zoom = 2) and lower values for next ones.
+  return `http://earthquake.usgs.gov/fdsnws/event/1/query.geojson?starttime=1980-01-01&endtime=2016-01-01&maxlatitude=${maxLat}&minlatitude=${minLat}&maxlongitude=${maxLng}&minlongitude=${minLng}&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`
+}
+
+export function fetchTile(tile, idx) {
+  // Use fake data if there's hash parameter: #fake=<value>, e.g. #fake=2000, #fake=5000, etc.
+  const useFakeData = window.location.hash.startsWith('#fake')
+  const fakeDataTileCount = useFakeData && parseInt(window.location.hash.split('#fake=')[1])
+  const dataPromise = useFakeData ? fakeData(tile, fakeDataTileCount, idx) :
+                                    fetch(getAPIPath(tile))
+                                      .then(checkStatus)
+                                      .then(response => response.json())
+  return dataPromise
+          .then(response => {return {features: sortByTime(swapCoords(response.features))}})
+          .then(response => cache.set(tile, response))
 }
 
 export class APIError {
@@ -58,16 +73,18 @@ function checkStatus(response) {
   }
 }
 
-function fakeData(path) {
+function fakeData(tile, count, idx) {
+  const options = {
+    minLng: tile2lng(tile.x, tile.zoom),
+    maxLng: tile2lng(tile.x + 1, tile.zoom),
+    maxLat: tile2lat(tile.y, tile.zoom),
+    minLat: tile2lat(tile.y + 1, tile.zoom),
+    minDep: (idx % 6) * 100,
+    maxDep: (idx % 6) * 100
+  }
   return new Promise(resolve => {
-    const info = path.split('=')
-    const type = info[0]
-    const count = info[1]
-    if (type === '_fake') {
-      resolve(fakeRegion(count))
-    }
-    if (type === '_fake_dataset') {
-      resolve(fakeDataset(count))
-    }
+    setTimeout(function() {
+      resolve(fakeDataset(count, options))
+    }, idx * 100)
   })
 }

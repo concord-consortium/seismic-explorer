@@ -1,79 +1,26 @@
 import THREE from 'three'
 import { tileUrl } from '../map-layer-tiles'
+import { tilesListByRow, lat2tilePos, lng2tilePos, tileBoundingBox, tileInvalid } from '../map-tile-helpers'
 
 const TILE_SIZE = 256 // px
 const MAX_TEXTURE_SIZE = 2048 // px
 
-// Functions based on:
-// http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#ECMAScript_.28JavaScript.2FActionScript.2C_etc..29
-function lng2tilePos(lng, zoom) {
-  return (lng + 180) / 360 * Math.pow(2, zoom)
-}
-
-function lat2tilePos(lat, zoom) {
-  return (1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)
-}
-
-function lng2tile(lng, zoom) {
-  return Math.floor(lng2tilePos(lng, zoom))
-}
-
-function lat2tile(lat, zoom) {
-  return Math.floor(lat2tilePos(lat, zoom))
-}
-
-function boundingBox(rectangle) {
-  return {
-    north: Math.max(...rectangle.map(p => p[0])),
-    south: Math.min(...rectangle.map(p => p[0])),
-    west: Math.min(...rectangle.map(p => p[1])),
-    east: Math.max(...rectangle.map(p => p[1]))
-  }
-}
-
-function tileBoundingBox(rectangle, zoom) {
-  const bBox = boundingBox(rectangle)
-  return {
-    top: lat2tile(bBox.north, zoom),
-    bottom: lat2tile(bBox.south, zoom),
-    left: lng2tile(bBox.west, zoom),
-    right: lng2tile(bBox.east, zoom)
-  }
-}
-
-function tilesList(rectangle, zoom) {
-  const tileBBox = tileBoundingBox(rectangle, zoom)
-  const tiles = []
-  for (let y = tileBBox.top; y <= tileBBox.bottom; y++) {
-    const row = []
-    tiles.push(row)
-    for (let x = tileBBox.left; x <= tileBBox.right; x++) {
-      row.push({x, y})
-    }
-  }
-  return tiles
-}
-
-function tileInvalid(tile, zoom) {
-  const maxVal = Math.pow(2, zoom) - 1
-  return tile.y < 0 || tile.y > maxVal
-}
-
 // Tiles can have negative X values or values bigger than allowed.
 // If so, limit it to the allowed range.
-function wrapTile(tile, zoom) {
-  const range = Math.pow(2, zoom)
+function wrapTile(tile) {
+  const range = Math.pow(2, tile.zoom)
   if (tile.x >= 0 && tile.x < range) {
     return tile
   }
   return {
     x: tile.x > 0 ? (tile.x % range) : (tile.x % range + range) % range,
-    y: tile.y
+    y: tile.y,
+    zoom: tile.zoom
   }
 }
 
 function textureDimensions(rectangle, zoom) {
-  const tiles = tilesList(rectangle, zoom)
+  const tiles = tilesListByRow(rectangle, zoom)
   return { width: tiles[0].length * TILE_SIZE, height: tiles.length * TILE_SIZE }
 }
 
@@ -88,7 +35,7 @@ function optimalZoomLevel(rectangle) {
   return zoom
 }
 
-function tilesToTexture(tiles, zoom, layerType) {
+function tilesToTexture(tiles, layerType) {
   const rows = tiles.length
   const cols = tiles[0].length
   const height = rows * TILE_SIZE
@@ -102,15 +49,15 @@ function tilesToTexture(tiles, zoom, layerType) {
   const texture = new THREE.Texture(canvas)
   tiles.forEach((row, rowIdx) => {
     row.forEach((rawTile, tileIdx) => {
-      const tile = wrapTile(rawTile, zoom)
-      if (tileInvalid(tile, zoom)) {
+      const tile = wrapTile(rawTile)
+      if (tileInvalid(tile)) {
         // It might happen if rectangle point is outside the map area.
         ctx.fillStyle = 'rgba(0,0,0,0)'
         ctx.fillRect(tileIdx * TILE_SIZE * sx, rowIdx * TILE_SIZE * sy, TILE_SIZE * sx, TILE_SIZE * sy)
         texture.needsUpdate = true
         return
       }
-      const url = tileUrl(layerType, zoom, tile.x, tile.y)
+      const url = tileUrl(layerType, tile.zoom, tile.x, tile.y)
       const img = document.createElement('img')
       img.crossOrigin = ''
       img.onload = () => {
@@ -124,8 +71,8 @@ function tilesToTexture(tiles, zoom, layerType) {
 }
 
 function tileTexture(rectangle, zoom, layerType) {
-  const tiles = tilesList(rectangle, zoom)
-  return tilesToTexture(tiles, zoom, layerType)
+  const tiles = tilesListByRow(rectangle, zoom)
+  return tilesToTexture(tiles, layerType)
 }
 
 function textureUVs(rectangle, zoom) {

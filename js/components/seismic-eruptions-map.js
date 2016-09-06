@@ -5,13 +5,18 @@ import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import PlatesLayer from './plates-layer'
-import SubregionButtons from './subregion-buttons'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
 import { mapLayer } from '../map-layer-tiles'
+import { tilesList, tileInvalid } from '../map-tile-helpers'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
+
+const INITIAL_BOUNDS = [
+  [-60, -120],
+  [60, 120]
+]
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
@@ -26,6 +31,7 @@ export default class SeismicEruptionsMap extends Component {
     this.handleMoveStart = this.handleMoveStart.bind(this)
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
+    this.handleMoveEnd = this.handleMoveEnd.bind(this)
   }
 
   get map() {
@@ -42,15 +48,6 @@ export default class SeismicEruptionsMap extends Component {
     // to be clickable when we enter cross-section drawing mode. The simplest solution is to set Canvas z-index
     // lower than SVG z-index, but it won't work if the SVG layer hasn't been created yet.
     createSVGOverlayLayer(this.map)
-  }
-
-  componentWillUpdate(nextProps) {
-    const { region, mark2DViewModified } = this.props
-    if (region.get('bounds') !== nextProps.region.get('bounds')) {
-      // This event is fired also when we change bounds property using API call (e.g. when user changes the region).
-      this._ignoreMovestart = true
-      mark2DViewModified(false)
-    }
   }
 
   componentDidUpdate() {
@@ -70,13 +67,29 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   handleMoveStart() {
+    this._mapBeingDragged = true
     const { mark2DViewModified } = this.props
     if (!this._ignoreMovestart) {
       mark2DViewModified(true)
     }
   }
 
+  handleMoveEnd(event) {
+    this._mapBeingDragged = false
+    const { setEarthquakeDataTiles } = this.props
+    const map = event.target
+    const bounds = map.getBounds()
+    const rect = [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
+    // tilesList expects an array of arrays: [[lat, lng], [lat, lng], ...]
+    const tiles = tilesList(rect.map(p => [p.lat, p.lng]), map.getZoom())
+    // Remove invalid tiles (y value < 0 or > max allowed value).
+    const validTiles = tiles.filter(t => !tileInvalid(t))
+    setEarthquakeDataTiles(validTiles)
+  }
+
   handleEarthquakeClick(event, earthquake) {
+    // Do not open earthquake popup if click was part of the map dragging action.
+    if (this._mapBeingDragged) return
     this.setState({selectedEarthquake: earthquake})
   }
 
@@ -85,8 +98,8 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   fitBounds() {
-    const { region, mark2DViewModified } = this.props
-    this.map.fitBounds(region.get('bounds'))
+    const { mark2DViewModified } = this.props
+    this.map.fitBounds(INITIAL_BOUNDS)
     mark2DViewModified(false)
   }
 
@@ -95,24 +108,21 @@ export default class SeismicEruptionsMap extends Component {
     // component instance when we switch between maps with subdomains and without.
     const { layers } = this.props
     const layer = mapLayer(layers.get('base'))
-    return <TileLayer key={layers.get('base') } url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution} />
+    return <TileLayer key={layers.get('base') } url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution}/>
   }
 
   render() {
-    const { mode, region, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
+    const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
     const { selectedEarthquake } = this.state
-    const bounds = region.get('bounds')
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' bounds={bounds} onLeafletMovestart={this.handleMoveStart} zoom={3} minZoom={2} maxZoom={13}>
+        <Map ref='map' className='map' onLeafletMovestart={this.handleMoveStart} onLeafletMoveend={this.handleMoveEnd} 
+             bounds={INITIAL_BOUNDS} zoom={3} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
-          }
-          {mode === '2d' &&
-            <SubregionButtons subregions={region.get('subregions')}/>
           }
           {mode === '2d' && selectedEarthquake &&
             <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>

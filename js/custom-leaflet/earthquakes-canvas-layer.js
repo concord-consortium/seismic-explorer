@@ -21,13 +21,15 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   onAdd: function (map) {
     CanvasLayer.prototype.onAdd.call(this, map)
     DomEvent.on(this._canvas, 'mousemove', this._onMouseMove, this)
-    DomEvent.on(this._canvas, 'click', this._onMouseClick, this)
+    DomEvent.on(this._canvas, 'mouseup', this._onMouseClick, this)
+    DomEvent.on(this._canvas, 'touchend', this._onMouseClick, this)
   },
 
   onRemove: function (map) {
     CanvasLayer.prototype.onRemove.call(this, map)
     DomEvent.off(this._canvas, 'mousemove', this._onMouseMove)
-    DomEvent.off(this._canvas, 'click', this._onMouseClick)
+    DomEvent.off(this._canvas, 'mouseup', this._onMouseClick)
+    DomEvent.off(this._canvas, 'touchend', this._onMouseClick)
     // Very important, without it, there's a significant memory leak (each time this layer is added and removed,
     // what may happen quite often).
     this.externalView.destroy()

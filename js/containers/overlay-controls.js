@@ -12,22 +12,9 @@ import '../../css/overlay-controls.less'
 class OverlayControls extends Component {
   constructor(props) {
     super(props)
-    this.handleGoUp = this.handleGoUp.bind(this)
-    this.handleGoHome = this.handleGoHome.bind(this)
     this.set2DMode = this.set2DMode.bind(this)
     this.set3DMode = this.set3DMode.bind(this)
     this.setCrossSectionDrawMode = this.setCrossSectionDrawMode.bind(this)
-  }
-
-  handleGoUp() {
-    const { regionsHistory } = this.props
-    // The last entry in history is the current region, so pick the earlier one (-2 index).
-    goToRegion(regionsHistory.get(-2))
-  }
-
-  handleGoHome() {
-    const { regionsHistory } = this.props
-    goToRegion(regionsHistory.first())
   }
 
   set2DMode() {
@@ -48,12 +35,6 @@ class OverlayControls extends Component {
     if (this.canOpen3D()) setMode('3d')
   }
 
-  canGoBack() {
-    const { regionsHistory } = this.props
-    // > 1, as the last entry is the current path
-    return regionsHistory.size > 1
-  }
-
   canOpen3D() {
     const { crossSectionPoints } = this.props
     return crossSectionPoints.get(0) && crossSectionPoints.get(1)
@@ -61,19 +42,10 @@ class OverlayControls extends Component {
 
   render() {
     const { mode, layers, changedViews, resetView } = this.props
-    const canGoBack = this.canGoBack()
     const canOpen3D = this.canOpen3D()
     const viewChanged = mode !== '3d' && changedViews.has('2d') || mode === '3d' && changedViews.has('3d')
     return (
       <div className='overlay-controls'>
-        <div className='controls top left'>
-          {mode !== '3d' && canGoBack &&
-            <div>
-              <OverlayButton onClick={this.handleGoHome} icon='home'/>
-              <OverlayButton onClick={this.handleGoUp} icon='arrow-up'/>
-            </div>
-          }
-        </div>
         <div className='controls bottom left'>
           {viewChanged && <OverlayButton onClick={resetView} icon='map-marker'/>}
         </div>

@@ -1,54 +1,53 @@
-const TIME_RANGE = 315400000000 // 10 years in ms
+import { MIN_TIME, MAX_TIME } from '../earthquake-properties'
 
-export function fakeRegion(count) {
-  return {
-    datasets: ['_fake_dataset=' + count],
-    minLatitude: -20,
-    minLongitude: -90,
-    maxLatitude: 60,
-    maxLongitude: 30
-  }
+let ID = 0
+
+const DEF_OPTIONS = {
+  minLat: -90,
+  maxLat: 90,
+  minLng: -180,
+  maxLng: 180,
+  maxDep: 600,
+  minDep: 0,
+  minMag: 0,
+  maxMag: 10
 }
-
-export function fakeDataset(count) {
+export function fakeDataset(count, options) {
   const result = []
   for (let i = 0; i < count; i++) {
-    result.push(earthquake(i))
+    result.push(earthquake(options))
   }
   return {
     features: result
   }
 }
 
-function earthquake(id) {
+function earthquake(options) {
+  const opts = Object.assign({}, DEF_OPTIONS, options)
   return {
-    id: id,
+    id: ID++,
     geometry: {
-      coordinates: [long(), lat(), depth()]
+      coordinates: [gaussian(opts.minLng, opts.maxLng), gaussian(opts.minLat, opts.maxLat), gaussian(opts.minDep, opts.maxDep)]
     },
     properties: {
-      mag: magnitude(),
-      time: time()
+      mag: gaussian(opts.minMag, opts.maxMag),
+      time: rand(MIN_TIME, MAX_TIME)
     }
   }
 }
 
-function lat() {
-  return Math.random() * 160 - 80
+function gaussian(min, max) {
+  return gaussianRand() * (max - min) + min
 }
 
-function long() {
-  return Math.random() * 360 - 180
+function rand(min, max) {
+  return Math.random() * (max - min) + min
 }
 
-function depth() {
-  return 600 * Math.random()
-}
-
-function magnitude() {
-  return Math.random() * 2 + 5
-}
-
-function time() {
-  return new Date().getTime() - Math.floor(Math.random() * TIME_RANGE)
+function gaussianRand() {
+  let rand = 0
+  for (var i = 0; i < 6; i += 1) {
+    rand += Math.random()
+  }
+  return rand / 6
 }
