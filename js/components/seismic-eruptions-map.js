@@ -8,7 +8,7 @@ import PlatesLayer from './plates-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
 import { mapLayer } from '../map-layer-tiles'
-import { tilesList, tileInvalid } from '../map-tile-helpers'
+import { tilesList, tileInvalid, tileOutOfBounds } from '../map-tile-helpers'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
@@ -17,6 +17,10 @@ const INITIAL_BOUNDS = [
   [-60, -120],
   [60, 120]
 ]
+
+// It delays download of earthquakes data on map moveend event, so user can pan or zoom map
+// a few times quickly before the download starts.
+const EARTQUAKES_DOWNLOAD_DELAY = 600 // ms
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
@@ -76,15 +80,19 @@ export default class SeismicEruptionsMap extends Component {
 
   handleMoveEnd(event) {
     this._mapBeingDragged = false
-    const { setEarthquakeDataTiles } = this.props
-    const map = event.target
-    const bounds = map.getBounds()
-    const rect = [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
-    // tilesList expects an array of arrays: [[lat, lng], [lat, lng], ...]
-    const tiles = tilesList(rect.map(p => [p.lat, p.lng]), map.getZoom())
-    // Remove invalid tiles (y value < 0 or > max allowed value).
-    const validTiles = tiles.filter(t => !tileInvalid(t))
-    setEarthquakeDataTiles(validTiles)
+
+    clearTimeout(this._tilesDownloadTimoutID)
+    this._tilesDownloadTimoutID = setTimeout(() => {
+      const { setEarthquakeDataTiles } = this.props
+      const map = event.target
+      const bounds = map.getBounds()
+      const rect = [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
+      // tilesList expects an array of arrays: [[lat, lng], [lat, lng], ...]
+      const tiles = tilesList(rect.map(p => [p.lat, p.lng]), map.getZoom())
+      // Remove invalid tiles (x, y values < 0 or > max allowed value).
+      const validTiles = tiles.filter(t => !tileInvalid(t) && !tileOutOfBounds(t))
+      setEarthquakeDataTiles(validTiles)
+    }, EARTQUAKES_DOWNLOAD_DELAY)
   }
 
   handleEarthquakeClick(event, earthquake) {

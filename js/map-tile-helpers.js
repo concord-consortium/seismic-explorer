@@ -27,6 +27,10 @@ export function tileInvalid(tile) {
   const maxVal = Math.pow(2, tile.zoom) - 1
   return tile.y < 0 || tile.y > maxVal
 }
+export function tileOutOfBounds(tile) {
+  const maxVal = Math.pow(2, tile.zoom) - 1
+  return tile.x < 0 || tile.x > maxVal
+}
 
 export function tileBoundingBox(rectangle, zoom) {
   const bBox = boundingBox(rectangle)

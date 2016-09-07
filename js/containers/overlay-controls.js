@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import * as actions from '../actions'
 import MapKey from '../components/map-key'
 import OverlayButton from '../components/overlay-button'
-import { goToRegion } from '../api'
 
 import '../../css/overlay-controls.less'
 

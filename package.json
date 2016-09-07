@@ -45,7 +45,6 @@
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
     "immutable": "^3.7.6",
-    "isomorphic-fetch": "^2.2.1",
     "jquery": "^2.2.2",
     "leaflet": "^0.7.7",
     "leaflet-plugins": "^1.5.2",

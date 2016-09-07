@@ -1,4 +1,4 @@
-import { isInCache, getFromCache, fetchTile } from '../api'
+import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
 
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
@@ -14,10 +14,12 @@ export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
 export const MARK_2D_VIEW_MODIFIED = 'MARK_2D_VIEW_MODIFIED'
 export const MARK_3D_VIEW_MODIFIED = 'MARK_3D_VIEW_MODIFIED'
 
-function requestEarthquakes(tile, idx) {
+const api = new EarthquakeDataAPI()
+
+function requestEarthquakes(tile) {
   return dispatch => {
     dispatch({type: REQUEST_DATA})
-    fetchTile(tile, idx)
+    api.fetchTile(tile)
       .then(
         response => {
           dispatch({type: RECEIVE_DATA})
@@ -36,7 +38,13 @@ function receiveEarthquakes(response) {
 }
 
 function receiveError(error) {
-  console.log('[API error]', error.message, error.response)
+  if (error instanceof APIError) {
+    console.log('[API error]', error.message, error.response)
+  } else if (!(error instanceof RequestAborted)) {
+    // RequestAborted can happen when user is panning map quickly and various tiles stated loading, but
+    // are not necessary anymore. That's normal case, so don't log it.
+    console.log('[unknown error]', error)
+  }
   return {
     type: RECEIVE_ERROR,
     response: error
@@ -46,24 +54,25 @@ function receiveError(error) {
 // Each time data is changed (moved, panned, zoomed in / out), we need to update earthquakes data.
 export function setEarthquakeDataTiles(newTiles) {
   return dispatch => {
-    // First, reset earthquakes data.
+    // First, reset earthquakes data and abort all the old requests.
+    api.abortAllRequests()
     dispatch({
       type: RESET_EARTHQUAKES,
     })
     // Then retrieve all the cached data tiles.
     console.time('cached tiles processing')
-    const cachedTiles = newTiles.filter(t => isInCache(t))
+    const cachedTiles = newTiles.filter(t => api.isInCache(t))
     console.log('cached data tiles:', cachedTiles.length)
     // Optimization: instead of dispatching receiveEarthquakes X times, concat arrays first
     // and then dispatch it just once. It's way faster, as React update is triggered just once, not X times.
-    const cachedEarthquakes = [].concat.apply([], cachedTiles.map(t => getFromCache(t).features))
+    const cachedEarthquakes = [].concat.apply([], cachedTiles.map(t => api.getFromCache(t).features))
     dispatch(receiveEarthquakes({features: cachedEarthquakes}))
     console.timeEnd('cached tiles processing')
     // Finally request new data tiles.
-    const tilesToDownload = newTiles.filter(t => !isInCache(t))
+    const tilesToDownload = newTiles.filter(t => !api.isInCache(t))
     console.log('data tiles to download:', tilesToDownload.length)
     tilesToDownload.forEach((tile, idx) =>
-      dispatch(requestEarthquakes(tile, idx))
+      dispatch(requestEarthquakes(tile))
     )
   }
 }
