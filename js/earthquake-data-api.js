@@ -1,5 +1,5 @@
 import { fakeDataset } from './data/fake-data'
-import { sortByTime, swapCoords } from './data/helpers'
+import { limitData, sortByTime, swapCoords } from './data/helpers'
 import { tile2lat, tile2lng } from './map-tile-helpers'
 import { MAX_TIME, MIN_TIME } from './earthquake-properties'
 import Cache from './cache'
@@ -14,7 +14,7 @@ function getUSGSPath(tile) {
   const maxLat = tile2lat(tile.y, tile.zoom)
   const minLat = tile2lat(tile.y + 1, tile.zoom)
   const minMag = Math.max(7 - tile.zoom, 2) // so 5 for the world view (zoom = 2) and lower values for next ones.
-  return `http://earthquake.usgs.gov/fdsnws/event/1/query.geojson?starttime=${minDate}&endtime=${maxDate}` +
+  return `http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson?starttime=${minDate}&endtime=${maxDate}` +
     `&maxlatitude=${maxLat}&minlatitude=${minLat}&maxlongitude=${maxLng}&minlongitude=${minLng}` +
     `&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`
 }
@@ -64,7 +64,7 @@ export default class EarthquakeDataAPI {
     const fakeDataTileCount = useFakeData && parseInt(window.location.hash.split('#fake=')[1])
     const dataPromise = useFakeData ? fakeData(tile, fakeDataTileCount) : this._fetchData(getUSGSPath(tile))
     return dataPromise
-      .then(response => {return {features: sortByTime(swapCoords(response.features))}})
+      .then(response => {return {features: sortByTime(swapCoords(limitData(response.features)))}})
       .then(response => this.cache.set(tile, response))
   }
 
