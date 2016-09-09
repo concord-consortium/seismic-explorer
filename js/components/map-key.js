@@ -28,7 +28,7 @@ export default class MapKey extends Component {
     const { showBoundariesInfo } = this.props
     const { opened } = this.state
     return !opened ?
-      <OverlayButton icon='info' onClick={this.open}/>
+      <OverlayButton onClick={this.open}>Key</OverlayButton>
       :
       <div className='map-key-content'>
         <i onClick={this.hide} className='map-key-close fa fa-close'/>
