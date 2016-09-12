@@ -1,4 +1,5 @@
 import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
+import { MIN_TIME } from '../earthquake-properties'
 
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
@@ -103,6 +104,15 @@ export function setAnimationEnabled(value) {
   return {
     type: SET_ANIMATION_ENABLED,
     value
+  }
+}
+
+// Reset stops animation and moves two slider handles back to the left edge (min and max time filters).
+export function reset() {
+  return dispatch => {
+    dispatch(setAnimationEnabled(false))
+    dispatch(setFilter('minTime', MIN_TIME))
+    dispatch(setFilter('maxTime', MIN_TIME))
   }
 }
 

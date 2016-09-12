@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 
-import '../../css/animation-button.less'
+import '../../css/animation-buttons.less'
 
 const UPDATE_INTERVAL = 150 // ms
 
 @pureRender
-export default class AnimationButton extends Component {
+export default class AnimationButtons extends Component {
   constructor(props) {
     super(props)
     this.animFrameID = null
@@ -68,10 +68,15 @@ export default class AnimationButton extends Component {
   }
 
   render() {
-    const { onClick } = this.props
+    const { onPlayPause, onReset } = this.props
     return (
-      <div className='animation-button'>
-        <i className={this.icon} onClick={onClick}/>
+      <div>
+        <div className='animation-button' onClick={onReset}>
+          <i className='fa fa-step-backward'/>
+        </div>
+        <div className='animation-button' onClick={onPlayPause}>
+          <i className={this.icon}/>
+        </div>
       </div>
     )
   }

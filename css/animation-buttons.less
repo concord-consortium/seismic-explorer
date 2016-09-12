@@ -1,0 +1,29 @@
+.animation-button {
+  margin: 0.5em 0 0.5em 0;
+  font-size: 1.5em;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5em;
+  display: inline-block;
+  text-align:center;
+  cursor: pointer;
+  color: #777;
+  background-color: #eeeeee;
+  background-image: linear-gradient(top, #fbfbfb, #bcbec0);
+  &:hover {
+    color: #444;
+    background-image: linear-gradient(top, #fff, #d8d8d8);
+  }
+}
+
+.animation-button:first-child {
+  margin-left: 0.5em;
+  border-top-left-radius: 0.5em;
+  border-bottom-left-radius: 0.5em;
+}
+
+.animation-button:last-child {
+  margin-right: 0.5em;
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+}

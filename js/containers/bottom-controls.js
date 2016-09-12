@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
-import AnimationButton from '../components/animation-button'
+import AnimationButtons from '../components/animation-buttons'
 import Slider from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
@@ -58,7 +58,8 @@ class BottomControls extends Component {
     this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
     this.handlePlateLayerChange = this.handlePlateLayerChange.bind(this)
     this.handleAnimStep = this.handleAnimStep.bind(this)
-    this.handleAnimBtnClick = this.handleAnimBtnClick.bind(this)
+    this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
+    this.handleResetBtnClick = this.handleResetBtnClick.bind(this)
   }
 
   componentDidMount() {
@@ -100,9 +101,14 @@ class BottomControls extends Component {
     setFilter('maxTime', newValue)
   }
 
-  handleAnimBtnClick() {
+  handlePlayPauseBtnClick() {
     const { animationEnabled, setAnimationEnabled } = this.props
     setAnimationEnabled(!animationEnabled)
+  }
+
+  handleResetBtnClick() {
+    const { reset } = this.props
+    reset()
   }
 
   get dateMarks() {
@@ -133,15 +139,18 @@ class BottomControls extends Component {
   }
 
   render() {
-    const { animationEnabled, filters, layers, mode } = this.props
-    const { fullscreen } = this.state
+    const { animationEnabled, filters, layers, mode, reset } = this.props
 
     return (
       <div>
         <div className='bottom-controls'>
           <img src={ccLogoSrc}/>
-          <AnimationButton ref='playButton' animationEnabled={animationEnabled} speed={this.animSpeed} value={filters.get('maxTime')}
-                          onClick={this.handleAnimBtnClick} onAnimationStep={this.handleAnimStep}/>
+          <div>
+            <AnimationButtons ref='playButton' animationEnabled={animationEnabled} value={filters.get('maxTime')}
+                             speed={this.animSpeed}
+                             onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
+                             onAnimationStep={this.handleAnimStep}/>
+          </div>
           <div className='center'>
             <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')} step={86400}
                     value={[filters.get('minTime'), filters.get('maxTime')]} onChange={this.handleTimeRange}
