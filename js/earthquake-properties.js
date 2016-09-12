@@ -1,9 +1,10 @@
 export const TRANSITION_TIME = 750
 
 export function depthToColor(depth) {
-  const depthRange = Math.floor(depth / 100)
+  // Depth can be negative (earthquake above the sea level) - use 0-100km range color in this case.
+  const depthRange = Math.max(0, Math.floor(depth / 100))
   switch(depthRange) {
-    case 0: // 0 - 100
+    case 0: // above the sea level or 0 - 100
       return 0xFF0A00
     case 1: // 100 - 200
       return 0xFF7A00
