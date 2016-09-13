@@ -1,56 +1,45 @@
 .settings {
-  align-items: center;
-  -webkit-box-align: center;
-  display: flex;
   font-size: 0.7em;
+  flex-wrap: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   border-top: 1px solid #eee;
-  background: white;
-  padding: 0.5em 1em;
-  min-width: 33em;
-  max-width: 100%;
-  border-top-left-radius: 10px;
+  padding: 0.8em 1em;
   color: #444;
-  transition: bottom 750ms;
+
+  .settings-label {
+    font-weight: bold;
+    font-size: 1.15em;
+  }
 
   & > div {
-    float:left;
-    padding-right:20px;
-    min-height:15px;
+    white-space: nowrap;
   }
 
-  label{
-    padding-right:5px;
+  & > div + div {
+    margin-left: 2em;
   }
 
-  h2 {
-    padding-right:40px;
-    padding-left:10px;
-    font-size:1.1em;
+  input, select {
+    margin-left: 0.5em;
   }
 
-  select {
-    margin-left: 10px;
+  .mag-label {
+    display: inline-block;
+    vertical-align: middle;
   }
 
-  .fa-gear{
-    font-size:1.5em;
-  }
+  .mag-slider {
+    display: inline-block;
+    vertical-align: text-top;
+    margin-left: 1em;
 
-  .map-type-label{
-    padding-right:0px;
-  }
-
-  .mag-slider{
-    float:left;
-  }
-
-  .rc-slider {
-    font-size: 0.6em;
-    min-width: 125px;
-    margin: 0.5em;
-  }
-
-  .rc-tooltip-inner > span {
-    font-family: sans-serif;
+    .rc-slider {
+      min-width: 150px;
+    }
+    .rc-tooltip-inner > span {
+      font-family: sans-serif;
+    }
   }
 }

@@ -139,7 +139,7 @@ class BottomControls extends Component {
   }
 
   render() {
-    const { animationEnabled, filters, layers, mode, reset } = this.props
+    const { animationEnabled, filters, layers, mode } = this.props
 
     return (
       <div>
@@ -162,28 +162,27 @@ class BottomControls extends Component {
           }
         </div>
         <div className='settings'>
-          <i className='fa fa-gear'/>
-          <h2>Map Settings</h2>
-          <div className='map-type-label'>
-            Displayed map type
+          <div className='settings-label'>
+            <i className='fa fa-gear'/> Map Settings
           </div>
           <div>
-             <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
+            Map type
+            <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
               {this.mapLayerOptions}
             </select>
           </div>
           {mode !== '3d' &&
             <div>
-              <label htmlFor='plate-border-box'>Show plate boundaries</label>
+              <label htmlFor='plate-border-box'>Plate boundaries</label>
               <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange} id='plate-border-box'/>
             </div>
           }
           <div>
-              Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
-          </div>
-          <div className='mag-slider'>
+            <div className='mag-label'>Magnitude</div>
+            <div className='mag-slider'>
               <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
-                onChange={this.handleMagRange} marks={{ 0: 0, 10: 10 }}/>
+                onChange={this.handleMagRange} marks={{ 0: 0, 2: 2, 4: 4, 6: 6, 8: 8, 10: 10 }}/>
+            </div>
           </div>
         </div>
       </div>
