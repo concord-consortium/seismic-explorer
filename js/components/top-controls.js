@@ -51,7 +51,7 @@ export default class TopControls extends Component {
         <span className='top-link right' onClick={this.openAboutModal}>About</span>
         <span className='top-link right' onClick={this.openShareModal}>Share</span>
 
-        <BasicModal isOpen={shareModalOpen} close={this.closeShareModal}>
+        <BasicModal className='narrow' isOpen={shareModalOpen} close={this.closeShareModal}>
           <ShareModalContent/>
         </BasicModal>
 
