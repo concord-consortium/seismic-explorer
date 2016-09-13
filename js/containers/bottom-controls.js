@@ -161,10 +161,10 @@ class BottomControls extends Component {
             </div>
           }
         </div>
-        <div className={'settings'}>
+        <div className='settings'>
           <i className='fa fa-gear'/>
           <h2>Map Settings</h2>
-          <div className={'map-type-label'}>
+          <div className='map-type-label'>
             Displayed map type
           </div>
           <div>
@@ -181,7 +181,7 @@ class BottomControls extends Component {
           <div>
               Show earthquakes with magnitude between <strong>{filters.get('minMag').toFixed(1)}</strong> and <strong>{filters.get('maxMag').toFixed(1)}</strong>
           </div>
-          <div className={'mag-slider'}>
+          <div className='mag-slider'>
               <Slider range min={0} max={10} step={0.1} value={[filters.get('minMag'), filters.get('maxMag')]}
                 onChange={this.handleMagRange} marks={{ 0: 0, 10: 10 }}/>
           </div>

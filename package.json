@@ -54,6 +54,7 @@
     "react": "^15.0.1",
     "react-dom": "^15.0.1",
     "react-leaflet": "^0.10.2",
+    "react-modal": "^1.4.0",
     "react-redux": "^4.4.0",
     "redux": "^3.3.1",
     "redux-logger": "^2.6.1",

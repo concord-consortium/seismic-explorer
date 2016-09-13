@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
+import TopControls from '../components/top-controls'
 import OverlayControls from './overlay-controls'
 import BottomControls from './bottom-controls'
 import SeismicEruptionsMap from '../components/seismic-eruptions-map'
@@ -64,6 +65,9 @@ class App extends Component {
     return (
       <div>
         {dataFetching && <LoadingIcon/>}
+        <div className='top-controls-container'>
+          <TopControls/>
+        </div>
         <div className={`map-container mode-${mode}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes}
                                mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}

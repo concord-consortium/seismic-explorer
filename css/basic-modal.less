@@ -1,0 +1,32 @@
+.basic-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 2000;
+}
+
+.basic-modal {
+  font: 16px verdana, helvetica, sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  max-width: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+  pointer-events: auto;
+  z-index: 2000;
+  outline: none;
+
+  .title {
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+    font-weight: bold;
+  }
+}

@@ -36,7 +36,8 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   _onMouseMove: function (e) {
-    if (this.externalView.earthquakeAt(e.clientX, e.clientY)) {
+    const pos = DomEvent.getMousePosition(e, this._canvas)
+    if (this.externalView.earthquakeAt(pos.x, pos.y)) {
       this._canvas.style.cursor = 'pointer'
     } else {
       this._canvas.style.cursor = 'inherit'
@@ -44,7 +45,8 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   _onMouseClick: function (e) {
-    const eqData = this.externalView.earthquakeAt(e.clientX, e.clientY)
+    const pos = DomEvent.getMousePosition(e, this._canvas)
+    const eqData = this.externalView.earthquakeAt(pos.x, pos.y)
     if (eqData) {
       this._earthquakeClickHandler(e, eqData)
     }

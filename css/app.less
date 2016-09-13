@@ -6,12 +6,30 @@
     font-size: 12px;
   }
 
-  .map-container {
+  .top-controls-container {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
+    height: 1.5em;
+    background: #fff;
+  }
+
+  .map-container {
+    position: absolute;
+    top: 1.5em;
+    left: 0;
+    right: 0;
     bottom: 7em;
+  }
+
+  .bottom-controls-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 7em;
+    background: #fff;
   }
 
   /* Move Leaflet map under the 3D view in 3D mode */
@@ -23,15 +41,6 @@
     position: absolute;
     top: 0;
     left: 0;
-  }
-
-  .bottom-controls-container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 7em;
-    background: #fff;
   }
 
   .leaflet-control-attribution {

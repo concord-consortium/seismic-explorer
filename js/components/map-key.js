@@ -4,6 +4,7 @@ import { magnitudeToRadius, depthToColor } from '../earthquake-properties'
 import OverlayButton from './overlay-button'
 
 import '../../css/map-key.less'
+import '../../css/modal-style.less'
 
 @pureRender
 export default class MapKey extends Component {
@@ -30,8 +31,8 @@ export default class MapKey extends Component {
     return !opened ?
       <OverlayButton onClick={this.open}>Key</OverlayButton>
       :
-      <div className='map-key-content'>
-        <i onClick={this.hide} className='map-key-close fa fa-close'/>
+      <div className='modal-style map-key-content'>
+        <i onClick={this.hide} className='close-icon fa fa-close'/>
         <table className='magnitude-density'>
           <tbody>
             <tr><th colSpan='2'>Magnitude</th><th colSpan='2'>Depth</th></tr>
