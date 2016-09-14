@@ -1,3 +1,6 @@
+export const MIN_TIME = Date.parse('1980')
+export const MAX_TIME = Date.parse('2016')
+
 export const TRANSITION_TIME = 750
 
 export function depthToColor(depth) {

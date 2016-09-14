@@ -1,10 +1,8 @@
-import { fetchJSON } from '../api'
+import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
 
-export const UPDATE_REGIONS_HISTORY = 'UPDATE_REGIONS_HISTORY'
-export const INVALIDATE_DATA = 'INVALIDATE_DATA'
 export const REQUEST_DATA = 'REQUEST_DATA'
+export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
-export const RECEIVE_REGION = 'RECEIVE_REGION'
 export const RECEIVE_EARTHQUAKES = 'RECEIVE_EARTHQUAKES'
 export const RECEIVE_ERROR = 'RECEIVE_ERROR'
 export const SET_FILTER = 'SET_FILTER'
@@ -16,71 +14,67 @@ export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
 export const MARK_2D_VIEW_MODIFIED = 'MARK_2D_VIEW_MODIFIED'
 export const MARK_3D_VIEW_MODIFIED = 'MARK_3D_VIEW_MODIFIED'
 
-export function updateRegionsHistory(path) {
-  return {
-    type: UPDATE_REGIONS_HISTORY,
-    path: path
-  }
-}
+const api = new EarthquakeDataAPI()
 
-export function requestData(path, dataType = 'region') { // dataType: 'region' or 'earthquakes'
+function requestEarthquakes(tile) {
   return dispatch => {
     dispatch({type: REQUEST_DATA})
-    fetchJSON(path)
+    api.fetchTile(tile)
       .then(
-        response => dispatch(receiveData(response, dataType)),
+        response => {
+          dispatch({type: RECEIVE_DATA})
+          dispatch(receiveEarthquakes(response))
+        },
         error => dispatch(receiveError(error))
       )
-  }
-}
-
-function receiveData(response, dataType) {
-  return dispatch => {
-    dispatch({
-      type: RECEIVE_DATA,
-      dataType,
-      receivedAt: Date.now()
-    })
-    switch(dataType) {
-      case 'region':
-        return dispatch(receiveRegion(response))
-      case 'earthquakes':
-        return dispatch(receiveEarthquakes(response))
-    }
-  }
-}
-
-function receiveRegion(response) {
-  return dispatch => {
-    dispatch({
-      type: RECEIVE_REGION,
-      response: response,
-      receivedAt: Date.now()
-    })
-    response.datasets.forEach(earthquakesPath =>
-      dispatch(requestData(earthquakesPath, 'earthquakes'))
-    )
   }
 }
 
 function receiveEarthquakes(response) {
   return {
     type: RECEIVE_EARTHQUAKES,
-    response: response,
-    receivedAt: Date.now()
+    response: response
   }
 }
 
-function receiveError(response) {
+function receiveError(error) {
+  if (error instanceof APIError) {
+    console.log('[API error]', error.message, error.response)
+  } else if (!(error instanceof RequestAborted)) {
+    // RequestAborted can happen when user is panning map quickly and various tiles stated loading, but
+    // are not necessary anymore. That's normal case, so don't log it.
+    console.log('[unknown error]', error)
+  }
   return {
     type: RECEIVE_ERROR,
-    response: response,
-    receivedAt: Date.now()
+    response: error
   }
 }
 
-export function invalidateData() {
-  return {type: INVALIDATE_DATA}
+// Each time data is changed (moved, panned, zoomed in / out), we need to update earthquakes data.
+export function setEarthquakeDataTiles(newTiles) {
+  return dispatch => {
+    // First, reset earthquakes data and abort all the old requests.
+    api.abortAllRequests()
+    dispatch({
+      type: RESET_EARTHQUAKES,
+    })
+    // Then retrieve all the cached data tiles.
+    console.time('cached tiles processing')
+    const cachedTiles = newTiles.filter(t => api.isInCache(t))
+    console.log('cached data tiles:', cachedTiles.length)
+    // Optimization: instead of dispatching receiveEarthquakes X times, concat arrays first
+    // and then dispatch it just once. It's way faster, as React update is triggered just once, not X times.
+    const cachedEarthquakes = [].concat.apply([], cachedTiles.map(t => api.getFromCache(t).features))
+    dispatch(receiveEarthquakes({features: cachedEarthquakes}))
+    console.timeEnd('cached tiles processing')
+    // Finally request new data tiles.
+    const tilesToDownload = newTiles.filter(t => !api.isInCache(t))
+    console.log('data tiles to download:', tilesToDownload.length)
+    tilesToDownload.forEach((tile, idx) =>
+      dispatch(requestEarthquakes(tile))
+    )
+  }
 }
 
 export function setFilter(name, value) {

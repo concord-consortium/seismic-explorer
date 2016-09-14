@@ -25,31 +25,10 @@ class App extends Component {
 
   componentDidMount() {
     enableShutterbug(APP_CLASS_NAME)
-    this.updateRegion()
-
-    // TODO: DEBUG, remove it later.
-    const { setMode } = this.props
-    window.setMode = setMode
   }
 
   componentWillUnmount() {
     disableShutterbug()
-  }
-
-  componentDidUpdate(prevProps) {
-    // params.regionPath is provided by react-router.
-    if (prevProps.params.regionPath !== this.props.params.regionPath) {
-      this.updateRegion()
-    }
-  }
-
-  updateRegion() {
-    const { params, requestData, updateRegionsHistory, setMode } = this.props
-    // params.regionPath is provided by react-router.
-    requestData(params.regionPath)
-    updateRegionsHistory(params.regionPath)
-    // Go back to 2D mode, 3D doesn't support region change.
-    setMode('2d')
   }
 
   renderError() {
@@ -80,15 +59,16 @@ class App extends Component {
   }
 
   renderApp() {
-    const { region, earthquakes, layers, dataFetching, crossSectionPoints,
-            mark2DViewModified, mark3DViewModified, regionsHistory, mode, setCrossSectionPoint } = this.props
+    const { dataFetching, earthquakes, layers, crossSectionPoints, setEarthquakeDataTiles,
+            mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
     return (
       <div>
         {dataFetching && <LoadingIcon/>}
         <div className={`map-container mode-${mode}`}>
-          <SeismicEruptionsMap ref='map' region={region} regionsHistory={regionsHistory} earthquakes={earthquakes}
+          <SeismicEruptionsMap ref='map' earthquakes={earthquakes}
                                mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
-                               setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}/>
+                               setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
+                               setEarthquakeDataTiles={setEarthquakeDataTiles}/>
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
                             mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
@@ -116,13 +96,11 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     error: state.getIn(['dataStatus', 'error']),
-    dataFetching: state.getIn(['dataStatus', 'isFetching']),
+    dataFetching: state.getIn(['downloadStatus', 'requestsInProgress']),
     mode: state.get('mode'),
     filters: state.get('filters'),
-    region: state.get('region'),
     layers: state.get('layers'),
     earthquakes: filteredEarthquakes(state),
-    regionsHistory: state.get('regionsHistory'),
     crossSectionPoints: state.get('crossSectionPoints')
   }
 }
