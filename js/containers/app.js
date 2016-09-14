@@ -14,7 +14,7 @@ import filteredEarthquakes from '../core/filtered-earthquakes'
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
 
-const APP_CLASS_NAME = 'seismic-eruptions-app'
+const APP_CLASS_NAME = 'seismic-explorer-app'
 
 @pureRender
 class App extends Component {

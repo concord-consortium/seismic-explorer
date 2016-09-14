@@ -1,16 +1,16 @@
-# Seismic Eruptions
+# Seismic Explorer
 
 Latest **stable** version:
 
-http://models-resources.concord.org/seismic-eruptions/index.html
+http://seismic-explorer.concord.org
 
 Latest **development** version:
 
-http://models-resources.concord.org/seismic-eruptions/branch/master/index.html
+http://seismic-explorer.concord.org/branch/master/index.html
 
 Old versions can be accessed via `/version/<tag>` path, e.g.:
 
-http://models-resources.concord.org/seismic-eruptions/version/0.1.0/index.html
+http://seismic-explorer.concord.org/version/1.1.0/index.html
 
 ## Development
 
@@ -29,7 +29,7 @@ or start webpack dev server:
 npm install -g webpack-dev-server 
 webpack-dev-server
 ```
-and open http://localhost:8080/ or http://localhost:8080/webpack-dev-server/ (auto-reload after each code change).
+and open [http://localhost:8080/](http://localhost:8080/) or [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/) (auto-reload after each code change).
 
 ### Frameworks, conventions
 
@@ -56,4 +56,4 @@ Additional, useful resources:
 
 ## License 
 
-[MIT](https://github.com/concord-consortium/seismic-eruptions2/blob/master/LICENSE)
+[MIT](https://github.com/concord-consortium/seismic-explorer/blob/master/LICENSE)
