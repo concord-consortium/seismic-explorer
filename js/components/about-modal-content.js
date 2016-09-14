@@ -11,7 +11,7 @@ export default class AboutModalContent extends Component {
         <div className='title'>About: Seismic Explorer</div>
         <div>
           <p>Geologists collect earthquake data everyday. What are the patterns of earthquake magnitude, depth,
-            location, and frequency? What are the patterns of Earthquakes along plate boundaries?</p>
+            location, and frequency? What are the patterns of earthquakes along plate boundaries?</p>
           <p>Click the play button to see the earthquakes. You can drag the starting time to start playing earthquakes
             from a later date.</p>
           <p>Use the Magnitude slider to choose the earthquake size shown on the map. Click the Show plate boundaries
