@@ -28,7 +28,7 @@ function data(state = [], action) {
       return []
     case RECEIVE_EARTHQUAKES:
       // Don't use ImmutableJS - this data is too big and it would also affect filtering time.
-      const newData = state.concat(action.response.features)
+      const newData = state.concat(action.response)
       window.earthquakes = newData
       return newData
     default:

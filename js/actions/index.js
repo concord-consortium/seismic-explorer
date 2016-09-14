@@ -66,8 +66,8 @@ export function setEarthquakeDataTiles(newTiles) {
     console.log('cached data tiles:', cachedTiles.length)
     // Optimization: instead of dispatching receiveEarthquakes X times, concat arrays first
     // and then dispatch it just once. It's way faster, as React update is triggered just once, not X times.
-    const cachedEarthquakes = [].concat.apply([], cachedTiles.map(t => api.getFromCache(t).features))
-    dispatch(receiveEarthquakes({features: cachedEarthquakes}))
+    const cachedEarthquakes = [].concat.apply([], cachedTiles.map(t => api.getFromCache(t)))
+    dispatch(receiveEarthquakes(cachedEarthquakes))
     console.timeEnd('cached tiles processing')
     // Finally request new data tiles.
     const tilesToDownload = newTiles.filter(t => !api.isInCache(t))

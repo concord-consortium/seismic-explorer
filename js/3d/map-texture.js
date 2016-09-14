@@ -1,6 +1,6 @@
 import THREE from 'three'
 import { tileUrl } from '../map-layer-tiles'
-import { tilesListByRow, lat2tilePos, lng2tilePos, tileBoundingBox, tileInvalid } from '../map-tile-helpers'
+import { tilesListByRow, lat2tilePos, lng2tilePos, tileBoundingBox, tileYOutOfBounds } from '../map-tile-helpers'
 
 const TILE_SIZE = 256 // px
 const MAX_TEXTURE_SIZE = 2048 // px
@@ -50,7 +50,7 @@ function tilesToTexture(tiles, layerType) {
   tiles.forEach((row, rowIdx) => {
     row.forEach((rawTile, tileIdx) => {
       const tile = wrapTile(rawTile)
-      if (tileInvalid(tile)) {
+      if (tileYOutOfBounds(tile)) {
         // It might happen if rectangle point is outside the map area.
         ctx.fillStyle = 'rgba(0,0,0,0)'
         ctx.fillRect(tileIdx * TILE_SIZE * sx, rowIdx * TILE_SIZE * sy, TILE_SIZE * sx, TILE_SIZE * sy)

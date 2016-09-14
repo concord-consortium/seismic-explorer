@@ -1,33 +1,26 @@
 import { fakeDataset } from './data/fake-data'
-import { limitData, sortByTime, swapCoords } from './data/helpers'
-import { tile2lat, tile2lng } from './map-tile-helpers'
+import { processUSGSGeoJSON, copyAndShiftLng } from './data/helpers'
+import { wrapTileX, lngDiff, tile2LatLngBounds } from './map-tile-helpers'
 import { MAX_TIME, MIN_TIME } from './earthquake-properties'
 import Cache from './cache'
 
 const USGS_LIMIT = 12000
+
 function getUSGSPath(tile) {
   const formatDate = date => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  const bb = tile2LatLngBounds(tile)
   const minDate = formatDate(new Date(MIN_TIME))
   const maxDate = formatDate(new Date(MAX_TIME))
-  const minLng = tile2lng(tile.x, tile.zoom)
-  const maxLng = tile2lng(tile.x + 1, tile.zoom)
-  const maxLat = tile2lat(tile.y, tile.zoom)
-  const minLat = tile2lat(tile.y + 1, tile.zoom)
   const minMag = Math.max(7 - tile.zoom, 2) // so 5 for the world view (zoom = 2) and lower values for next ones.
   return `http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson?starttime=${minDate}&endtime=${maxDate}` +
-    `&maxlatitude=${maxLat}&minlatitude=${minLat}&maxlongitude=${maxLng}&minlongitude=${minLng}` +
+    `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
     `&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`
 }
 
 function fakeData(tile, count) {
-  const options = {
-    minLng: tile2lng(tile.x, tile.zoom),
-    maxLng: tile2lng(tile.x + 1, tile.zoom),
-    maxLat: tile2lat(tile.y, tile.zoom),
-    minLat: tile2lat(tile.y + 1, tile.zoom),
-    minDep: (idx % 6) * 100,
-    maxDep: (idx % 6) * 100
-  }
+  const options = tile2LatLngBounds(tile)
+  options.minDep = (idx % 6) * 100
+  options.maxDep = (idx % 6) * 100
   return new Promise(resolve => {
     setTimeout(function() {
       resolve(fakeDataset(count, options))
@@ -51,21 +44,36 @@ export default class EarthquakeDataAPI {
   }
 
   isInCache(tile) {
-    return this.cache.has(tile)
+    // Tile can be outside [-180, 180] range. Limit it to [-180, 180]. That's the convention we follow in
+    // #getFromCache and #fetchTile.
+    const wrappedTile = wrapTileX(tile)
+    return this.cache.has(wrappedTile)
   }
 
   getFromCache(tile) {
-    return this.cache.get(tile)
+    // Tile can be outside [-180, 180] range. Limit it to [-180, 180], ask cache for this modified tile,
+    // copy it then shift longitude values back to the initial range.
+    const wrappedTile = wrapTileX(tile)
+    const lngOffset = lngDiff(tile, wrappedTile)
+    const data = this.cache.get(wrappedTile)
+    // Copy and shift so we don't modify cached data!
+    return data && lngOffset !== 0 ? copyAndShiftLng(data, lngOffset) : data
   }
 
   fetchTile(tile) {
+    // Tile can be outside [-180, 180] range. Limit it to [-180, 180], ask API for this modified tile,
+    // copy it then shift longitude values back to the initial range.
+    const wrappedTile = wrapTileX(tile)
+    const lngOffset = lngDiff(tile, wrappedTile)
     // Use fake data if there's hash parameter: #fake=<value>, e.g. #fake=2000, #fake=5000, etc.
     const useFakeData = window.location.hash.startsWith('#fake')
     const fakeDataTileCount = useFakeData && parseInt(window.location.hash.split('#fake=')[1])
-    const dataPromise = useFakeData ? fakeData(tile, fakeDataTileCount) : this._fetchData(getUSGSPath(tile))
+    const dataPromise = useFakeData ? fakeData(wrappedTile, fakeDataTileCount) : this._fetchData(getUSGSPath(wrappedTile))
     return dataPromise
-      .then(response => {return {features: sortByTime(swapCoords(limitData(response.features)))}})
-      .then(response => this.cache.set(tile, response))
+      .then(response => processUSGSGeoJSON(response))
+      .then(data => this.cache.set(wrappedTile, data))
+      // Copy and shift so we don't modify cached data!
+      .then(data => lngOffset !== 0 ? copyAndShiftLng(data, lngOffset) : data)
   }
 
   abortAllRequests() {

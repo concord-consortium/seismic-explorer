@@ -8,7 +8,7 @@ import PlatesLayer from './plates-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
 import { mapLayer } from '../map-layer-tiles'
-import { tilesList, tileInvalid, tileOutOfBounds } from '../map-tile-helpers'
+import { tilesList, tileYOutOfBounds, tileXOutOfBounds } from '../map-tile-helpers'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
@@ -89,8 +89,8 @@ export default class SeismicEruptionsMap extends Component {
       const rect = [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
       // tilesList expects an array of arrays: [[lat, lng], [lat, lng], ...]
       const tiles = tilesList(rect.map(p => [p.lat, p.lng]), map.getZoom())
-      // Remove invalid tiles (x, y values < 0 or > max allowed value).
-      const validTiles = tiles.filter(t => !tileInvalid(t) && !tileOutOfBounds(t))
+      // Remove invalid / unnecessary tiles (y values < 0 or > max allowed value).
+      const validTiles = tiles.filter(t => !tileYOutOfBounds(t))
       setEarthquakeDataTiles(validTiles)
     }, EARTQUAKES_DOWNLOAD_DELAY)
   }

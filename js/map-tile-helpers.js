@@ -19,17 +19,36 @@ export function lat2tile(lat, zoom) {
 export function tile2lng(x, zoom) {
   return (x / Math.pow(2, zoom) * 360 - 180)
 }
+
 export function tile2lat(y, zoom) {
   const n = Math.PI - 2 * Math.PI * y / Math.pow(2, zoom)
   return (180 / Math.PI * Math.atan(0.5 * (Math.exp(n) - Math.exp(-n))))
 }
-export function tileInvalid(tile) {
+
+export function tileYOutOfBounds(tile) {
   const maxVal = Math.pow(2, tile.zoom) - 1
   return tile.y < 0 || tile.y > maxVal
 }
-export function tileOutOfBounds(tile) {
-  const maxVal = Math.pow(2, tile.zoom) - 1
-  return tile.x < 0 || tile.x > maxVal
+
+export function wrapTileX(tile) {
+  const maxVal = Math.pow(2, tile.zoom) 
+  // ((x % maxVal) + maxVal) % maxVal handles both positive and negative values. E.g.:
+  // x = -1, maxVal = 16 => ((-1 % 16) + 16) % 16 = 15
+  // x = 1, maxVal = 16  => ((1 % 16) + 16) % 16 = 1
+  return {x: ((tile.x % maxVal) + maxVal) % maxVal, y: tile.y, zoom: tile.zoom}
+}
+
+export function lngDiff(tile1, tile2) {
+  return tile2lng(tile1.x, tile1.zoom) - tile2lng(tile2.x, tile2.zoom)
+}
+
+export function tile2LatLngBounds(tile) {
+  return {
+    minLng: tile2lng(tile.x, tile.zoom),
+    maxLng: tile2lng(tile.x + 1, tile.zoom),
+    maxLat: tile2lat(tile.y, tile.zoom),
+    minLat: tile2lat(tile.y + 1, tile.zoom)
+  }
 }
 
 export function tileBoundingBox(rectangle, zoom) {
