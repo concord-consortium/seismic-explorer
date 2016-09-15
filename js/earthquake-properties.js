@@ -1,5 +1,6 @@
-export const MIN_TIME = Date.parse('1980')
-export const MAX_TIME = Date.parse('2016')
+// new Date() respects current time zone (e.g. in contrast to Date.parse)
+export const MIN_TIME = (new Date(1980, 0, 1)).getTime()
+export const MAX_TIME = (new Date(2016, 0, 1)).getTime()
 
 export const TRANSITION_TIME = 750
 

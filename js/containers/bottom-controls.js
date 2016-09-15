@@ -20,16 +20,17 @@ function sliderDateFormatter(value) {
 }
 
 function sliderTickFormatter(valueMin, valueMax) {
+  // Don't display decade labels if it's closer to the edge values than 4 years.
+  // Labels would be too close to each other and probably overlap.
+  const minDistFromEdgeValues = 4 // years
+  const tickMarks = {}
   const minDate = new Date(valueMin)
+  const minYear = (minDate.getFullYear() + minDistFromEdgeValues).toString()
   const maxDate = new Date(valueMax)
+  maxDate.setFullYear(maxDate.getUTCFullYear() - minDistFromEdgeValues, 0, 1)
 
-  const minDecadeString = minDate.getFullYear().toString().substr(0, 2) + minDate.getFullYear().toString().substr(2, 1) + '0'
-  let minDecade = new Date(minDecadeString)
-  minDecade.setFullYear(minDecade.getUTCFullYear() + 10, 0, 1)
-
-  let tickMarks = {}
-  let decade = minDecade
-
+  const decade = new Date(minYear.substr(0, 2) + minYear.substr(2, 1) + '0')
+  decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
   while (decade <= maxDate) {
     tickMarks[decade.getTime()] = {label: decade.getUTCFullYear()}
     // increment decade by 10 years
