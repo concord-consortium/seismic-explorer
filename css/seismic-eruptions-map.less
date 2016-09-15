@@ -31,5 +31,10 @@
         z-index: 0;
       }
     }
+
+    /* Hide zoom controls - we don't want users to modify the view while they're drawing a line */
+    .leaflet-control-zoom {
+      display: none;
+    }
   }
 }

@@ -50,7 +50,9 @@ class OverlayControls extends Component {
     return (
       <div className='overlay-controls'>
         <div className='controls bottom left'>
-          {viewChanged && <OverlayButton onClick={resetView} icon='map-marker'/>}
+          {mode !== 'cross-section' && viewChanged &&
+            /* Don't display reset view icon when user is drawing a line (cross-section mode). */
+            <OverlayButton onClick={resetView} icon='map-marker'/>}
         </div>
         <div className='controls bottom right inline'>
           {mode === '2d' &&

@@ -177,9 +177,9 @@ class BottomControls extends Component {
           </div>
           {mode !== '3d' &&
           <div>
-            <label htmlFor='plate-border-box'>Plate boundaries</label>
             <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange}
                    id='plate-border-box'/>
+            <label htmlFor='plate-border-box'>Plate boundaries</label>
           </div>
           }
           <div>

@@ -52,6 +52,11 @@ export default class SeismicEruptionsMap extends Component {
     // to be clickable when we enter cross-section drawing mode. The simplest solution is to set Canvas z-index
     // lower than SVG z-index, but it won't work if the SVG layer hasn't been created yet.
     createSVGOverlayLayer(this.map)
+    // Initially Leaflet always triggers mapmove event, as probably real bounds are a bit different than
+    // provided bounds (due to screen size etc.). That is causing mark2DViewModified to be called and reset view icon
+    // being shown. This is unwanted, as there has been no user interaction. Mark this view unmodified again.
+    const { mark2DViewModified } = this.props
+    mark2DViewModified(false)
   }
 
   componentDidUpdate() {
@@ -66,16 +71,12 @@ export default class SeismicEruptionsMap extends Component {
       // Reset it if not.
       if (!found) this.setState({selectedEarthquake: null})
     }
-    // Listen to movestart events triggered by user again.
-    this._ignoreMovestart = false
   }
 
   handleMoveStart() {
     this._mapBeingDragged = true
     const { mark2DViewModified } = this.props
-    if (!this._ignoreMovestart) {
-      mark2DViewModified(true)
-    }
+    mark2DViewModified(true)
   }
 
   handleMoveEnd(event) {
@@ -105,9 +106,9 @@ export default class SeismicEruptionsMap extends Component {
     this.setState({selectedEarthquake: null})
   }
 
-  fitBounds() {
+  fitBounds(bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props
-    this.map.fitBounds(INITIAL_BOUNDS)
+    this.map.fitBounds(bounds)
     mark2DViewModified(false)
   }
 
