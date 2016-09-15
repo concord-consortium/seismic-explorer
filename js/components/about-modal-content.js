@@ -10,7 +10,7 @@ export default class AboutModalContent extends Component {
       <div className='about-modal-content'>
         <div className='title'>About: Seismic Explorer</div>
         <div>
-          <p>Geologists collect earthquake data everyday. What are the patterns of earthquake magnitude, depth,
+          <p>Geologists collect earthquake data every day. What are the patterns of earthquake magnitude, depth,
             location, and frequency? What are the patterns of earthquakes along plate boundaries?</p>
           <p>Click the play button to see the earthquakes. You can drag the starting time to start playing earthquakes
             from a later date.</p>
