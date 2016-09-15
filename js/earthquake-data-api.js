@@ -84,10 +84,14 @@ export default class EarthquakeDataAPI {
   _fetchData(url) {
     return new Promise((resolve, reject) => {
       const oReq = new XMLHttpRequest()
-      oReq.responseType = 'json'
       oReq.addEventListener('load', function () {
         if (this.status >= 200 && this.status < 300) {
-          resolve(this.response)
+          try {
+            resolve(JSON.parse(this.responseText))
+          } catch(e) {
+            // Sometimes USGS API returns malformed JSONs. Report that.
+            reject(new APIError('Malformed GeoJSON', e))
+          }
         } else {
           reject(new APIError(this.statusText, this))
         }

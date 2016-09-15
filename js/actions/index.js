@@ -41,11 +41,11 @@ function receiveEarthquakes(response) {
 
 function receiveError(error) {
   if (error instanceof APIError) {
-    console.log('[API error]', error.message, error.response)
+    console.error('[API error]', error.message, error.response)
   } else if (!(error instanceof RequestAborted)) {
     // RequestAborted can happen when user is panning map quickly and various tiles stated loading, but
     // are not necessary anymore. That's normal case, so don't log it.
-    console.log('[unknown error]', error)
+    console.error('[unknown error]', error)
   }
   return {
     type: RECEIVE_ERROR,
