@@ -60,7 +60,7 @@ class App extends Component {
   }
 
   renderApp() {
-    const { dataFetching, earthquakes, layers, crossSectionPoints, setEarthquakeDataTiles,
+    const { dataFetching, earthquakes, layers, crossSectionPoints, updateEarthquakesData,
             mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
     return (
       <div>
@@ -72,7 +72,7 @@ class App extends Component {
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes}
                                mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
                                setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
-                               setEarthquakeDataTiles={setEarthquakeDataTiles}/>
+                               updateEarthquakesData={updateEarthquakesData}/>
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
                             mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}

@@ -37,7 +37,7 @@ function data(state = [], action) {
 }
 
 const INITIAL_FILTERS = Map({
-  minMag: 5,
+  minMag: 0,
   maxMag: 10,
   minTime: MIN_TIME,
   maxTime: MIN_TIME,

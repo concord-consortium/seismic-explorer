@@ -11,7 +11,7 @@ function getUSGSPath(tile) {
   const bb = tile2LatLngBounds(tile)
   const minDate = formatDate(new Date(MIN_TIME))
   const maxDate = formatDate(new Date(MAX_TIME))
-  const minMag = Math.max(7 - tile.zoom, 2) // so 5 for the world view (zoom = 2) and lower values for next ones.
+  const minMag = Math.max(7 - tile.zoom, 0) // so 5 for the world view (zoom = 2) and lower values for next ones.
   return `http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson?starttime=${minDate}&endtime=${maxDate}` +
     `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
     `&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`

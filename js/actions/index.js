@@ -1,5 +1,6 @@
 import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
 import { MIN_TIME } from '../earthquake-properties'
+import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
@@ -52,17 +53,21 @@ function receiveError(error) {
   }
 }
 
-// Each time data is changed (moved, panned, zoomed in / out), we need to update earthquakes data.
-export function setEarthquakeDataTiles(newTiles) {
+// Each time map region is changed (moved, panned, zoomed in / out), we need to update earthquakes data.
+// - region is an array of points that defines shape, e.g. [[lat, lng], [lat, lng], ...]
+// - zoom is simple number, the current map zoom
+export function updateEarthquakesData(region, zoom) {
   return dispatch => {
     // First, reset earthquakes data and abort all the old requests.
     api.abortAllRequests()
     dispatch({
       type: RESET_EARTHQUAKES,
     })
+    // Process region, get tiles. Remove unnecessary ones (y values < 0 or > max value, we don't display map there).
+    const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
     // Then retrieve all the cached data tiles.
     console.time('cached tiles processing')
-    const cachedTiles = newTiles.filter(t => api.isInCache(t))
+    const cachedTiles = tiles.filter(t => api.isInCache(t))
     console.log('cached data tiles:', cachedTiles.length)
     // Optimization: instead of dispatching receiveEarthquakes X times, concat arrays first
     // and then dispatch it just once. It's way faster, as React update is triggered just once, not X times.
@@ -70,7 +75,7 @@ export function setEarthquakeDataTiles(newTiles) {
     dispatch(receiveEarthquakes(cachedEarthquakes))
     console.timeEnd('cached tiles processing')
     // Finally request new data tiles.
-    const tilesToDownload = newTiles.filter(t => !api.isInCache(t))
+    const tilesToDownload = tiles.filter(t => !api.isInCache(t))
     console.log('data tiles to download:', tilesToDownload.length)
     tilesToDownload.forEach((tile, idx) =>
       dispatch(requestEarthquakes(tile))
