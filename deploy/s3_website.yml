@@ -1,20 +1,20 @@
 s3_id: <%= ENV['S3_ACCESS_KEY_ID'] %>
 s3_secret: <%= ENV['S3_SECRET_KEY'] %>
 s3_bucket: models-resources
-s3_key_prefix: seismic-eruptions
+s3_key_prefix: seismic-explorer
 s3_endpoint: us-east-1
 gzip: true
 
 <% if ENV['TRAVIS_BRANCH'] == 'production' %>
 # in this case we are going to deploy this branch to the top level of the domain
 # so we need to ignore the version and branch folders
-ignore_on_server: ^seismic-eruptions/(version/|branch/)
+ignore_on_server: ^seismic-explorer/(version/|branch/)
 <% else %>
 # in this case we are going to deploy this code to a subfolder of either the branch
 # or version folder. So ignore everything except this folder.
-ignore_on_server: ^(?!seismic-eruptions/<%= Regexp.escape(ENV['DEPLOY_DIR']) %>/)
+ignore_on_server: ^(?!seismic-explorer/<%= Regexp.escape(ENV['DEPLOY_DIR']) %>/)
 <% end %>
 max_age:
-  "seismic-eruptions/*": 600 # 10 minutes
-  "seismic-eruptions/version/*": 31536000 # 1 year
-  "seismic-eruptions/branch/*": 0
+  "seismic-explorer/*": 600 # 10 minutes
+  "seismic-explorer/version/*": 31536000 # 1 year
+  "seismic-explorer/branch/*": 0
