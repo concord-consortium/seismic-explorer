@@ -6,13 +6,18 @@ import Cache from './cache'
 
 const USGS_LIMIT = 12000
 
+const USGS_API = 'http://earthquake.usgs.gov/fdsnws/event/1/query.geojson'
+const CLOUDFRONT_USGS_API = 'http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson'
+const CONCORD_API = 'https://e401fd4io0.execute-api.us-east-1.amazonaws.com/production/earthquakes'
+const CLOUDFRONT_CONCORD_API = 'http://d876rjgss4hzs.cloudfront.net/production/earthquakes'
+
 function getUSGSPath(tile) {
   const formatDate = date => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
   const bb = tile2LatLngBounds(tile)
   const minDate = formatDate(new Date(MIN_TIME))
   const maxDate = formatDate(new Date(MAX_TIME))
   const minMag = Math.max(7 - tile.zoom, 0) // so 5 for the world view (zoom = 2) and lower values for next ones.
-  return `http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson?starttime=${minDate}&endtime=${maxDate}` +
+  return `${CLOUDFRONT_CONCORD_API}?starttime=${minDate}&endtime=${maxDate}` +
     `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
     `&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`
 }
