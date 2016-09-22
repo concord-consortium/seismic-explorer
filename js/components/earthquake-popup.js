@@ -47,6 +47,6 @@ export default class EarthquakePopup extends Component {
 }
 
 function date(timestamp) {
-  const d = new Date(timestamp)
+  const d = new Date(parseInt(timestamp))
   return d.toLocaleString ? d.toLocaleString() : d.toString()
 }
