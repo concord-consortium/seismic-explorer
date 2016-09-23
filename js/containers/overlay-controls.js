@@ -44,7 +44,7 @@ class OverlayControls extends Component {
   }
 
   render() {
-    const { mode, layers, changedViews, resetView } = this.props
+    const { mode, layers, changedViews, resetView, earthquakesCount, magnitudeCutOff} = this.props
     const canOpen3D = this.canOpen3D()
     const viewChanged = mode !== '3d' && changedViews.has('2d') || mode === '3d' && changedViews.has('3d')
     return (
@@ -77,7 +77,8 @@ class OverlayControls extends Component {
           }
         </div>
         <div className='controls top right'>
-          <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'}/>
+          <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'}
+                  earthquakesCount={earthquakesCount} magnitudeCutOff={magnitudeCutOff} />
         </div>
       </div>
     )
@@ -91,7 +92,9 @@ function mapStateToProps(state) {
     mode: state.get('mode'),
     regionsHistory: state.get('regionsHistory'),
     crossSectionPoints: state.get('crossSectionPoints'),
-    changedViews: state.get('changedViews')
+    changedViews: state.get('changedViews'),
+    earthquakesCount: state.get('data').get('earthquakes').length,
+    magnitudeCutOff: state.get('data').get('magnitudeCutOff')
   }
 }
 

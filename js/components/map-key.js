@@ -26,7 +26,7 @@ export default class MapKey extends Component {
   }
 
   render() {
-    const { showBoundariesInfo } = this.props
+    const { showBoundariesInfo, earthquakesCount, magnitudeCutOff } = this.props
     const { opened } = this.state
     return !opened ?
       <OverlayButton onClick={this.open}>Key</OverlayButton>
@@ -58,6 +58,10 @@ export default class MapKey extends Component {
             </tbody>
           </table>
         }
+        <div className='stats'>
+          Currently displaying <strong>{earthquakesCount}</strong> earthquakes starting from magnitude <strong>{magnitudeCutOff}</strong>.
+          Zoom in to see weaker earthquakes.
+        </div>
       </div>
   }
 }
