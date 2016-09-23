@@ -1,5 +1,5 @@
 import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
-import { MIN_TIME } from '../earthquake-properties'
+import config from '../config'
 import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 
 export const REQUEST_DATA = 'REQUEST_DATA'
@@ -112,8 +112,8 @@ export function setAnimationEnabled(value) {
 export function reset() {
   return dispatch => {
     dispatch(setAnimationEnabled(false))
-    dispatch(setFilter('minTime', MIN_TIME))
-    dispatch(setFilter('maxTime', MIN_TIME))
+    dispatch(setFilter('minTime', config.startTime))
+    dispatch(setFilter('maxTime', config.startTime))
   }
 }
 

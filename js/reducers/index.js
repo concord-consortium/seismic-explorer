@@ -4,7 +4,7 @@ import {
   SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, SET_MODE,
   SET_CROSS_SECTION_POINT, MARK_2D_VIEW_MODIFIED, MARK_3D_VIEW_MODIFIED
 } from '../actions'
-import { MIN_TIME, MAX_TIME } from '../earthquake-properties'
+import config from '../config'
 
 const INITIAL_DOWNLOAD_STATUS = Map({
   requestsInProgress: 0
@@ -48,10 +48,10 @@ function data(state = INITIAL_DATA, action) {
 const INITIAL_FILTERS = Map({
   minMag: 0,
   maxMag: 10,
-  minTime: MIN_TIME,
-  maxTime: MIN_TIME,
-  minTimeLimit: MIN_TIME,
-  maxTimeLimit: MAX_TIME,
+  minTime: config.startTime,
+  maxTime: config.startTime,
+  minTimeLimit: config.startTime,
+  maxTimeLimit: config.endTime,
   crossSection: false
 })
 function filters(state = INITIAL_FILTERS, action) {

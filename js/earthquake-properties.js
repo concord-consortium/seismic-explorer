@@ -1,21 +1,3 @@
-// Use dates independent of the current time zone to make sure that caching works better.
-// Set UTC noon, so users in US still see this date in UI in their local timezone as 1/1/1980 (instead of 12/31/1979).
-export const MIN_TIME = Date.parse('1980-01-01T12:00Z')
-// Calculate noon in UTC timezone that was at least 1h ago (earthquakes DB is updated every few minutes, but let's be safe).
-// Don't use current time to be able cache API queries.
-export const MAX_TIME = (function() {
-  const sixHours = 21600000 // ms
-  const result = new Date(Date.now() - sixHours)
-  if (result.getUTCHours() < 12) {
-    result.setUTCDate(result.getUTCDate() - 1)
-  }
-  result.setUTCHours(12)
-  result.setUTCMinutes(0)
-  result.setUTCSeconds(0)
-  result.setUTCMilliseconds(0)
-  return result.getTime()
-}())
-
 export const TRANSITION_TIME = 750
 
 export function depthToColor(depth) {

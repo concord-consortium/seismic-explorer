@@ -1,4 +1,4 @@
-import { MIN_TIME, MAX_TIME } from '../earthquake-properties'
+import config from '../config'
 
 let ID = 0
 
@@ -32,7 +32,7 @@ function earthquake(options) {
     properties: {
       place: 'test',
       mag: gaussian(opts.minMag, opts.maxMag),
-      time: rand(MIN_TIME, MAX_TIME)
+      time: rand(config.startTime, config.endTime)
     }
   }
 }

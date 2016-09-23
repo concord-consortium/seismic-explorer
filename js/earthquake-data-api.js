@@ -1,7 +1,6 @@
 import { fakeDataset } from './data/fake-data'
 import { processAPIResponse, copyAndShiftLng, concatenateData } from './data/helpers'
 import { wrapTileX, lngDiff, tile2LatLngBounds } from './map-tile-helpers'
-import { MAX_TIME, MIN_TIME } from './earthquake-properties'
 import Cache from './cache'
 import config from './config'
 
@@ -24,9 +23,9 @@ function getAPIHost() {
 
 function getAPIPath(tile, minMag) {
   const bb = tile2LatLngBounds(tile)
-  const minDate = (new Date(MIN_TIME)).toISOString()
-  const maxDate = (new Date(MAX_TIME)).toISOString()
-  return `${getAPIHost()}?starttime=${minDate}&endtime=${maxDate}` +
+  const startTime = (new Date(config.startTime)).toISOString()
+  const endTime = (new Date(config.endTime)).toISOString()
+  return `${getAPIHost()}?starttime=${startTime}&endtime=${endTime}` +
     `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
     `&minmagnitude=${minMag}&orderby=magnitude&limit=${config.tileLimit}`
 }
