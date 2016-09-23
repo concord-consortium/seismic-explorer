@@ -22,15 +22,24 @@ function downloadStatus(state = INITIAL_DOWNLOAD_STATUS, action) {
   }
 }
 
-function data(state = [], action) {
+const INITIAL_DATA = Map({
+  earthquakes: [],
+  magnitudeCutOff: 0
+})
+function data(state = INITIAL_DATA, action) {
   switch (action.type) {
     case RESET_EARTHQUAKES:
-      return []
+      return INITIAL_DATA
     case RECEIVE_EARTHQUAKES:
+      // Select max minimal magnitude among the tiles and remove all the earthquakes weaker than it.
+      // It ensures that displayed data is consistent and there're no visual "holes" in earthquakes layer.
+      const newCutOff = Math.max(action.response.magnitudeCutOff, state.get('magnitudeCutOff'))
       // Don't use ImmutableJS - this data is too big and it would also affect filtering time.
-      const newData = state.concat(action.response)
-      window.earthquakes = newData
-      return newData
+      const earthquakes = state.get('earthquakes')
+        .concat(action.response.earthquakes)
+        .filter(e => e.properties.mag >= newCutOff)
+      return state.set('earthquakes', earthquakes)
+                  .set('magnitudeCutOff', newCutOff)
     default:
       return state
   }

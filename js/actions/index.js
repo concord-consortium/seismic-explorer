@@ -67,11 +67,7 @@ export function updateEarthquakesData(region, zoom) {
     const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
     // Then retrieve all the cached data tiles.
     console.time('cached tiles processing')
-    const cachedTiles = tiles.filter(t => api.isInCache(t))
-    console.log('cached data tiles:', cachedTiles.length)
-    // Optimization: instead of dispatching receiveEarthquakes X times, concat arrays first
-    // and then dispatch it just once. It's way faster, as React update is triggered just once, not X times.
-    const cachedEarthquakes = [].concat.apply([], cachedTiles.map(t => api.getFromCache(t)))
+    const cachedEarthquakes = api.getTilesFromCache(tiles)
     dispatch(receiveEarthquakes(cachedEarthquakes))
     console.timeEnd('cached tiles processing')
     // Finally request new data tiles.

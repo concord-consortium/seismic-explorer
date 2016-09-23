@@ -9,7 +9,7 @@ let props = {}
 // 2. If we call this function two times with the same data, it will return the same (cached) array object.
 // The second point ensures that pure components won't re-render themselves unnecessary if data isn't changed.
 export default function filteredEarthquakes(state) {
-  const data = state.get('data')
+  const data = state.get('data').get('earthquakes')
   const filters = state.get('filters')
   const crossSection = state.get('crossSectionPoints')
   if (cachedValue == null || propsChanged(data, filters, crossSection)) {

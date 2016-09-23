@@ -1,10 +1,10 @@
 import { fakeDataset } from './data/fake-data'
-import { processUSGSGeoJSON, copyAndShiftLng } from './data/helpers'
+import { processAPIResponse, copyAndShiftLng, concatenateData } from './data/helpers'
 import { wrapTileX, lngDiff, tile2LatLngBounds } from './map-tile-helpers'
 import { MAX_TIME, MIN_TIME } from './earthquake-properties'
 import Cache from './cache'
 
-const USGS_LIMIT = 12000
+const TILE_LIMIT = 12000
 
 // Other available APIs:
 // const USGS_API = 'http://earthquake.usgs.gov/fdsnws/event/1/query.geojson'
@@ -12,14 +12,13 @@ const USGS_LIMIT = 12000
 // const CONCORD_API = 'https://e401fd4io0.execute-api.us-east-1.amazonaws.com/production/earthquakes'
 const CLOUDFRONT_CONCORD_API = 'http://d876rjgss4hzs.cloudfront.net/production/earthquakes'
 
-function getUSGSPath(tile) {
+function getAPIPath(tile) {
   const bb = tile2LatLngBounds(tile)
   const minDate = (new Date(MIN_TIME)).toISOString()
   const maxDate = (new Date(MAX_TIME)).toISOString()
-  const minMag = Math.max(7 - tile.zoom, 0) // so 5 for the world view (zoom = 2) and lower values for next ones.
   return `${CLOUDFRONT_CONCORD_API}?starttime=${minDate}&endtime=${maxDate}` +
     `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
-    `&minmagnitude=${minMag}&orderby=magnitude&limit=${USGS_LIMIT}`
+    `&orderby=magnitude&limit=${TILE_LIMIT}`
 }
 
 function fakeData(tile, count) {
@@ -65,6 +64,14 @@ export default class EarthquakeDataAPI {
     return data && lngOffset !== 0 ? copyAndShiftLng(data, lngOffset) : data
   }
 
+  getTilesFromCache(tiles) {
+    const cachedTiles = tiles.filter(t => this.isInCache(t)).map(t => this.getFromCache(t))
+    console.log('cached data tiles:', cachedTiles.length)
+    // Optimization: instead of dispatching receiveEarthquakes X times, concat arrays first
+    // and then dispatch it just once. It's way faster, as React update is triggered just once, not X times.
+    return concatenateData(cachedTiles)
+  }
+
   fetchTile(tile) {
     // Tile can be outside [-180, 180] range. Limit it to [-180, 180], ask API for this modified tile,
     // copy it then shift longitude values back to the initial range.
@@ -73,9 +80,9 @@ export default class EarthquakeDataAPI {
     // Use fake data if there's hash parameter: #fake=<value>, e.g. #fake=2000, #fake=5000, etc.
     const useFakeData = window.location.hash.startsWith('#fake')
     const fakeDataTileCount = useFakeData && parseInt(window.location.hash.split('#fake=')[1])
-    const dataPromise = useFakeData ? fakeData(wrappedTile, fakeDataTileCount) : this._fetchData(getUSGSPath(wrappedTile))
+    const dataPromise = useFakeData ? fakeData(wrappedTile, fakeDataTileCount) : this._fetchData(getAPIPath(wrappedTile))
     return dataPromise
-      .then(response => processUSGSGeoJSON(response))
+      .then(response => processAPIResponse(response, TILE_LIMIT))
       .then(data => this.cache.set(wrappedTile, data))
       // Copy and shift so we don't modify cached data!
       .then(data => lngOffset !== 0 ? copyAndShiftLng(data, lngOffset) : data)
