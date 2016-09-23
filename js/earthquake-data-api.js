@@ -3,28 +3,44 @@ import { processAPIResponse, copyAndShiftLng, concatenateData } from './data/hel
 import { wrapTileX, lngDiff, tile2LatLngBounds } from './map-tile-helpers'
 import { MAX_TIME, MIN_TIME } from './earthquake-properties'
 import Cache from './cache'
+import config from './config'
 
-const TILE_LIMIT = 12000
-
-// Other available APIs:
-// const USGS_API = 'http://earthquake.usgs.gov/fdsnws/event/1/query.geojson'
-// const CLOUDFRONT_USGS_API = 'http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson'
-// const CONCORD_API = 'https://e401fd4io0.execute-api.us-east-1.amazonaws.com/production/earthquakes'
+const USGS_API = 'http://earthquake.usgs.gov/fdsnws/event/1/query.geojson'
+const CLOUDFRONT_USGS_API = 'http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson'
+const CONCORD_API = 'https://e401fd4io0.execute-api.us-east-1.amazonaws.com/production/earthquakes'
 const CLOUDFRONT_CONCORD_API = 'http://d876rjgss4hzs.cloudfront.net/production/earthquakes'
 
-function getAPIPath(tile) {
+function getAPIHost() {
+  if (config.api === 'CC' && config.cache) {
+    return CLOUDFRONT_CONCORD_API
+  } else if (config.api === 'USGS' && config.cache) {
+    return CLOUDFRONT_USGS_API
+  } else if (config.api === 'CC' && !config.cache) {
+    return CONCORD_API
+  } else if (config.api === 'USGS' && !config.cache) {
+    return USGS_API
+  }
+}
+
+function getAPIPath(tile, minMag) {
   const bb = tile2LatLngBounds(tile)
   const minDate = (new Date(MIN_TIME)).toISOString()
   const maxDate = (new Date(MAX_TIME)).toISOString()
-  return `${CLOUDFRONT_CONCORD_API}?starttime=${minDate}&endtime=${maxDate}` +
+  return `${getAPIHost()}?starttime=${minDate}&endtime=${maxDate}` +
     `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
-    `&orderby=magnitude&limit=${TILE_LIMIT}`
+    `&minmagnitude=${minMag}&orderby=magnitude&limit=${config.tileLimit}`
+}
+
+// If USGS API is used, we need to make query a bit narrower as otherwise API returns an error / dies.
+// Use min mag 5 for the world view (zoom = 2) and lower values for next ones.
+function getMinMagnitude(zoom) {
+  return config.api === 'CC' ? 0 : Math.max(7 - zoom, 0)
 }
 
 function fakeData(tile, count) {
   const options = tile2LatLngBounds(tile)
-  options.minDep = (idx % 6) * 100
-  options.maxDep = (idx % 6) * 100
+  options.minDep = (tile.x % 6) * 100
+  options.maxDep = (tile.x % 6) * 100
   return new Promise(resolve => {
     setTimeout(function() {
       resolve(fakeDataset(count, options))
@@ -77,12 +93,12 @@ export default class EarthquakeDataAPI {
     // copy it then shift longitude values back to the initial range.
     const wrappedTile = wrapTileX(tile)
     const lngOffset = lngDiff(tile, wrappedTile)
-    // Use fake data if there's hash parameter: #fake=<value>, e.g. #fake=2000, #fake=5000, etc.
-    const useFakeData = window.location.hash.startsWith('#fake')
-    const fakeDataTileCount = useFakeData && parseInt(window.location.hash.split('#fake=')[1])
-    const dataPromise = useFakeData ? fakeData(wrappedTile, fakeDataTileCount) : this._fetchData(getAPIPath(wrappedTile))
+    const minMagnitude = getMinMagnitude(wrappedTile.zoom)
+    const dataPromise = config.api === 'fake' ?
+      fakeData(wrappedTile, config.tileLimit) :
+      this._fetchData(getAPIPath(wrappedTile, minMagnitude))
     return dataPromise
-      .then(response => processAPIResponse(response, TILE_LIMIT))
+      .then(response => processAPIResponse(response, config.tileLimit, minMagnitude))
       .then(data => this.cache.set(wrappedTile, data))
       // Copy and shift so we don't modify cached data!
       .then(data => lngOffset !== 0 ? copyAndShiftLng(data, lngOffset) : data)

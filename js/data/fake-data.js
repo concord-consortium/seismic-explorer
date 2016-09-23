@@ -18,7 +18,7 @@ export function fakeDataset(count, options) {
     result.push(earthquake(options))
   }
   return {
-    features: result
+    features: result.sort((a, b) => b.properties.mag - a.properties.mag),
   }
 }
 
@@ -30,6 +30,7 @@ function earthquake(options) {
       coordinates: [gaussian(opts.minLng, opts.maxLng), gaussian(opts.minLat, opts.maxLat), gaussian(opts.minDep, opts.maxDep)]
     },
     properties: {
+      place: 'test',
       mag: gaussian(opts.minMag, opts.maxMag),
       time: rand(MIN_TIME, MAX_TIME)
     }

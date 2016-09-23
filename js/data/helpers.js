@@ -12,8 +12,8 @@ function getMagnitudeCutoff(response, limit) {
 
 // Processes JSON returned by API (USGS or our own) and returns only necessary data.
 // We save some memory and also it documents (and tests) which properties are necessary.
-export function processAPIResponse(response, limit) {
-  const magnitudeCutOff = getMagnitudeCutoff(response, limit)
+export function processAPIResponse(response, limit, enforcedMinMagnitude) {
+  const magnitudeCutOff = Math.max(getMagnitudeCutoff(response, limit), enforcedMinMagnitude)
   const earthquakes = response.features.map(eq => {
     const coords = eq.geometry.coordinates
     const props = eq.properties
