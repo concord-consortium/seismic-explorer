@@ -24,7 +24,9 @@ const DEFAULT_CONFIG = {
     result.setUTCSeconds(0)
     result.setUTCMilliseconds(0)
     return result.getTime()
-  }())
+  }()),
+  // Enables / disables logging of user actions to parent frame (e.g. LARA).
+  logging: true
 }
 
 function getURLParam(name) {

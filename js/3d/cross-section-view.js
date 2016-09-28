@@ -3,6 +3,7 @@ import 'imports?THREE=three!three/examples/js/controls/OrbitControls'
 import Earthquakes from './earthquakes'
 import CrossSectionBox from './cross-section-box'
 import Camera from './camera'
+import log from '../logger'
 
 const MAX_DEPTH = 900
 const FINAL_ZOOM = 0.88 // 1 means that cross section box takes the whole screen
@@ -69,6 +70,7 @@ export default class {
 
   resetCamera() {
     this.camera.reset()
+    log('CameraReset')
   }
 
   render(timestamp = performance.now()) {

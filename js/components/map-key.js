@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { magnitudeToRadius, depthToColor } from '../earthquake-properties'
 import OverlayButton from './overlay-button'
+import log from '../logger'
 
 import '../../css/map-key.less'
 import '../../css/modal-style.less'
@@ -19,6 +20,7 @@ export default class MapKey extends Component {
 
   open() {
     this.setState({opened: true})
+    log('MapKeyOpened')
   }
 
   hide() {

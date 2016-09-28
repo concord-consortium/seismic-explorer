@@ -8,6 +8,7 @@ import PlatesLayer from './plates-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
 import { mapLayer } from '../map-layer-tiles'
+import log from '../logger'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
@@ -35,6 +36,7 @@ export default class SeismicEruptionsMap extends Component {
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
     this.handleMoveEnd = this.handleMoveEnd.bind(this)
+    this.handleZoomEnd = this.handleZoomEnd.bind(this)
   }
 
   get map() {
@@ -89,13 +91,20 @@ export default class SeismicEruptionsMap extends Component {
       const region = [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
                       .map(p => [p.lat, p.lng])
       updateEarthquakesData(region, map.getZoom())
+      log('MapRegionChanged', {region: [bounds.getSouthWest(), bounds.getNorthEast()].map(p => [p.lat, p.lng])})
     }, EARTQUAKES_DOWNLOAD_DELAY)
+  }
+
+  handleZoomEnd(event) {
+    const map = event.target
+    log('MapZoomChanged', {zoom: map.getZoom()})
   }
 
   handleEarthquakeClick(event, earthquake) {
     // Do not open earthquake popup if click was part of the map dragging action.
     if (this._mapBeingDragged) return
     this.setState({selectedEarthquake: earthquake})
+    log('EarthquakeClicked', earthquake)
   }
 
   handleEarthquakePopupClose() {
@@ -106,6 +115,7 @@ export default class SeismicEruptionsMap extends Component {
     const { mark2DViewModified } = this.props
     this.map.fitBounds(bounds)
     mark2DViewModified(false)
+    log('ResetMapClicked')
   }
 
   renderBaseLayer() {
@@ -121,7 +131,8 @@ export default class SeismicEruptionsMap extends Component {
     const { selectedEarthquake } = this.state
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' onLeafletMovestart={this.handleMoveStart} onLeafletMoveend={this.handleMoveEnd} 
+        <Map ref='map' className='map' onLeafletMovestart={this.handleMoveStart} onLeafletMoveend={this.handleMoveEnd}
+             onLeafletZoomend={this.handleZoomEnd}
              bounds={INITIAL_BOUNDS} zoom={3} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}

@@ -3,10 +3,12 @@ import pureRender from 'pure-render-decorator'
 import BasicModal from './basic-modal'
 import ShareModalContent from './share-modal-content'
 import AboutModalContent from './about-modal-content'
+import log from '../logger'
 
 import '../../css/top-controls.less'
 
 function reloadPage() {
+  log('ReloadClicked')
   location.reload()
 }
 
@@ -26,10 +28,12 @@ export default class TopControls extends Component {
 
   openShareModal() {
     this.setState({shareModalOpen: true, aboutModalOpen: false})
+    log('ShareDialogOpened')
   }
 
   openAboutModal() {
     this.setState({aboutModalOpen: true, shareModalOpen: false})
+    log('AboutDialogOpened')
   }
 
   closeShareModal() {

@@ -7,6 +7,7 @@ import Slider from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
 import {layerInfo} from '../map-layer-tiles'
+import log from '../logger'
 
 import '../../css/bottom-controls.less'
 import '../../css/settings-controls.less'
@@ -42,9 +43,19 @@ function sliderTickFormatter(valueMin, valueMax) {
 function toggleFullscreen() {
   if (!screenfull.isFullscreen) {
     screenfull.request()
+    log('FullscreenClicked')
   } else {
     screenfull.exit()
+    log('ExitFullscreenClicked')
   }
+}
+
+function logTimeSliderChange(value) {
+  log('TimeSliderChanged', {minTime: (new Date(value[0])).toString(), maxTime: (new Date(value[1])).toString()})
+}
+
+function logMagSliderChange(value) {
+  log('MagnitudeSliderChanged', {minMag: value[0], maxMag: value[1]})
 }
 
 @pureRender
@@ -85,12 +96,16 @@ class BottomControls extends Component {
 
   handleBaseLayerChange(event) {
     const {setBaseLayer} = this.props
-    setBaseLayer(event.target.value)
+    const layer = event.target.value
+    setBaseLayer(layer)
+    log('MapLayerChanged', {layer})
   }
 
   handlePlateLayerChange(event) {
     const {setPlatesVisible} = this.props
-    setPlatesVisible(event.target.checked)
+    const visible = event.target.checked
+    setPlatesVisible(visible)
+    log('PlatesVisibilityChanged', {visible})
   }
 
   handleAnimStep(newValue) {
@@ -105,11 +120,13 @@ class BottomControls extends Component {
   handlePlayPauseBtnClick() {
     const {animationEnabled, setAnimationEnabled} = this.props
     setAnimationEnabled(!animationEnabled)
+    log(animationEnabled ? 'PauseClicked' : 'PlayClicked')
   }
 
   handleResetBtnClick() {
     const {reset} = this.props
     reset()
+    log('ResetClicked')
   }
 
   get dateMarks() {
@@ -156,8 +173,8 @@ class BottomControls extends Component {
           </div>
           <div className='center'>
             <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
-                    step={86400}
-                    value={[filters.get('minTime'), filters.get('maxTime')]} onChange={this.handleTimeRange}
+                    step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
+                    onChange={this.handleTimeRange} onAfterChange={logTimeSliderChange}
                     tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
           </div>
           {screenfull.enabled &&
@@ -185,8 +202,8 @@ class BottomControls extends Component {
           <div>
             <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
             <div className='mag-slider'>
-              <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]}
-                      onChange={this.handleMagRange} marks={{0: 0, 5: 5, 10: 10}}/>
+              <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
+                      onAfterChange={logMagSliderChange} marks={{0: 0, 5: 5, 10: 10}}/>
             </div>
           </div>
         </div>
