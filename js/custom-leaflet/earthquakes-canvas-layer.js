@@ -45,7 +45,8 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   _onMouseClick: function (e) {
-    const pos = DomEvent.getMousePosition(e, this._canvas)
+    const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
+    const pos = DomEvent.getMousePosition(event, this._canvas)
     const eqData = this.externalView.earthquakeAt(pos.x, pos.y)
     if (eqData) {
       this._earthquakeClickHandler(e, eqData)
