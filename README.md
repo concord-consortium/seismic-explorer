@@ -16,10 +16,12 @@ http://seismic-explorer.concord.org/version/1.1.0/index.html
 
 Some options can be set using URL parameters, for example:
 
+* http://seismic-explorer.concord.org/?minLat=5&maxLat=70&minLng=-170&maxLng=-50 - limit initial map boundaries to North America.
 * http://seismic-explorer.concord.org/?startTime=2016-08-01&endTime=2016-08-31 - limit date range to one month.
 * http://seismic-explorer.concord.org/?tileLimit=20000 - set max number of earthquakes downloaded per one map tile to 20000 (default 12000).
 * http://seismic-explorer.concord.org/?api=USGS - use USGS API instead of Concord API.
 * http://seismic-explorer.concord.org/?cache=false - don't use CloudFront CDN / caching.
+* http://seismic-explorer.concord.org/?logging=false - disable logging (to CC Log Manager, Google Analytics and the web browser console).
 
 ## Development
 
