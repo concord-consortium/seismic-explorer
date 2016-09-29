@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import * as actions from '../actions'
 import MapKey from '../components/map-key'
 import OverlayButton from '../components/overlay-button'
-import ga from '../google-analytics'
 import log from '../logger'
 
 import '../../css/overlay-controls.less'
@@ -24,21 +23,18 @@ class OverlayControls extends Component {
     setCrossSectionPoint(0, null)
     setCrossSectionPoint(1, null)
     setMode('2d')
-    ga('send', 'event', 'mode change', 'map view opened')
     log('MapViewOpened')
   }
 
   setCrossSectionDrawMode() {
     const { setMode } = this.props
     setMode('cross-section')
-    ga('send', 'event', 'mode change', 'cross section drawing started')
     log('CrossSectionDrawingStarted')
   }
 
   set3DMode() {
     const { setMode } = this.props
     if (this.canOpen3D()) setMode('3d')
-    ga('send', 'event', 'mode change', '3d view opened')
     log('3DViewOpened')
   }
 
