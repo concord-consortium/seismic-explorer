@@ -9,13 +9,14 @@ import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
 import { mapLayer } from '../map-layer-tiles'
 import log from '../logger'
+import config from '../config'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/seismic-eruptions-map.less'
 
 const INITIAL_BOUNDS = [
-  [-60, -120],
-  [60, 120]
+  [config.minLat, config.minLng],
+  [config.maxLat, config.maxLng]
 ]
 
 // It delays download of earthquakes data on map moveend event, so user can pan or zoom map
@@ -91,7 +92,12 @@ export default class SeismicEruptionsMap extends Component {
       const region = [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
                       .map(p => [p.lat, p.lng])
       updateEarthquakesData(region, map.getZoom())
-      log('MapRegionChanged', {region: [bounds.getSouthWest(), bounds.getNorthEast()].map(p => [p.lat, p.lng])})
+      log('MapRegionChanged', {
+        minLat: bounds.getSouthWest().lat,
+        minLng: bounds.getSouthWest().lng,
+        maxLat: bounds.getNorthEast().lat,
+        maxLng: bounds.getNorthEast().lng
+      })
     }, EARTQUAKES_DOWNLOAD_DELAY)
   }
 
@@ -133,7 +139,7 @@ export default class SeismicEruptionsMap extends Component {
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onLeafletMovestart={this.handleMoveStart} onLeafletMoveend={this.handleMoveEnd}
              onLeafletZoomend={this.handleZoomEnd}
-             bounds={INITIAL_BOUNDS} zoom={3} minZoom={2} maxZoom={13}>
+             bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
           {mode !== '3d' &&

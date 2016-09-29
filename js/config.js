@@ -1,7 +1,11 @@
 // Exports global app configuration. Each option can be overwritten by URL query parameter, e.g.:
 // ?api='USGS'&cache=false
-
 const DEFAULT_CONFIG = {
+  // Initial map region.
+  minLat: -60,
+  minLng: -120,
+  maxLat: 60,
+  maxLng: 120,
   // 'CC', 'USGS' or 'fake'
   api: 'CC',
   // Use CloudFront caching for API calls.
