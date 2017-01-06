@@ -71,10 +71,10 @@ export default class AnimationButtons extends Component {
     const { onPlayPause, onReset } = this.props
     return (
       <div>
-        <div className='animation-button' onClick={onReset}>
+        <div className='animation-button' onClick={onReset} title="Reset Animation">
           <i className='fa fa-step-backward'/>
         </div>
-        <div className='animation-button' onClick={onPlayPause}>
+        <div className='animation-button' onClick={onPlayPause} title="Animate Earthquakes">
           <i className={this.icon}/>
         </div>
       </div>
