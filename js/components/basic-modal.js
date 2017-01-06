@@ -8,11 +8,12 @@ import '../../css/modal-style.less'
 @pureRender
 export default class BasicModal extends Component {
   render() {
-    const { isOpen, close, children, className } = this.props
+    const { isOpen, close, children, className, contentLabel } = this.props
+    let contentLabelValue = contentLabel ? contentLabel : "";
 
     return (
       <Modal shouldCloseOnOverlayClick={false} className={`modal-style basic-modal ${className}`}
-             overlayClassName='basic-modal-overlay' isOpen={isOpen}>
+             overlayClassName='basic-modal-overlay' isOpen={isOpen} contentLabel={contentLabelValue}>
         <i onClick={close} className='close-icon fa fa-close'/>
         {children}
       </Modal>
