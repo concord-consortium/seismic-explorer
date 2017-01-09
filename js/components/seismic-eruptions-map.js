@@ -142,7 +142,7 @@ export default class SeismicEruptionsMap extends Component {
              bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer/>}
-          {mode !== '3d' &&
+          {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
           }

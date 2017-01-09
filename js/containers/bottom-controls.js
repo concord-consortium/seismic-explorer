@@ -72,6 +72,7 @@ class BottomControls extends Component {
     this.handleAnimStep = this.handleAnimStep.bind(this)
     this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
     this.handleResetBtnClick = this.handleResetBtnClick.bind(this)
+    this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
   }
 
   componentDidMount() {
@@ -127,6 +128,13 @@ class BottomControls extends Component {
     const {reset} = this.props
     reset()
     log('ResetClicked')
+  }
+
+  handleEarthquakeLayerChange(event) {
+    const {setEarthquakesVisible} = this.props
+    const visible = event.target.checked
+    setEarthquakesVisible(visible)
+    log("show earthquakes", {visible})
   }
 
   get dateMarks() {
@@ -205,6 +213,7 @@ class BottomControls extends Component {
               <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
                       onAfterChange={logMagSliderChange} marks={{0: 0, 5: 5, 10: 10}}/>
             </div>
+            <div className='toggle-earthquakes'><input type="checkbox" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange}/><label htmlFor='earthquake-toggle'>Show Earthquakes</label></div>
           </div>
         </div>
       </div>
