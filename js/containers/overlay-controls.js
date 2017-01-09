@@ -92,9 +92,7 @@ function mapStateToProps(state) {
     mode: state.get('mode'),
     regionsHistory: state.get('regionsHistory'),
     crossSectionPoints: state.get('crossSectionPoints'),
-    changedViews: state.get('changedViews'),
-    earthquakesCount: state.get('data').get('earthquakes').length,
-    magnitudeCutOff: state.get('data').get('magnitudeCutOff')
+    changedViews: state.get('changedViews')
   }
 }
 

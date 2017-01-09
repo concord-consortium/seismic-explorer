@@ -166,9 +166,10 @@ class BottomControls extends Component {
   }
 
   render() {
-    const {animationEnabled, filters, layers, mode} = this.props
+    const {animationEnabled, filters, layers, mode, earthquakesCount, earthquakesCountVisible, magnitudeCutOff} = this.props
     const minMag = filters.get('minMag')
     const maxMag = filters.get('maxMag')
+    let magFilter = magnitudeCutOff > 0
 
     return (
       <div>
@@ -213,7 +214,11 @@ class BottomControls extends Component {
               <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
                       onAfterChange={logMagSliderChange} marks={{0: 0, 5: 5, 10: 10}}/>
             </div>
-            <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map"><input type="checkbox" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange}/><label htmlFor='earthquake-toggle'>Show Earthquakes</label></div>
+            <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map"><input type="checkbox" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} /><label htmlFor='earthquake-toggle'>Show Earthquakes</label></div>
+            <div className='stats'>
+              <span>Currently displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
+              {magFilter && <span>starting from magnitude <strong>{magnitudeCutOff}</strong>. Zoom in to see weaker earthquakes.</span>}
+            </div>
           </div>
         </div>
       </div>
@@ -226,7 +231,10 @@ function mapStateToProps(state) {
     filters: state.get('filters'),
     layers: state.get('layers'),
     mode: state.get('mode'),
-    animationEnabled: state.get('animationEnabled')
+    animationEnabled: state.get('animationEnabled'),
+    earthquakesCount: state.get('data').get('earthquakes').length,
+    earthquakesCountVisible: state.get('data').get('earthquakes').filter(e => e.visible).length,
+    magnitudeCutOff: state.get('data').get('magnitudeCutOff')
   }
 }
 
