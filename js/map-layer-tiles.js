@@ -27,12 +27,6 @@ export const layerInfo = [
     attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
     maxZoom: 13,
     subdomains: []
-  },
-  {
-    type: 'earthquake-density',
-    name: 'Earthquake density',
-    url: 'http://{s}.tiles.mapbox.com/v3/bclc-apec.map-rslgvy56/{z}/{x}/{y}.png',
-    subdomains: ['a', 'b', 'c']
   }
 ]
 export function mapLayer(layerType) {
