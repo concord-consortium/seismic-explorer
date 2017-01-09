@@ -186,7 +186,7 @@ class BottomControls extends Component {
                     tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
           </div>
           {screenfull.enabled &&
-          <div className={this.fullscreenIconStyle} onClick={toggleFullscreen}>
+          <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title="Toggle Fullscreen">
           </div>
           }
         </div>
@@ -194,14 +194,14 @@ class BottomControls extends Component {
           <div>
             <img src={ccLogoSrc}/>
           </div>
-          <div>
+          <div title="Change the map rendering style">
             Map type
             <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
               {this.mapLayerOptions}
             </select>
           </div>
           {mode !== '3d' &&
-          <div>
+          <div title="Show Plate Boundaries Overlay">
             <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange}
                    id='plate-border-box'/>
             <label htmlFor='plate-border-box'>Plate boundaries</label>
@@ -213,7 +213,7 @@ class BottomControls extends Component {
               <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
                       onAfterChange={logMagSliderChange} marks={{0: 0, 5: 5, 10: 10}}/>
             </div>
-            <div className='toggle-earthquakes'><input type="checkbox" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange}/><label htmlFor='earthquake-toggle'>Show Earthquakes</label></div>
+            <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map"><input type="checkbox" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange}/><label htmlFor='earthquake-toggle'>Show Earthquakes</label></div>
           </div>
         </div>
       </div>
