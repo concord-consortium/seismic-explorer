@@ -8,7 +8,7 @@ import L from 'leaflet'
 let _cachedKML
 function getKML() {
   if (!_cachedKML) {
-    _cachedKML = new L.KML('plates.kml', {async: true})
+    _cachedKML = new L.KML('PB2002_boundaries.kml', {async: true})
   }
   return _cachedKML
 }
