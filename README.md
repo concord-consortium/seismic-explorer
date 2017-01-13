@@ -42,6 +42,8 @@ webpack-dev-server
 ```
 and open [http://localhost:8080/](http://localhost:8080/) or [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/) (auto-reload after each code change).
 
+The back-end API is maintained separately here: [https://github.com/concord-consortium/seismic-explorer-api](https://github.com/concord-consortium/seismic-explorer-api)
+
 ### Frameworks, conventions
 
 This app is built using [React](https://facebook.github.io/react/), [Redux](http://redux.js.org/) and [ImmutableJS](https://facebook.github.io/immutable-js/). If you are not familiar with one of these, take a look at [this great tutorial](http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html). It also uses lots of ES6 syntax, so it might be good to review it first. Semicolons are discussable, but I've decided to follow Redux examples style.
