@@ -17,11 +17,9 @@ export default class {
     this.camera = new Camera(renderer.domElement, false)
     this.arrows = new DirectionArrows()
     this._initScene()
-    // [ Shutterbug support ]
-    // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
-    // so .toDataUrl returns correct image. This method is used by shutterbug-support.js module.
-    if (renderer.domElement.className.indexOf('canvas-3d') === -1) {
-      renderer.domElement.className += ' canvas-3d'
+
+    if (renderer.domElement.className.indexOf('canvas-plates') === -1) {
+      renderer.domElement.className += ' canvas-plates'
     }
     renderer.domElement.render = this.render.bind(this)
   }
@@ -78,12 +76,12 @@ export default class {
   }
 }
 
-// Returns a function that converts [lat, lng, depth] into 3D coordinates (instance of THREE.Vector3).
+// Returns a function that converts [lat, lng] into 3D coordinates (instance of THREE.Vector3).
 // This function depends on latLngToPoint function provided by Leaflet map, and screen width and height.
 function getLatLngDepthToPoint(latLngToPoint, height) {
-  // latLngDepth is an array: [latitude, longitude, depthInKm]
-  return function(latLngDepth) {
-    const point = latLngToPoint(latLngDepth)
+  // latLng is an array: [latitude, longitude]
+  return function(latLng) {
+    const point = latLngToPoint(latLng)
     return new THREE.Vector3(
       point.x,
       height - point.y,

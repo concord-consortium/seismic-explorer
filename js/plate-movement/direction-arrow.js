@@ -8,8 +8,7 @@ export default class {
   constructor(data, idx, attributes) {
     this.id = data.id
     this.color = 0xFFFFFF
-    this.size = data.velocity.vMag
-    this.direction = [data.velocity.vLng, data.velocity.vLat]
+    this.size = 10.0//data.velocity.vMag
     this.data = data
 
     // Particle system attributes (position, customColor, size)
@@ -17,7 +16,7 @@ export default class {
     // Index in attribute arrays.
     this.idx = idx
 
-    this.targetVisibility = data.visible ? 1 : 0
+    this.targetVisibility = 1//data.visible ? 1 : 0
     this.transition = this.targetVisibility
   }
 
@@ -53,10 +52,18 @@ export default class {
 
   setDirectionAttr(dir) {
     if (this._oldDirectionAttr === dir) return
-    this.attributes.direction.array[this.idx * 3] = dir.vLng
-    this.attributes.direction.array[this.idx * 3 + 1] = dir.vLat
+    this.attributes.direction.array[this.idx * 3] = dir.vlong
+    this.attributes.direction.array[this.idx * 3 + 1] = dir.vlat
     this.attributes.direction.array[this.idx * 3 + 2] = dir.vMag
     this.attributes.direction.needsUpdate = true
     this._oldDirectionAttr = dir
+  }
+
+  setColorAttr(val) {
+    if (this._oldColorAttr === val) return
+    colorHelper.setHex(val)
+    colorHelper.toArray(this.attributes.customColor.array, this.idx * 3)
+    this.attributes.customColor.needsUpdate = true
+    this._oldColorAttr = val
   }
 }
