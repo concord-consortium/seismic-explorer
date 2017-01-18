@@ -1,6 +1,6 @@
 import { CanvasLayer } from './canvas-layer'
 import { DomUtil, DomEvent } from 'leaflet'
-import TopView from '../3d/top-view'
+import PlateMovementView from '../plate-movement/plate-movement-view'
 
 export const PlateMovementCanvasLayer = CanvasLayer.extend({
   initialize: function (options) {
@@ -13,7 +13,7 @@ export const PlateMovementCanvasLayer = CanvasLayer.extend({
   },
 
   _initCanvas: function () {
-    this.externalView = new TopView()
+    this.externalView = new PlateMovementView()
     CanvasLayer.prototype._initCanvas.call(this, this.externalView.canvas)
     DomUtil.addClass(this._canvas, 'plate-movement-canvas-layer')
   },
