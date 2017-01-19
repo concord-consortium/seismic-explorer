@@ -8,7 +8,7 @@ export default class {
   constructor(data, idx, attributes) {
     this.id = data.id
     this.color = 0xFFFFFF
-    this.size = 10.0//data.velocity.vMag
+    this.size = data.velocity.vMag
     this.data = data
 
     // Particle system attributes (position, customColor, size)

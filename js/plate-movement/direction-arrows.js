@@ -8,13 +8,13 @@ const MAX_COUNT = 250000
 export default class {
   constructor() {
     const positions = new Float32Array(MAX_COUNT * 3)
-    //const directions = new Float32Array(MAX_COUNT * 3)
+    const directions = new Float32Array(MAX_COUNT * 3)
     const colors = new Float32Array(MAX_COUNT * 3)
     const sizes = new Float32Array(MAX_COUNT)
 
     const geometry = new THREE.BufferGeometry()
     geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3))
-    //geometry.addAttribute('direction', new THREE.BufferAttribute(directions, 3))
+    geometry.addAttribute('direction', new THREE.BufferAttribute(directions, 3))
     geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3))
     geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1))
 
@@ -63,9 +63,11 @@ export default class {
     this._latLngToPoint = latLngToPoint
     for (let i = 0, len = this._renderedArrows.length; i < len; i++) {
       const point = this._latLngToPoint(this._currentData[i].position)
-      //const dir = this._currentData[i].velocity
+      const dir = this._currentData[i].velocity
+      const size = this._currentData[i].velocity.vMag
       this._renderedArrows[i].setPositionAttr(point)
-      //this._renderedArrows[i].setDirectionAttr(dir)
+      this._renderedArrows[i].setSizeAttr(size)
+      this._renderedArrows[i].setDirectionAttr(dir)
     }
   }
 
@@ -82,12 +84,12 @@ export default class {
       const arrowData = data[i]
       if (!this._renderedArrows[i] || this._renderedArrows[i].id !== eqData.id) {
         const point = this._latLngToPoint(arrowData.position)
-        //const dir = arrowData.velocity
+        const dir = arrowData.velocity
+        const size = arrowData.velocity.vMag
         this._renderedArrows[i] = new Arrow(arrowData, i, attributes)
         this._renderedArrows[i].setPositionAttr(point)
-        console.log(arrowData.position, point)
-        //this._renderedArrows[i].setDirectionAttr(dir)
-
+        this._renderedArrows[i].setSizeAttr(size)
+        this._renderedArrows[i].setDirectionAttr(dir)
       }
       this._renderedArrows[i].targetVisibility = 1//arrowData.visible ? 1 : 0
     }
@@ -110,8 +112,7 @@ function getTexture() {
   canvas.width = size
   canvas.height = size
   const ctx = canvas.getContext('2d')
-  // Point
-  //ctx.arc(size / 2, size / 2, size / 2 - strokeWidth / 2, 0, 2 * Math.PI)
+  // Arrow
   ctx.beginPath()
   ctx.moveTo(size / 2, size - arrowHeadSize) // base of arrow point
   ctx.lineTo(size / 2 + arrowHeadSize / 2, size - arrowHeadSize)
