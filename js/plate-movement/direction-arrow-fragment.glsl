@@ -1,6 +1,8 @@
 uniform vec3 color;
 uniform sampler2D texture;
+
 varying vec4 vColor;
+varying float vAngle;
 
 void main() {
     vec4 solidColor = vec4(0.0,  // R
@@ -14,7 +16,7 @@ void main() {
     // if (gl_FragColor.a < ALPHATEST) discard;
 
     vec2 uv = gl_PointCoord;
-    float rot = radians(45.0);
+    float rot = vAngle;//radians(45.0);
 
     uv-=.5;
 
@@ -24,4 +26,5 @@ void main() {
     uv+=.5;
 
     gl_FragColor = vColor *  texture2D(texture, uv);
+    if (gl_FragColor.a < ALPHATEST) discard;
 }

@@ -10,6 +10,7 @@ export default class {
     this.color = 0xFFFFFF
     this.size = data.velocity.vMag
     this.data = data
+    this.angle = Math.cos(data.velocity.vlong/data.velocity.vlat)
 
     // Particle system attributes (position, customColor, size)
     this.attributes = attributes
@@ -48,6 +49,12 @@ export default class {
     this.attributes.size.array[this.idx] = val
     this.attributes.size.needsUpdate = true
     this._oldSizeAttr = val
+  }
+   setAngleAttr(val) {
+    if (this._oldAngleAttr === val) return
+    this.attributes.angle.array[this.idx] = val
+    this.attributes.angle.needsUpdate = true
+    this._oldAngleAttr = val
   }
 
   setDirectionAttr(dir) {

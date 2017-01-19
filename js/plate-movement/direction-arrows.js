@@ -9,12 +9,14 @@ export default class {
   constructor() {
     const positions = new Float32Array(MAX_COUNT * 3)
     const directions = new Float32Array(MAX_COUNT * 3)
+    const angles = new Float32Array(MAX_COUNT * 1)
     const colors = new Float32Array(MAX_COUNT * 3)
     const sizes = new Float32Array(MAX_COUNT)
 
     const geometry = new THREE.BufferGeometry()
     geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3))
     geometry.addAttribute('direction', new THREE.BufferAttribute(directions, 3))
+    geometry.addAttribute('angle', new THREE.BufferAttribute(angles, 1))
     geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3))
     geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1))
 
@@ -65,8 +67,10 @@ export default class {
       const point = this._latLngToPoint(this._currentData[i].position)
       const dir = this._currentData[i].velocity
       const size = this._currentData[i].velocity.vMag
+      const angle = Math.cos(this._currentData[i].velocity.vlong/this._currentData[i].velocity.vlat)
       this._renderedArrows[i].setPositionAttr(point)
       this._renderedArrows[i].setSizeAttr(size)
+      this._renderedArrows[i].setAngleAttr(angle)
       this._renderedArrows[i].setDirectionAttr(dir)
     }
   }
@@ -86,9 +90,11 @@ export default class {
         const point = this._latLngToPoint(arrowData.position)
         const dir = arrowData.velocity
         const size = arrowData.velocity.vMag
+        const angle = Math.cos(arrowData.velocity.vlong/arrowData.velocity.vlat)
         this._renderedArrows[i] = new Arrow(arrowData, i, attributes)
         this._renderedArrows[i].setPositionAttr(point)
         this._renderedArrows[i].setSizeAttr(size)
+        this._renderedArrows[i].setAngleAttr(angle)
         this._renderedArrows[i].setDirectionAttr(dir)
       }
       this._renderedArrows[i].targetVisibility = 1//arrowData.visible ? 1 : 0
@@ -107,7 +113,7 @@ export default class {
 function getTexture() {
   const size = 128
   const arrowHeadSize = 60
-  const strokeWidth = size * 0.06
+  const strokeWidth = size * 0.04
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
@@ -115,9 +121,9 @@ function getTexture() {
   // Arrow
   ctx.beginPath()
   ctx.moveTo(size / 2, size - arrowHeadSize) // base of arrow point
-  ctx.lineTo(size / 2 + arrowHeadSize / 2, size - arrowHeadSize)
+  ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
   ctx.lineTo(size / 2, size)// arrow tip
-  ctx.lineTo(size / 2 - arrowHeadSize / 2, size - arrowHeadSize)
+  ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
   ctx.lineTo(size / 2, size - arrowHeadSize)
   ctx.lineTo(size / 2, 0) // base of arrow
 
