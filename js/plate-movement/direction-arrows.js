@@ -65,13 +65,13 @@ export default class {
     this._latLngToPoint = latLngToPoint
     for (let i = 0, len = this._renderedArrows.length; i < len; i++) {
       const point = this._latLngToPoint(this._currentData[i].position)
-      const dir = this._currentData[i].velocity
-      const size = this._currentData[i].velocity.vMag
-      const angle = Math.cos(this._currentData[i].velocity.vlong/this._currentData[i].velocity.vlat)
+      //const dir = this._currentData[i].velocity
+      const size = Math.log10(this._currentData[i].velocity.vMag * 100)
+      const angle = this._currentData[i].velocity.vAngle //Math.cos(this._currentData[i].velocity.vlong/this._currentData[i].velocity.vlat)
       this._renderedArrows[i].setPositionAttr(point)
       this._renderedArrows[i].setSizeAttr(size)
       this._renderedArrows[i].setAngleAttr(angle)
-      this._renderedArrows[i].setDirectionAttr(dir)
+      //this._renderedArrows[i].setDirectionAttr(dir)
     }
   }
 
@@ -88,14 +88,14 @@ export default class {
       const arrowData = data[i]
       if (!this._renderedArrows[i] || this._renderedArrows[i].id !== eqData.id) {
         const point = this._latLngToPoint(arrowData.position)
-        const dir = arrowData.velocity
-        const size = arrowData.velocity.vMag
-        const angle = Math.cos(arrowData.velocity.vlong/arrowData.velocity.vlat)
+        //const dir = arrowData.velocity
+        const size = Math.log10(arrowData.velocity.vMag * 100)
+        const angle = arrowData.velocity.vAngle//Math.cos(arrowData.velocity.vlong/arrowData.velocity.vlat)
         this._renderedArrows[i] = new Arrow(arrowData, i, attributes)
         this._renderedArrows[i].setPositionAttr(point)
         this._renderedArrows[i].setSizeAttr(size)
         this._renderedArrows[i].setAngleAttr(angle)
-        this._renderedArrows[i].setDirectionAttr(dir)
+        //this._renderedArrows[i].setDirectionAttr(dir)
       }
       this._renderedArrows[i].targetVisibility = 1//arrowData.visible ? 1 : 0
     }
@@ -120,17 +120,33 @@ function getTexture() {
   const ctx = canvas.getContext('2d')
   // Arrow
   ctx.beginPath()
-  ctx.moveTo(size / 2, size - arrowHeadSize) // base of arrow point
-  ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
-  ctx.lineTo(size / 2, size)// arrow tip
-  ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
-  ctx.lineTo(size / 2, size - arrowHeadSize)
-  ctx.lineTo(size / 2, 0) // base of arrow
 
-  ctx.fillStyle = '#fff'
-  ctx.fill()
+  // solid head
+  // ctx.moveTo(size / 2, size - arrowHeadSize) // base of arrow point
+  // ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
+  // ctx.lineTo(size / 2, size)// arrow tip
+  // ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
+  // ctx.lineTo(size / 2, size - arrowHeadSize)
+  // ctx.lineTo(size / 2, 0) // base of arrow
+
+  // pointed head
+  ctx.moveTo(size / 2, 0) // base of arrow
+  ctx.lineTo(size / 2, size)// arrow tip
+  ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
+  ctx.moveTo(size / 2, size)// arrow tip
+  ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
+
+  // pointed head horizontal
+  // ctx.moveTo(0, size / 2) // base of arrow
+  // ctx.lineTo(size, size / 2)// arrow tip
+  // ctx.lineTo(size - arrowHeadSize, size / 2 + arrowHeadSize / 3)
+  // ctx.moveTo(size, size / 2)// arrow tip
+  // ctx.lineTo(size - arrowHeadSize, size / 2 - arrowHeadSize / 3)
+
+  //ctx.fillStyle = '#fff'
+  //ctx.fill()
   ctx.lineWidth = strokeWidth
-  ctx.strokeStyle = '#000'
+  ctx.strokeStyle = '#fff'
   ctx.stroke()
   const texture = new THREE.Texture(canvas)
   texture.needsUpdate = true

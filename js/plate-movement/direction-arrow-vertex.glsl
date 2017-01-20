@@ -12,6 +12,6 @@ void main() {
                       1.0); // A    vec4(customColor, size > 0.0 ? 0.8 : 0.0);
     vAngle = angle;
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = size*2.0;//50.0;//size; // to scale: * (300.0 / -mvPosition.z);
+    gl_PointSize = 40.0;//50.0;//size; // to scale: * (300.0 / -mvPosition.z);
     gl_Position = projectionMatrix * mvPosition;
 }

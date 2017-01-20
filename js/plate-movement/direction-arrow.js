@@ -8,9 +8,9 @@ export default class {
   constructor(data, idx, attributes) {
     this.id = data.id
     this.color = 0xFFFFFF
-    this.size = data.velocity.vMag
+    this.size = Math.log10(data.velocity.vMag * 100)
     this.data = data
-    this.angle = Math.cos(data.velocity.vlong/data.velocity.vlat)
+    this.angle = data.velocity.vAngle// Math.atan(data.velocity.vlong/data.velocity.vlat)
 
     // Particle system attributes (position, customColor, size)
     this.attributes = attributes
@@ -57,14 +57,14 @@ export default class {
     this._oldAngleAttr = val
   }
 
-  setDirectionAttr(dir) {
-    if (this._oldDirectionAttr === dir) return
-    this.attributes.direction.array[this.idx * 3] = dir.vlong
-    this.attributes.direction.array[this.idx * 3 + 1] = dir.vlat
-    this.attributes.direction.array[this.idx * 3 + 2] = dir.vMag
-    this.attributes.direction.needsUpdate = true
-    this._oldDirectionAttr = dir
-  }
+  // setDirectionAttr(dir) {
+  //   if (this._oldDirectionAttr === dir) return
+  //   this.attributes.direction.array[this.idx * 3] = dir.vlong
+  //   this.attributes.direction.array[this.idx * 3 + 1] = dir.vlat
+  //   this.attributes.direction.array[this.idx * 3 + 2] = dir.vMag
+  //   this.attributes.direction.needsUpdate = true
+  //   this._oldDirectionAttr = dir
+  // }
 
   setColorAttr(val) {
     if (this._oldColorAttr === val) return

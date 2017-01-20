@@ -14,7 +14,7 @@ function getPoints(map) {
       {
         let pos = {
           position: { lng: points[i][0], lat: points[i][1] },
-          velocity: { vlong: points[i][2], vlat: points[i][3], vMag: points[i][4]},
+          velocity: { vMag: points[i][2], vAngle: points[i][3]},
           text: points[i][0] + "," + points[i][1]
         }
         _cachedPoints.push(pos);
