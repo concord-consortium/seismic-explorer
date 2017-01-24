@@ -86,7 +86,7 @@ export default class {
       const arrowData = data[i]
       if (!this._renderedArrows[i] || this._renderedArrows[i].id !== eqData.id) {
         const point = this._latLngToPoint(arrowData.position)
-        const size = arrowData.velocity.vMag * 5;
+        const size = arrowData.velocity.vMag * 3;
         const angle = arrowData.velocity.vAngle
 
         this._renderedArrows[i] = new Arrow(arrowData, i, attributes)
