@@ -115,36 +115,19 @@ function getTexture() {
   canvas.width = size
   canvas.height = size
   const ctx = canvas.getContext('2d')
-  // Arrow
+
   ctx.beginPath()
-
-  // solid head
-  // ctx.moveTo(size / 2, size - arrowHeadSize) // base of arrow point
-  // ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
-  // ctx.lineTo(size / 2, size)// arrow tip
-  // ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
-  // ctx.lineTo(size / 2, size - arrowHeadSize)
-  // ctx.lineTo(size / 2, 0) // base of arrow
-
-  // pointed head
+  // Arrow
   ctx.moveTo(size / 2, 0) // base of arrow
   ctx.lineTo(size / 2, size)// arrow tip
   ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
   ctx.moveTo(size / 2, size)// arrow tip
   ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
 
-  // pointed head horizontal
-  // ctx.moveTo(0, size / 2) // base of arrow
-  // ctx.lineTo(size, size / 2)// arrow tip
-  // ctx.lineTo(size - arrowHeadSize, size / 2 + arrowHeadSize / 3)
-  // ctx.moveTo(size, size / 2)// arrow tip
-  // ctx.lineTo(size - arrowHeadSize, size / 2 - arrowHeadSize / 3)
-
-  //ctx.fillStyle = '#fff'
-  //ctx.fill()
   ctx.lineWidth = strokeWidth
   ctx.strokeStyle = '#fff'
   ctx.stroke()
+
   const texture = new THREE.Texture(canvas)
   texture.needsUpdate = true
   return texture

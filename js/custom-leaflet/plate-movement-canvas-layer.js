@@ -9,7 +9,6 @@ export const PlateMovementCanvasLayer = CanvasLayer.extend({
     this.latLngToPoint = this.latLngToPoint.bind(this)
     this._onMouseMove = this._onMouseMove.bind(this)
     this._onMouseClick = this._onMouseClick.bind(this)
-    //this._earthquakeClickHandler = function (event, earthquakeData) {}
   },
 
   _initCanvas: function () {
@@ -36,31 +35,15 @@ export const PlateMovementCanvasLayer = CanvasLayer.extend({
   },
 
   _onMouseMove: function (e) {
-    // const pos = DomEvent.getMousePosition(e, this._canvas)
-    // if (this.externalView.earthquakeAt(pos.x, pos.y)) {
-    //   this._canvas.style.cursor = 'pointer'
-    // } else {
-    //   this._canvas.style.cursor = 'inherit'
-    // }
   },
 
   _onMouseClick: function (e) {
-    // const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
-    // const pos = DomEvent.getMousePosition(event, this._canvas)
-    // const eqData = this.externalView.earthquakeAt(pos.x, pos.y)
-    // if (eqData) {
-    //   this._earthquakeClickHandler(e, eqData)
-    // }
   },
 
   setPlateMovementPoints: function (points) {
     this._plateMovementPoints = points
     this.scheduleRedraw()
   },
-
-  // onEarthquakeClick: function (handler) {
-  //   this._earthquakeClickHandler = handler || function (event, earthquakeData) {}
-  // },
 
   _reset: function () {
     let topLeft = this._map.containerPointToLayerPoint([0, 0])
@@ -72,8 +55,8 @@ export const PlateMovementCanvasLayer = CanvasLayer.extend({
     this._redraw()
   },
 
-  // This function is really expensive (especially when we call it for 10-20k earthquakes).
-  // That's why we try to limit position recalculation if it's possible.
+  // This function is expensive
+  // Try to limit position recalculation
   latLngToPoint: function(latLng) {
     return this._map.latLngToContainerPoint(latLng)
   },

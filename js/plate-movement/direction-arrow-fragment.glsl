@@ -4,8 +4,6 @@ varying vec4 vColor;
 varying float vAngle;
 
 void main() {
-    // gl_FragColor = vColor * texture2D(texture, gl_PointCoord);
-
     vec2 uv = gl_PointCoord;
     float rot = vAngle;
 

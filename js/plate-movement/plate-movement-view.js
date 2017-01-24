@@ -3,7 +3,7 @@ import 'imports?THREE=three!three/examples/js/controls/OrbitControls'
 import DirectionArrows from './direction-arrows'
 import Camera from './camera'
 
-// Share one renderer to avoid memory leaks (I couldn't fix them in other way).
+// Share one renderer to avoid memory leaks
 const renderer = new THREE.WebGLRenderer({alpha: true})
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setClearColor(0x000000, 0)
