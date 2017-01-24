@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { MapLayer } from 'react-leaflet'
 import { plateMovementCanvasLayer } from '../custom-leaflet/plate-movement-canvas-layer'
-import points from '../data/plate-movement-mod4.js'
+import points from '../data/plate-movement-angles-mod4.js'
 
 
 let _cachedPoints
