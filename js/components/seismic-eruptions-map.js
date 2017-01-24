@@ -5,6 +5,7 @@ import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import PlatesLayer from './plates-layer'
+import VolcanosLayer from './volcanos-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
 import { mapLayer } from '../map-layer-tiles'
@@ -141,7 +142,8 @@ export default class SeismicEruptionsMap extends Component {
              onLeafletZoomend={this.handleZoomEnd}
              bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
-          {layers.get('plates') && <PlatesLayer/>}
+          {layers.get('plates') && <PlatesLayer />}
+          {layers.get('volcanos') && <VolcanosLayer />}
           {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>

@@ -73,6 +73,7 @@ class BottomControls extends Component {
     this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
     this.handleResetBtnClick = this.handleResetBtnClick.bind(this)
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
+    this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
   }
 
   componentDidMount() {
@@ -107,6 +108,13 @@ class BottomControls extends Component {
     const visible = event.target.checked
     setPlatesVisible(visible)
     log('PlatesVisibilityChanged', {visible})
+  }
+
+  handleVolcanoLayerChange(event) {
+    const {setVolcanosVisible} = this.props
+    const visible = event.target.checked
+    setVolcanosVisible(visible)
+    log('VolcanosVisibilityChanged', {visible})
   }
 
   handleAnimStep(newValue) {
@@ -208,6 +216,11 @@ class BottomControls extends Component {
             <label htmlFor='plate-border-box'>Plate boundaries</label>
           </div>
           }
+          <div title="Show Volcanos">
+            <input type='checkbox' checked={layers.get('volcanos') } onChange={this.handleVolcanoLayerChange}
+                   id='volcano-box'/>
+            <label htmlFor='volcano-box'>Volcanos</label>
+          </div>
           <div>
             <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
             <div className='mag-slider'>

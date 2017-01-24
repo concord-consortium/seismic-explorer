@@ -16,6 +16,7 @@ export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
 export const MARK_2D_VIEW_MODIFIED = 'MARK_2D_VIEW_MODIFIED'
 export const MARK_3D_VIEW_MODIFIED = 'MARK_3D_VIEW_MODIFIED'
 export const SET_EARTHQUAKES_VISIBLE = 'SET_EARTHQUAKES_VISIBLE'
+export const SET_VOLCANOS_VISIBLE = 'SET_VOLCANOS_VISIBLE'
 
 const api = new EarthquakeDataAPI()
 
@@ -105,6 +106,13 @@ export function setBaseLayer(value) {
 export function setPlatesVisible(value) {
   return {
     type: SET_PLATES_VISIBLE,
+    value
+  }
+}
+
+export function setVolcanosVisible(value) {
+  return {
+    type: SET_VOLCANOS_VISIBLE,
     value
   }
 }
