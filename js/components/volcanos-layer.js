@@ -12,8 +12,8 @@ function getPoints(map) {
     if (points) {
       for (var i = 0; i < points.length; i++)
       {
-        let lat = points[i][0]
-        let lng = points[i][1]
+        let lat = points[i][1]
+        let lng = points[i][0]
         let date = points[i][2]
         let pos = {
           position: { lng: lng, lat: lat },

@@ -84,13 +84,12 @@ export default class {
         const point = this._latLngToPoint(volcanoData.position)
         const date = volcanoData.date
 
-        this._renderedVolcanos[i] = new Arrow(volcanoData, i, attributes)
+        this._renderedVolcanos[i] = new Volcano(volcanoData, i, attributes)
         this._renderedVolcanos[i].setPositionAttr(point)
-        this._renderedVolcanos[i].setDateAttr(size)
+        this._renderedVolcanos[i].setDateAttr(date)
       }
       this._renderedVolcanos[i].targetVisibility = 1//volcanoData.visible ? 1 : 0
     }
-    console.log("rendered volcanos: ", this._renderedVolcanos)
     // Reset old data.
     for (let i = data.length, length = this._renderedVolcanos.length; i < length; i++) {
       this._renderedVolcanos[i].destroy()

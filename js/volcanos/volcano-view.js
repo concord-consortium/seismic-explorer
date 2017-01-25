@@ -34,9 +34,9 @@ export default class {
     if (newProps.latLngToPoint) {
       this.props.latLngToPoint = newProps.latLngToPoint
     }
-    if (this.props.PlateMovementPoints !== newProps.PlateMovementPoints) {
+    if (this.props.VolcanoPoints !== newProps.VolcanoPoints) {
       const latLngDepthToPoint = getLatLngDepthToPoint(this.props.latLngToPoint, this._height)
-      this.volcanos.setProps(newProps.PlateMovementPoints, latLngDepthToPoint)
+      this.volcanos.setProps(newProps.VolcanoPoints, latLngDepthToPoint)
     }
     this.props = newProps
   }
