@@ -113,12 +113,21 @@ function getTexture() {
   ctx.moveTo(0, 0) // corner
   ctx.lineTo(size / 2, size)// tip
   ctx.lineTo(size, 0)
-  ctx.lineTo(0,0)
+  ctx.lineTo(0, 0)
 
-  ctx.fillStyle = '#fffa'
+
+  ctx.fillStyle = '#888'
   ctx.fill()
+
   ctx.lineWidth = strokeWidth
   ctx.strokeStyle = '#fff'
+  ctx.stroke()
+
+  // top triangle down 1/4 of the height of the triangle
+  const dx = size/4 * Math.tan(30/180*Math.PI)
+  ctx.moveTo(size / 2 + dx, size-size / 4)
+  ctx.lineTo(size / 2 - dx, size-size / 4)
+
   ctx.stroke()
 
   const texture = new THREE.Texture(canvas)
