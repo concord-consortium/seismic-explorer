@@ -102,7 +102,7 @@ export default class {
 
 function getTexture() {
   const size = 128
-  const strokeWidth = size * 0.04
+  const strokeWidth = size * 0.05
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
@@ -116,18 +116,18 @@ function getTexture() {
   ctx.lineTo(0, 0)
 
 
-  ctx.fillStyle = '#888'
+  ctx.fillStyle = '#fff'
   ctx.fill()
 
   ctx.lineWidth = strokeWidth
-  ctx.strokeStyle = '#fff'
+  ctx.strokeStyle = '#000'
   ctx.stroke()
 
   // top triangle down 1/4 of the height of the triangle
-  const dx = size/4 * Math.tan(30/180*Math.PI)
-  ctx.moveTo(size / 2 + dx, size-size / 4)
-  ctx.lineTo(size / 2 - dx, size-size / 4)
-
+  const dx = size/3 * Math.tan(30/180*Math.PI)
+  ctx.moveTo(size / 2 + dx, size-size / 3)
+  ctx.lineTo(size / 2 - dx, size-size / 3)
+  ctx.strokeStyle = '#666'
   ctx.stroke()
 
   const texture = new THREE.Texture(canvas)

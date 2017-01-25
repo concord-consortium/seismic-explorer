@@ -53,7 +53,7 @@ export default class {
   setColorAttr(val) {
     if (this._oldColorAttr === val) return
     colorHelper.setHex(val)
-    colorHelper.toArray(this.attributes.customColor.array, this.idx * 3)
+    colorHelper.toArray(this.attributes.customColor.array, this.idx * 4)
     this.attributes.customColor.needsUpdate = true
     this._oldColorAttr = val
   }
