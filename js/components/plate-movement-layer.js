@@ -12,10 +12,14 @@ function getPoints(map) {
     if (points) {
       for (var i = 0; i < points.length; i++)
       {
-        if (points[i][4] < 100) {
-          let angle = points[i][5] // 180 * Math.PI
-          let scaledMag = points[i][4] / 5
-          let mag = scaledMag > 8 ? scaledMag : 8
+        // at zoomed out distances, reducing the density could be useful, but we don't currently have
+        // access to map zoom level - for now, reduce point density
+        let reducedPointDensity = points[i][0] % 8 == 0 && points[i][1] % 8 == 0
+
+        if (reducedPointDensity && points[i][4] < 100){// there's an outlier that's huge
+          let angle = points[i][5]
+          // scaling is an issue - source data magnitudes seem to range from 0.35mm/yr to around 100mm/yr
+          let mag = points[i][4] / 2
           let lng = points[i][1]
           let lat = points[i][0]
           let pos = {

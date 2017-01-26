@@ -108,8 +108,8 @@ export default class {
 }
 
 function getTexture() {
-  const size = 128
-  const arrowHeadSize = 24
+  const size = 256
+  const arrowHeadSize = size/4
   const strokeWidth = size * 0.04
   const canvas = document.createElement('canvas')
   canvas.width = size
