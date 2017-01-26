@@ -8,7 +8,7 @@ varying vec4 vColor;
 
 void main() {
     vColor = vec4(0.0,  // R
-                  0.0,  // G
+                  0.3,  // G
                   1.0,  // B
                   1.0); // A
     vAngle = angle;

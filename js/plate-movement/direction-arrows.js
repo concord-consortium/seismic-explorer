@@ -109,7 +109,7 @@ export default class {
 
 function getTexture() {
   const size = 128
-  const arrowHeadSize = 60
+  const arrowHeadSize = 24
   const strokeWidth = size * 0.04
   const canvas = document.createElement('canvas')
   canvas.width = size
@@ -118,15 +118,18 @@ function getTexture() {
 
   ctx.beginPath()
   // Arrow
-  ctx.moveTo(size / 2, 0) // base of arrow
+  ctx.moveTo(size / 2, size/2) // base of arrow
   ctx.lineTo(size / 2, size)// arrow tip
   ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
-  ctx.moveTo(size / 2, size)// arrow tip
+  //ctx.moveTo(size / 2, size)// arrow tip
   ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
+  ctx.lineTo(size / 2, size)// arrow tip
 
   ctx.lineWidth = strokeWidth
   ctx.strokeStyle = '#fff'
   ctx.stroke()
+  ctx.fillStyle = '#fff'
+  ctx.fill()
 
   const texture = new THREE.Texture(canvas)
   texture.needsUpdate = true
