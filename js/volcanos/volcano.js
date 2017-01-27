@@ -10,6 +10,7 @@ export default class {
     this.color = 0xFFFFFF
     this.data = data
     this.date = data.date
+    this.size = 20
 
     // Particle system attributes (position, customColor, size)
     this.attributes = attributes
@@ -27,11 +28,18 @@ export default class {
 
   // Checks if (x, y) point hits rendered shape.
   hitTest(x, y) {
-    const radius = this.attributes.size.array[this.idx] * 0.25
+    const radius = this.attributes.size.array[this.idx]// * 0.25
     if (radius === 0) return false
     const xDiff = this.attributes.position.array[this.idx * 3] - x
     const yDiff = this.attributes.position.array[this.idx * 3 + 1] - y
     return xDiff * xDiff + yDiff * yDiff <= radius * radius
+  }
+
+  setSizeAttr(val) {
+    if (this._oldSizeAttr === val) return
+    this.attributes.size.array[this.idx] = val
+    this.attributes.size.needsUpdate = true
+    this._oldSizeAttr = val
   }
 
   setPositionAttr(point) {

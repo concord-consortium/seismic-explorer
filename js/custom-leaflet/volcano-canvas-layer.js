@@ -9,6 +9,7 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
     this.latLngToPoint = this.latLngToPoint.bind(this)
     this._onMouseMove = this._onMouseMove.bind(this)
     this._onMouseClick = this._onMouseClick.bind(this)
+    this._volcanoClickHandler = function (event, volcanoData) {}
   },
 
   _initCanvas: function () {
@@ -35,14 +36,30 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
   },
 
   _onMouseMove: function (e) {
+    const pos = DomEvent.getMousePosition(e, this._canvas)
+    if (this.externalView.volcanoAt(pos.x, pos.y)) {
+      this._canvas.style.cursor = 'pointer'
+    } else {
+      this._canvas.style.cursor = 'inherit'
+    }
   },
 
   _onMouseClick: function (e) {
+    const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
+    const pos = DomEvent.getMousePosition(event, this._canvas)
+    const volcanoData = this.externalView.volcanoAt(pos.x, pos.y)
+    console.log(volcanoData)
+    if (volcanoData) {
+      this._volcanoClickHandler(e, volcanoData)
+    }
   },
 
   setVolcanoPoints: function (points) {
     this._volcanoPoints = points
     this.scheduleRedraw()
+  },
+  onVolcanoClick: function (handler) {
+    this._volcanoClickHandler = handler || function (event, earthquakeData) {}
   },
 
   _reset: function () {

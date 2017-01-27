@@ -4,6 +4,7 @@ import { Map, TileLayer } from 'react-leaflet'
 import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
+import VolcanoPopup from './volcano-popup'
 import PlatesLayer from './plates-layer'
 import VolcanosLayer from './volcanos-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
@@ -32,11 +33,14 @@ export default class SeismicEruptionsMap extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectedEarthquake: null
+      selectedEarthquake: null,
+      selectedVolcano: null
     }
     this.handleMoveStart = this.handleMoveStart.bind(this)
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
+    this.handleVolcanoClick = this.handleVolcanoClick.bind(this)
+    this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
     this.handleMoveEnd = this.handleMoveEnd.bind(this)
     this.handleZoomEnd = this.handleZoomEnd.bind(this)
   }
@@ -117,6 +121,14 @@ export default class SeismicEruptionsMap extends Component {
   handleEarthquakePopupClose() {
     this.setState({selectedEarthquake: null})
   }
+  handleVolcanoPopupClose(){
+    this.setState({selectedVolcano: null})
+  }
+  handleVolcanoClick(event, volcano){
+    if (this._mapBeingDragged) return
+    this.setState({selectedVolcano: volcano})
+    log('Volcano Clicked', volcano)
+  }
 
   fitBounds(bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props
@@ -135,7 +147,7 @@ export default class SeismicEruptionsMap extends Component {
 
   render() {
     const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
-    const { selectedEarthquake } = this.state
+    const { selectedEarthquake, selectedVolcano } = this.state
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onLeafletMovestart={this.handleMoveStart} onLeafletMoveend={this.handleMoveEnd}
@@ -143,13 +155,16 @@ export default class SeismicEruptionsMap extends Component {
              bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlatesLayer />}
-          {layers.get('volcanos') && <VolcanosLayer />}
+          {layers.get('volcanos') && <VolcanosLayer volcanoClick={this.handleVolcanoClick}/>}
           {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
           }
           {mode === '2d' && selectedEarthquake &&
             <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
+          }
+          {mode === '2d' && selectedVolcano &&
+            <VolcanoPopup volcano={selectedVolcano} onPopupClose={this.handleVolcanoPopupClose}/>
           }
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>

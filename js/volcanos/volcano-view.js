@@ -30,6 +30,10 @@ export default class {
     this.camera.destroy()
   }
 
+  volcanoAt(x, y) {
+    return this.volcanos.volcanoAt(x, this._height - y)
+  }
+
   setProps(newProps) {
     if (newProps.latLngToPoint) {
       this.props.latLngToPoint = newProps.latLngToPoint

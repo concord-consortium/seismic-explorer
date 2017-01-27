@@ -39,8 +39,9 @@ export default class VolcanoLayer extends MapLayer {
   }
 
   setLeafletElementProps() {
-    const { volcanoPoints, map } = this.props
+    const { volcanoPoints, map, volcanoClick } = this.props
     this.leafletElement.setVolcanoPoints(getPoints(map))
+    this.leafletElement.onVolcanoClick(volcanoClick)
   }
 
   render() {

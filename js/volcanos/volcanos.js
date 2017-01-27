@@ -3,18 +3,20 @@ import vertexShader from 'raw!./volcano-vertex.glsl'
 import fragmentShader from 'raw!./volcano-fragment.glsl'
 import Volcano from './volcano'
 
-const MAX_COUNT = 250000
+const MAX_COUNT = 50000
 
 export default class {
   constructor() {
     const positions = new Float32Array(MAX_COUNT * 3)
     const dates = new Float32Array(MAX_COUNT * 1)
     const colors = new Float32Array(MAX_COUNT * 3)
+    const sizes = new Float32Array(MAX_COUNT)
 
     const geometry = new THREE.BufferGeometry()
     geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3))
     geometry.addAttribute('date', new THREE.BufferAttribute(dates, 1))
     geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3))
+    geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1))
 
     // Texture defines base shape.
     this.texture = getTexture()
@@ -63,7 +65,7 @@ export default class {
       const volcanoData = this._currentData[i]
       const point = this._latLngToPoint(volcanoData.position)
       const date = volcanoData.date
-
+      this._renderedVolcanos[i].setSizeAttr(10)
       this._renderedVolcanos[i].setPositionAttr(point)
       this._renderedVolcanos[i].setDateAttr(date)
     }
@@ -85,6 +87,7 @@ export default class {
         const date = volcanoData.date
 
         this._renderedVolcanos[i] = new Volcano(volcanoData, i, attributes)
+        this._renderedVolcanos[i].setSizeAttr(10)
         this._renderedVolcanos[i].setPositionAttr(point)
         this._renderedVolcanos[i].setDateAttr(date)
       }
@@ -102,7 +105,7 @@ export default class {
 
 function getTexture() {
   const size = 128
-  const strokeWidth = size * 0.05
+  const strokeWidth = size * 0.07
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
@@ -121,13 +124,6 @@ function getTexture() {
 
   ctx.lineWidth = strokeWidth
   ctx.strokeStyle = '#000'
-  ctx.stroke()
-
-  // top triangle down 1/4 of the height of the triangle
-  const dx = size/3 * Math.tan(30/180*Math.PI)
-  ctx.moveTo(size / 2 + dx, size-size / 3)
-  ctx.lineTo(size / 2 - dx, size-size / 3)
-  ctx.strokeStyle = '#666'
   ctx.stroke()
 
   const texture = new THREE.Texture(canvas)
