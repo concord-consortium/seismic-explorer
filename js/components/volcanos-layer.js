@@ -2,45 +2,45 @@ import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { MapLayer } from 'react-leaflet'
 import { volcanoCanvasLayer } from '../custom-leaflet/volcano-canvas-layer'
-import points from '../data/volcanos_full.js'
+import volcanos from '../data/volcanos_full.js'
 
 
-let _cachedPoints
-function getPoints(map) {
-  if (!_cachedPoints) {
-    _cachedPoints = [];
-    if (points) {
-      for (var i = 0; i < points.length; i++)
+let _cachedVolcanos
+function getVolcanos(map) {
+  if (!_cachedVolcanos) {
+    _cachedVolcanos = [];
+    if (volcanos) {
+      for (var i = 0; i < volcanos.length; i++)
       {
         // simple JSON array import
-        // let lat = points[i][1]
-        // let lng = points[i][0]
-        // let date = points[i][2]
+        // let lat = volcanos[i][1]
+        // let lng = volcanos[i][0]
+        // let date = volcanos[i][2]
         // let pos = {
         //   position: { lng: lng, lat: lat },
         //   date: date
         // }
 
         // full JSON import
-        let p = points[i]
-        let lat = p.latitude
-        let lng = p.longitude
-        let date = p.lasteruptionyear
-        let name = p.volcanoname
-        let country = p.country
-        let volcanotype = p.primaryvolcanotype
-        let pos = {
+        let v = volcanos[i]
+        let lat = v.latitude
+        let lng = v.longitude
+        let age = v.lasteruptionyear != 'Unknown' ? -( v.lasteruptionyear-2017): -15000
+
+        let volcanoData = {
           position:{lng, lat},
-          date,
-          name,
-          country,
-          volcanotype
+          age,
+          lastactivedate: v.lasteruptionyear,
+          name: v.volcanoname,
+          country: v.country,
+          region: v.subregion,
+          volcanotype: v.primaryvolcanotype
         }
-        _cachedPoints.push(pos);
+        _cachedVolcanos.push(volcanoData);
       }
     }
   }
-  return _cachedPoints
+  return _cachedVolcanos
 }
 
 @pureRender
@@ -57,7 +57,7 @@ export default class VolcanoLayer extends MapLayer {
 
   setLeafletElementProps() {
     const { volcanoPoints, map, volcanoClick } = this.props
-    this.leafletElement.setVolcanoPoints(getPoints(map))
+    this.leafletElement.setVolcanoPoints(getVolcanos(map))
     this.leafletElement.onVolcanoClick(volcanoClick)
   }
 

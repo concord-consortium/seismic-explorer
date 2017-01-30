@@ -8,13 +8,11 @@ const MAX_COUNT = 50000
 export default class {
   constructor() {
     const positions = new Float32Array(MAX_COUNT * 3)
-    const dates = new Float32Array(MAX_COUNT * 1)
     const colors = new Float32Array(MAX_COUNT * 3)
     const sizes = new Float32Array(MAX_COUNT)
 
     const geometry = new THREE.BufferGeometry()
     geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3))
-    geometry.addAttribute('date', new THREE.BufferAttribute(dates, 1))
     geometry.addAttribute('customColor', new THREE.BufferAttribute(colors, 3))
     geometry.addAttribute('size', new THREE.BufferAttribute(sizes, 1))
 
@@ -62,12 +60,13 @@ export default class {
   invalidatePositions(latLngToPoint) {
     this._latLngToPoint = latLngToPoint
     for (let i = 0, len = this._renderedVolcanos.length; i < len; i++) {
+      const volcano = this._renderedVolcanos[i]
       const volcanoData = this._currentData[i]
       const point = this._latLngToPoint(volcanoData.position)
-      const date = volcanoData.date
-      this._renderedVolcanos[i].setSizeAttr(10)
-      this._renderedVolcanos[i].setPositionAttr(point)
-      this._renderedVolcanos[i].setDateAttr(date)
+
+      volcano.setSizeAttr(volcano.size)
+      volcano.setColorAttr(volcano.color)
+      volcano.setPositionAttr(point)
     }
   }
 
@@ -84,12 +83,12 @@ export default class {
       const volcanoData = data[i]
       if (!this._renderedVolcanos[i] || this._renderedVolcanos[i].id !== eqData.id) {
         const point = this._latLngToPoint(volcanoData.position)
-        const date = volcanoData.date
 
         this._renderedVolcanos[i] = new Volcano(volcanoData, i, attributes)
-        this._renderedVolcanos[i].setSizeAttr(10)
-        this._renderedVolcanos[i].setPositionAttr(point)
-        this._renderedVolcanos[i].setDateAttr(date)
+        const volcano = this._renderedVolcanos[i]
+        volcano.setSizeAttr(volcano.size)
+        volcano.setColorAttr(volcano.color)
+        volcano.setPositionAttr(point)
       }
       this._renderedVolcanos[i].targetVisibility = 1//volcanoData.visible ? 1 : 0
     }

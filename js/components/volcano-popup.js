@@ -29,6 +29,7 @@ export default class VolcanoPopup extends Component {
   render() {
     const { map, volcano } = this.props
     const volcanoPos = [];
+
     volcanoPos.push(volcano.position.lat)
     volcanoPos.push(volcano.position.lng)
     volcanoPos.push(0)
@@ -39,9 +40,11 @@ export default class VolcanoPopup extends Component {
         <Popup closeOnClick={false}>
           <div>
             Name: <b>{volcano.name}</b><br/>
-            Location: <b>{volcano.country}</b> <b>{volcanoPos[0]}</b>,<b>{volcanoPos[1]}</b><br/>
+            Country:  <b>{volcano.country}</b><br/>
+            Region: <b>{volcano.region}</b><br/>
+            Location:<b>{volcanoPos[0]}</b>,<b>{volcanoPos[1]}</b><br/>
             Type: <b>{volcano.volcanotype}</b><br/>
-            Date: <b>{volcano.date}</b><br/>
+            Date: <b>{volcano.lastactivedate}</b><br/>
           </div>
         </Popup>
       </Marker>

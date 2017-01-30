@@ -3,14 +3,23 @@ import THREE from 'three'
 const TRANSITION_COLOR = 0xFFFFFF
 
 const colorHelper = new THREE.Color()
+function ageToColor(age){
+    if (age <= 100) return 0xFF6600
+    if (age <= 400) return 0xD26F2D
+    if (age <= 1600) return 0xAC7753
+    if (age <= 6400) return 0x8C7D73
+    return 0x808080
+}
 
 export default class {
   constructor(data, idx, attributes) {
     this.id = data.id
-    this.color = 0xFFFFFF
+    this.age = data.age
+
+    this.color = ageToColor(data.age)
+
     this.data = data
-    this.date = data.date
-    this.size = 20
+    this.size = 30
 
     // Particle system attributes (position, customColor, size)
     this.attributes = attributes
@@ -51,17 +60,10 @@ export default class {
     this._oldPosAttr = point
   }
 
-  setDateAttr(val) {
-    if (this._oldDateAttr === val) return
-    this.attributes.date.array[this.idx] = val
-    this.attributes.date.needsUpdate = true
-    this._oldDateAttr = val
-  }
-
   setColorAttr(val) {
     if (this._oldColorAttr === val) return
     colorHelper.setHex(val)
-    colorHelper.toArray(this.attributes.customColor.array, this.idx * 4)
+    colorHelper.toArray(this.attributes.customColor.array, this.idx * 3)
     this.attributes.customColor.needsUpdate = true
     this._oldColorAttr = val
   }
