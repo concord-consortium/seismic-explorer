@@ -71,6 +71,7 @@ class BottomControls extends Component {
     this.handleAnimStep = this.handleAnimStep.bind(this)
     this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
     this.handleResetBtnClick = this.handleResetBtnClick.bind(this)
+    this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
   }
 
   componentDidMount() {
@@ -79,6 +80,17 @@ class BottomControls extends Component {
         this.setState({fullscreen: screenfull.isFullscreen})
       })
     }
+  }
+
+  get mapLayerOptions() {
+    return layerInfo.map((m, idx) => <option key={idx} value={m.type}>{m.name}</option>)
+  }
+
+  handleBaseLayerChange(event) {
+    const {setBaseLayer} = this.props
+    const layer = event.target.value
+    setBaseLayer(layer)
+    log('MapLayerChanged', {layer})
   }
 
   handleTimeRange(value) {
@@ -169,6 +181,12 @@ class BottomControls extends Component {
         <div className='settings'>
           <div>
             <img src={ccLogoSrc}/>
+          </div>
+          <div title="Change the map rendering style">
+            Map type
+            <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
+              {this.mapLayerOptions}
+            </select>
           </div>
          <LayerControls/>
           <div>

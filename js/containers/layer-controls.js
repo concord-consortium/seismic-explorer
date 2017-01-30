@@ -18,14 +18,10 @@ class LayerControls extends Component {
     }
     this.toggle = this.toggle.bind(this)
     this.hide = this.hide.bind(this)
-    this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
+
     this.handlePlateLayerChange = this.handlePlateLayerChange.bind(this)
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
-  }
-
-  get mapLayerOptions() {
-    return layerInfo.map((m, idx) => <option key={idx} value={m.type}>{m.name}</option>)
   }
 
   toggle() {
@@ -36,13 +32,6 @@ class LayerControls extends Component {
 
   hide() {
     this.setState({opened: false})
-  }
-
-  handleBaseLayerChange(event) {
-    const {setBaseLayer} = this.props
-    const layer = event.target.value
-    setBaseLayer(layer)
-    log('MapLayerChanged', {layer})
   }
 
   handlePlateLayerChange(event) {
@@ -72,16 +61,11 @@ class LayerControls extends Component {
 
     return (
       <div className='map-layer-controls'>
-        <OverlayButton onClick={this.toggle}>Layers</OverlayButton>
+        <OverlayButton onClick={this.toggle}>Data type</OverlayButton>
         {opened &&
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close'/>
-          <div title="Change the map rendering style">
-            Map type
-            <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
-              {this.mapLayerOptions}
-            </select>
-          </div>
+          <div>Data Available:</div>
           {mode !== '3d' &&
           <div title="Show Plate Boundaries Overlay">
             <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange}
