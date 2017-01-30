@@ -38,7 +38,9 @@ export default class VolcanoPopup extends Component {
               onLeafletPopupclose={this.onPopupClose}>
         <Popup closeOnClick={false}>
           <div>
-            Location: <b>{volcanoPos[0]}</b>,<b>{volcanoPos[1]}</b><br/>
+            Name: <b>{volcano.name}</b><br/>
+            Location: <b>{volcano.country}</b> <b>{volcanoPos[0]}</b>,<b>{volcanoPos[1]}</b><br/>
+            Type: <b>{volcano.volcanotype}</b><br/>
             Date: <b>{volcano.date}</b><br/>
           </div>
         </Popup>
