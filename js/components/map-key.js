@@ -28,7 +28,7 @@ export default class MapKey extends Component {
   }
 
   render() {
-    const { showBoundariesInfo} = this.props
+    const { showBoundariesInfo, volcanos} = this.props
     const { opened } = this.state
     return !opened ?
       <OverlayButton onClick={this.open}>Key</OverlayButton>
@@ -57,6 +57,14 @@ export default class MapKey extends Component {
             <tr><td>{boundaryColor('#38a800')}</td><td>Oceanic Transform Fault</td></tr>
             <tr><td>{boundaryColor('#bf2026')}</td><td>Oceanic Spreading Rift</td></tr>
             <tr><td>{boundaryColor('#508fcb')}</td><td>Subduction Zone</td></tr>
+            </tbody>
+          </table>
+        }
+        { volcanos &&
+          <table className='volcanos'>
+            <tbody>
+            <tr><th colSpan='2'>Volcanos</th></tr>
+            <tr><td><div className='volcano-marker'></div></td><td>Volcano</td></tr>
             </tbody>
           </table>
         }
