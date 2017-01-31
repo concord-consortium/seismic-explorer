@@ -42,17 +42,23 @@ class LayerControls extends Component {
   }
 
   handleVolcanoLayerChange(event) {
-    const {setVolcanosVisible} = this.props
+    const {setVolcanosVisible, setEarthquakesVisible} = this.props
     const visible = event.target.checked
     setVolcanosVisible(visible)
     log('VolcanosVisibilityChanged', {visible})
+    if (visible) {
+      setEarthquakesVisible(false)
+    }
   }
 
   handleEarthquakeLayerChange(event) {
-    const {setEarthquakesVisible} = this.props
+    const {setEarthquakesVisible, setVolcanosVisible} = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible)
     log("show earthquakes", {visible})
+    if (visible) {
+      setVolcanosVisible(false)
+    }
   }
 
   render() {
