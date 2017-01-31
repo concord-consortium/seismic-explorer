@@ -63,8 +63,12 @@ export default class MapKey extends Component {
         { volcanos &&
           <table className='volcanos'>
             <tbody>
-            <tr><th colSpan='2'>Volcanos</th></tr>
-            <tr><td><div className='volcano-marker'></div></td><td>Volcano</td></tr>
+            <tr><th colSpan='2'>Volcano - Time Since Last Eruption</th></tr>
+            <tr><td>{volcanoColor('#ff6600')}</td><td>Up to 100 years</td></tr>
+            <tr><td>{volcanoColor('#d26f2d')}</td><td>100-400 years</td></tr>
+            <tr><td>{volcanoColor('#ac7753')}</td><td>400-1600 years</td></tr>
+            <tr><td>{volcanoColor('#8c7d73')}</td><td>1600-6400 years</td></tr>
+            <tr><td>{volcanoColor('#808080')}</td><td>> 6400 years</td></tr>
             </tbody>
           </table>
         }
@@ -84,6 +88,10 @@ function earthquakeColor(depth) {
 
 function boundaryColor(color) {
   return <div className='boundary-color' style={{backgroundColor: color}}></div>
+}
+
+function volcanoColor(color) {
+  return <div className='volcano-marker' style={{borderBottomColor: color}}></div>
 }
 
 function toHexStr(d) {
