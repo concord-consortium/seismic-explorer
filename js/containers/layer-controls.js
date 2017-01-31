@@ -79,13 +79,14 @@ class LayerControls extends Component {
             <label htmlFor='plate-border-box'>Plate boundaries</label>
           </div>
           }
+          <div><hr/></div>
           <div title="Show Volcanos">
-            <input type='checkbox' checked={layers.get('volcanos') } onChange={this.handleVolcanoLayerChange}
-                  id='volcano-box'/>
+            <input type='radio' checked={layers.get('volcanos') } onChange={this.handleVolcanoLayerChange}
+                  id='volcano-box' value='volcanos' name='datatype'/>
             <label htmlFor='volcano-box'>Volcanos</label>
           </div>
           <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map">
-          <input type="checkbox" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} />
+          <input type="radio" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange}  value='earthquakes' name='datatype'/>
           <label htmlFor='earthquake-toggle'>Earthquakes</label>
           </div>
         </div>
