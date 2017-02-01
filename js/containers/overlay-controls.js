@@ -47,6 +47,7 @@ class OverlayControls extends Component {
     const { mode, layers, changedViews, resetView, earthquakesCount, magnitudeCutOff} = this.props
     const canOpen3D = this.canOpen3D()
     const volcanoMode = layers.get('volcanos')
+    const earthquakeMode = layers.get('earthquakes')
     const viewChanged = mode !== '3d' && changedViews.has('2d') || mode === '3d' && changedViews.has('3d')
     return (
       <div className='overlay-controls'>
@@ -56,7 +57,7 @@ class OverlayControls extends Component {
             <OverlayButton title='Reset map to show world view' onClick={resetView} icon='globe'/>}
         </div>
         <div className='controls bottom right inline'>
-          {mode === '2d' &&
+          {mode === '2d' && earthquakeMode &&
             <OverlayButton title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode} icon='paint-brush'>
               Draw a cross section line and open 3D view
             </OverlayButton>

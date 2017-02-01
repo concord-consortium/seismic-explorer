@@ -163,21 +163,25 @@ class BottomControls extends Component {
         <div className='bottom-controls'>
           <div>
             <AnimationButtons ref='playButton' animationEnabled={animationEnabled} value={filters.get('maxTime')}
-                              speed={this.animSpeed}
-                              onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
-                              onAnimationStep={this.handleAnimStep}/>
+              speed={this.animSpeed}
+              onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
+              onAnimationStep={this.handleAnimStep}
+              layers={layers}/>
           </div>
-          <div className='center'>
-            <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
-                    step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
-                    onChange={this.handleTimeRange} onAfterChange={logTimeSliderChange}
-                    tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
-          </div>
+          {layers.get('earthquakes') &&
+            <div className='center'>
+              <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
+                step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
+                onChange={this.handleTimeRange} onAfterChange={logTimeSliderChange}
+                tipFormatter={sliderDateFormatter} marks={this.dateMarks} />
+            </div>
+          }
           {screenfull.enabled &&
           <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title="Toggle Fullscreen">
           </div>
           }
         </div>
+
         <div className='settings'>
           <div>
             <img src={ccLogoSrc}/>
@@ -188,18 +192,20 @@ class BottomControls extends Component {
               {this.mapLayerOptions}
             </select>
           </div>
-          <LayerControls dataLayerConfig={dataLayerConfig}/>
-          <div>
-            <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
-            <div className='mag-slider'>
-              <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
-                      onAfterChange={logMagSliderChange} marks={{0: 0, 5: 5, 10: 10}}/>
+          <LayerControls dataLayerConfig={dataLayerConfig} />
+          {layers.get('earthquakes') &&
+            <div>
+              <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
+              <div className='mag-slider'>
+                <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
+                  onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
+              </div>
+              <div className='stats'>
+                <span>Currently displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
+                {magFilter && <span>starting from magnitude <strong>{magnitudeCutOff}</strong>. Zoom in to see weaker earthquakes.</span>}
+              </div>
             </div>
-            <div className='stats'>
-              <span>Currently displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
-              {magFilter && <span>starting from magnitude <strong>{magnitudeCutOff}</strong>. Zoom in to see weaker earthquakes.</span>}
-            </div>
-          </div>
+          }
         </div>
       </div>
     )
