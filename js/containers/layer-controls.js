@@ -16,8 +16,8 @@ class LayerControls extends Component {
     super(props)
     this.state = {
       opened: false,
-      exclusiveLayers: true,
-      config: props.dataLayerConfig ? props.dataLayerConfig : 2
+      config: props.dataLayerConfig ? props.dataLayerConfig : 2,
+      exclusiveLayers:  props.dataLayerConfig ? layerConfig[props.dataLayerConfig].exclusiveLayers : true
     }
     this.toggle = this.toggle.bind(this)
     this.hide = this.hide.bind(this)
@@ -82,7 +82,7 @@ class LayerControls extends Component {
   render() {
     const {layers, mode} = this.props
     const { opened, config } = this.state
-
+    const inputType = layerConfig[config].exclusiveLayers ? 'radio' : 'checkbox'
     return (
       <div className='map-layer-controls'>
         <OverlayButton onClick={this.toggle}>Data type</OverlayButton>
@@ -100,20 +100,20 @@ class LayerControls extends Component {
           { layerConfig[config].plateOutlines && <div><hr /></div> }
           { layerConfig[config].volcanos &&
             <div title="Show Volcanos">
-              <input type='radio' checked={layers.get('volcanos')} onChange={this.handleVolcanoLayerChange}
+              <input type={inputType} checked={layers.get('volcanos')} onChange={this.handleVolcanoLayerChange}
                 id='volcano-box' value='volcanos' name='datatype' />
               <label htmlFor='volcano-box'>Volcanos</label>
             </div>
           }
           { layerConfig[config].earthquakes &&
             <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map">
-              <input type="radio" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} value='earthquakes' name='datatype' />
+              <input type={inputType} id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} value='earthquakes' name='datatype' />
               <label htmlFor='earthquake-toggle'>Earthquakes</label>
             </div>
           }
           { layerConfig[config].plateMovement &&
             <div className='toggle-plate-movement' title="Show or hide plate movement vectors">
-              <input type="radio" id="plate-movement-toggle" checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
+              <input type={inputType} id="plate-movement-toggle" checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
               <label htmlFor='plate-movement-toggle'>Plate Movement</label>
             </div>
           }
