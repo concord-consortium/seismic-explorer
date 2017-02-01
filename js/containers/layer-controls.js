@@ -16,6 +16,7 @@ class LayerControls extends Component {
     super(props)
     this.state = {
       opened: false,
+      exclusiveLayers: true,
       config: props.dataLayerConfig ? props.dataLayerConfig : 3
     }
     this.toggle = this.toggle.bind(this)
@@ -45,26 +46,37 @@ class LayerControls extends Component {
   }
 
   handleVolcanoLayerChange(event) {
-    const {setVolcanosVisible, setEarthquakesVisible} = this.props
+    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
     const visible = event.target.checked
     setVolcanosVisible(visible)
     log('VolcanosVisibilityChanged', {visible})
-    if (visible) {
+    if (visible && this.state.exclusiveLayers) {
       setEarthquakesVisible(false)
+      setPlateMovementVisible(false)
     }
   }
 
   handleEarthquakeLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible} = this.props
+    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible)
     log("show earthquakes", {visible})
-    if (visible) {
+    if (visible && this.state.exclusiveLayers) {
       setVolcanosVisible(false)
+      setPlateMovementVisible(false)
     }
   }
   handlePlateMovementLayerChange(event) {
-    console.log("not yet implemented")
+    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
+    const visible = event.target.checked
+    setPlateMovementVisible(visible)
+    log("show plate movement", { visible })
+    // show plate borders when movement layer is visible
+    setPlatesVisible(visible)
+    if (visible && this.state.exclusiveLayers) {
+      setVolcanosVisible(false)
+      setEarthquakesVisible(false)
+    }
   }
 
   render() {
@@ -101,7 +113,7 @@ class LayerControls extends Component {
           }
           { layerConfig[config].plateMovement &&
             <div className='toggle-plate-movement' title="Show or hide plate movement vectors">
-              <input type="radio" id="plate-movement-toggle" checked={false} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
+              <input type="radio" id="plate-movement-toggle" checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
               <label htmlFor='plate-movement-toggle'>Plate Movement</label>
             </div>
           }

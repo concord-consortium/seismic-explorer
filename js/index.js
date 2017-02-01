@@ -12,7 +12,7 @@ const store = configureStore()
 render(
   <Provider store={store}>
     <Router history={browserHistory}>
-      <Route path="/" component={App} dataLayerConfig={4}>
+      <Route path="/" component={App} dataLayerConfig={3}>
         <Route path="p1" component={App} dataLayerConfig={1} />
         <Route path="p2" component={App} dataLayerConfig={2} />
         <Route path="p3" component={App} dataLayerConfig={3} />
