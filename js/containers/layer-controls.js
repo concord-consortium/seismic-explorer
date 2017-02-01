@@ -5,6 +5,7 @@ import * as actions from '../actions'
 import OverlayButton from '../components/overlay-button'
 import {layerInfo} from '../map-layer-tiles'
 import log from '../logger'
+import layerConfig from '../layer-data-config'
 
 import '../../css/layer-controls.less'
 import '../../css/settings-controls.less'
@@ -14,7 +15,8 @@ class LayerControls extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      opened: false
+      opened: false,
+      config: props.dataLayerConfig ? props.dataLayerConfig : 3
     }
     this.toggle = this.toggle.bind(this)
     this.hide = this.hide.bind(this)
@@ -22,6 +24,7 @@ class LayerControls extends Component {
     this.handlePlateLayerChange = this.handlePlateLayerChange.bind(this)
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
+    this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
   }
 
   toggle() {
@@ -60,35 +63,48 @@ class LayerControls extends Component {
       setVolcanosVisible(false)
     }
   }
+  handlePlateMovementLayerChange(event) {
+    console.log("not yet implemented")
+  }
 
   render() {
     const {layers, mode} = this.props
-    const { opened } = this.state
+    const { opened, config } = this.state
 
     return (
       <div className='map-layer-controls'>
         <OverlayButton onClick={this.toggle}>Data type</OverlayButton>
-        {opened &&
+        { opened &&
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close'/>
           <div>Data Available:</div>
-          {mode !== '3d' &&
+          { mode !== '3d' && layerConfig[config].plateOutlines &&
           <div title="Show Plate Boundaries Overlay">
             <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange}
                   id='plate-border-box'/>
             <label htmlFor='plate-border-box'>Plate boundaries</label>
           </div>
           }
-          <div><hr/></div>
-          <div title="Show Volcanos">
-            <input type='radio' checked={layers.get('volcanos') } onChange={this.handleVolcanoLayerChange}
-                  id='volcano-box' value='volcanos' name='datatype'/>
-            <label htmlFor='volcano-box'>Volcanos</label>
-          </div>
-          <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map">
-          <input type="radio" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange}  value='earthquakes' name='datatype'/>
-          <label htmlFor='earthquake-toggle'>Earthquakes</label>
-          </div>
+          { layerConfig[config].plateOutlines && <div><hr /></div> }
+          { layerConfig[config].volcanos &&
+            <div title="Show Volcanos">
+              <input type='radio' checked={layers.get('volcanos')} onChange={this.handleVolcanoLayerChange}
+                id='volcano-box' value='volcanos' name='datatype' />
+              <label htmlFor='volcano-box'>Volcanos</label>
+            </div>
+          }
+          { layerConfig[config].earthquakes &&
+            <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map">
+              <input type="radio" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} value='earthquakes' name='datatype' />
+              <label htmlFor='earthquake-toggle'>Earthquakes</label>
+            </div>
+          }
+          { layerConfig[config].plateMovement &&
+            <div className='toggle-plate-movement' title="Show or hide plate movement vectors">
+              <input type="radio" id="plate-movement-toggle" checked={false} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
+              <label htmlFor='plate-movement-toggle'>Plate Movement</label>
+            </div>
+          }
         </div>
         }
       </div>

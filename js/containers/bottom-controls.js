@@ -153,7 +153,7 @@ class BottomControls extends Component {
   }
 
   render() {
-    const {animationEnabled, filters, layers, mode, earthquakesCount, earthquakesCountVisible, magnitudeCutOff} = this.props
+    const {animationEnabled, filters, layers, mode, earthquakesCount, earthquakesCountVisible, magnitudeCutOff,dataLayerConfig} = this.props
     const minMag = filters.get('minMag')
     const maxMag = filters.get('maxMag')
     let magFilter = magnitudeCutOff > 0
@@ -188,7 +188,7 @@ class BottomControls extends Component {
               {this.mapLayerOptions}
             </select>
           </div>
-         <LayerControls/>
+          <LayerControls dataLayerConfig={dataLayerConfig}/>
           <div>
             <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
             <div className='mag-slider'>

@@ -61,7 +61,7 @@ class App extends Component {
 
   renderApp() {
     const { dataFetching, earthquakes, layers, crossSectionPoints, updateEarthquakesData,
-            mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
+            mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, route } = this.props
     return (
       <div>
         {dataFetching && <LoadingIcon/>}
@@ -81,7 +81,7 @@ class App extends Component {
           <OverlayControls resetView={this.resetView}/>
         </div>
         <div className='bottom-controls-container'>
-          <BottomControls/>
+          <BottomControls dataLayerConfig={route.dataLayerConfig}/>
         </div>
       </div>
     )

@@ -6,10 +6,10 @@ import '../../css/overlay-button.less'
 @pureRender
 export default class OverlayButton extends Component {
   render() {
-    const { onClick, disabled, children, icon, className } = this.props
+    const { onClick, disabled, children, icon, className, title } = this.props
     return (
       <div className={`overlay-button ${className} ${disabled ? 'disabled' : ''} ${icon && !children ? 'icon-only' : ''}`}
-           onClick={onClick}>
+           onClick={onClick} title={title}>
         {icon && <i className={`fa fa-${icon}`}/>}
         {children}
       </div>
