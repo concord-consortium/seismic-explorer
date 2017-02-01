@@ -17,7 +17,7 @@ class LayerControls extends Component {
     this.state = {
       opened: false,
       exclusiveLayers: true,
-      config: props.dataLayerConfig ? props.dataLayerConfig : 3
+      config: props.dataLayerConfig ? props.dataLayerConfig : 2
     }
     this.toggle = this.toggle.bind(this)
     this.hide = this.hide.bind(this)
@@ -67,7 +67,7 @@ class LayerControls extends Component {
     }
   }
   handlePlateMovementLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
+    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible} = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
     log("show plate movement", { visible })
