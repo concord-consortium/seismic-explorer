@@ -31,7 +31,7 @@ export default class MapKey extends Component {
     const { showBoundariesInfo, volcanos} = this.props
     const { opened } = this.state
     return !opened ?
-      <OverlayButton onClick={this.open}>Key</OverlayButton>
+      <OverlayButton title='Information about the symbols used on this map' onClick={this.open}>Key</OverlayButton>
       :
       <div className='modal-style map-key-content'>
         <i onClick={this.hide} className='close-icon fa fa-close'/>

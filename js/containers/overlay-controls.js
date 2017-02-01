@@ -46,32 +46,33 @@ class OverlayControls extends Component {
   render() {
     const { mode, layers, changedViews, resetView, earthquakesCount, magnitudeCutOff} = this.props
     const canOpen3D = this.canOpen3D()
+    const volcanoMode = layers.get('volcanos')
     const viewChanged = mode !== '3d' && changedViews.has('2d') || mode === '3d' && changedViews.has('3d')
     return (
       <div className='overlay-controls'>
         <div className='controls top left'>
           {mode !== 'cross-section' && viewChanged &&
             /* Don't display reset view icon when user is drawing a line (cross-section mode). */
-            <OverlayButton onClick={resetView} icon='globe'/>}
+            <OverlayButton title='Reset map to show world view' onClick={resetView} icon='globe'/>}
         </div>
         <div className='controls bottom right inline'>
           {mode === '2d' &&
-            <OverlayButton onClick={this.setCrossSectionDrawMode} icon='paint-brush'>
+            <OverlayButton title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode} icon='paint-brush'>
               Draw a cross section line and open 3D view
             </OverlayButton>
           }
-          {mode === 'cross-section' &&
+          {mode === 'cross-section' && !volcanoMode &&
             <div>
-              <OverlayButton onClick={this.set3DMode} disabled={!canOpen3D} icon='cube'>
+              <OverlayButton title='Display the selected area and its earthquakes in 3D' onClick={this.set3DMode} disabled={!canOpen3D} icon='cube'>
                 Open 3D view {!canOpen3D && '(draw a cross section line first!)'}
               </OverlayButton>
-              <OverlayButton onClick={this.set2DMode} icon='close'>
+              <OverlayButton title='Cancel drawing' onClick={this.set2DMode} icon='close'>
                 Cancel
               </OverlayButton>
             </div>
           }
           {mode === '3d' &&
-            <OverlayButton onClick={this.set2DMode} icon='map'>
+            <OverlayButton title='Exit 3D view and return to 2D map view' onClick={this.set2DMode} icon='map'>
               Go back to 2D map
             </OverlayButton>
           }
