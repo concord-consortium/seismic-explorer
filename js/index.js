@@ -12,8 +12,8 @@ const store = configureStore()
 render(
   <Provider store={store}>
     <Router history={browserHistory}>
-      <Route path="/" component={App} />
-      <Route path="/index.html" component={App} />
+      <Route path="/*" component={App} />
+
     </Router>
   </Provider>,
   document.getElementById('app')
