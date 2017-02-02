@@ -3,6 +3,7 @@ import pureRender from 'pure-render-decorator'
 import {connect} from 'react-redux'
 import * as actions from '../actions'
 import AnimationButtons from '../components/animation-buttons'
+import LayerControls from './layer-controls'
 import Slider from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
@@ -67,12 +68,10 @@ class BottomControls extends Component {
     }
     this.handleTimeRange = this.handleTimeRange.bind(this)
     this.handleMagRange = this.handleMagRange.bind(this)
-    this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
-    this.handlePlateLayerChange = this.handlePlateLayerChange.bind(this)
     this.handleAnimStep = this.handleAnimStep.bind(this)
     this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
     this.handleResetBtnClick = this.handleResetBtnClick.bind(this)
-    this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
+    this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
   }
 
   componentDidMount() {
@@ -81,6 +80,17 @@ class BottomControls extends Component {
         this.setState({fullscreen: screenfull.isFullscreen})
       })
     }
+  }
+
+  get mapLayerOptions() {
+    return layerInfo.map((m, idx) => <option key={idx} value={m.type}>{m.name}</option>)
+  }
+
+  handleBaseLayerChange(event) {
+    const {setBaseLayer} = this.props
+    const layer = event.target.value
+    setBaseLayer(layer)
+    log('MapLayerChanged', {layer})
   }
 
   handleTimeRange(value) {
@@ -95,19 +105,6 @@ class BottomControls extends Component {
     setFilter('maxMag', value[1])
   }
 
-  handleBaseLayerChange(event) {
-    const {setBaseLayer} = this.props
-    const layer = event.target.value
-    setBaseLayer(layer)
-    log('MapLayerChanged', {layer})
-  }
-
-  handlePlateLayerChange(event) {
-    const {setPlatesVisible} = this.props
-    const visible = event.target.checked
-    setPlatesVisible(visible)
-    log('PlatesVisibilityChanged', {visible})
-  }
 
   handleAnimStep(newValue) {
     const {filters, setFilter, setAnimationEnabled} = this.props
@@ -130,12 +127,6 @@ class BottomControls extends Component {
     log('ResetClicked')
   }
 
-  handleEarthquakeLayerChange(event) {
-    const {setEarthquakesVisible} = this.props
-    const visible = event.target.checked
-    setEarthquakesVisible(visible)
-    log("show earthquakes", {visible})
-  }
 
   get dateMarks() {
     const {filters} = this.props
@@ -152,10 +143,6 @@ class BottomControls extends Component {
     return marks
   }
 
-  get mapLayerOptions() {
-    return layerInfo.map((m, idx) => <option key={idx} value={m.type}>{m.name}</option>)
-  }
-
   get animSpeed() {
     const {filters} = this.props
     return (filters.get('maxTimeLimit') - filters.get('minTimeLimit')) / 15000
@@ -166,7 +153,7 @@ class BottomControls extends Component {
   }
 
   render() {
-    const {animationEnabled, filters, layers, mode, earthquakesCount, earthquakesCountVisible, magnitudeCutOff} = this.props
+    const {animationEnabled, filters, layers, mode, earthquakesCount, earthquakesCountVisible, magnitudeCutOff,dataLayerConfig} = this.props
     const minMag = filters.get('minMag')
     const maxMag = filters.get('maxMag')
     let magFilter = magnitudeCutOff > 0
@@ -176,21 +163,25 @@ class BottomControls extends Component {
         <div className='bottom-controls'>
           <div>
             <AnimationButtons ref='playButton' animationEnabled={animationEnabled} value={filters.get('maxTime')}
-                              speed={this.animSpeed}
-                              onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
-                              onAnimationStep={this.handleAnimStep}/>
+              speed={this.animSpeed}
+              onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
+              onAnimationStep={this.handleAnimStep}
+              layers={layers}/>
           </div>
-          <div className='center'>
-            <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
-                    step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
-                    onChange={this.handleTimeRange} onAfterChange={logTimeSliderChange}
-                    tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
-          </div>
+          {layers.get('earthquakes') &&
+            <div className='center'>
+              <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
+                step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
+                onChange={this.handleTimeRange} onAfterChange={logTimeSliderChange}
+                tipFormatter={sliderDateFormatter} marks={this.dateMarks} />
+            </div>
+          }
           {screenfull.enabled &&
           <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title="Toggle Fullscreen">
           </div>
           }
         </div>
+
         <div className='settings'>
           <div>
             <img src={ccLogoSrc}/>
@@ -201,25 +192,20 @@ class BottomControls extends Component {
               {this.mapLayerOptions}
             </select>
           </div>
-          {mode !== '3d' &&
-          <div title="Show Plate Boundaries Overlay">
-            <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange}
-                   id='plate-border-box'/>
-            <label htmlFor='plate-border-box'>Plate boundaries</label>
-          </div>
+          <LayerControls dataLayerConfig={dataLayerConfig} />
+          {layers.get('earthquakes') &&
+            <div>
+              <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
+              <div className='mag-slider'>
+                <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
+                  onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
+              </div>
+              <div className='stats'>
+                <span>Currently displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
+                {magFilter && <span>starting from magnitude <strong>{magnitudeCutOff}</strong>. Zoom in to see weaker earthquakes.</span>}
+              </div>
+            </div>
           }
-          <div>
-            <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
-            <div className='mag-slider'>
-              <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
-                      onAfterChange={logMagSliderChange} marks={{0: 0, 5: 5, 10: 10}}/>
-            </div>
-            <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map"><input type="checkbox" id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} /><label htmlFor='earthquake-toggle'>Show Earthquakes</label></div>
-            <div className='stats'>
-              <span>Currently displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
-              {magFilter && <span>starting from magnitude <strong>{magnitudeCutOff}</strong>. Zoom in to see weaker earthquakes.</span>}
-            </div>
-          </div>
         </div>
       </div>
     )

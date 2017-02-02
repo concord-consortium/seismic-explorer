@@ -4,7 +4,7 @@ import { MapLayer, Marker, Popup } from 'react-leaflet'
 import { getCachedInvisibleIcon } from '../custom-leaflet/icons'
 
 @pureRender
-export default class EarthquakePopup extends Component {
+export default class VolcanoPopup extends Component {
   constructor(props) {
     super(props)
     this.onPopupClose = this.onPopupClose.bind(this)
@@ -27,19 +27,24 @@ export default class EarthquakePopup extends Component {
   // For some reason it's impossible to create popup without marker.
   // So, this component renders invisible marker with popup instead.
   render() {
-    const { map, earthquake } = this.props
-    const earthquakePos = earthquake.geometry.coordinates
-    console.log(earthquakePos)
+    const { map, volcano } = this.props
+    const volcanoPos = [];
+
+    volcanoPos.push(volcano.position.lat)
+    volcanoPos.push(volcano.position.lng)
+    volcanoPos.push(0)
     return (
-      <Marker ref='marker' map={map} position={earthquakePos}
+      <Marker ref='marker' map={map} position={volcanoPos}
               icon={getCachedInvisibleIcon()}
               onLeafletPopupclose={this.onPopupClose}>
         <Popup closeOnClick={false}>
           <div>
-            Place: <b>{earthquake.properties.place}</b><br/>
-            Magnitude: <b>{earthquake.properties.mag.toFixed(1)}</b><br/>
-            Date: <b>{date(earthquake.properties.time)}</b><br/>
-            Depth: <b>{earthquake.geometry.coordinates[2]} km</b>
+            Name: <b>{volcano.name}</b><br/>
+            Country:  <b>{volcano.country}</b><br/>
+            Region: <b>{volcano.region}</b><br/>
+            Location:<b>{volcanoPos[0]}</b>,<b>{volcanoPos[1]}</b><br/>
+            Type: <b>{volcano.volcanotype}</b><br/>
+            Date: <b>{volcano.lastactivedate}</b><br/>
           </div>
         </Popup>
       </Marker>

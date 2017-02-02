@@ -28,10 +28,10 @@ export default class MapKey extends Component {
   }
 
   render() {
-    const { showBoundariesInfo} = this.props
+    const { showBoundariesInfo, volcanos} = this.props
     const { opened } = this.state
     return !opened ?
-      <OverlayButton onClick={this.open}>Key</OverlayButton>
+      <OverlayButton title='Information about the symbols used on this map' onClick={this.open}>Key</OverlayButton>
       :
       <div className='modal-style map-key-content'>
         <i onClick={this.hide} className='close-icon fa fa-close'/>
@@ -60,6 +60,18 @@ export default class MapKey extends Component {
             </tbody>
           </table>
         }
+        { volcanos &&
+          <table className='volcanos'>
+            <tbody>
+            <tr><th colSpan='2'>Volcano - Time Since Last Eruption</th></tr>
+            <tr><td>{volcanoColor('#ff6600')}</td><td>Up to 100 years</td></tr>
+            <tr><td>{volcanoColor('#d26f2d')}</td><td>100-400 years</td></tr>
+            <tr><td>{volcanoColor('#ac7753')}</td><td>400-1600 years</td></tr>
+            <tr><td>{volcanoColor('#8c7d73')}</td><td>1600-6400 years</td></tr>
+            <tr><td>{volcanoColor('#808080')}</td><td>> 6400 years</td></tr>
+            </tbody>
+          </table>
+        }
       </div>
   }
 }
@@ -76,6 +88,10 @@ function earthquakeColor(depth) {
 
 function boundaryColor(color) {
   return <div className='boundary-color' style={{backgroundColor: color}}></div>
+}
+
+function volcanoColor(color) {
+  return <div className='volcano-marker' style={{borderBottomColor: color}}></div>
 }
 
 function toHexStr(d) {

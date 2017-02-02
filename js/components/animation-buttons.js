@@ -68,13 +68,14 @@ export default class AnimationButtons extends Component {
   }
 
   render() {
-    const { onPlayPause, onReset } = this.props
+    const { onPlayPause, onReset, layers } = this.props
+    const hintText = layers.get('earthquakes') ? "Animate Earthquakes" : "Animate"
     return (
       <div>
-        <div className='animation-button' onClick={onReset} title="Reset Animation">
+        <div className='animation-button' onClick={layers.get('earthquakes') ? onReset : null} title="Reset Animation">
           <i className='fa fa-step-backward'/>
         </div>
-        <div className='animation-button' onClick={onPlayPause} title="Animate Earthquakes">
+        <div className='animation-button' onClick={layers.get('earthquakes') ? onPlayPause : null} title={hintText}>
           <i className={this.icon}/>
         </div>
       </div>
