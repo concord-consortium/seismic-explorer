@@ -26,8 +26,21 @@ class LayerControls extends Component {
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
-  }
 
+  }
+  componentWillMount() {
+    this.setInitialState()
+  }
+  setInitialState() {
+    // Earthquakes are the default on the map, so on configurations that do not include that layer,
+    // disable the earthquake layer controls at the start.
+    const {setEarthquakesVisible} = this.props
+    const conf = layerConfig[this.state.config]
+
+    if (!conf.earthquakes) {
+      setEarthquakesVisible(conf.earthquakes)
+    }
+  }
   toggle() {
     var currentState = this.state.opened;
     this.setState({opened: !currentState})
