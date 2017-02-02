@@ -33,5 +33,12 @@ module.exports = {
     earthquakes: true,
     volcanos: true,
     exclusiveLayers: false
+  },
+  6: {
+    plateOutlines: false,
+    plateMovement: false,
+    earthquakes: false,
+    volcanos: true,
+    exclusiveLayers: false
   }
 }
