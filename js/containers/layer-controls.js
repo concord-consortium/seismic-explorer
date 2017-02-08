@@ -36,10 +36,6 @@ class LayerControls extends Component {
     // disable the earthquake layer controls at the start.
     const {setEarthquakesVisible} = this.props
     const conf = layerConfig[this.state.config]
-
-    if (!conf.earthquakes) {
-      setEarthquakesVisible(conf.earthquakes)
-    }
   }
   toggle() {
     var currentState = this.state.opened;
@@ -103,28 +99,28 @@ class LayerControls extends Component {
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close'/>
           <div>Data Available:</div>
-          { mode !== '3d' && layerConfig[config].plateOutlines &&
+          { mode !== '3d' && layerConfig[config].plateOutlines.available &&
           <div title="Show Plate Boundaries Overlay">
             <input type='checkbox' checked={layers.get('plates') } onChange={this.handlePlateLayerChange}
                   id='plate-border-box'/>
             <label htmlFor='plate-border-box'>Plate boundaries</label>
           </div>
           }
-          { layerConfig[config].plateOutlines && <div><hr /></div> }
-          { layerConfig[config].volcanos &&
+          { layerConfig[config].plateOutlines.available && <div><hr /></div> }
+          { layerConfig[config].volcanos.available &&
             <div title="Show Volcanos">
               <input type={inputType} checked={layers.get('volcanos')} onChange={this.handleVolcanoLayerChange}
                 id='volcano-box' value='volcanos' name='datatype' />
               <label htmlFor='volcano-box'>Volcanos</label>
             </div>
           }
-          { layerConfig[config].earthquakes &&
+          { layerConfig[config].earthquakes.available &&
             <div className='toggle-earthquakes' title="Show or hide all earthquakes on the map">
               <input type={inputType} id="earthquake-toggle" checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} value='earthquakes' name='datatype' />
               <label htmlFor='earthquake-toggle'>Earthquakes</label>
             </div>
           }
-          { layerConfig[config].plateMovement &&
+          { layerConfig[config].plateMovement.available &&
             <div className='toggle-plate-movement' title="Show or hide plate movement vectors">
               <input type={inputType} id="plate-movement-toggle" checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
               <label htmlFor='plate-movement-toggle'>Plate Movement</label>
