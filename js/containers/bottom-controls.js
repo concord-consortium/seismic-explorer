@@ -195,15 +195,18 @@ class BottomControls extends Component {
           <LayerControls dataLayerConfig={dataLayerConfig} />
           {layers.get('earthquakes') &&
             <div>
-              <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
-              <div className='mag-slider'>
+             <div className='stats'>
+                <span>Displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
+                {magFilter && <span title="Zoom in to see weaker earthquakes."><br/>starting from magnitude <strong>{magnitudeCutOff}</strong></span>}
+              </div>
+
+            <div className='mag-slider'>
+              <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br/>
                 <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
                   onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
+                </div>
               </div>
-              <div className='stats'>
-                <span>Currently displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
-                {magFilter && <span>starting from magnitude <strong>{magnitudeCutOff}</strong>. Zoom in to see weaker earthquakes.</span>}
-              </div>
+
             </div>
           }
         </div>
