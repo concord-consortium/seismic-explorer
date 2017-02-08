@@ -80,7 +80,7 @@ class OverlayControls extends Component {
         </div>
         <div className='controls top right'>
           <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'}
-                  earthquakesCount={earthquakesCount} magnitudeCutOff={magnitudeCutOff} volcanos={layers.get('volcanos')}/>
+            earthquakesCount={earthquakesCount} earthquakes={layers.get('earthquakes')} magnitudeCutOff={magnitudeCutOff} volcanos={layers.get('volcanos')}/>
         </div>
       </div>
     )

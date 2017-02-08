@@ -28,13 +28,14 @@ export default class MapKey extends Component {
   }
 
   render() {
-    const { showBoundariesInfo, volcanos} = this.props
+    const { showBoundariesInfo, volcanos, earthquakes} = this.props
     const { opened } = this.state
     return !opened ?
       <OverlayButton title='Information about the symbols used on this map' onClick={this.open}>Key</OverlayButton>
       :
-      <div className='modal-style map-key-content'>
-        <i onClick={this.hide} className='close-icon fa fa-close'/>
+      < div className= 'modal-style map-key-content' >
+        <i onClick={this.hide} className='close-icon fa fa-close' />
+        { earthquakes &&
         <table className='magnitude-density'>
           <tbody>
             <tr><th colSpan='2'>Magnitude</th><th colSpan='2'>Depth</th></tr>
@@ -46,6 +47,7 @@ export default class MapKey extends Component {
             <tr><td>{circle(9)}</td><td>9</td><td>{earthquakeColor(550)}</td><td>> 500 km</td></tr>
           </tbody>
         </table>
+        }
         { showBoundariesInfo &&
           <table className='boundaries'>
             <tbody>
