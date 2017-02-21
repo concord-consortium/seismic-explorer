@@ -61,5 +61,5 @@ module.exports = {
     earthquakes: { available: false, visible: false },
     volcanos: { available: true, visible: true },
     exclusiveLayers: false
-  },
+  }
 }
