@@ -60,6 +60,6 @@ module.exports = {
     plateMovement: { available: false, visible: false },
     earthquakes: { available: false, visible: false },
     volcanos: { available: true, visible: true },
-    exclusiveLayers: true
+    exclusiveLayers: false
   },
 }
