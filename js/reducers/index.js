@@ -64,7 +64,7 @@ function filters(state = INITIAL_FILTERS, action) {
 }
 
 const INITIAL_LAYERS = Map({
-  base: 'satellite', // or 'street' or 'earthquake-density'
+  base: config.mapStyle,
   plates: false,
   earthquakes: true,
   volcanos: false,

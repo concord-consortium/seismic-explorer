@@ -29,6 +29,7 @@ const DEFAULT_CONFIG = {
     result.setUTCMilliseconds(0)
     return result.getTime()
   }()),
+  mapStyle:'satellite',  // or 'street' or 'earthquake-density'
   // Enables / disables logging of user actions to parent frame (e.g. LARA).
   logging: true
 }
