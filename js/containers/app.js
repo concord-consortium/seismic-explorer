@@ -21,7 +21,7 @@ const APP_CLASS_NAME = 'seismic-explorer-app'
 class App extends Component {
   constructor(props) {
     super(props)
-    const dataLayerConfig = this.props.location.query.p && layerConfig[this.props.location.query.p] ? this.props.location.query.p : 2
+    const dataLayerConfig = this.props.location.query.p && layerConfig[this.props.location.query.p] ? this.props.location.query.p : 5
     this.state = {
       dataLayerConfig
     }
