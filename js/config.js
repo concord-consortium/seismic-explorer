@@ -7,9 +7,9 @@ const DEFAULT_CONFIG = {
   maxLat: 60,
   maxLng: 120,
   // 'CC', 'USGS' or 'fake'
-  api: 'CC',
+  api: 'USGS',
   // Use CloudFront caching for API calls.
-  cache: true,
+  cache: false,
   // Max number of earthquakes that can be provided for one tile.
   tileLimit: 12000,
   // Use dates independent of the current time zone to make sure that caching works better.
