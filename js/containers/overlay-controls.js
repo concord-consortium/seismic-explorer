@@ -12,18 +12,37 @@ import '../../css/overlay-controls.less'
 class OverlayControls extends Component {
   constructor(props) {
     super(props)
-    this.set2DMode = this.set2DMode.bind(this)
     this.set3DMode = this.set3DMode.bind(this)
+    this.exit3DMode = this.exit3DMode.bind(this)
     this.setCrossSectionDrawMode = this.setCrossSectionDrawMode.bind(this)
+    this.cancelCrossSectionDrawMode = this.cancelCrossSectionDrawMode.bind(this)
+  }
+  componentDidUpdate() {
+    const {layers, crossSectionPoints} = this.props
+    if (layers.get('volcanos') && !layers.get('earthquakes') && crossSectionPoints) {
+      this.cancelCrossSectionDrawMode()
+    }
+  }
+  exit3DMode() {
+    const { setMode, crossSectionPoints, setCrossSectionPoint } = this.props
+    if (crossSectionPoints) {
+      setMode('cross-section')
+      log('CrossSectionDrawingStarted')
+    } else {
+      setMode('2d')
+      log('MapViewOpened')
+    }
   }
 
-  set2DMode() {
-    const { setMode, setCrossSectionPoint } = this.props
+  cancelCrossSectionDrawMode() {
+    const { setMode, crossSectionPoints, setCrossSectionPoint } = this.props
     // Remove cross section points when user cancels cross-section drawing.
-    setCrossSectionPoint(0, null)
-    setCrossSectionPoint(1, null)
-    setMode('2d')
-    log('MapViewOpened')
+    if (crossSectionPoints) {
+      setCrossSectionPoint(0, null)
+      setCrossSectionPoint(1, null)
+      setMode('2d')
+      log('MapViewOpened')
+    }
   }
 
   setCrossSectionDrawMode() {
@@ -62,18 +81,18 @@ class OverlayControls extends Component {
               Draw a cross section line and open 3D view
             </OverlayButton>
           }
-          {mode === 'cross-section' && !volcanoMode &&
+          {mode === 'cross-section' && earthquakeMode &&
             <div>
               <OverlayButton title='Display the selected area and its earthquakes in 3D' onClick={this.set3DMode} disabled={!canOpen3D} icon='cube'>
                 Open 3D view {!canOpen3D && '(draw a cross section line first!)'}
               </OverlayButton>
-              <OverlayButton title='Cancel drawing' onClick={this.set2DMode} icon='close'>
+              <OverlayButton title='Cancel drawing' onClick={this.cancelCrossSectionDrawMode} icon='close'>
                 Cancel
               </OverlayButton>
             </div>
           }
           {mode === '3d' &&
-            <OverlayButton title='Exit 3D view and return to 2D map view' onClick={this.set2DMode} icon='map'>
+            <OverlayButton title='Exit 3D view and return to 2D map view' onClick={this.exit3DMode} icon='map'>
               Go back to 2D map
             </OverlayButton>
           }
