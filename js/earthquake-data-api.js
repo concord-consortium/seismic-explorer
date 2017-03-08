@@ -4,10 +4,10 @@ import { wrapTileX, lngDiff, tile2LatLngBounds } from './map-tile-helpers'
 import Cache from './cache'
 import config from './config'
 
-const USGS_API = 'http://earthquake.usgs.gov/fdsnws/event/1/query.geojson'
-const CLOUDFRONT_USGS_API = 'http://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson'
+const USGS_API = 'https://earthquake.usgs.gov/fdsnws/event/1/query.geojson'
+const CLOUDFRONT_USGS_API = 'https://d1wr4s9s1xsblb.cloudfront.net/fdsnws/event/1/query.geojson'
 const CONCORD_API = 'https://e401fd4io0.execute-api.us-east-1.amazonaws.com/production/earthquakes'
-const CLOUDFRONT_CONCORD_API = 'http://d876rjgss4hzs.cloudfront.net/production/earthquakes'
+const CLOUDFRONT_CONCORD_API = 'https://d876rjgss4hzs.cloudfront.net/production/earthquakes'
 
 function getAPIHost() {
   if (config.api === 'CC' && config.cache) {

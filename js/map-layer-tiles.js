@@ -2,20 +2,20 @@ export const layerInfo = [
   {
     type: 'satellite',
     name: 'Satellite',
-    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
     subdomains: []
   },
   {
     type: 'street',
     name: 'Street',
-    url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+    url: 'https://{s}.tile.osm.org/{z}/{x}/{y}.png',
     subdomains: ['a', 'b', 'c']
   },
   {
     type: 'relief',
     name: 'Relief',
-    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
     maxZoom: 13,
     subdomains: []
@@ -23,7 +23,7 @@ export const layerInfo = [
   {
     type: 'ocean-basemap',
     name: 'Ocean basemap',
-    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
     attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
     maxZoom: 13,
     subdomains: []
