@@ -1,11 +1,13 @@
+import initRollbar from './init-rollbar'
 import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import App from './containers/app'
-import layerControls from './containers/layer-controls'
 import configureStore from './store/configure-store'
 import { Router, Route, browserHistory } from 'react-router'
+
+initRollbar();
 
 const store = configureStore()
 

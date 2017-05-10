@@ -61,6 +61,7 @@
     "redux": "^3.3.1",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^1.0.3",
+    "rollbar-browser": "^1.9.4",
     "screenfull": "^3.0.0",
     "shutterbug": "^0.6.0",
     "three": "^0.75.0",
