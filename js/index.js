@@ -1,5 +1,6 @@
 import initRollbar from './init-rollbar'
 import 'babel-polyfill'
+import './performance-now-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
