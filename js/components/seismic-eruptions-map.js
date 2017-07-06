@@ -5,7 +5,7 @@ import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
-import PlatesLayer from './plates-layer'
+import {PlatesLayer, updatePlatesZoom} from './plates-layer'
 import VolcanosLayer from './volcanos-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
@@ -109,6 +109,7 @@ export default class SeismicEruptionsMap extends Component {
 
   handleZoomEnd(event) {
     const map = event.target
+    updatePlatesZoom(map.getZoom())
     log('MapZoomChanged', {zoom: map.getZoom()})
   }
 
@@ -130,6 +131,7 @@ export default class SeismicEruptionsMap extends Component {
     this.setState({selectedVolcano: volcano})
     log('Volcano Clicked', volcano)
   }
+
 
   fitBounds(bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props

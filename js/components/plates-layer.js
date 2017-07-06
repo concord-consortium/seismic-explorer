@@ -9,8 +9,14 @@ import L from 'leaflet'
 let _cachedKML
 function getKML() {
   if (!_cachedKML) {
-    _cachedKML = new L.KML('plates_modified.kml', {async: true})
+    if(z < 7){
+      _cachedKML = new L.KML('plates_modified_simple.kml', {async: true})
+    }
+    else {
+      _cachedKML = new L.KML('plates_modified_complex.kml', {async: true})
+    }
   }
+  console.log("Updating KML");
   return _cachedKML
 }
 
@@ -24,14 +30,25 @@ function getGeoJSON()
   return _cachedGeoJSON
 }
 
+var z;
+export function updatePlatesZoom(val)
+  {
+    //console.log(val);
+    z = val;
+    return null;
+  }
+
 @pureRender
-export default class PlatesLayer extends MapLayer {
+export class PlatesLayer extends MapLayer {
+
   componentWillMount() {
     super.componentWillMount();
     this.leafletElement = getKML();
   }
 
   render() {
+    //this.leafletElement = getKML();
+    console.log("UPDATING PLATES")
     return null
   }
 }
