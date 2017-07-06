@@ -109,7 +109,6 @@ export default class SeismicEruptionsMap extends Component {
 
   handleZoomEnd(event) {
     const map = event.target
-    updatePlatesZoom(map.getZoom())
     log('MapZoomChanged', {zoom: map.getZoom()})
   }
 
