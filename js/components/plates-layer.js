@@ -9,7 +9,7 @@ import L from 'leaflet'
 let _cachedKML
 function getKML() {
   if (!_cachedKML) {
-    _cachedKML = new L.KML('ComplexSeismicConverted.kml', {async: true})
+    _cachedKML = new L.KML('plates_modified.kml', {async: true})
   }
   return _cachedKML
 }
@@ -28,7 +28,7 @@ function getGeoJSON()
 export default class PlatesLayer extends MapLayer {
   componentWillMount() {
     super.componentWillMount();
-    this.leafletElement = getGeoJSON();
+    this.leafletElement = getKML();
   }
 
   render() {
