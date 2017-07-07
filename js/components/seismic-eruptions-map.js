@@ -5,7 +5,7 @@ import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
-import {PlatesLayer, updatePlatesZoom} from './plates-layer'
+import {PlatesLayerS, PlatesLayerC} from './plates-layer'
 import VolcanosLayer from './volcanos-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
@@ -28,6 +28,8 @@ const EARTQUAKES_DOWNLOAD_DELAY = 600 // ms
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
+
+var zoomLevel = 2;
 
 @pureRender
 export default class SeismicEruptionsMap extends Component {
@@ -110,6 +112,13 @@ export default class SeismicEruptionsMap extends Component {
   handleZoomEnd(event) {
     const map = event.target
     log('MapZoomChanged', {zoom: map.getZoom()})
+
+    zoomLevel = map.getZoom()
+
+
+    // const { layers } = this.props
+    // const layer = getKML(map.getZoom())
+    // return layers.get('plates') && <PlatesLayer />
   }
 
   handleEarthquakeClick(event, earthquake) {
@@ -147,6 +156,27 @@ export default class SeismicEruptionsMap extends Component {
     return <TileLayer key={layers.get('base') } url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution}/>
   }
 
+  //Displays layer only if zoom level is > 4
+  renderZoomLayerC() {
+    const layer = new PlatesLayerC();
+    if(zoomLevel > 4){
+      return layer && <PlatesLayerC />
+    } 
+    else {
+      return null
+    }
+   }
+  //Displays layer only if zoom level is < 4
+  renderZoomLayerS() {
+    const layer = new PlatesLayerS()
+    if(zoomLevel <= 4){
+      return layer && <PlatesLayerS />
+    } 
+    else {
+      return null
+    }
+  }
+
   render() {
     const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
@@ -156,7 +186,9 @@ export default class SeismicEruptionsMap extends Component {
              onLeafletZoomend={this.handleZoomEnd}
              bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
-          {layers.get('plates') && <PlatesLayer />}
+          {this.renderZoomLayerS()}
+          {this.renderZoomLayerC()}
+          {/*{layers.get('plates') && <PlatesLayer />}*/}
           {layers.get('volcanos') && <VolcanosLayer volcanoClick={this.handleVolcanoClick}/>}
           {layers.get('platemovement') && <PlateMovementLayer />}
 
