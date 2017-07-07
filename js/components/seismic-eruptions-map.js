@@ -114,11 +114,6 @@ export default class SeismicEruptionsMap extends Component {
     log('MapZoomChanged', {zoom: map.getZoom()})
 
     zoomLevel = map.getZoom()
-
-
-    // const { layers } = this.props
-    // const layer = getKML(map.getZoom())
-    // return layers.get('plates') && <PlatesLayer />
   }
 
   handleEarthquakeClick(event, earthquake) {
@@ -158,8 +153,9 @@ export default class SeismicEruptionsMap extends Component {
 
   //Displays layer only if zoom level is > 4
   renderZoomLayerC() {
+    const { layers } = this.props;
     const layer = new PlatesLayerC();
-    if(zoomLevel > 4){
+    if(zoomLevel > 4 && layers.get('plates')){
       return layer && <PlatesLayerC />
     } 
     else {
@@ -168,8 +164,9 @@ export default class SeismicEruptionsMap extends Component {
    }
   //Displays layer only if zoom level is < 4
   renderZoomLayerS() {
+    const { layers } = this.props;
     const layer = new PlatesLayerS()
-    if(zoomLevel <= 4){
+    if(zoomLevel <= 4 && layers.get('plates')){
       return layer && <PlatesLayerS />
     } 
     else {
