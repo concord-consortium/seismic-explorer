@@ -41,7 +41,7 @@ export default class Camera {
   }
 
   get zoom() {
-    console.log(this.camera.zoom)
+    //console.log(this.camera.zoom)
     return this.camera.zoom
   }
 

@@ -3,19 +3,7 @@ import pureRender from 'pure-render-decorator'
 import { MapLayer } from 'react-leaflet'
 // Import plugin using imports-loader.
 import 'imports?L=leaflet!leaflet-plugins/layer/vector/KML'
-import 'imports?L=leaflet!leaflet-ajax'
 import L from 'leaflet'
-
-//Useless (But works)
-let _cachedGeoJSON
-function getGeoJSON()
-{
-  if(!_cachedGeoJSON)
-  {
-    _cachedGeoJSON = new L.GeoJSON.AJAX("ComplexSeismicConverted.json");
-  }
-  return _cachedGeoJSON
-}
 
 
 //Creating the Complex layer
