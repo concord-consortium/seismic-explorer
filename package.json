@@ -48,6 +48,11 @@
     "immutable": "^3.7.6",
     "jquery": "^2.2.2",
     "leaflet": "^0.7.7",
+<<<<<<< Updated upstream
+=======
+    "leaflet-ajax": "^2.1.0",
+    "leaflet-arrows": "^1.0.0",
+>>>>>>> Stashed changes
     "leaflet-plugins": "^1.5.2",
     "pure-render-decorator": "^1.1.0",
     "rainbowvis.js": "^1.0.1",

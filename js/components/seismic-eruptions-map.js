@@ -6,10 +6,12 @@ import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
 import {PlatesLayerS, PlatesLayerC} from './plates-layer'
+import { PlatesArrowsLayer } from './plates-arrows-layer'
 import VolcanosLayer from './volcanos-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
+import { Arrow } from 'leaflet-arrows'
 import { mapLayer } from '../map-layer-tiles'
 import log from '../logger'
 import config from '../config'
@@ -174,6 +176,17 @@ export default class SeismicEruptionsMap extends Component {
     }
   }
 
+  renderPlateArrowsLayer() {
+    const { layers } = this.props;
+    const layer = new PlatesArrowsLayer();
+    if(layers.get('plates')){
+      return layer && <PlatesArrowsLayer />
+    } 
+    else {
+      return null
+    }
+  }  
+
   render() {
     const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
@@ -185,10 +198,9 @@ export default class SeismicEruptionsMap extends Component {
           {this.renderBaseLayer()}
           {this.renderZoomLayerS()}
           {this.renderZoomLayerC()}
-          {/*{layers.get('plates') && <PlatesLayer />}*/}
+          {this.renderPlateArrowsLayer()}
           {layers.get('volcanos') && <VolcanosLayer volcanoClick={this.handleVolcanoClick}/>}
           {layers.get('platemovement') && <PlateMovementLayer />}
-
           {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
