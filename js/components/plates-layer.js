@@ -1,45 +1,38 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { MapLayer } from 'react-leaflet'
-// Import plugin using imports-loader.
 import 'imports?L=leaflet!leaflet-plugins/layer/vector/KML'
 import L from 'leaflet'
 
 
-//Creating the Complex layer
-let _cachedKMLC
-export function getKMLC() {
-  if (!_cachedKMLC) {
-      //console.log('SIMPLE')
-      _cachedKMLC = new L.KML('plates_modified_complex.kml', {async: true})
+let _cachedKMLComplex
+export function getKMLComplex() {
+  if (!_cachedKMLComplex) {
+      _cachedKMLComplex = new L.KML('plates_modified_complex.kml', {async: true})
   }
-  return _cachedKMLC
+  return _cachedKMLComplex
 }
 
-//Creating the Simple layer
-let _cachedKMLS
-export function getKMLS() {
-  if (!_cachedKMLS) {
-      //console.log('SIMPLE')
-      _cachedKMLS = new L.KML('plates_modified_simple.kml', {async: true})
+let _cachedKMLSimple
+export function getKMLSimple() {
+  if (!_cachedKMLSimple) {
+      _cachedKMLSimple = new L.KML('plates_modified_simple.kml', {async: true})
   }
-  return _cachedKMLS
+  return _cachedKMLSimple
 }
 
 
-//Simple Layer class
 @pureRender
-export class PlatesLayerS extends MapLayer {
+export class PlatesLayerSimple extends MapLayer {
 
   constructor() {
     super();
-    //console.log("NEW PLATES LAYER C" + val)
-    this.leafletElement = getKMLS();
+    this.leafletElement = getKMLSimple();
   }
 
   componentWillMount() {
     super.componentWillMount();
-    this.leafletElement = getKMLS();
+    this.leafletElement = getKMLSimple();
   }
 
   render() {
@@ -47,18 +40,16 @@ export class PlatesLayerS extends MapLayer {
   }
 }
 
-//Complex Layer Class
-export class PlatesLayerC extends MapLayer {
+export class PlatesLayerComplex extends MapLayer {
 
   constructor() {
     super();
-    //console.log("NEW PLATES LAYER S" + val)
-    this.leafletElement = getKMLC();
+    this.leafletElement = getKMLComplex();
   }
 
   componentWillMount() {
     super.componentWillMount();
-    this.leafletElement = getKMLC();
+    this.leafletElement = getKMLComplex();
   }
 
   render() {

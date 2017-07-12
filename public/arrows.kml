@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">  
+    <Document>  
+        <name>Tectonic Plate Boundaries</name>
+	    <open>1</open>
+        <Style id="my-vector-1">
+            <IconStyle>
+            <scale>12</scale>
+            <heading>27.0</heading>
+            <Icon>
+                <href>plates-info.png</href>
+            </Icon>
+            </IconStyle> 
+        </Style>
+
+        <Placemark>  
+            <LookAt>
+            <heading>27.0</heading>
+            </LookAt>
+            <styleUrl>#my-vector-1</styleUrl>
+            <Point>
+                <coordinates>-10.5,10.8</coordinates>
+            </Point> 
+        </Placemark>  
+
+    </Document>  
+</kml>  
