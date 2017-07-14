@@ -9,7 +9,7 @@ export const layerInfo = [
   {
     type: 'street',
     name: 'Street',
-    url: 'https://{s}.tile.osm.org/{z}/{x}/{y}.png',
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     subdomains: ['a', 'b', 'c']
   },
   {
