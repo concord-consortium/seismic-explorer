@@ -175,17 +175,6 @@ export default class SeismicEruptionsMap extends Component {
     }
   }
 
-  renderPlateArrowsLayer() {
-    const { layers } = this.props;
-    const layer = new PlatesArrowsLayer();
-    if(layers.get('plates')){
-      return layer && <PlatesArrowsLayer />
-    } 
-    else {
-      return null
-    }
-  }  
-
   render() {
     const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
@@ -197,7 +186,7 @@ export default class SeismicEruptionsMap extends Component {
           {this.renderBaseLayer()}
           {this.renderZoomLayerSimple()}
           {this.renderZoomLayerComplex()}
-          {this.renderPlateArrowsLayer()}
+          {layers.get('platearrows') && <PlatesArrowsLayer />}
           {layers.get('volcanos') && <VolcanosLayer volcanoClick={this.handleVolcanoClick}/>}
           {layers.get('platemovement') && <PlateMovementLayer />}
           {mode !== '3d' && layers.get('earthquakes') &&
