@@ -50,9 +50,14 @@ class LayerControls extends Component {
   }
 
   handlePlateLayerChange(event) {
-    const {setPlatesVisible} = this.props
+    const {setPlatesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setPlatesVisible(visible)
+    //set arrows layers invisible when plate layer invisible
+    if (!visible) {
+      setPlateMovementVisible(false)
+      setPlateArrowsVisible(false)
+    }
     log('PlatesVisibilityChanged', {visible})
   }
 
@@ -64,8 +69,7 @@ class LayerControls extends Component {
     if (visible && this.state.exclusiveLayers) {
       setEarthquakesVisible(false)
       setPlateMovementVisible(false)
-      setPlateArrowsVisible(true)
-
+      setPlateArrowsVisible(false)
     }
   }
 
@@ -77,18 +81,17 @@ class LayerControls extends Component {
     if (visible && this.state.exclusiveLayers) {
       setVolcanosVisible(false)
       setPlateMovementVisible(false)
-      setPlateArrowsVisible(true)
-
+      setPlateArrowsVisible(false)
     }
   }
   handlePlateMovementLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
+    const {layers, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
 
     log("show plate movement", { visible })
     // show plate borders when movement layer is visible
-    setPlatesVisible(visible)
+    setPlatesVisible(visible || layers.get('platearrows'))
     if (visible && this.state.exclusiveLayers) {
       setVolcanosVisible(false)
       setEarthquakesVisible(false)
@@ -96,17 +99,16 @@ class LayerControls extends Component {
     }
   }
   handlePlateArrowLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
+    const {layers, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setPlateArrowsVisible(visible)
     log("show plate arrows", { visible })
-    // show plate borders when movement layer is visible
-    setPlatesVisible(visible)
+    // show plate borders when arrows layer is visible
+    setPlatesVisible(visible || layers.get('platemovement'))
     if (visible && this.state.exclusiveLayers) {
       setVolcanosVisible(false)
       setEarthquakesVisible(false)
       setPlateMovementVisible(false)
-
     }
   }
 
