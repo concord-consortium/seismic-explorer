@@ -5,7 +5,8 @@ import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
-import PlatesLayer from './plates-layer'
+import {PlatesLayerSimple, PlatesLayerComplex} from './plates-layer'
+import { PlatesArrowsLayer } from './plates-arrows-layer'
 import VolcanosLayer from './volcanos-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
@@ -28,6 +29,8 @@ const EARTQUAKES_DOWNLOAD_DELAY = 600 // ms
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
+
+var zoomLevel = 2;
 
 @pureRender
 export default class SeismicEruptionsMap extends Component {
@@ -110,6 +113,8 @@ export default class SeismicEruptionsMap extends Component {
   handleZoomEnd(event) {
     const map = event.target
     log('MapZoomChanged', {zoom: map.getZoom()})
+
+    zoomLevel = map.getZoom()
   }
 
   handleEarthquakeClick(event, earthquake) {
@@ -131,6 +136,7 @@ export default class SeismicEruptionsMap extends Component {
     log('Volcano Clicked', volcano)
   }
 
+
   fitBounds(bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props
     this.map.fitBounds(bounds)
@@ -146,6 +152,29 @@ export default class SeismicEruptionsMap extends Component {
     return <TileLayer key={layers.get('base') } url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution}/>
   }
 
+  //Displays layer only if zoom level is > 4
+  renderZoomLayerComplex() {
+    const { layers } = this.props;
+    const layer = new PlatesLayerComplex();
+    if(zoomLevel > 4 && layers.get('plates')){
+      return layer && <PlatesLayerComplex />
+    } 
+    else {
+      return null
+    }
+   }
+  //Displays layer only if zoom level is < 4
+  renderZoomLayerSimple() {
+    const { layers } = this.props;
+    const layer = new PlatesLayerSimple()
+    if(zoomLevel <= 4 && layers.get('plates')){
+      return layer && <PlatesLayerSimple />
+    } 
+    else {
+      return null
+    }
+  }
+
   render() {
     const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
@@ -155,10 +184,11 @@ export default class SeismicEruptionsMap extends Component {
              onLeafletZoomend={this.handleZoomEnd}
              bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
-          {layers.get('plates') && <PlatesLayer />}
+          {this.renderZoomLayerSimple()}
+          {this.renderZoomLayerComplex()}
+          {layers.get('platearrows') && <PlatesArrowsLayer />}
           {layers.get('volcanos') && <VolcanosLayer volcanoClick={this.handleVolcanoClick}/>}
           {layers.get('platemovement') && <PlateMovementLayer />}
-
           {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>

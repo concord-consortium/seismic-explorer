@@ -1,23 +1,55 @@
 import React, { Component } from 'react'
 import pureRender from 'pure-render-decorator'
 import { MapLayer } from 'react-leaflet'
-// Import plugin using imports-loader.
 import 'imports?L=leaflet!leaflet-plugins/layer/vector/KML'
 import L from 'leaflet'
 
-let _cachedKML
-function getKML() {
-  if (!_cachedKML) {
-    _cachedKML = new L.KML('plates.kml', {async: true})
+
+let _cachedKMLComplex
+export function getKMLComplex() {
+  if (!_cachedKMLComplex) {
+      _cachedKMLComplex = new L.KML('plates_modified_complex.kml', {async: true})
   }
-  return _cachedKML
+  return _cachedKMLComplex
 }
 
+let _cachedKMLSimple
+export function getKMLSimple() {
+  if (!_cachedKMLSimple) {
+      _cachedKMLSimple = new L.KML('plates_modified_simple.kml', {async: true})
+  }
+  return _cachedKMLSimple
+}
+
+
 @pureRender
-export default class PlatesLayer extends MapLayer {
+export class PlatesLayerSimple extends MapLayer {
+
+  constructor() {
+    super();
+    this.leafletElement = getKMLSimple();
+  }
+
   componentWillMount() {
     super.componentWillMount();
-    this.leafletElement = getKML()
+    this.leafletElement = getKMLSimple();
+  }
+
+  render() {
+    return null
+  }
+}
+
+export class PlatesLayerComplex extends MapLayer {
+
+  constructor() {
+    super();
+    this.leafletElement = getKMLComplex();
+  }
+
+  componentWillMount() {
+    super.componentWillMount();
+    this.leafletElement = getKMLComplex();
   }
 
   render() {

@@ -26,6 +26,8 @@ class LayerControls extends Component {
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
+    this.handlePlateArrowLayerChange = this.handlePlateArrowLayerChange.bind(this)
+
 
   }
   componentWillMount() {
@@ -48,31 +50,38 @@ class LayerControls extends Component {
   }
 
   handlePlateLayerChange(event) {
-    const {setPlatesVisible} = this.props
+    const {setPlatesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setPlatesVisible(visible)
+    //set arrows layers invisible when plate layer invisible
+    if (!visible) {
+      setPlateMovementVisible(false)
+      setPlateArrowsVisible(false)
+    }
     log('PlatesVisibilityChanged', {visible})
   }
 
   handleVolcanoLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
+    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setVolcanosVisible(visible)
     log('VolcanosVisibilityChanged', {visible})
     if (visible && this.state.exclusiveLayers) {
       setEarthquakesVisible(false)
       setPlateMovementVisible(false)
+      setPlateArrowsVisible(false)
     }
   }
 
   handleEarthquakeLayerChange(event) {
-    const {setAnimationEnabled, setFilter, filters, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
+    const {setAnimationEnabled, setFilter, filters, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible)
     log("show earthquakes", {visible})
     if (visible && this.state.exclusiveLayers) {
       setVolcanosVisible(false)
       setPlateMovementVisible(false)
+      setPlateArrowsVisible(false)
     }
     if(visible) {
       setAnimationEnabled(true)
@@ -81,15 +90,30 @@ class LayerControls extends Component {
     }
   }
   handlePlateMovementLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible} = this.props
+    const {layers, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
+
     log("show plate movement", { visible })
     // show plate borders when movement layer is visible
-    setPlatesVisible(visible)
+    setPlatesVisible(visible || layers.get('platearrows'))
     if (visible && this.state.exclusiveLayers) {
       setVolcanosVisible(false)
       setEarthquakesVisible(false)
+      setPlateArrowsVisible(false)
+    }
+  }
+  handlePlateArrowLayerChange(event) {
+    const {layers, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
+    const visible = event.target.checked
+    setPlateArrowsVisible(visible)
+    log("show plate arrows", { visible })
+    // show plate borders when arrows layer is visible
+    setPlatesVisible(visible || layers.get('platemovement'))
+    if (visible && this.state.exclusiveLayers) {
+      setVolcanosVisible(false)
+      setEarthquakesVisible(false)
+      setPlateMovementVisible(false)
     }
   }
 
@@ -129,6 +153,12 @@ class LayerControls extends Component {
             <div className='toggle-plate-movement' title="Show or hide plate movement vectors">
               <input type={inputType} id="plate-movement-toggle" checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
               <label htmlFor='plate-movement-toggle'>Plate Movement</label>
+            </div>
+          }
+          { layerConfig[config].plateArrows.available &&
+            <div className='toggle-arrow-movement' title="Show or hide plate movement arrows">
+              <input type={inputType} id="plate-arrow-toggle" checked={layers.get('platearrows')} onChange={this.handlePlateArrowLayerChange} value='platearrows' name='datatype'/>
+              <label htmlFor='plate-arrow-toggle'>Plate Arrows</label>
             </div>
           }
         </div>

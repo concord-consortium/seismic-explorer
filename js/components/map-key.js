@@ -52,13 +52,9 @@ export default class MapKey extends Component {
           <table className='boundaries'>
             <tbody>
             <tr><th colSpan='2'>Plate boundaries</th></tr>
-            <tr><td>{boundaryColor('#ffffff')}</td><td>Continental Convergent Boundary</td></tr>
-            <tr><td>{boundaryColor('#a83800')}</td><td>Continental Transform Fault</td></tr>
-            <tr><td>{boundaryColor('#ffff00')}</td><td>Continental Rift Boundary</td></tr>
-            <tr><td>{boundaryColor('#e600a9')}</td><td>Oceanic Convergent Boundary</td></tr>
-            <tr><td>{boundaryColor('#38a800')}</td><td>Oceanic Transform Fault</td></tr>
-            <tr><td>{boundaryColor('#bf2026')}</td><td>Oceanic Spreading Rift</td></tr>
-            <tr><td>{boundaryColor('#508fcb')}</td><td>Subduction Zone</td></tr>
+            <tr><td>{boundaryColor('#ff0000')}</td><td>Convergent Boundary</td></tr>
+            <tr><td>{boundaryColor('#0000ff')}</td><td>Transform Boundary</td></tr>
+            <tr><td>{boundaryColor('#00ff00')}</td><td>Divergant Boundary</td></tr>
             </tbody>
           </table>
         }
