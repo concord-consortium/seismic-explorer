@@ -22,7 +22,7 @@ const TouchExtend = L.Handler.extend({
     if (!this._map._loaded) {
       return
     }
-    const touch = e.touches[0]
+    const touch = e.touches[0] || e.changedTouches[0]
     const containerPoint = L.point(touch.clientX, touch.clientY)
     const layerPoint = this._map.containerPointToLayerPoint(containerPoint)
     const latlng = this._map.layerPointToLatLng(layerPoint)
