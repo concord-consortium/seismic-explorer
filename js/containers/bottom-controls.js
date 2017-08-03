@@ -108,16 +108,21 @@ class BottomControls extends Component {
 
   handleAnimStep(newValue) {
     const {filters, setFilter, setAnimationEnabled} = this.props
-    if (newValue > filters.get('maxTimeLimit')) {
-      newValue = filters.get('maxTimeLimit')
+    if (newValue >= filters.get('animEndTime')) {
+      newValue = filters.get('animEndTime')
       setAnimationEnabled(false)
     }
     setFilter('maxTime', newValue)
   }
 
   handlePlayPauseBtnClick() {
-    const {animationEnabled, setAnimationEnabled} = this.props
+    const {filters, setFilter, animationEnabled, setAnimationEnabled} = this.props
+    if(!animationEnabled){
+      setFilter('animEndTime', filters.get('maxTime'))
+      setFilter('maxTime', filters.get('minTime'))
+    }
     setAnimationEnabled(!animationEnabled)
+
     log(animationEnabled ? 'PauseClicked' : 'PlayClicked')
   }
 

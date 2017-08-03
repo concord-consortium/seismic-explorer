@@ -66,13 +66,18 @@ class LayerControls extends Component {
   }
 
   handleEarthquakeLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
+    const {setAnimationEnabled, setFilter, filters, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible} = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible)
     log("show earthquakes", {visible})
     if (visible && this.state.exclusiveLayers) {
       setVolcanosVisible(false)
       setPlateMovementVisible(false)
+    }
+    if(visible) {
+      setAnimationEnabled(true)
+      setFilter('animEndTime', filters.get('maxTime'))
+      setFilter('maxTime', filters.get('minTime'))
     }
   }
   handlePlateMovementLayerChange(event) {
