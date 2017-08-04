@@ -121,6 +121,9 @@ class BottomControls extends Component {
       setFilter('animEndTime', filters.get('maxTime'))
       setFilter('maxTime', filters.get('minTime'))
     }
+    else {
+      setFilter('maxTime', filters.get('animEndTime'))
+    }
     setAnimationEnabled(!animationEnabled)
 
     log(animationEnabled ? 'PauseClicked' : 'PlayClicked')
@@ -131,7 +134,6 @@ class BottomControls extends Component {
     reset()
     log('ResetClicked')
   }
-
 
   get dateMarks() {
     const {filters} = this.props

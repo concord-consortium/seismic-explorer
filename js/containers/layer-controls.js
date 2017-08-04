@@ -83,10 +83,14 @@ class LayerControls extends Component {
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
     }
+    
     if(visible) {
       setAnimationEnabled(true)
-      setFilter('animEndTime', filters.get('maxTime'))
+      setFilter('animEndTime', filters.get('maxTimeLimit'))
       setFilter('maxTime', filters.get('minTime'))
+    }
+    else {
+      setAnimationEnabled(false)
     }
   }
   handlePlateMovementLayerChange(event) {
@@ -169,6 +173,7 @@ class LayerControls extends Component {
 
 function mapStateToProps(state) {
   return {
+    filters: state.get('filters'),
     layers: state.get('layers'),
     mode: state.get('mode')
   }

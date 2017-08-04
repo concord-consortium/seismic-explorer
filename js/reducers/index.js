@@ -67,7 +67,7 @@ function filters(state = INITIAL_FILTERS, action) {
 const INITIAL_LAYERS = Map({
   base: config.mapStyle,
   plates: false,
-  earthquakes: true,
+  earthquakes: false,
   volcanos: false,
   platemovement: false,
   platearrows: false

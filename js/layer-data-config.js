@@ -3,7 +3,7 @@ module.exports = {
     plateOutlines: { available: false, visible: false },
     plateMovement:  { available: false, visible: false },
     plateArrows:  { available: false, visible: false },
-    earthquakes:  { available: true, visible: true },
+    earthquakes:  { available: true, visible: false },
     volcanos:  { available: false, visible: false },
     exclusiveLayers: true
   },
@@ -11,7 +11,7 @@ module.exports = {
     plateOutlines:  { available: true, visible: false },
     plateMovement:  { available: false, visible: false },
     plateArrows:  { available: false, visible: false },
-    earthquakes:  { available: true, visible: true },
+    earthquakes:  { available: true, visible: false },
     volcanos:  { available: false, visible: false },
     exclusiveLayers: true
   },
@@ -19,7 +19,7 @@ module.exports = {
     plateOutlines:  { available: true, visible: false },
     plateMovement:  { available: false, visible: false },
     plateArrows:  { available: false, visible: false },
-    earthquakes:  { available: true, visible: true },
+    earthquakes:  { available: true, visible: false },
     volcanos:  { available: true, visible: false },
     exclusiveLayers: true
   },
@@ -27,7 +27,7 @@ module.exports = {
     plateOutlines: { available: true, visible: false },
     plateMovement: { available: true, visible: false },
     plateArrows:  { available: true, visible: false },
-    earthquakes: { available: true, visible: true },
+    earthquakes: { available: true, visible: false },
     volcanos: { available: true, visible: false },
     exclusiveLayers: true
   },
@@ -35,7 +35,7 @@ module.exports = {
     plateOutlines: { available: true, visible: false },
     plateMovement: { available: true, visible: false },
     plateArrows:  { available: true, visible: false },
-    earthquakes: { available: true, visible: true },
+    earthquakes: { available: true, visible: false },
     volcanos: { available: true, visible: false },
     exclusiveLayers: false
   },
@@ -51,7 +51,7 @@ module.exports = {
     plateOutlines: { available: false, visible: false },
     plateMovement: { available: false, visible: false },
     plateArrows:  { available: false, visible: false },
-    earthquakes: { available: true, visible: true },
+    earthquakes: { available: true, visible: false },
     volcanos: { available: true, visible: true },
     exclusiveLayers: false
   },
@@ -59,7 +59,7 @@ module.exports = {
     plateOutlines: { available: true, visible: false },
     plateMovement: { available: false, visible: false },
     plateArrows:  { available: false, visible: false },
-    earthquakes: { available: true, visible: true },
+    earthquakes: { available: true, visible: false },
     volcanos: { available: true, visible: true },
     exclusiveLayers: false
   },
@@ -75,7 +75,7 @@ module.exports = {
     plateOutlines: { available: true, visible: true },
     plateMovement: { available: true, visible: true },
     plateArrows:  { available: true, visible: true },
-    earthquakes: { available: true, visible: true },
+    earthquakes: { available: true, visible: false },
     volcanos: { available: true, visible: true },
     exclusiveLayers: false
   }
