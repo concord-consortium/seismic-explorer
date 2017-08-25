@@ -1,9 +1,0 @@
-diff a/package.json b/package.json	(rejected hunks)
-@@ -50,6 +50,7 @@
-     "leaflet": "^0.7.7",
- <<<<<<< Updated upstream
- =======
-+    "leaflet-ajax": "^2.1.0",
-     "leaflet-arrows": "^1.0.0",
- >>>>>>> Stashed changes
-     "leaflet-plugins": "^1.5.2",

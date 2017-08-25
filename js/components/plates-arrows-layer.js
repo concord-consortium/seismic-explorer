@@ -4,7 +4,7 @@ import { MapLayer } from 'react-leaflet'
 import L from 'leaflet'
 import 'imports?L=leaflet!leaflet-plugins/layer/Marker.Rotate.js'
 
-var arrowIcon = L.icon({
+const arrowIcon = L.icon({
     iconUrl: 'plates-info.png',
     iconAnchor: [12, 12],
     popupAnchor: [0, 0],
@@ -12,13 +12,14 @@ var arrowIcon = L.icon({
 
 const arrowHeadToBodyRatio = 0.25
 const arrowAngleOffset = 0.2
+const smallArrowMax = 30
+const mediumArrowMax = 60
+
 function markerMaker(posX, posY, angle, magnitude)
 {
-  //magnitude /= 3;
-  var arrowColor 
-  
-  var rad = (angle - 90) * (Math.PI / 180)
-  //magnitude = getFixedMag(magnitude);
+  let arrowColor
+
+  let rad = (angle - 90) * (Math.PI / 180)
 
   if(magnitude == 10) {
     arrowColor = '#00ffff'
@@ -30,20 +31,18 @@ function markerMaker(posX, posY, angle, magnitude)
     arrowColor = '#ffaa00'
   }
 
-  var arrowHeadLength = magnitude * arrowHeadToBodyRatio
-  var trigLength = arrowHeadLength * Math.cos(angle)
+  let arrowHeadLength = magnitude * arrowHeadToBodyRatio
+  let trigLength = arrowHeadLength * Math.cos(angle)
 
-  var latlngs = [[posX, posY],
+  let latlngs = [[posX, posY],
                 [posX + magnitude * Math.cos(rad),posY - magnitude * Math.sin(rad)],
                 [posX + (magnitude - arrowHeadLength) * Math.cos(rad + arrowAngleOffset), posY - (magnitude - arrowHeadLength) * Math.sin(rad + arrowAngleOffset)],
                 [posX + (magnitude - arrowHeadLength) * Math.cos(rad - arrowAngleOffset), posY - (magnitude - arrowHeadLength) * Math.sin(rad - arrowAngleOffset)],
                 [posX + magnitude * Math.cos(rad),posY - magnitude * Math.sin(rad)]]
-  var polyline = new L.polygon(latlngs, {interactive: true, color: arrowColor, opacity: 1, weight: Math.abs(magnitude) / 15 + 1});
+  let polyline = new L.polygon(latlngs, {interactive: true, color: arrowColor, opacity: 1, weight: Math.abs(magnitude) / 15 + 1});
   return polyline
 }
 
-const smallArrowMax = 30
-const mediumArrowMax = 60
 function getFixedMag(magnitude){
   if(magnitude < smallArrowMax) {
     magnitude = Math.sign(magnitude) * 10;
@@ -59,7 +58,7 @@ function getFixedMag(magnitude){
 
 function divergeArrowMaker(posX, posY, angle, magnitude)
 {
-  var marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + magnitude + ' mm/yr</b>')
+  let marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + magnitude + ' mm/yr</b>')
   magnitude = getFixedMag(magnitude)
 
   return new L.LayerGroup([
@@ -71,16 +70,16 @@ function divergeArrowMaker(posX, posY, angle, magnitude)
 
 function convergeArrowMaker(posX, posY, angle, magnitude)
 {
-  var actualMag = magnitude
+  let actualMag = magnitude
   magnitude = getFixedMag(magnitude)
 
-  var rad = (angle - 180) * (Math.PI / 180)
+  let rad = (angle - 180) * (Math.PI / 180)
   posX += (magnitude)  * Math.sin(rad)
   posY += (magnitude)  * Math.cos(rad)
 
-  var arrow1 = markerMaker(posX, posY, angle, magnitude)
+  let arrow1 = markerMaker(posX, posY, angle, magnitude)
 
-  var marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + actualMag + ' mm/yr</b>')
+  let marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + actualMag + ' mm/yr</b>')
 
   return new L.LayerGroup([
     arrow1, marker
@@ -89,20 +88,20 @@ function convergeArrowMaker(posX, posY, angle, magnitude)
 
 function transformArrowMaker(posX, posY, angle, magnitude)
 {
-  var marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + magnitude + ' mm/yr</b>')
+  let marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + magnitude + ' mm/yr</b>')
 
   magnitude = getFixedMag(magnitude)
-  var rad = (angle - 180) * (Math.PI / 180)
+  let rad = (angle - 180) * (Math.PI / 180)
   posX += (magnitude / 2) * Math.cos(rad - Math.PI / 3)
   posY -= (magnitude / 2) * Math.sin(rad - Math.PI / 3)
 
-  var arrow1 = markerMaker(posX, posY, angle, magnitude)
+  let arrow1 = markerMaker(posX, posY, angle, magnitude)
 
   posX -= (magnitude / 2) * 2 * Math.cos(rad - Math.PI / 3)
   posY += (magnitude / 2) * 2 * Math.sin(rad - Math.PI / 3)
 
-  var arrow2 = markerMaker(posX, posY, angle + 180, magnitude)
-  
+  let arrow2 = markerMaker(posX, posY, angle + 180, magnitude)
+
   return new L.LayerGroup([
     arrow1, arrow2, marker
   ])
@@ -110,7 +109,7 @@ function transformArrowMaker(posX, posY, angle, magnitude)
 
 function arrowLayerCreator()
 {
-  var layer = new L.LayerGroup([
+  let layer = new L.LayerGroup([
     transformArrowMaker(55.6776, 131.4844, -15, 9),
     transformArrowMaker(37.2303, -122.1021, 140, 40),
     divergeArrowMaker(28.1495, -43.9453, -14, 23),
