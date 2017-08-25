@@ -2,7 +2,7 @@ import { Map, List, Set } from 'immutable'
 import {
   REQUEST_DATA, RESET_EARTHQUAKES, RECEIVE_EARTHQUAKES, RECEIVE_DATA, RECEIVE_ERROR,
   SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, SET_MODE,
-  SET_CROSS_SECTION_POINT, MARK_2D_VIEW_MODIFIED, MARK_3D_VIEW_MODIFIED, SET_EARTHQUAKES_VISIBLE, SET_VOLCANOS_VISIBLE, SET_PLATE_MOVEMENT_VISIBLE
+  SET_CROSS_SECTION_POINT, MARK_2D_VIEW_MODIFIED, MARK_3D_VIEW_MODIFIED, SET_EARTHQUAKES_VISIBLE, SET_VOLCANOS_VISIBLE, SET_PLATE_MOVEMENT_VISIBLE, SET_PLATE_ARROWS_VISIBLE
 } from '../actions'
 import config from '../config'
 
@@ -49,9 +49,10 @@ const INITIAL_FILTERS = Map({
   minMag: 0,
   maxMag: 10,
   minTime: config.startTime,
-  maxTime: config.startTime,
+  maxTime: config.endTime,
   minTimeLimit: config.startTime,
   maxTimeLimit: config.endTime,
+  animEndPoint: config.startTime,
   crossSection: false
 })
 function filters(state = INITIAL_FILTERS, action) {
@@ -66,9 +67,10 @@ function filters(state = INITIAL_FILTERS, action) {
 const INITIAL_LAYERS = Map({
   base: config.mapStyle,
   plates: false,
-  earthquakes: true,
+  earthquakes: false,
   volcanos: false,
-  platemovement: false
+  platemovement: false,
+  platearrows: false
 })
 function layers(state = INITIAL_LAYERS, action) {
   switch (action.type) {
@@ -82,6 +84,8 @@ function layers(state = INITIAL_LAYERS, action) {
       return state.set('volcanos', action.value)
     case SET_PLATE_MOVEMENT_VISIBLE:
       return state.set('platemovement', action.value)
+    case SET_PLATE_ARROWS_VISIBLE:
+      return state.set('platearrows', action.value)
     default:
       return state;
   }

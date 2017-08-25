@@ -108,16 +108,24 @@ class BottomControls extends Component {
 
   handleAnimStep(newValue) {
     const {filters, setFilter, setAnimationEnabled} = this.props
-    if (newValue > filters.get('maxTimeLimit')) {
-      newValue = filters.get('maxTimeLimit')
+    if (newValue >= filters.get('animEndTime')) {
+      newValue = filters.get('animEndTime')
       setAnimationEnabled(false)
     }
     setFilter('maxTime', newValue)
   }
 
   handlePlayPauseBtnClick() {
-    const {animationEnabled, setAnimationEnabled} = this.props
+    const {filters, setFilter, animationEnabled, setAnimationEnabled} = this.props
+    if(!animationEnabled){
+      setFilter('animEndTime', filters.get('maxTime'))
+      setFilter('maxTime', filters.get('minTime'))
+    }
+    else {
+      setFilter('maxTime', filters.get('animEndTime'))
+    }
     setAnimationEnabled(!animationEnabled)
+
     log(animationEnabled ? 'PauseClicked' : 'PlayClicked')
   }
 
@@ -126,7 +134,6 @@ class BottomControls extends Component {
     reset()
     log('ResetClicked')
   }
-
 
   get dateMarks() {
     const {filters} = this.props

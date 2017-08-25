@@ -53,8 +53,8 @@ export default class MapKey extends Component {
             <tbody>
             <tr><th colSpan='2'>Plate boundaries</th></tr>
             <tr><td>{boundaryColor('#ff0000')}</td><td>Convergent Boundary</td></tr>
-            <tr><td>{boundaryColor('#0000ff')}</td><td>Transform Fault</td></tr>
-            <tr><td>{boundaryColor('#00ff00')}</td><td>Rift Boundary</td></tr>
+            <tr><td>{boundaryColor('#0000ff')}</td><td>Transform Boundary</td></tr>
+            <tr><td>{boundaryColor('#00ff00')}</td><td>Divergant Boundary</td></tr>
             </tbody>
           </table>
         }

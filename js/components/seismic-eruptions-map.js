@@ -5,7 +5,8 @@ import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
-import {PlatesLayerS, PlatesLayerC} from './plates-layer'
+import {PlatesLayerSimple, PlatesLayerComplex} from './plates-layer'
+import { PlatesArrowsLayer } from './plates-arrows-layer'
 import VolcanosLayer from './volcanos-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
@@ -152,22 +153,22 @@ export default class SeismicEruptionsMap extends Component {
   }
 
   //Displays layer only if zoom level is > 4
-  renderZoomLayerC() {
+  renderZoomLayerComplex() {
     const { layers } = this.props;
-    const layer = new PlatesLayerC();
+    const layer = new PlatesLayerComplex();
     if(zoomLevel > 4 && layers.get('plates')){
-      return layer && <PlatesLayerC />
+      return layer && <PlatesLayerComplex />
     } 
     else {
       return null
     }
    }
   //Displays layer only if zoom level is < 4
-  renderZoomLayerS() {
+  renderZoomLayerSimple() {
     const { layers } = this.props;
-    const layer = new PlatesLayerS()
+    const layer = new PlatesLayerSimple()
     if(zoomLevel <= 4 && layers.get('plates')){
-      return layer && <PlatesLayerS />
+      return layer && <PlatesLayerSimple />
     } 
     else {
       return null
@@ -183,12 +184,11 @@ export default class SeismicEruptionsMap extends Component {
              onLeafletZoomend={this.handleZoomEnd}
              bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
-          {this.renderZoomLayerS()}
-          {this.renderZoomLayerC()}
-          {/*{layers.get('plates') && <PlatesLayer />}*/}
+          {this.renderZoomLayerSimple()}
+          {this.renderZoomLayerComplex()}
+          {layers.get('platearrows') && <PlatesArrowsLayer />}
           {layers.get('volcanos') && <VolcanosLayer volcanoClick={this.handleVolcanoClick}/>}
           {layers.get('platemovement') && <PlateMovementLayer />}
-
           {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
