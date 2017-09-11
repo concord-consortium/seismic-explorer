@@ -19,7 +19,7 @@ class OverlayControls extends Component {
   }
   componentDidUpdate() {
     const {layers, crossSectionPoints} = this.props
-    if (layers.get('volcanos') && !layers.get('earthquakes') && crossSectionPoints) {
+    if (layers.get('volcanoes') && !layers.get('earthquakes') && crossSectionPoints) {
       this.cancelCrossSectionDrawMode()
     }
   }
@@ -65,7 +65,7 @@ class OverlayControls extends Component {
   render() {
     const { mode, layers, changedViews, resetView, earthquakesCount, magnitudeCutOff} = this.props
     const canOpen3D = this.canOpen3D()
-    const volcanoMode = layers.get('volcanos')
+    const volcanoMode = layers.get('volcanoes')
     const earthquakeMode = layers.get('earthquakes')
     const viewChanged = mode !== '3d' && changedViews.has('2d') || mode === '3d' && changedViews.has('3d')
     return (
@@ -99,7 +99,7 @@ class OverlayControls extends Component {
         </div>
         <div className='controls top right'>
           <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'}
-            earthquakesCount={earthquakesCount} earthquakes={layers.get('earthquakes')} magnitudeCutOff={magnitudeCutOff} volcanos={layers.get('volcanos')}/>
+            earthquakesCount={earthquakesCount} earthquakes={layers.get('earthquakes')} magnitudeCutOff={magnitudeCutOff} volcanoes={layers.get('volcanoes')}/>
         </div>
       </div>
     )

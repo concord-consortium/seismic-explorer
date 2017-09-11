@@ -30,7 +30,7 @@ export default class {
     })
 
     this.root = new THREE.Points(geometry, material)
-    this._renderedVolcanos = []
+    this._renderedVolcanoes = []
   }
 
   destroy() {
@@ -45,8 +45,8 @@ export default class {
   }
 
   volcanoAt(x, y) {
-    for (let i = this._renderedVolcanos.length - 1; i >= 0; i--) {
-      if (this._renderedVolcanos[i].hitTest(x, y)) return this._renderedVolcanos[i].data
+    for (let i = this._renderedVolcanoes.length - 1; i >= 0; i--) {
+      if (this._renderedVolcanoes[i].hitTest(x, y)) return this._renderedVolcanoes[i].data
     }
     return null
   }
@@ -59,8 +59,8 @@ export default class {
 
   invalidatePositions(latLngToPoint) {
     this._latLngToPoint = latLngToPoint
-    for (let i = 0, len = this._renderedVolcanos.length; i < len; i++) {
-      const volcano = this._renderedVolcanos[i]
+    for (let i = 0, len = this._renderedVolcanoes.length; i < len; i++) {
+      const volcano = this._renderedVolcanoes[i]
       const volcanoData = this._currentData[i]
       const point = this._latLngToPoint(volcanoData.position)
 
@@ -74,29 +74,29 @@ export default class {
     if (!this._dataToProcess) return
     let data = this._dataToProcess
     if (data.length > MAX_COUNT) {
-      console.warn('Too many volcanos! Some volcanos will not be displayed.')
+      console.warn('Too many volcanoes! Some volcanoes will not be displayed.')
       data = data.splice(0, MAX_COUNT)
     }
     const attributes = this.root.geometry.attributes
 
     for (let i = 0, length = data.length; i < length; i++) {
       const volcanoData = data[i]
-      if (!this._renderedVolcanos[i] || this._renderedVolcanos[i].id !== eqData.id) {
+      if (!this._renderedVolcanoes[i] || this._renderedVolcanoes[i].id !== eqData.id) {
         const point = this._latLngToPoint(volcanoData.position)
 
-        this._renderedVolcanos[i] = new Volcano(volcanoData, i, attributes)
-        const volcano = this._renderedVolcanos[i]
+        this._renderedVolcanoes[i] = new Volcano(volcanoData, i, attributes)
+        const volcano = this._renderedVolcanoes[i]
         volcano.setSizeAttr(volcano.size)
         volcano.setColorAttr(volcano.color)
         volcano.setPositionAttr(point)
       }
-      this._renderedVolcanos[i].targetVisibility = 1//volcanoData.visible ? 1 : 0
+      this._renderedVolcanoes[i].targetVisibility = 1//volcanoData.visible ? 1 : 0
     }
     // Reset old data.
-    for (let i = data.length, length = this._renderedVolcanos.length; i < length; i++) {
-      this._renderedVolcanos[i].destroy()
+    for (let i = data.length, length = this._renderedVolcanoes.length; i < length; i++) {
+      this._renderedVolcanoes[i].destroy()
     }
-    this._renderedVolcanos.length = data.length
+    this._renderedVolcanoes.length = data.length
     this._currentData = data
     this._dataToProcess = null
   }

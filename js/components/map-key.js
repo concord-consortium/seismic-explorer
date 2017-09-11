@@ -28,7 +28,7 @@ export default class MapKey extends Component {
   }
 
   render() {
-    const { showBoundariesInfo, volcanos, earthquakes} = this.props
+    const { showBoundariesInfo, volcanoes, earthquakes} = this.props
     const { opened } = this.state
     return !opened ?
       <OverlayButton title='Information about the symbols used on this map' onClick={this.open}>Key</OverlayButton>
@@ -62,8 +62,8 @@ export default class MapKey extends Component {
             </tbody>
           </table>
         }
-        { volcanos &&
-          <table className='volcanos'>
+        { volcanoes &&
+          <table className='volcanoes'>
             <tbody>
             <tr><th colSpan='2'>Volcano - Time Since Last Eruption</th></tr>
             <tr><td>{volcanoColor('#ff6600')}</td><td>Up to 100 years</td></tr>

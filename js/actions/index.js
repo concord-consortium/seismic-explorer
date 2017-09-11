@@ -16,7 +16,7 @@ export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
 export const MARK_2D_VIEW_MODIFIED = 'MARK_2D_VIEW_MODIFIED'
 export const MARK_3D_VIEW_MODIFIED = 'MARK_3D_VIEW_MODIFIED'
 export const SET_EARTHQUAKES_VISIBLE = 'SET_EARTHQUAKES_VISIBLE'
-export const SET_VOLCANOS_VISIBLE = 'SET_VOLCANOS_VISIBLE'
+export const SET_VOLCANOES_VISIBLE = 'SET_VOLCANOES_VISIBLE'
 export const SET_PLATE_MOVEMENT_VISIBLE = 'SET_PLATE_MOVEMENT_VISIBLE'
 
 const api = new EarthquakeDataAPI()
@@ -111,9 +111,9 @@ export function setPlatesVisible(value) {
   }
 }
 
-export function setVolcanosVisible(value) {
+export function setVolcanoesVisible(value) {
   return {
-    type: SET_VOLCANOS_VISIBLE,
+    type: SET_VOLCANOES_VISIBLE,
     value
   }
 }

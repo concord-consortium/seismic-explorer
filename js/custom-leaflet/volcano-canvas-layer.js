@@ -1,6 +1,6 @@
 import { CanvasLayer } from './canvas-layer'
 import { DomUtil, DomEvent } from 'leaflet'
-import VolcanoView from '../volcanos/volcano-view'
+import VolcanoView from '../volcanoes/volcano-view'
 
 export const VolcanoCanvasLayer = CanvasLayer.extend({
   initialize: function (options) {
@@ -15,7 +15,7 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
   _initCanvas: function () {
     this.externalView = new VolcanoView()
     CanvasLayer.prototype._initCanvas.call(this, this.externalView.canvas)
-    DomUtil.addClass(this._canvas, 'volcanos-canvas-layer')
+    DomUtil.addClass(this._canvas, 'volcanoes-canvas-layer')
   },
 
   onAdd: function (map) {
