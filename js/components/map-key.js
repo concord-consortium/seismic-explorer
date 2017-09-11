@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import { magnitudeToRadius, depthToColor } from '../earthquake-properties'
 import OverlayButton from './overlay-button'
 import log from '../logger'
@@ -7,8 +6,7 @@ import log from '../logger'
 import '../../css/map-key.less'
 import '../../css/modal-style.less'
 
-@pureRender
-export default class MapKey extends Component {
+export default class MapKey extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {

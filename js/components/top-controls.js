@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import BasicModal from './basic-modal'
 import ShareModalContent from './share-modal-content'
 import AboutModalContent from './about-modal-content'
@@ -12,8 +11,7 @@ function reloadPage() {
   location.reload()
 }
 
-@pureRender
-export default class TopControls extends Component {
+export default class TopControls extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {

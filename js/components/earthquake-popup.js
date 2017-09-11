@@ -1,10 +1,8 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
-import { MapLayer, Marker, Popup } from 'react-leaflet'
+import React, { PureComponent } from 'react'
+import { Marker, Popup } from 'react-leaflet'
 import { getCachedInvisibleIcon } from '../custom-leaflet/icons'
 
-@pureRender
-export default class EarthquakePopup extends Component {
+export default class EarthquakePopup extends PureComponent {
   constructor(props) {
     super(props)
     this.onPopupClose = this.onPopupClose.bind(this)

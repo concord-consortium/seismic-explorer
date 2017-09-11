@@ -1,12 +1,10 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 
 import '../../css/loading-icon.less'
 
 const STEPS = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330]
 
-@pureRender
-export default class LoadingIcon extends Component {
+export default class LoadingIcon extends PureComponent {
   render() {
     return (
       <div className='loading-icon-container'>

@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React from 'react'
 import { MapLayer } from 'react-leaflet'
 import L from 'leaflet'
 import 'imports?L=leaflet!leaflet-plugins/layer/Marker.Rotate.js'
@@ -149,7 +148,6 @@ function arrowLayerCreator()
   return layer
 }
 
-@pureRender
 export class PlatesArrowsLayer extends MapLayer {
 
   constructor() {

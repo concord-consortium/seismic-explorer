@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React from 'react'
 import { MapLayer } from 'react-leaflet'
 import 'imports?L=leaflet!leaflet-plugins/layer/vector/KML'
 import L from 'leaflet'
@@ -21,8 +20,6 @@ export function getKMLSimple() {
   return _cachedKMLSimple
 }
 
-
-@pureRender
 export class PlatesLayerSimple extends MapLayer {
 
   constructor() {

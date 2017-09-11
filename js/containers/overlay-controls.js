@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
 import MapKey from '../components/map-key'
@@ -8,8 +7,7 @@ import log from '../logger'
 
 import '../../css/overlay-controls.less'
 
-@pureRender
-class OverlayControls extends Component {
+class OverlayControls extends PureComponent {
   constructor(props) {
     super(props)
     this.set3DMode = this.set3DMode.bind(this)

@@ -6,6 +6,9 @@
     "type": "git",
     "url": "git+https://github.com/concord-consortium/seismic-explorer.git"
   },
+  "scripts": {
+    "lint": "standard --fix js/components/**/*.js"
+  },
   "keywords": [
     "seismic",
     "eruptions",
@@ -33,6 +36,7 @@
     "less": "^2.6.0",
     "less-loader": "^2.2.2",
     "raw-loader": "^0.5.1",
+    "standard": "^10.0.2",
     "style-loader": "^0.13.0",
     "transform-loader": "^0.2.3",
     "url-loader": "^0.5.7",
@@ -40,7 +44,6 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-polyfill": "^6.6.1",
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
@@ -49,7 +52,6 @@
     "jquery": "^2.2.2",
     "leaflet": "^0.7.7",
     "leaflet-plugins": "^1.5.2",
-    "pure-render-decorator": "^1.1.0",
     "rainbowvis.js": "^1.0.1",
     "rc-slider": "^3.5.1",
     "react": "^15.0.1",

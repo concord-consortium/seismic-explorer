@@ -1,10 +1,8 @@
-import React, {Component} from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 
 import '../../css/about-modal-content.less'
 
-@pureRender
-export default class AboutModalContent extends Component {
+export default class AboutModalContent extends PureComponent {
   render() {
     return (
       <div className='about-modal-content'>

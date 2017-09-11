@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import {connect} from 'react-redux'
 import * as actions from '../actions'
 import AnimationButtons from '../components/animation-buttons'
@@ -59,8 +58,7 @@ function logMagSliderChange(value) {
   log('MagnitudeSliderChanged', {minMag: value[0], maxMag: value[1]})
 }
 
-@pureRender
-class BottomControls extends Component {
+class BottomControls extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {

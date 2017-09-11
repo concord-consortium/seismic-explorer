@@ -1,10 +1,8 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 
 import '../../css/overlay-button.less'
 
-@pureRender
-export default class OverlayButton extends Component {
+export default class OverlayButton extends PureComponent {
   render() {
     const { onClick, disabled, children, icon, className, title } = this.props
     return (

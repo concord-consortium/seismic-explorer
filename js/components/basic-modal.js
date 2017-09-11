@@ -1,12 +1,10 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import Modal from 'react-modal'
 
 import '../../css/basic-modal.less'
 import '../../css/modal-style.less'
 
-@pureRender
-export default class BasicModal extends Component {
+export default class BasicModal extends PureComponent {
   render() {
     const { isOpen, close, children, className, contentLabel } = this.props
     let contentLabelValue = contentLabel ? contentLabel : "";

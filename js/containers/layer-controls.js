@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import {connect} from 'react-redux'
 import * as actions from '../actions'
 import OverlayButton from '../components/overlay-button'
@@ -9,8 +8,7 @@ import layerConfig from '../layer-data-config'
 import '../../css/layer-controls.less'
 import '../../css/settings-controls.less'
 
-@pureRender
-class LayerControls extends Component {
+class LayerControls extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {

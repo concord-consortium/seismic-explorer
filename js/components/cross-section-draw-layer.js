@@ -1,15 +1,13 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import { LayerGroup, Marker, Polyline, Polygon } from 'react-leaflet'
-import { circleIcon, getCachedCircleIcon } from '../custom-leaflet/icons'
+import { circleIcon } from '../custom-leaflet/icons'
 import crossSectionRectangle, { pointToArray } from '../core/cross-section-rectangle'
 
 const MOUSE_DOWN = 'mousedown touchstart'
 const MOUSE_MOVE = 'mousemove touchmove'
 const MOVE_UP = 'mouseup touchend'
 
-@pureRender
-export default class CrossSectionLayer extends Component {
+export default class CrossSectionLayer extends PureComponent {
   constructor(props) {
     super(props)
     this.drawStart = this.drawStart.bind(this)

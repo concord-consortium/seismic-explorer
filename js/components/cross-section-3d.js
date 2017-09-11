@@ -2,12 +2,12 @@ import React from 'react'
 import CrossSection from '../3d/cross-section-view'
 
 export default class CrossSection3D extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
-    this.rafCallback = this.rafCallback.bind(this);
+    this.rafCallback = this.rafCallback.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const { mark3DViewModified } = this.props
     this.externalView = new CrossSection(this.refs.container)
     this.externalView.setProps(this.props)
@@ -19,33 +19,33 @@ export default class CrossSection3D extends React.Component {
     })
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     cancelAnimationFrame(this._rafId)
     this.externalView.destroy()
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     this.externalView.setProps(nextProps)
   }
 
-  shouldComponentUpdate() {
+  shouldComponentUpdate () {
     // Never update component as it's based on canvas.
     return false
   }
 
   // requestAnimationFrame callback.
-  rafCallback(timestamp) {
+  rafCallback (timestamp) {
     this.externalView.render(timestamp)
     this._rafId = requestAnimationFrame(this.rafCallback)
   }
 
-  resetCamera() {
+  resetCamera () {
     const { mark3DViewModified } = this.props
     this.externalView.resetCamera()
     mark3DViewModified(false)
   }
 
-  render() {
+  render () {
     return (
       <div ref='container' className='cross-section-3d' style={{width: '100%', height: '100%'}}>
         {/* Canvas will be inserted here by the external view. */}

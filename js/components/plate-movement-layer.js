@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React from 'react'
 import { MapLayer } from 'react-leaflet'
 import { plateMovementCanvasLayer } from '../custom-leaflet/plate-movement-canvas-layer'
 import points from '../data/plate-movement-unavco.js'
@@ -35,7 +34,6 @@ function getPoints(map) {
   return _cachedPoints
 }
 
-@pureRender
 export default class PlateMovementCanvasLayer extends MapLayer {
   componentWillMount() {
     super.componentWillMount();

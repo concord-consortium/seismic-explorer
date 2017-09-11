@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 
 import '../../css/share-modal-content.less'
 
@@ -11,8 +10,7 @@ function getIframeString() {
   return `<iframe width="900px" height="600px" frameborder="no" scrolling="no" allowfullscreen="true" src="${getURL()}"></iframe>`
 }
 
-@pureRender
-export default class ShareModalContent extends Component {
+export default class ShareModalContent extends PureComponent {
   render() {
     return (
       <div className='share-modal-content'>

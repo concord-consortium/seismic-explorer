@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React from 'react'
 import { MapLayer } from 'react-leaflet'
 import { volcanoCanvasLayer } from '../custom-leaflet/volcano-canvas-layer'
 import volcanoes from '../data/volcanoes_full.js'
@@ -43,7 +42,6 @@ function getVolcanoes(map) {
   return _cachedVolcanoes
 }
 
-@pureRender
 export default class VolcanoLayer extends MapLayer {
   componentWillMount() {
     super.componentWillMount();

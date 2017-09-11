@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import { Map, TileLayer } from 'react-leaflet'
 import { Circle } from 'leaflet'
 import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
@@ -32,8 +31,7 @@ addTouchSupport()
 
 var zoomLevel = 2;
 
-@pureRender
-export default class SeismicEruptionsMap extends Component {
+export default class SeismicEruptionsMap extends PureComponent {
   constructor(props) {
     super(props)
     this.state = {

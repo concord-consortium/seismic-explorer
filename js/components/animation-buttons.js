@@ -1,12 +1,10 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 
 import '../../css/animation-buttons.less'
 
 const UPDATE_INTERVAL = 150 // ms
 
-@pureRender
-export default class AnimationButtons extends Component {
+export default class AnimationButtons extends PureComponent {
   constructor(props) {
     super(props)
     this.animFrameID = null

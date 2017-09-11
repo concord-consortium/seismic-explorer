@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import pureRender from 'pure-render-decorator'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
 import TopControls from '../components/top-controls'
@@ -17,8 +16,7 @@ import 'font-awesome/css/font-awesome.css'
 
 const APP_CLASS_NAME = 'seismic-explorer-app'
 
-@pureRender
-class App extends Component {
+class App extends PureComponent {
   constructor(props) {
     super(props)
     const dataLayerConfig = this.props.location.query.p && layerConfig[this.props.location.query.p] ? this.props.location.query.p : 5
