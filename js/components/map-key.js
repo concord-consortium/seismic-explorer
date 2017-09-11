@@ -52,20 +52,20 @@ export default class MapKey extends Component {
           <table className='boundaries'>
             <tbody>
             <tr><th colSpan='2'>Plate boundaries</th></tr>
-            <tr><td>{boundaryColor('#ffffff')}</td><td>Continental Convergent Boundary</td></tr>
-            <tr><td>{boundaryColor('#a83800')}</td><td>Continental Transform Fault</td></tr>
-            <tr><td>{boundaryColor('#ffff00')}</td><td>Continental Rift Boundary</td></tr>
-            <tr><td>{boundaryColor('#e600a9')}</td><td>Oceanic Convergent Boundary</td></tr>
-            <tr><td>{boundaryColor('#38a800')}</td><td>Oceanic Transform Fault</td></tr>
-            <tr><td>{boundaryColor('#bf2026')}</td><td>Oceanic Spreading Rift</td></tr>
-            <tr><td>{boundaryColor('#508fcb')}</td><td>Subduction Zone</td></tr>
+            <tr><td>{boundaryColor('#ffffff')}</td><td>Continental convergent boundary</td></tr>
+            <tr><td>{boundaryColor('#a83800')}</td><td>Continental transform fault</td></tr>
+            <tr><td>{boundaryColor('#ffff00')}</td><td>Continental rift boundary</td></tr>
+            <tr><td>{boundaryColor('#e600a9')}</td><td>Oceanic convergent boundary</td></tr>
+            <tr><td>{boundaryColor('#38a800')}</td><td>Oceanic transform fault</td></tr>
+            <tr><td>{boundaryColor('#bf2026')}</td><td>Oceanic spreading rift</td></tr>
+            <tr><td>{boundaryColor('#508fcb')}</td><td>Subduction zone</td></tr>
             </tbody>
           </table>
         }
         { volcanoes &&
           <table className='volcanoes'>
             <tbody>
-            <tr><th colSpan='2'>Volcano - Time Since Last Eruption</th></tr>
+            <tr><th colSpan='2'>Volcano - time since last eruption</th></tr>
             <tr><td>{volcanoColor('#ff6600')}</td><td>Up to 100 years</td></tr>
             <tr><td>{volcanoColor('#d26f2d')}</td><td>100-400 years</td></tr>
             <tr><td>{volcanoColor('#ac7753')}</td><td>400-1600 years</td></tr>
