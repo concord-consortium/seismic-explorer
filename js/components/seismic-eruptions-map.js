@@ -7,7 +7,7 @@ import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
 import {PlatesLayerSimple, PlatesLayerComplex} from './plates-layer'
 import { PlatesArrowsLayer } from './plates-arrows-layer'
-import VolcanosLayer from './volcanos-layer'
+import VolcanoesLayer from './volcanoes-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
@@ -187,7 +187,7 @@ export default class SeismicEruptionsMap extends Component {
           {this.renderZoomLayerSimple()}
           {this.renderZoomLayerComplex()}
           {layers.get('platearrows') && <PlatesArrowsLayer />}
-          {layers.get('volcanos') && <VolcanosLayer volcanoClick={this.handleVolcanoClick}/>}
+          {layers.get('volcanoes') && <VolcanoesLayer volcanoClick={this.handleVolcanoClick}/>}
           {layers.get('platemovement') && <PlateMovementLayer />}
           {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */

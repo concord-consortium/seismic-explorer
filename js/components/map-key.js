@@ -28,7 +28,7 @@ export default class MapKey extends Component {
   }
 
   render() {
-    const { showBoundariesInfo, volcanos, earthquakes} = this.props
+    const { showBoundariesInfo, volcanoes, earthquakes} = this.props
     const { opened } = this.state
     return !opened ?
       <OverlayButton title='Information about the symbols used on this map' onClick={this.open}>Key</OverlayButton>
@@ -52,16 +52,16 @@ export default class MapKey extends Component {
           <table className='boundaries'>
             <tbody>
             <tr><th colSpan='2'>Plate boundaries</th></tr>
-            <tr><td>{boundaryColor('#ff0000')}</td><td>Convergent Boundary</td></tr>
-            <tr><td>{boundaryColor('#0000ff')}</td><td>Transform Boundary</td></tr>
-            <tr><td>{boundaryColor('#00ff00')}</td><td>Divergant Boundary</td></tr>
+            <tr><td>{boundaryColor('#ff0000')}</td><td>Convergent boundary</td></tr>
+            <tr><td>{boundaryColor('#0000ff')}</td><td>Transform boundary</td></tr>
+            <tr><td>{boundaryColor('#00ff00')}</td><td>Divergent boundary</td></tr>
             </tbody>
           </table>
         }
-        { volcanos &&
-          <table className='volcanos'>
+        { volcanoes &&
+          <table className='volcanoes'>
             <tbody>
-            <tr><th colSpan='2'>Volcano - Time Since Last Eruption</th></tr>
+            <tr><th colSpan='2'>Volcano - time since last eruption</th></tr>
             <tr><td>{volcanoColor('#ff6600')}</td><td>Up to 100 years</td></tr>
             <tr><td>{volcanoColor('#d26f2d')}</td><td>100-400 years</td></tr>
             <tr><td>{volcanoColor('#ac7753')}</td><td>400-1600 years</td></tr>

@@ -31,9 +31,9 @@ class App extends Component {
   componentWillMount() {
 
     const {dataLayerConfig} = this.state
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible} = this.props
+    const {setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible} = this.props
     setPlateMovementVisible(layerConfig[dataLayerConfig].plateMovement.visible)
-    setVolcanosVisible(layerConfig[dataLayerConfig].volcanos.visible)
+    setVolcanoesVisible(layerConfig[dataLayerConfig].volcanoes.visible)
     setEarthquakesVisible(layerConfig[dataLayerConfig].earthquakes.visible)
   }
   componentDidMount() {

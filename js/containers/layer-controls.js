@@ -3,7 +3,6 @@ import pureRender from 'pure-render-decorator'
 import {connect} from 'react-redux'
 import * as actions from '../actions'
 import OverlayButton from '../components/overlay-button'
-import {layerInfo} from '../map-layer-tiles'
 import log from '../logger'
 import layerConfig from '../layer-data-config'
 
@@ -62,10 +61,10 @@ class LayerControls extends Component {
   }
 
   handleVolcanoLayerChange(event) {
-    const {setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
+    const {setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
-    setVolcanosVisible(visible)
-    log('VolcanosVisibilityChanged', {visible})
+    setVolcanoesVisible(visible)
+    log('VolcanoesVisibilityChanged', {visible})
     if (visible && this.state.exclusiveLayers) {
       setEarthquakesVisible(false)
       setPlateMovementVisible(false)
@@ -74,12 +73,12 @@ class LayerControls extends Component {
   }
 
   handleEarthquakeLayerChange(event) {
-    const {setAnimationEnabled, setFilter, filters, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
+    const {setAnimationEnabled, setFilter, filters, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible)
     log("show earthquakes", {visible})
     if (visible && this.state.exclusiveLayers) {
-      setVolcanosVisible(false)
+      setVolcanoesVisible(false)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
     }
@@ -94,7 +93,7 @@ class LayerControls extends Component {
     }
   }
   handlePlateMovementLayerChange(event) {
-    const {layers, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
+    const {layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
 
@@ -102,20 +101,20 @@ class LayerControls extends Component {
     // show plate borders when movement layer is visible
     setPlatesVisible(visible || layers.get('platearrows'))
     if (visible && this.state.exclusiveLayers) {
-      setVolcanosVisible(false)
+      setVolcanoesVisible(false)
       setEarthquakesVisible(false)
       setPlateArrowsVisible(false)
     }
   }
   handlePlateArrowLayerChange(event) {
-    const {layers, setEarthquakesVisible, setVolcanosVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
+    const {layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setPlateArrowsVisible(visible)
     log("show plate arrows", { visible })
     // show plate borders when arrows layer is visible
     setPlatesVisible(visible || layers.get('platemovement'))
     if (visible && this.state.exclusiveLayers) {
-      setVolcanosVisible(false)
+      setVolcanoesVisible(false)
       setEarthquakesVisible(false)
       setPlateMovementVisible(false)
     }
@@ -140,11 +139,11 @@ class LayerControls extends Component {
           </div>
           }
           { layerConfig[config].plateOutlines.available && <div><hr /></div> }
-          { layerConfig[config].volcanos.available &&
-            <div title="Show Volcanos">
-              <input type={inputType} checked={layers.get('volcanos')} onChange={this.handleVolcanoLayerChange}
-                id='volcano-box' value='volcanos' name='datatype' />
-              <label htmlFor='volcano-box'>Volcanos</label>
+          { layerConfig[config].volcanoes.available &&
+            <div title="Show Volcanoes">
+              <input type={inputType} checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange}
+                id='volcano-box' value='volcanoes' name='datatype' />
+              <label htmlFor='volcano-box'>Volcanoes</label>
             </div>
           }
           { layerConfig[config].earthquakes.available &&
