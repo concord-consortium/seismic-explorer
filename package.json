@@ -7,7 +7,12 @@
     "url": "git+https://github.com/concord-consortium/seismic-explorer.git"
   },
   "scripts": {
-    "lint": "standard --fix js/components/**/*.js"
+    "lint": "standard --fix js/**/*.js"
+  },
+  "standard": {
+    "ignore": [
+      "js/data"
+    ]
   },
   "keywords": [
     "seismic",

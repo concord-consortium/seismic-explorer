@@ -8,7 +8,7 @@ const TARGET_ANGLE = Math.PI * 0.485
 const TARGET_Z_OFFSET = 85
 
 export default class Camera {
-  constructor(domElement, controlsEnabled) {
+  constructor (domElement, controlsEnabled) {
     // Dimensions will be set in .resize() call.
     this.camera = new THREE.OrthographicCamera(0, 0, 0, 0, 0.01, 1e6)
     // Change default up orientation that affects orbit controls.
@@ -24,24 +24,24 @@ export default class Camera {
     this.tweens = new TweenManager()
   }
 
-  destroy() {
+  destroy () {
     this.tweens.stopAll()
     this.controls.dispose()
   }
 
-  update() {
+  update () {
     this.tweens.update()
     this.controls.update()
   }
 
-  onChange(callback) {
+  onChange (callback) {
     this.controls.addEventListener('change', () => {
       // Don't call onChange callback when we animate camera. Do it only when user modifies it.
       if (!this.tweens.animationInProgress) callback()
     })
   }
-  
-  setSize(width, height) {
+
+  setSize (width, height) {
     const w2 = width * 0.5
     const h2 = height * 0.5
     this.camera.left = -w2
@@ -51,7 +51,7 @@ export default class Camera {
     this.camera.updateProjectionMatrix()
   }
 
-  setInitialCamPosition(x, y) {
+  setInitialCamPosition (x, y) {
     this.camera.position.x = x
     this.camera.position.y = y
     this.camera.position.z = DISTANCE_FROM_TARGET
@@ -60,7 +60,7 @@ export default class Camera {
     this.controls.target = new THREE.Vector3(x, y, 0)
   }
 
-  lookAtCrossSection(crossSectionPoints, finalZoom, latLngDepthToPoint) {
+  lookAtCrossSection (crossSectionPoints, finalZoom, latLngDepthToPoint) {
     this.tweens.stopAll()
 
     const p1 = latLngDepthToPoint(crossSectionPoints.get(0))
@@ -95,14 +95,14 @@ export default class Camera {
     t3.chain(t4)
   }
 
-  reset() {
+  reset () {
     // Reset is possible only when the initial animation has finished and we calculated the final view.
     if (!this._finalSideView || !this._finalZoom) return
     this.tweens.add(this.animateCamPos(this._finalSideView)).start()
     this.tweens.add(this.animateZoom(this._finalZoom)).start()
   }
 
-  animateCamAndTargetPos(finalCamPos, targetZ) {
+  animateCamAndTargetPos (finalCamPos, targetZ) {
     return new TWEEN.Tween(this.camera.position)
       .to(finalCamPos, 750)
       .easing(TWEEN.Easing.Cubic.InOut)
@@ -115,7 +115,7 @@ export default class Camera {
       })
   }
 
-  animateCamPos(finalCamPos) {
+  animateCamPos (finalCamPos) {
     return new TWEEN.Tween(this.camera.position)
       .to(finalCamPos, 750)
       .easing(TWEEN.Easing.Cubic.InOut)
@@ -124,7 +124,7 @@ export default class Camera {
       })
   }
 
-  animateZoom(finalCamZoom) {
+  animateZoom (finalCamZoom) {
     return new TWEEN.Tween(this.camera)
       .to({zoom: finalCamZoom}, 750)
       .easing(TWEEN.Easing.Cubic.InOut)
@@ -134,11 +134,11 @@ export default class Camera {
       })
   }
 
-  get zoom() {
+  get zoom () {
     return this.camera.zoom
   }
 
-  get polarAngle() {
+  get polarAngle () {
     // this.controls.getPolarAngle() seems to be broken in r75
     const v1 = new THREE.Vector3(0, 0, 1)
     const v2 = this.camera.position.clone().sub(this.controls.target).normalize()
@@ -146,25 +146,25 @@ export default class Camera {
   }
 }
 
-function leftPoint(point1, point2) {
+function leftPoint (point1, point2) {
   return point1.x < point2.x ? point1 : point2
 }
 
-function rightPoint(point1, point2) {
+function rightPoint (point1, point2) {
   return point1.x < point2.x ? point2 : point1
 }
 
-function center(pLeft, pRight) {
+function center (pLeft, pRight) {
   return pLeft.clone().lerp(pRight, 0.5).setZ(DISTANCE_FROM_TARGET)
 }
 
-function side(pLeft, pRight, z) {
+function side (pLeft, pRight, z) {
   const c = center(pLeft, pRight)
   const dir = pLeft.clone().sub(pRight).applyAxisAngle(new THREE.Vector3(0, 0, 1), TARGET_ANGLE).setLength(DISTANCE_FROM_TARGET)
   return c.add(dir).setZ(z)
 }
 
-function azimuthAngle(pLeft, pRight, type) {
+function azimuthAngle (pLeft, pRight, type) {
   const v1 = type === 'min' ? pLeft.clone().sub(pRight) : pRight.clone().sub(pLeft)
   const v2 = new THREE.Vector3(0, -1, 0)
   const sign = type === 'min' ? -1 : 1

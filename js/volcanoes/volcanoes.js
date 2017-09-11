@@ -6,7 +6,7 @@ import Volcano from './volcano'
 const MAX_COUNT = 50000
 
 export default class {
-  constructor() {
+  constructor () {
     const positions = new Float32Array(MAX_COUNT * 3)
     const colors = new Float32Array(MAX_COUNT * 3)
     const sizes = new Float32Array(MAX_COUNT)
@@ -26,38 +26,38 @@ export default class {
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      alphaTest: 0.5,
+      alphaTest: 0.5
     })
 
     this.root = new THREE.Points(geometry, material)
     this._renderedVolcanoes = []
   }
 
-  destroy() {
+  destroy () {
     this.root.geometry.dispose()
     this.root.material.dispose()
     this.texture.dispose()
   }
 
-  setProps(data, latLngToPoint) {
+  setProps (data, latLngToPoint) {
     this._dataToProcess = data
     this._latLngToPoint = latLngToPoint
   }
 
-  volcanoAt(x, y) {
+  volcanoAt (x, y) {
     for (let i = this._renderedVolcanoes.length - 1; i >= 0; i--) {
       if (this._renderedVolcanoes[i].hitTest(x, y)) return this._renderedVolcanoes[i].data
     }
     return null
   }
 
-  update(progress) {
+  update (progress) {
     let transitionInProgress = false
     this._processNewData()
     return transitionInProgress
   }
 
-  invalidatePositions(latLngToPoint) {
+  invalidatePositions (latLngToPoint) {
     this._latLngToPoint = latLngToPoint
     for (let i = 0, len = this._renderedVolcanoes.length; i < len; i++) {
       const volcano = this._renderedVolcanoes[i]
@@ -70,7 +70,7 @@ export default class {
     }
   }
 
-  _processNewData() {
+  _processNewData () {
     if (!this._dataToProcess) return
     let data = this._dataToProcess
     if (data.length > MAX_COUNT) {
@@ -81,7 +81,7 @@ export default class {
 
     for (let i = 0, length = data.length; i < length; i++) {
       const volcanoData = data[i]
-      if (!this._renderedVolcanoes[i] || this._renderedVolcanoes[i].id !== eqData.id) {
+      if (!this._renderedVolcanoes[i] || this._renderedVolcanoes[i].id !== volcanoData.id) {
         const point = this._latLngToPoint(volcanoData.position)
 
         this._renderedVolcanoes[i] = new Volcano(volcanoData, i, attributes)
@@ -90,7 +90,7 @@ export default class {
         volcano.setColorAttr(volcano.color)
         volcano.setPositionAttr(point)
       }
-      this._renderedVolcanoes[i].targetVisibility = 1//volcanoData.visible ? 1 : 0
+      this._renderedVolcanoes[i].targetVisibility = 1// volcanoData.visible ? 1 : 0
     }
     // Reset old data.
     for (let i = data.length, length = this._renderedVolcanoes.length; i < length; i++) {
@@ -102,7 +102,7 @@ export default class {
   }
 }
 
-function getTexture() {
+function getTexture () {
   const size = 128
   const strokeWidth = size * 0.07
   const canvas = document.createElement('canvas')
@@ -116,7 +116,6 @@ function getTexture() {
   ctx.lineTo(size / 2, size)// tip
   ctx.lineTo(size, 0)
   ctx.lineTo(0, 0)
-
 
   ctx.fillStyle = '#fff'
   ctx.fill()

@@ -6,7 +6,7 @@ const TRANSITION_COLOR = 0xFFFFFF
 const colorHelper = new THREE.Color()
 
 export default class {
-  constructor(data, idx, attributes) {
+  constructor (data, idx, attributes) {
     this.id = data.id
     this.color = depthToColor(data.geometry.coordinates[2])
     this.size = magnitudeToDiameter(data.properties.mag)
@@ -21,13 +21,13 @@ export default class {
     this.transition = this.targetVisibility
   }
 
-  destroy() {
+  destroy () {
     // There's an assumption that points that have size = 0 are invisible (see GLSL shaders code).
     this.setSizeAttr(0)
   }
 
   // Checks if (x, y) point hits rendered earthquake shape.
-  hitTest(x, y) {
+  hitTest (x, y) {
     const radius = this.attributes.size.array[this.idx] * 0.25
     if (radius === 0) return false
     const xDiff = this.attributes.position.array[this.idx * 3] - x
@@ -35,7 +35,7 @@ export default class {
     return xDiff * xDiff + yDiff * yDiff <= radius * radius
   }
 
-  set transition(v) {
+  set transition (v) {
     v = Math.min(1, Math.max(0, v))
     this._transition = v
     const t = easeOutBounce(v)
@@ -43,15 +43,15 @@ export default class {
     this.setColorAttr(this.transitionInProgress ? TRANSITION_COLOR : this.color)
   }
 
-  get transition() {
+  get transition () {
     return this._transition
   }
 
-  get transitionInProgress() {
+  get transitionInProgress () {
     return this.targetVisibility !== this.transition
   }
 
-  transitionStep(progress) {
+  transitionStep (progress) {
     progress /= TRANSITION_TIME // map to [0, 1]
     if (this.transition < this.targetVisibility) {
       this.transition += progress
@@ -60,7 +60,7 @@ export default class {
     }
   }
 
-  setPositionAttr(point) {
+  setPositionAttr (point) {
     if (this._oldPosAttr === point) return
     this.attributes.position.array[this.idx * 3] = point.x
     this.attributes.position.array[this.idx * 3 + 1] = point.y
@@ -69,14 +69,14 @@ export default class {
     this._oldPosAttr = point
   }
 
-  setSizeAttr(val) {
+  setSizeAttr (val) {
     if (this._oldSizeAttr === val) return
     this.attributes.size.array[this.idx] = val
     this.attributes.size.needsUpdate = true
     this._oldSizeAttr = val
   }
 
-  setColorAttr(val) {
+  setColorAttr (val) {
     if (this._oldColorAttr === val) return
     colorHelper.setHex(val)
     colorHelper.toArray(this.attributes.customColor.array, this.idx * 3)
@@ -85,7 +85,7 @@ export default class {
   }
 }
 
-function magnitudeToDiameter(mag) {
+function magnitudeToDiameter (mag) {
   // * 2 because size describes diameter, not radius. It ensures that both 2D and 3D view use
   // exactly the same dimensions.
   return window.devicePixelRatio * 2 * magnitudeToRadius(mag)

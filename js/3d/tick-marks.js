@@ -1,14 +1,14 @@
 import THREE from 'three'
 
 export default class TickMarks {
-  constructor() {
+  constructor () {
     this.root = new THREE.Object3D()
     this.textures = []
     this.materials = []
     this.sprites = []
   }
 
-  setProps(props) {
+  setProps (props) {
     this.destroy()
     this.root.position.copy(props.origin)
     this._generateTicks(props.depthVector, props.format, props.labelSize, props.depthTicks, 'depth')
@@ -16,7 +16,7 @@ export default class TickMarks {
     this._generateTicks(props.widthVector, props.format, props.labelSize, props.widthTicks, 'width')
   }
 
-  destroy() {
+  destroy () {
     this.textures.forEach(m => m.dispose())
     this.materials.forEach(m => m.dispose())
     this.sprites.forEach(s => this.root.remove(s))
@@ -25,12 +25,12 @@ export default class TickMarks {
     this.sprites = []
   }
 
-  _generateTicks(depthVector, format, labelSize, ticksCount, type) {
+  _generateTicks (depthVector, format, labelSize, ticksCount, type) {
     const positionStep = 1 / ticksCount
     // Draw central tick only once.
     const startTick = type === 'depth' ? 0 : 1
     for (let i = startTick; i <= ticksCount; i++) {
-      const position = new THREE.Vector3(0,0,0).lerp(depthVector, i * positionStep)
+      const position = new THREE.Vector3(0, 0, 0).lerp(depthVector, i * positionStep)
       const texture = labelTexture(format(position.length(), type), type)
       const aspectRatio = texture.image.width / texture.image.height
       const material = new THREE.SpriteMaterial({map: texture})
@@ -45,8 +45,8 @@ export default class TickMarks {
   }
 }
 
-function labelTexture(label, type) {
-  switch(type) {
+function labelTexture (label, type) {
+  switch (type) {
     case 'depth':
       return depthTexture(label)
     case 'length':
@@ -55,8 +55,8 @@ function labelTexture(label, type) {
   }
 }
 
-function labelScale(size, aspectRatio, type) {
-  switch(type) {
+function labelScale (size, aspectRatio, type) {
+  switch (type) {
     case 'depth':
       return new THREE.Vector3(size * aspectRatio, size, 1)
     case 'length':
@@ -66,7 +66,7 @@ function labelScale(size, aspectRatio, type) {
   }
 }
 
-function depthTexture(label) {
+function depthTexture (label) {
   const width = 256
   const height = 32
   const shadowBlur = height / 4
@@ -94,7 +94,7 @@ function depthTexture(label) {
   return texture
 }
 
-function lengthWidthTexture(label) {
+function lengthWidthTexture (label) {
   const width = 256
   const height = 64
   const shadowBlur = height / 4
@@ -122,6 +122,6 @@ function lengthWidthTexture(label) {
   return texture
 }
 
-function font(size) {
+function font (size) {
   return `${size}px verdana, helvetica, sans-serif`
 }

@@ -22,7 +22,7 @@ export const SET_PLATE_ARROWS_VISIBLE = 'SET_PLATE_ARROWS_VISIBLE'
 
 const api = new EarthquakeDataAPI()
 
-function requestEarthquakes(tile) {
+function requestEarthquakes (tile) {
   return dispatch => {
     dispatch({type: REQUEST_DATA})
     api.fetchTile(tile)
@@ -36,14 +36,14 @@ function requestEarthquakes(tile) {
   }
 }
 
-function receiveEarthquakes(response) {
+function receiveEarthquakes (response) {
   return {
     type: RECEIVE_EARTHQUAKES,
     response: response
   }
 }
 
-function receiveError(error) {
+function receiveError (error) {
   if (error instanceof APIError) {
     console.error('[API error]', error.message, error.response)
   } else if (!(error instanceof RequestAborted)) {
@@ -60,12 +60,12 @@ function receiveError(error) {
 // Each time map region is changed (moved, panned, zoomed in / out), we need to update earthquakes data.
 // - region is an array of points that defines shape, e.g. [[lat, lng], [lat, lng], ...]
 // - zoom is simple number, the current map zoom
-export function updateEarthquakesData(region, zoom) {
+export function updateEarthquakesData (region, zoom) {
   return dispatch => {
     // First, reset earthquakes data and abort all the old requests.
     api.abortAllRequests()
     dispatch({
-      type: RESET_EARTHQUAKES,
+      type: RESET_EARTHQUAKES
     })
     // Process region, get tiles. Remove unnecessary ones (y values < 0 or > max value, we don't display map there).
     const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
@@ -83,7 +83,7 @@ export function updateEarthquakesData(region, zoom) {
   }
 }
 
-export function setFilter(name, value) {
+export function setFilter (name, value) {
   return {
     type: SET_FILTER,
     name,
@@ -91,49 +91,49 @@ export function setFilter(name, value) {
   }
 }
 
-export function setEarthquakesVisible(value) {
+export function setEarthquakesVisible (value) {
   return {
     type: SET_EARTHQUAKES_VISIBLE,
     value
   }
 }
 
-export function setBaseLayer(value) {
+export function setBaseLayer (value) {
   return {
     type: SET_BASE_LAYER,
     value
   }
 }
 
-export function setPlatesVisible(value) {
+export function setPlatesVisible (value) {
   return {
     type: SET_PLATES_VISIBLE,
     value
   }
 }
 
-export function setVolcanoesVisible(value) {
+export function setVolcanoesVisible (value) {
   return {
     type: SET_VOLCANOES_VISIBLE,
     value
   }
 }
 
-export function setPlateMovementVisible(value) {
+export function setPlateMovementVisible (value) {
   return {
     type: SET_PLATE_MOVEMENT_VISIBLE,
     value
   }
 }
 
-export function setPlateArrowsVisible(value) {
+export function setPlateArrowsVisible (value) {
   return {
     type: SET_PLATE_ARROWS_VISIBLE,
     value
   }
 }
 
-export function setAnimationEnabled(value) {
+export function setAnimationEnabled (value) {
   return {
     type: SET_ANIMATION_ENABLED,
     value
@@ -141,7 +141,7 @@ export function setAnimationEnabled(value) {
 }
 
 // Reset stops animation and moves two slider handles back to the left edge (min and max time filters).
-export function reset() {
+export function reset () {
   return dispatch => {
     dispatch(setAnimationEnabled(false))
     dispatch(setFilter('minTime', config.startTime))
@@ -150,7 +150,7 @@ export function reset() {
 }
 
 // '2d', 'cross-section' or '3d'
-export function setMode(value) {
+export function setMode (value) {
   return dispatch => {
     dispatch({
       type: SET_MODE,
@@ -166,7 +166,7 @@ export function setMode(value) {
   }
 }
 
-export function setCrossSectionPoint(index, latLng) {
+export function setCrossSectionPoint (index, latLng) {
   return {
     type: SET_CROSS_SECTION_POINT,
     index,
@@ -175,7 +175,7 @@ export function setCrossSectionPoint(index, latLng) {
 }
 
 // When user drags a map.
-export function mark2DViewModified(value) {
+export function mark2DViewModified (value) {
   return {
     type: MARK_2D_VIEW_MODIFIED,
     value
@@ -183,7 +183,7 @@ export function mark2DViewModified(value) {
 }
 
 // When user rotates camera.
-export function mark3DViewModified(value) {
+export function mark3DViewModified (value) {
   return {
     type: MARK_3D_VIEW_MODIFIED,
     value

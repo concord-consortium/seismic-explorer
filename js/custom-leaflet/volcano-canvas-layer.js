@@ -74,7 +74,7 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
 
   // This function is expensive
   // Try to limit position recalculation
-  latLngToPoint: function(latLng) {
+  latLngToPoint: function (latLng) {
     return this._map.latLngToContainerPoint(latLng)
   },
 
@@ -90,6 +90,6 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
   }
 })
 
-export function volcanoCanvasLayer() {
-  return new VolcanoCanvasLayer();
+export function volcanoCanvasLayer () {
+  return new VolcanoCanvasLayer()
 }

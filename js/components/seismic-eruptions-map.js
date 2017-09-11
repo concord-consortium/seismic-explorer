@@ -29,10 +29,10 @@ const EARTQUAKES_DOWNLOAD_DELAY = 600 // ms
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
 
-var zoomLevel = 2;
+var zoomLevel = 2
 
 export default class SeismicEruptionsMap extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       selectedEarthquake: null,
@@ -47,15 +47,15 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleZoomEnd = this.handleZoomEnd.bind(this)
   }
 
-  get map() {
+  get map () {
     return this.refs.map.getLeafletElement()
   }
 
-  latLngToPoint(latLng) {
+  latLngToPoint (latLng) {
     return this.map.latLngToContainerPoint(latLng)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // Make sure that SVG overlay layer exists from the very beginning. It's created dynamically when the first
     // SVG object is added to the map. It solves / simplifies some issues. For example we don't want earthquakes
     // to be clickable when we enter cross-section drawing mode. The simplest solution is to set Canvas z-index
@@ -68,7 +68,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     mark2DViewModified(false)
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     const { selectedEarthquake } = this.state
     const { earthquakes } = this.props
     if (selectedEarthquake) {
@@ -82,13 +82,13 @@ export default class SeismicEruptionsMap extends PureComponent {
     }
   }
 
-  handleMoveStart() {
+  handleMoveStart () {
     this._mapBeingDragged = true
     const { mark2DViewModified } = this.props
     mark2DViewModified(true)
   }
 
-  handleMoveEnd(event) {
+  handleMoveEnd (event) {
     this._mapBeingDragged = false
 
     clearTimeout(this._tilesDownloadTimoutID)
@@ -108,97 +108,94 @@ export default class SeismicEruptionsMap extends PureComponent {
     }, EARTQUAKES_DOWNLOAD_DELAY)
   }
 
-  handleZoomEnd(event) {
+  handleZoomEnd (event) {
     const map = event.target
     log('MapZoomChanged', {zoom: map.getZoom()})
 
     zoomLevel = map.getZoom()
   }
 
-  handleEarthquakeClick(event, earthquake) {
+  handleEarthquakeClick (event, earthquake) {
     // Do not open earthquake popup if click was part of the map dragging action.
     if (this._mapBeingDragged) return
     this.setState({selectedEarthquake: earthquake})
     log('EarthquakeClicked', earthquake)
   }
 
-  handleEarthquakePopupClose() {
+  handleEarthquakePopupClose () {
     this.setState({selectedEarthquake: null})
   }
-  handleVolcanoPopupClose(){
+  handleVolcanoPopupClose () {
     this.setState({selectedVolcano: null})
   }
-  handleVolcanoClick(event, volcano){
+  handleVolcanoClick (event, volcano) {
     if (this._mapBeingDragged) return
     this.setState({selectedVolcano: volcano})
     log('Volcano Clicked', volcano)
   }
 
-
-  fitBounds(bounds = INITIAL_BOUNDS) {
+  fitBounds (bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props
     this.map.fitBounds(bounds)
     mark2DViewModified(false)
     log('ResetMapClicked')
   }
 
-  renderBaseLayer() {
+  renderBaseLayer () {
     // #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same
     // component instance when we switch between maps with subdomains and without.
     const { layers } = this.props
     const layer = mapLayer(layers.get('base'))
-    return <TileLayer key={layers.get('base') } url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution}/>
+    return <TileLayer key={layers.get('base')} url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution} />
   }
 
-  //Displays layer only if zoom level is > 4
-  renderZoomLayerComplex() {
-    const { layers } = this.props;
-    const layer = new PlatesLayerComplex();
-    if(zoomLevel > 4 && layers.get('plates')){
+  // Displays layer only if zoom level is > 4
+  renderZoomLayerComplex () {
+    const { layers } = this.props
+    const layer = new PlatesLayerComplex()
+    if (zoomLevel > 4 && layers.get('plates')) {
       return layer && <PlatesLayerComplex />
-    } 
-    else {
+    } else {
       return null
     }
-   }
-  //Displays layer only if zoom level is < 4
-  renderZoomLayerSimple() {
-    const { layers } = this.props;
+  }
+  // Displays layer only if zoom level is < 4
+  renderZoomLayerSimple () {
+    const { layers } = this.props
     const layer = new PlatesLayerSimple()
-    if(zoomLevel <= 4 && layers.get('plates')){
+    if (zoomLevel <= 4 && layers.get('plates')) {
       return layer && <PlatesLayerSimple />
-    } 
-    else {
+    } else {
       return null
     }
   }
 
-  render() {
+  render () {
     const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onLeafletMovestart={this.handleMoveStart} onLeafletMoveend={this.handleMoveEnd}
-             onLeafletZoomend={this.handleZoomEnd}
-             bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
+          onLeafletZoomend={this.handleZoomEnd}
+          bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {this.renderZoomLayerSimple()}
           {this.renderZoomLayerComplex()}
           {layers.get('platearrows') && <PlatesArrowsLayer />}
-          {layers.get('volcanoes') && <VolcanoesLayer volcanoClick={this.handleVolcanoClick}/>}
+          {layers.get('volcanoes') && <VolcanoesLayer volcanoClick={this.handleVolcanoClick} />}
           {layers.get('platemovement') && <PlateMovementLayer />}
           {mode !== '3d' && layers.get('earthquakes') &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
-            <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick}/>
+            <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick} />
           }
           {mode === '2d' && selectedEarthquake &&
-            <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose}/>
+            <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose} />
           }
           {mode === '2d' && selectedVolcano &&
-            <VolcanoPopup volcano={selectedVolcano} onPopupClose={this.handleVolcanoPopupClose}/>
+            <VolcanoPopup volcano={selectedVolcano} onPopupClose={this.handleVolcanoPopupClose} />
           }
           {mode === 'cross-section' &&
-            <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint}/>
+            <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
         </Map>
       </div>
@@ -206,6 +203,6 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 }
 
-function createSVGOverlayLayer(map) {
-  map.addLayer(new Circle([0,0], 0, {opacity: 0, fillOpacity: 0}))
+function createSVGOverlayLayer (map) {
+  map.addLayer(new Circle([0, 0], 0, {opacity: 0, fillOpacity: 0}))
 }

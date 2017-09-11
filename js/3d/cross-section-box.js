@@ -12,7 +12,7 @@ const TOP_RECT_Z_OFFSET = 5 // km
 const TOP_PLANE_Z_OFFSET = -2.5 // km
 
 // Map becomes more visible when user looks directly at it.
-function mapOpacity(polarAngle) {
+function mapOpacity (polarAngle) {
   const PI2 = Math.PI * 0.5
   let v
   if (polarAngle < PI2) {
@@ -25,7 +25,7 @@ function mapOpacity(polarAngle) {
 }
 
 export default class {
-  constructor() {
+  constructor () {
     this.root = new THREE.Object3D()
     this.overlay = new THREE.Object3D()
 
@@ -40,7 +40,7 @@ export default class {
     this.overlay.add(this.tickMarks.root)
   }
 
-  destroy() {
+  destroy () {
     // Static resources, created in constructor.
     this.lineMaterial.dispose()
     this.boxMaterial.dispose()
@@ -55,13 +55,13 @@ export default class {
     if (this.planeTexture) this.planeTexture.dispose()
   }
 
-  destroyGeometry() {
+  destroyGeometry () {
     if (this.lineGeometry) this.lineGeometry.dispose()
     if (this.boxGeometry) this.boxGeometry.dispose()
     if (this.planeGeometry) this.planeGeometry.dispose()
   }
 
-  setProps(crossSectionPoints, mapType, finalZoom, latLngDepthToPoint) {
+  setProps (crossSectionPoints, mapType, finalZoom, latLngDepthToPoint) {
     this.destroyGeometry()
     const boxDepth = latLngDepthToPoint([0, 0, BOX_DEPTH]).z
     const rectZOffset = latLngDepthToPoint([0, 0, -TOP_RECT_Z_OFFSET]).z
@@ -82,14 +82,14 @@ export default class {
     this.setupTickMarks(rect, boxDepth, rectLatLng, finalZoom)
   }
 
-  update(zoom, polarAngle) {
+  update (zoom, polarAngle) {
     const pointSize = POINT_SIZE / zoom
     this.point1.scale.set(pointSize, pointSize, 1)
     this.point2.scale.set(pointSize, pointSize, 1)
     this.planeMaterial.opacity = mapOpacity(polarAngle)
   }
 
-  setupLine(p1, p2) {
+  setupLine (p1, p2) {
     if (this.line) this.root.remove(this.line)
     this.lineGeometry = new THREE.Geometry()
     this.lineGeometry.vertices = [p1, p2]
@@ -97,7 +97,7 @@ export default class {
     this.root.add(this.line)
   }
 
-  setupBox(rect, boxDepth) {
+  setupBox (rect, boxDepth) {
     if (this.box) this.root.remove(this.box)
     const rectBottom = rect.map(v => v.clone().setZ(boxDepth))
     this.boxGeometry = new THREE.Geometry()
@@ -122,7 +122,7 @@ export default class {
     this.root.add(this.box)
   }
 
-  setupPlane(rect, planeZOffset, rectLatLng, mapType) {
+  setupPlane (rect, planeZOffset, rectLatLng, mapType) {
     if (this.plane) this.root.remove(this.plane)
     if (this.planeTexture) {
       this.planeTexture.dispose()
@@ -152,7 +152,7 @@ export default class {
     this.root.add(this.plane)
   }
 
-  setupPoints(p1, p2) {
+  setupPoints (p1, p2) {
     if (this.point1) this.overlay.remove(this.point1)
     if (this.point2) this.overlay.remove(this.point2)
     this.point1 = new THREE.Sprite(this.point1Material)
@@ -165,7 +165,7 @@ export default class {
     this.overlay.add(this.point2)
   }
 
-  setupTickMarks(rect, boxDepth, rectLatLng, finalZoom) {
+  setupTickMarks (rect, boxDepth, rectLatLng, finalZoom) {
     // Note that order of rectangle points is strictly defined and based on what we should see in 3D view.
     // See: cross-section-rectangle.js
     const lengthKm = latLng(rectLatLng[3]).distanceTo(latLng(rectLatLng[0])) / 1000 // m -> km
@@ -180,7 +180,7 @@ export default class {
       widthVector: widthVector,
       depthVector: new THREE.Vector3(0, 0, boxDepth),
       format: function (val, type) {
-        switch(type) {
+        switch (type) {
           case 'depth':
             return Math.abs(Math.round(val * BOX_DEPTH / boxDepth)) + 'km'
           case 'length':
@@ -197,7 +197,7 @@ export default class {
   }
 }
 
-function getPointTexture(label) {
+function getPointTexture (label) {
   const size = 64
   const shadowBlur = size / 4
   const canvas = document.createElement('canvas')

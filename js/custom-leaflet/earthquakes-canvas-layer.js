@@ -74,7 +74,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
 
   // This function is really expensive (especially when we call it for 10-20k earthquakes).
   // That's why we try to limit position recalculation if it's possible.
-  latLngToPoint: function(latLng) {
+  latLngToPoint: function (latLng) {
     return this._map.latLngToContainerPoint(latLng)
   },
 
@@ -90,6 +90,6 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   }
 })
 
-export function earthquakesCanvasLayer() {
-  return new EarthquakesCanvasLayer();
+export function earthquakesCanvasLayer () {
+  return new EarthquakesCanvasLayer()
 }

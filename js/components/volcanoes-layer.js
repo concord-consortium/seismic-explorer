@@ -1,16 +1,13 @@
-import React from 'react'
 import { MapLayer } from 'react-leaflet'
 import { volcanoCanvasLayer } from '../custom-leaflet/volcano-canvas-layer'
 import volcanoes from '../data/volcanoes_full.js'
 
-
 let _cachedVolcanoes
-function getVolcanoes(map) {
+function getVolcanoes (map) {
   if (!_cachedVolcanoes) {
-    _cachedVolcanoes = [];
+    _cachedVolcanoes = []
     if (volcanoes) {
-      for (var i = 0; i < volcanoes.length; i++)
-      {
+      for (var i = 0; i < volcanoes.length; i++) {
         // simple JSON array import
         // let lat = volcanoes[i][1]
         // let lng = volcanoes[i][0]
@@ -24,10 +21,10 @@ function getVolcanoes(map) {
         let v = volcanoes[i]
         let lat = v.latitude
         let lng = v.longitude
-        let age = v.lasteruptionyear != 'Unknown' ? -( v.lasteruptionyear-2017): -15000
+        let age = v.lasteruptionyear !== 'Unknown' ? -(v.lasteruptionyear - 2017) : -15000
 
         let volcanoData = {
-          position:{lng, lat},
+          position: {lng, lat},
           age,
           lastactivedate: v.lasteruptionyear,
           name: v.volcanoname,
@@ -35,7 +32,7 @@ function getVolcanoes(map) {
           region: v.subregion,
           volcanotype: v.primaryvolcanotype
         }
-        _cachedVolcanoes.push(volcanoData);
+        _cachedVolcanoes.push(volcanoData)
       }
     }
   }
@@ -43,23 +40,23 @@ function getVolcanoes(map) {
 }
 
 export default class VolcanoLayer extends MapLayer {
-  componentWillMount() {
-    super.componentWillMount();
+  componentWillMount () {
+    super.componentWillMount()
     this.leafletElement = volcanoCanvasLayer()
     this.setLeafletElementProps()
   }
 
-  componentDidUpdate() {
-   this.setLeafletElementProps()
+  componentDidUpdate () {
+    this.setLeafletElementProps()
   }
 
-  setLeafletElementProps() {
-    const { volcanoPoints, map, volcanoClick } = this.props
+  setLeafletElementProps () {
+    const { map, volcanoClick } = this.props
     this.leafletElement.setVolcanoPoints(getVolcanoes(map))
     this.leafletElement.onVolcanoClick(volcanoClick)
   }
 
-  render() {
+  render () {
     return null
   }
 }

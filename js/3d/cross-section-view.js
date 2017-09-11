@@ -15,7 +15,7 @@ renderer.setClearColor(0x000000, 1)
 renderer.autoClear = false
 
 export default class {
-  constructor(parentEl) {
+  constructor (parentEl) {
     parentEl.appendChild(renderer.domElement)
     this.props = {}
     this.camera = new Camera(renderer.domElement)
@@ -35,14 +35,14 @@ export default class {
     renderer.domElement.render = this.render.bind(this)
   }
 
-  destroy() {
+  destroy () {
     // Prevent memory leaks.
     this.earthquakes.destroy()
     this.crossSectionBox.destroy()
     this.camera.destroy()
   }
 
-  setProps(newProps) {
+  setProps (newProps) {
     const latLngDepthToPoint = getLatLngDepthToPoint(
       newProps.latLngToPoint,
       newProps.crossSectionPoints,
@@ -64,16 +64,16 @@ export default class {
     this.props = newProps
   }
 
-  onCameraChange(callback) {
+  onCameraChange (callback) {
     this.camera.onChange(callback)
   }
 
-  resetCamera() {
+  resetCamera () {
     this.camera.reset()
     log('CameraReset')
   }
 
-  render(timestamp = performance.now()) {
+  render (timestamp = window.performance.now()) {
     const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
 
     this.resize()
@@ -91,7 +91,7 @@ export default class {
   }
 
   // Resizes canvas to fill its parent.
-  resize() {
+  resize () {
     const parent = renderer.domElement.parentElement
     const newWidth = parent.clientWidth
     const newHeight = parent.clientHeight
@@ -103,15 +103,15 @@ export default class {
     }
   }
 
-  _initScene() {
+  _initScene () {
     this.scene = new THREE.Scene()
     this.sceneOverlay = new THREE.Scene()
     this.scene.add(this.earthquakes.root)
     this.scene.add(this.crossSectionBox.root)
     this.sceneOverlay.add(this.crossSectionBox.overlay)
   }
-  
-  _finalZoom(crossSectionPoints, latLngDepthToPoint) {
+
+  _finalZoom (crossSectionPoints, latLngDepthToPoint) {
     const p1 = latLngDepthToPoint(crossSectionPoints.get(0))
     const p2 = latLngDepthToPoint(crossSectionPoints.get(1))
     return FINAL_ZOOM * this._width / p1.distanceTo(p2)
@@ -124,14 +124,14 @@ export default class {
 // Depth scaling is be proportional to the the cross section line length and user's screen aspect ratio.
 // It ensures that when we zoom in to see the whole cross section box from the side, we'll still see
 // earthquakes (and other geometry) at MAX_DEPTH.
-function getLatLngDepthToPoint(latLngToPoint, crossSectionPoints, width, height) {
+function getLatLngDepthToPoint (latLngToPoint, crossSectionPoints, width, height) {
   const p1 = latLngToPoint(crossSectionPoints.get(0))
   const p2 = latLngToPoint(crossSectionPoints.get(1))
   const aspectRatio = width / height
   const depthScale = p1.distanceTo(p2) / aspectRatio / MAX_DEPTH
 
   // latLngDepth is an array: [latitude, longitude, depthInKm]
-  return function(latLngDepth) {
+  return function (latLngDepth) {
     const point = latLngToPoint(latLngDepth)
     return new THREE.Vector3(
       point.x,

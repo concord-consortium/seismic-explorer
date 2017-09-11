@@ -1,10 +1,10 @@
-import { Util, DomUtil, Browser, Layer, Class, Bounds, setOptions, point } from 'leaflet'
+import { DomUtil, Browser, Layer, Class, setOptions } from 'leaflet'
 
 // Generic Leaflet CanvasLayer, based on:
 // - https://github.com/Leaflet/Leaflet.heat
 // - http://bl.ocks.org/sumbera/11114288
 
-export const CanvasLayer = (Layer ? Layer : Class).extend({
+export const CanvasLayer = (Layer || Class).extend({
   initialize: function (options) {
     setOptions(this, options)
     this._redraw = this._redraw.bind(this)
@@ -17,7 +17,7 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
 
   scheduleRedraw: function () {
     if (this._map && !this._frame && !this._map._animating) {
-      this._frame = requestAnimationFrame(this._redraw)
+      this._frame = window.requestAnimationFrame(this._redraw)
     }
     return this
   },
@@ -67,7 +67,7 @@ export const CanvasLayer = (Layer ? Layer : Class).extend({
     canvas.style[originProp] = '50% 50%'
 
     let size = this._map.getSize()
-    canvas.width  = size.x
+    canvas.width = size.x
     canvas.height = size.y
     canvas.style.width = size.x + 'px'
     canvas.style.height = size.y + 'px'

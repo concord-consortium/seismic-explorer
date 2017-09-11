@@ -17,7 +17,7 @@ import 'font-awesome/css/font-awesome.css'
 const APP_CLASS_NAME = 'seismic-explorer-app'
 
 class App extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     const dataLayerConfig = this.props.location.query.p && layerConfig[this.props.location.query.p] ? this.props.location.query.p : 5
     this.state = {
@@ -26,24 +26,22 @@ class App extends PureComponent {
     this.latLngToPoint = this.latLngToPoint.bind(this)
     this.resetView = this.resetView.bind(this)
   }
-  componentWillMount() {
-
+  componentWillMount () {
     const {dataLayerConfig} = this.state
-    const {setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible} = this.props
+    const {setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible} = this.props
     setPlateMovementVisible(layerConfig[dataLayerConfig].plateMovement.visible)
     setVolcanoesVisible(layerConfig[dataLayerConfig].volcanoes.visible)
     setEarthquakesVisible(layerConfig[dataLayerConfig].earthquakes.visible)
   }
-  componentDidMount() {
+  componentDidMount () {
     enableShutterbug(APP_CLASS_NAME)
-
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     disableShutterbug()
   }
 
-  renderError() {
+  renderError () {
     const { error } = this.props
     return (
       <div className='error'>
@@ -57,11 +55,11 @@ class App extends PureComponent {
   // 3D view directly uses Leaflet latLng transformation. The only difference is that DOM elements have (0,0) point
   // in the top-left corner, while 3D view uses cartesian coordinate system, so we need to transform Y axis.
   // Also, there's an assumption that both Leaflet map and 3D view have the same dimensions.
-  latLngToPoint(latLng) {
+  latLngToPoint (latLng) {
     return this.refs.map.latLngToPoint(latLng)
   }
 
-  resetView() {
+  resetView () {
     const { mode } = this.props
     if (mode !== '3d') {
       this.refs.map.fitBounds()
@@ -70,37 +68,37 @@ class App extends PureComponent {
     }
   }
 
-  renderApp() {
+  renderApp () {
     const { dataFetching, earthquakes, layers, crossSectionPoints, updateEarthquakesData,
-      mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, route } = this.props
+      mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
     const { dataLayerConfig } = this.state
 
     return (
       <div>
-        {dataFetching && <LoadingIcon/>}
+        {dataFetching && <LoadingIcon />}
         <div className='top-controls-container'>
-          <TopControls/>
+          <TopControls />
         </div>
         <div className={`map-container mode-${mode}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes}
-                               mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
-                               setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
-                               updateEarthquakesData={updateEarthquakesData}/>
+            mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
+            setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
+            updateEarthquakesData={updateEarthquakesData} />
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
-                            mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
-                            mark3DViewModified={mark3DViewModified}/>
+              mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
+              mark3DViewModified={mark3DViewModified} />
           }
-          <OverlayControls resetView={this.resetView}/>
+          <OverlayControls resetView={this.resetView} />
         </div>
         <div className='bottom-controls-container'>
-          <BottomControls dataLayerConfig={dataLayerConfig}/>
+          <BottomControls dataLayerConfig={dataLayerConfig} />
         </div>
       </div>
     )
   }
 
-  render() {
+  render () {
     const { error } = this.props
     return (
       <div className={APP_CLASS_NAME}>
@@ -110,7 +108,7 @@ class App extends PureComponent {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     error: state.getIn(['dataStatus', 'error']),
     dataFetching: state.getIn(['downloadStatus', 'requestsInProgress']),

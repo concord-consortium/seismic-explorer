@@ -8,7 +8,7 @@ let props = {}
 // 1. State contains immutable structures.
 // 2. If we call this function two times with the same data, it will return the same (cached) array object.
 // The second point ensures that pure components won't re-render themselves unnecessary if data isn't changed.
-export default function filteredEarthquakes(state) {
+export default function filteredEarthquakes (state) {
   const data = state.get('data').get('earthquakes')
   const filters = state.get('filters')
   const crossSection = state.get('crossSectionPoints')
@@ -19,7 +19,7 @@ export default function filteredEarthquakes(state) {
   return cachedValue
 }
 
-function propsChanged(data, filters, crossSection) {
+function propsChanged (data, filters, crossSection) {
   // Note that we're dealing with immutable structures. Shallow comparison is enough.
   // We need to recalculate filtered earthquakes when:
   // 1. Data has been changed
@@ -27,10 +27,10 @@ function propsChanged(data, filters, crossSection) {
   // 3. Cross section line has been changed, but only if cross section filtering is enabled.
   return props.data !== data ||
          props.filters !== filters ||
-         filters.get('crossSection') && props.crossSection !== crossSection
+         (filters.get('crossSection') && props.crossSection !== crossSection)
 }
 
-function calcEarthquakes(data, filters, crossSectionPoints) {
+function calcEarthquakes (data, filters, crossSectionPoints) {
   const minMag = filters.get('minMag')
   const maxMag = filters.get('maxMag')
   const minTime = filters.get('minTime')
@@ -65,7 +65,7 @@ function calcEarthquakes(data, filters, crossSectionPoints) {
   return result
 }
 
-function pointInsidePolygon(point, polygon) {
+function pointInsidePolygon (point, polygon) {
   // Ray-casting algorithm based on
   // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
   const x = point[0]
@@ -76,7 +76,7 @@ function pointInsidePolygon(point, polygon) {
     const yi = polygon[i][1]
     const xj = polygon[j][0]
     const yj = polygon[j][1]
-    const intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)
     if (intersect) inside = !inside
   }
   return inside

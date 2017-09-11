@@ -14,13 +14,13 @@ import '../../css/settings-controls.less'
 import 'rc-slider/assets/index.css'
 import '../../css/slider.less'
 
-function sliderDateFormatter(value) {
+function sliderDateFormatter (value) {
   const date = new Date(value)
   // .getMoth() returns [0, 11] range.
   return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
 }
 
-function sliderTickFormatter(valueMin, valueMax) {
+function sliderTickFormatter (valueMin, valueMax) {
   // Don't display decade labels if it's closer to the edge values than 4 years.
   // Labels would be too close to each other and probably overlap.
   const minDistFromEdgeValues = 4 // years
@@ -32,7 +32,7 @@ function sliderTickFormatter(valueMin, valueMax) {
 
   const decade = new Date(minYear.substr(0, 2) + minYear.substr(2, 1) + '0')
   decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
-  while (decade <= maxDate) {
+  while (decade.getTime() <= maxDate.getTime()) {
     tickMarks[decade.getTime()] = {label: decade.getUTCFullYear()}
     // increment decade by 10 years
     decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
@@ -40,7 +40,7 @@ function sliderTickFormatter(valueMin, valueMax) {
   return tickMarks
 }
 
-function toggleFullscreen() {
+function toggleFullscreen () {
   if (!screenfull.isFullscreen) {
     screenfull.request()
     log('FullscreenClicked')
@@ -50,16 +50,16 @@ function toggleFullscreen() {
   }
 }
 
-function logTimeSliderChange(value) {
+function logTimeSliderChange (value) {
   log('TimeSliderChanged', {minTime: (new Date(value[0])).toString(), maxTime: (new Date(value[1])).toString()})
 }
 
-function logMagSliderChange(value) {
+function logMagSliderChange (value) {
   log('MagnitudeSliderChanged', {minMag: value[0], maxMag: value[1]})
 }
 
 class BottomControls extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       fullscreen: false
@@ -72,7 +72,7 @@ class BottomControls extends PureComponent {
     this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (screenfull.enabled) {
       document.addEventListener(screenfull.raw.fullscreenchange, () => {
         this.setState({fullscreen: screenfull.isFullscreen})
@@ -80,31 +80,30 @@ class BottomControls extends PureComponent {
     }
   }
 
-  get mapLayerOptions() {
+  get mapLayerOptions () {
     return layerInfo.map((m, idx) => <option key={idx} value={m.type}>{m.name}</option>)
   }
 
-  handleBaseLayerChange(event) {
+  handleBaseLayerChange (event) {
     const {setBaseLayer} = this.props
     const layer = event.target.value
     setBaseLayer(layer)
     log('MapLayerChanged', {layer})
   }
 
-  handleTimeRange(value) {
+  handleTimeRange (value) {
     const {setFilter} = this.props
     setFilter('minTime', value[0])
     setFilter('maxTime', value[1])
   }
 
-  handleMagRange(value) {
+  handleMagRange (value) {
     const {setFilter} = this.props
     setFilter('minMag', value[0])
     setFilter('maxMag', value[1])
   }
 
-
-  handleAnimStep(newValue) {
+  handleAnimStep (newValue) {
     const {filters, setFilter, setAnimationEnabled} = this.props
     if (newValue >= filters.get('animEndTime')) {
       newValue = filters.get('animEndTime')
@@ -113,13 +112,12 @@ class BottomControls extends PureComponent {
     setFilter('maxTime', newValue)
   }
 
-  handlePlayPauseBtnClick() {
+  handlePlayPauseBtnClick () {
     const {filters, setFilter, animationEnabled, setAnimationEnabled} = this.props
-    if(!animationEnabled){
+    if (!animationEnabled) {
       setFilter('animEndTime', filters.get('maxTime'))
       setFilter('maxTime', filters.get('minTime'))
-    }
-    else {
+    } else {
       setFilter('maxTime', filters.get('animEndTime'))
     }
     setAnimationEnabled(!animationEnabled)
@@ -127,13 +125,13 @@ class BottomControls extends PureComponent {
     log(animationEnabled ? 'PauseClicked' : 'PlayClicked')
   }
 
-  handleResetBtnClick() {
+  handleResetBtnClick () {
     const {reset} = this.props
     reset()
     log('ResetClicked')
   }
 
-  get dateMarks() {
+  get dateMarks () {
     const {filters} = this.props
     const min = filters.get('minTimeLimit')
     const max = filters.get('maxTimeLimit')
@@ -141,24 +139,24 @@ class BottomControls extends PureComponent {
       [min]: {label: sliderDateFormatter(min)},
       [max]: {label: sliderDateFormatter(max)}
     }
-    if (min != 0 && max != 0) {
+    if (min !== 0 && max !== 0) {
       // add tick marks for each decade between min and max
       Object.assign(marks, sliderTickFormatter(min, max))
     }
     return marks
   }
 
-  get animSpeed() {
+  get animSpeed () {
     const {filters} = this.props
     return (filters.get('maxTimeLimit') - filters.get('minTimeLimit')) / 15000
   }
 
-  get fullscreenIconStyle() {
-    return this.state.fullscreen ? 'fullscreen-icon fullscreen' : 'fullscreen-icon';
+  get fullscreenIconStyle () {
+    return this.state.fullscreen ? 'fullscreen-icon fullscreen' : 'fullscreen-icon'
   }
 
-  render() {
-    const {animationEnabled, filters, layers, mode, earthquakesCount, earthquakesCountVisible, magnitudeCutOff,dataLayerConfig} = this.props
+  render () {
+    const {animationEnabled, filters, layers, earthquakesCount, earthquakesCountVisible, magnitudeCutOff, dataLayerConfig} = this.props
     const minMag = filters.get('minMag')
     const maxMag = filters.get('maxMag')
     let magFilter = magnitudeCutOff > 0
@@ -171,7 +169,7 @@ class BottomControls extends PureComponent {
               speed={this.animSpeed}
               onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
               onAnimationStep={this.handleAnimStep}
-              layers={layers}/>
+              layers={layers} />
           </div>
           {layers.get('earthquakes') &&
             <div className='center'>
@@ -182,33 +180,32 @@ class BottomControls extends PureComponent {
             </div>
           }
           {screenfull.enabled &&
-          <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title="Toggle Fullscreen">
-          </div>
+          <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title='Toggle Fullscreen' />
           }
         </div>
 
         <div className='settings'>
           <div>
-            <img src={ccLogoSrc}/>
+            <img src={ccLogoSrc} />
           </div>
-          <div title="Change the map rendering style">
+          <div title='Change the map rendering style'>
             Map type
-            <select value={layers.get('base') } onChange={this.handleBaseLayerChange}>
+            <select value={layers.get('base')} onChange={this.handleBaseLayerChange}>
               {this.mapLayerOptions}
             </select>
           </div>
           <LayerControls dataLayerConfig={dataLayerConfig} />
           {layers.get('earthquakes') &&
             <div>
-             <div className='stats'>
+              <div className='stats'>
                 <span>Displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
-                {magFilter && <span title="Zoom in to see weaker earthquakes."><br/>starting from magnitude <strong>{magnitudeCutOff}</strong></span>}
+                {magFilter && <span title='Zoom in to see weaker earthquakes.'><br />starting from magnitude <strong>{magnitudeCutOff}</strong></span>}
               </div>
 
-            <div className='mag-slider'>
-              <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br/>
-                <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
-                  onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
+              <div className='mag-slider'>
+                <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
+                  <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
+                    onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
                 </div>
               </div>
 
@@ -220,7 +217,7 @@ class BottomControls extends PureComponent {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     filters: state.get('filters'),
     layers: state.get('layers'),

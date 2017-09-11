@@ -5,23 +5,23 @@ import '../../css/animation-buttons.less'
 const UPDATE_INTERVAL = 150 // ms
 
 export default class AnimationButtons extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.animFrameID = null
     this.animCallback = this.animCallback.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.animationEnabledChanged()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (prevProps.animationEnabled !== this.props.animationEnabled) {
       this.animationEnabledChanged()
     }
   }
 
-  animationEnabledChanged() {
+  animationEnabledChanged () {
     if (this.props.animationEnabled) {
       this.startAnimation()
     } else {
@@ -29,23 +29,23 @@ export default class AnimationButtons extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.stopAnimation()
   }
 
-  startAnimation() {
-    this.prevTimestamp = performance.now()
+  startAnimation () {
+    this.prevTimestamp = window.performance.now()
     this.animCallback()
   }
 
-  stopAnimation() {
+  stopAnimation () {
     if (this.animFrameID !== null) {
       window.cancelAnimationFrame(this.animFrameID)
       this.animFrameID = null
     }
   }
 
-  animCallback(timestamp = performance.now()) {
+  animCallback (timestamp = window.performance.now()) {
     const { value, speed, onAnimationStep, animationEnabled } = this.props
     if (animationEnabled) {
       this.animFrameID = window.requestAnimationFrame(this.animCallback)
@@ -59,22 +59,22 @@ export default class AnimationButtons extends PureComponent {
     this.prevTimestamp = timestamp
   }
 
-  get icon() {
+  get icon () {
     const { animationEnabled } = this.props
     // FontAwesome class name.
     return animationEnabled ? 'fa fa-stop' : 'fa fa-play'
   }
 
-  render() {
+  render () {
     const { onPlayPause, onReset, layers } = this.props
-    const hintText = layers.get('earthquakes') ? "Animate Earthquakes" : "Animate"
+    const hintText = layers.get('earthquakes') ? 'Animate Earthquakes' : 'Animate'
     return (
       <div>
-        <div className='animation-button' onClick={layers.get('earthquakes') ? onReset : null} title="Reset Animation">
-          <i className='fa fa-step-backward'/>
+        <div className='animation-button' onClick={layers.get('earthquakes') ? onReset : null} title='Reset Animation'>
+          <i className='fa fa-step-backward' />
         </div>
         <div className='animation-button' onClick={layers.get('earthquakes') ? onPlayPause : null} title={hintText}>
-          <i className={this.icon}/>
+          <i className={this.icon} />
         </div>
       </div>
     )

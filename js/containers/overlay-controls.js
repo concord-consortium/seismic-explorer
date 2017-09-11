@@ -8,21 +8,21 @@ import log from '../logger'
 import '../../css/overlay-controls.less'
 
 class OverlayControls extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.set3DMode = this.set3DMode.bind(this)
     this.exit3DMode = this.exit3DMode.bind(this)
     this.setCrossSectionDrawMode = this.setCrossSectionDrawMode.bind(this)
     this.cancelCrossSectionDrawMode = this.cancelCrossSectionDrawMode.bind(this)
   }
-  componentDidUpdate() {
+  componentDidUpdate () {
     const {layers, crossSectionPoints} = this.props
     if (layers.get('volcanoes') && !layers.get('earthquakes') && crossSectionPoints) {
       this.cancelCrossSectionDrawMode()
     }
   }
-  exit3DMode() {
-    const { setMode, crossSectionPoints, setCrossSectionPoint } = this.props
+  exit3DMode () {
+    const { setMode, crossSectionPoints } = this.props
     if (crossSectionPoints) {
       setMode('cross-section')
       log('CrossSectionDrawingStarted')
@@ -32,7 +32,7 @@ class OverlayControls extends PureComponent {
     }
   }
 
-  cancelCrossSectionDrawMode() {
+  cancelCrossSectionDrawMode () {
     const { setMode, crossSectionPoints, setCrossSectionPoint } = this.props
     // Remove cross section points when user cancels cross-section drawing.
     if (crossSectionPoints) {
@@ -43,35 +43,34 @@ class OverlayControls extends PureComponent {
     }
   }
 
-  setCrossSectionDrawMode() {
+  setCrossSectionDrawMode () {
     const { setMode } = this.props
     setMode('cross-section')
     log('CrossSectionDrawingStarted')
   }
 
-  set3DMode() {
+  set3DMode () {
     const { setMode } = this.props
     if (this.canOpen3D()) setMode('3d')
     log('3DViewOpened')
   }
 
-  canOpen3D() {
+  canOpen3D () {
     const { crossSectionPoints } = this.props
     return crossSectionPoints.get(0) && crossSectionPoints.get(1)
   }
 
-  render() {
-    const { mode, layers, changedViews, resetView, earthquakesCount, magnitudeCutOff} = this.props
+  render () {
+    const { mode, layers, changedViews, resetView, earthquakesCount, magnitudeCutOff } = this.props
     const canOpen3D = this.canOpen3D()
-    const volcanoMode = layers.get('volcanoes')
     const earthquakeMode = layers.get('earthquakes')
-    const viewChanged = mode !== '3d' && changedViews.has('2d') || mode === '3d' && changedViews.has('3d')
+    const viewChanged = (mode !== '3d' && changedViews.has('2d')) || (mode === '3d' && changedViews.has('3d'))
     return (
       <div className='overlay-controls'>
         <div className='controls top left'>
           {mode !== 'cross-section' && viewChanged &&
             /* Don't display reset view icon when user is drawing a line (cross-section mode). */
-            <OverlayButton title='Reset map to show world view' onClick={resetView} icon='globe'/>}
+            <OverlayButton title='Reset map to show world view' onClick={resetView} icon='globe' />}
         </div>
         <div className='controls bottom right inline'>
           {mode === '2d' && earthquakeMode &&
@@ -97,14 +96,14 @@ class OverlayControls extends PureComponent {
         </div>
         <div className='controls top right'>
           <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'}
-            earthquakesCount={earthquakesCount} earthquakes={layers.get('earthquakes')} magnitudeCutOff={magnitudeCutOff} volcanoes={layers.get('volcanoes')}/>
+            earthquakesCount={earthquakesCount} earthquakes={layers.get('earthquakes')} magnitudeCutOff={magnitudeCutOff} volcanoes={layers.get('volcanoes')} />
         </div>
       </div>
     )
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     region: state.get('region'),
     layers: state.get('layers'),

@@ -6,13 +6,13 @@ import log from '../logger'
 
 import '../../css/top-controls.less'
 
-function reloadPage() {
+function reloadPage () {
   log('ReloadClicked')
-  location.reload()
+  window.location.reload()
 }
 
 export default class TopControls extends PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       shareModalOpen: false,
@@ -24,44 +24,43 @@ export default class TopControls extends PureComponent {
     this.closeAboutModal = this.closeAboutModal.bind(this)
   }
 
-  openShareModal() {
+  openShareModal () {
     this.setState({shareModalOpen: true, aboutModalOpen: false})
     log('ShareDialogOpened')
   }
 
-  openAboutModal() {
+  openAboutModal () {
     this.setState({aboutModalOpen: true, shareModalOpen: false})
     log('AboutDialogOpened')
   }
 
-  closeShareModal() {
+  closeShareModal () {
     this.setState({shareModalOpen: false})
   }
 
-  closeAboutModal() {
+  closeAboutModal () {
     this.setState({aboutModalOpen: false})
   }
 
-  render() {
+  render () {
     const {shareModalOpen, aboutModalOpen} = this.state
 
     return (
       <div className='top-controls'>
         <span className='top-link left' onClick={reloadPage}>
-          <i className='fa fa-repeat'/>
+          <i className='fa fa-repeat' />
         </span>
         <span className='top-link right' onClick={this.openAboutModal}>About</span>
         <span className='top-link right' onClick={this.openShareModal}>Share</span>
 
         <BasicModal className='narrow' isOpen={shareModalOpen} close={this.closeShareModal}>
-          <ShareModalContent/>
+          <ShareModalContent />
         </BasicModal>
 
         <BasicModal isOpen={aboutModalOpen} close={this.closeAboutModal}>
-          <AboutModalContent/>
+          <AboutModalContent />
         </BasicModal>
       </div>
     )
   }
 }
-

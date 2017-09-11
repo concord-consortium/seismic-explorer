@@ -57,7 +57,7 @@ export const PlateMovementCanvasLayer = CanvasLayer.extend({
 
   // This function is expensive
   // Try to limit position recalculation
-  latLngToPoint: function(latLng) {
+  latLngToPoint: function (latLng) {
     return this._map.latLngToContainerPoint(latLng)
   },
 
@@ -73,6 +73,6 @@ export const PlateMovementCanvasLayer = CanvasLayer.extend({
   }
 })
 
-export function plateMovementCanvasLayer() {
-  return new PlateMovementCanvasLayer();
+export function plateMovementCanvasLayer () {
+  return new PlateMovementCanvasLayer()
 }

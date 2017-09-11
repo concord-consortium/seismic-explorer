@@ -1,55 +1,51 @@
-import React from 'react'
 import { MapLayer } from 'react-leaflet'
 import 'imports?L=leaflet!leaflet-plugins/layer/vector/KML'
 import L from 'leaflet'
 
-
 let _cachedKMLComplex
-export function getKMLComplex() {
+export function getKMLComplex () {
   if (!_cachedKMLComplex) {
-      _cachedKMLComplex = new L.KML('plates_modified_complex.kml', {async: true})
+    _cachedKMLComplex = new L.KML('plates_modified_complex.kml', {async: true})
   }
   return _cachedKMLComplex
 }
 
 let _cachedKMLSimple
-export function getKMLSimple() {
+export function getKMLSimple () {
   if (!_cachedKMLSimple) {
-      _cachedKMLSimple = new L.KML('plates_modified_simple.kml', {async: true})
+    _cachedKMLSimple = new L.KML('plates_modified_simple.kml', {async: true})
   }
   return _cachedKMLSimple
 }
 
 export class PlatesLayerSimple extends MapLayer {
-
-  constructor() {
-    super();
-    this.leafletElement = getKMLSimple();
+  constructor () {
+    super()
+    this.leafletElement = getKMLSimple()
   }
 
-  componentWillMount() {
-    super.componentWillMount();
-    this.leafletElement = getKMLSimple();
+  componentWillMount () {
+    super.componentWillMount()
+    this.leafletElement = getKMLSimple()
   }
 
-  render() {
+  render () {
     return null
   }
 }
 
 export class PlatesLayerComplex extends MapLayer {
-
-  constructor() {
-    super();
-    this.leafletElement = getKMLComplex();
+  constructor () {
+    super()
+    this.leafletElement = getKMLComplex()
   }
 
-  componentWillMount() {
-    super.componentWillMount();
-    this.leafletElement = getKMLComplex();
+  componentWillMount () {
+    super.componentWillMount()
+    this.leafletElement = getKMLComplex()
   }
 
-  render() {
+  render () {
     return null
   }
 }

@@ -9,7 +9,7 @@ renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setClearColor(0x000000, 0)
 
 export default class {
-  constructor(parentEl) {
+  constructor (parentEl) {
     if (parentEl) {
       parentEl.appendChild(renderer.domElement)
     }
@@ -24,17 +24,17 @@ export default class {
     renderer.domElement.render = this.render.bind(this)
   }
 
-  destroy() {
+  destroy () {
     // Prevent memory leaks.
     this.volcanoes.destroy()
     this.camera.destroy()
   }
 
-  volcanoAt(x, y) {
+  volcanoAt (x, y) {
     return this.volcanoes.volcanoAt(x, this._height - y)
   }
 
-  setProps(newProps) {
+  setProps (newProps) {
     if (newProps.latLngToPoint) {
       this.props.latLngToPoint = newProps.latLngToPoint
     }
@@ -46,7 +46,7 @@ export default class {
   }
 
   // Renders scene and returns true if some transitions are in progress (e.g. visibility transition).
-  render(timestamp = performance.now()) {
+  render (timestamp = window.performance.now()) {
     const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
     this.camera.update()
     const transitionInProgress = this.volcanoes.update(progress)
@@ -56,7 +56,7 @@ export default class {
     return transitionInProgress
   }
 
-  setSize(newWidth, newHeight) {
+  setSize (newWidth, newHeight) {
     if (newWidth !== this._width || newHeight !== this._height) {
       renderer.setSize(newWidth, newHeight)
       this.camera.setSize(newWidth, newHeight)
@@ -66,25 +66,25 @@ export default class {
     }
   }
 
-  invalidatePositions() {
+  invalidatePositions () {
     this.volcanoes.invalidatePositions(getLatLngDepthToPoint(this.props.latLngToPoint, this._height))
   }
 
-  _initScene() {
+  _initScene () {
     this.scene = new THREE.Scene()
     this.scene.add(this.volcanoes.root)
   }
 
-  get canvas() {
+  get canvas () {
     return renderer.domElement
   }
 }
 
 // Returns a function that converts [lat, lng] into 3D coordinates (instance of THREE.Vector3).
 // This function depends on latLngToPoint function provided by Leaflet map, and screen width and height.
-function getLatLngDepthToPoint(latLngToPoint, height) {
+function getLatLngDepthToPoint (latLngToPoint, height) {
   // latLng is an array: [latitude, longitude]
-  return function(latLng) {
+  return function (latLng) {
     const point = latLngToPoint(latLng)
     return new THREE.Vector3(
       point.x,

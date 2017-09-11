@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import '../../css/about-modal-content.less'
 
 export default class AboutModalContent extends PureComponent {
-  render() {
+  render () {
     return (
       <div className='about-modal-content'>
         <div className='title'>About: Seismic Explorer</div>
@@ -28,4 +28,3 @@ export default class AboutModalContent extends PureComponent {
     )
   }
 }
-

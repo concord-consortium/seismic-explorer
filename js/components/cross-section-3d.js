@@ -11,7 +11,7 @@ export default class CrossSection3D extends React.Component {
     const { mark3DViewModified } = this.props
     this.externalView = new CrossSection(this.refs.container)
     this.externalView.setProps(this.props)
-    this._rafId = requestAnimationFrame(this.rafCallback)
+    this._rafId = window.requestAnimationFrame(this.rafCallback)
     // View is always "unchanged" when the component is created.
     mark3DViewModified(false)
     this.externalView.onCameraChange(() => {
@@ -20,7 +20,7 @@ export default class CrossSection3D extends React.Component {
   }
 
   componentWillUnmount () {
-    cancelAnimationFrame(this._rafId)
+    window.cancelAnimationFrame(this._rafId)
     this.externalView.destroy()
   }
 
@@ -36,7 +36,7 @@ export default class CrossSection3D extends React.Component {
   // requestAnimationFrame callback.
   rafCallback (timestamp) {
     this.externalView.render(timestamp)
-    this._rafId = requestAnimationFrame(this.rafCallback)
+    this._rafId = window.requestAnimationFrame(this.rafCallback)
   }
 
   resetCamera () {

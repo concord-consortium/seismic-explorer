@@ -3,16 +3,15 @@
 // to make sure that earthquakes are displayed in a nice, contiguous way (otherwise user might see some "holes"
 // in earthquakes data in some regions where tiles contain lots of data, e.g. in California).
 // See: https://www.pivotaltracker.com/story/show/130918575
-function getMagnitudeCutoff(response, limit) {
+function getMagnitudeCutoff (response, limit) {
   if (response.features.length === limit) {
-    return response.features[limit - 1].properties.mag;
-  }
-  else return 0;
+    return response.features[limit - 1].properties.mag
+  } else return 0
 }
 
 // Processes JSON returned by API (USGS or our own) and returns only necessary data.
 // We save some memory and also it documents (and tests) which properties are necessary.
-export function processAPIResponse(response, limit, enforcedMinMagnitude) {
+export function processAPIResponse (response, limit, enforcedMinMagnitude) {
   const magnitudeCutOff = Math.max(getMagnitudeCutoff(response, limit), enforcedMinMagnitude)
   const earthquakes = response.features.map(eq => {
     const coords = eq.geometry.coordinates
@@ -39,7 +38,7 @@ export function processAPIResponse(response, limit, enforcedMinMagnitude) {
 }
 
 // Takes array of data objects (returned by processAPIResponse) and merges it into single one.
-export function concatenateData(array) {
+export function concatenateData (array) {
   // A bit overspoken, but this function is called quite often and it can take some time. Try to
   // concatenate data in CPU and memory-efficient way.
   let dataLength = 0
@@ -61,7 +60,7 @@ export function concatenateData(array) {
   return result
 }
 
-export function copyAndShiftLng(data, offset) {
+export function copyAndShiftLng (data, offset) {
   const newEarthquakes = data.earthquakes.map(eq => {
     const coords = eq.geometry.coordinates
     return Object.assign({}, eq, {

@@ -1,62 +1,53 @@
-import React from 'react'
 import { MapLayer } from 'react-leaflet'
 import L from 'leaflet'
 import 'imports?L=leaflet!leaflet-plugins/layer/Marker.Rotate.js'
 
 const arrowIcon = L.icon({
-    iconUrl: 'plates-info.png',
-    iconAnchor: [12, 12],
-    popupAnchor: [0, 0],
-});
+  iconUrl: 'plates-info.png',
+  iconAnchor: [12, 12],
+  popupAnchor: [0, 0]
+})
 
 const arrowHeadToBodyRatio = 0.25
 const arrowAngleOffset = 0.2
 const smallArrowMax = 30
 const mediumArrowMax = 60
 
-function markerMaker(posX, posY, angle, magnitude)
-{
+function markerMaker (posX, posY, angle, magnitude) {
   let arrowColor
 
   let rad = (angle - 90) * (Math.PI / 180)
 
-  if(magnitude == 10) {
+  if (magnitude === 10) {
     arrowColor = '#00ffff'
-  }
-  else if(magnitude == 15) {
+  } else if (magnitude === 15) {
     arrowColor = '#ffff00'
-  }
-  else {
+  } else {
     arrowColor = '#ffaa00'
   }
 
   let arrowHeadLength = magnitude * arrowHeadToBodyRatio
-  let trigLength = arrowHeadLength * Math.cos(angle)
 
   let latlngs = [[posX, posY],
-                [posX + magnitude * Math.cos(rad),posY - magnitude * Math.sin(rad)],
+                [posX + magnitude * Math.cos(rad), posY - magnitude * Math.sin(rad)],
                 [posX + (magnitude - arrowHeadLength) * Math.cos(rad + arrowAngleOffset), posY - (magnitude - arrowHeadLength) * Math.sin(rad + arrowAngleOffset)],
                 [posX + (magnitude - arrowHeadLength) * Math.cos(rad - arrowAngleOffset), posY - (magnitude - arrowHeadLength) * Math.sin(rad - arrowAngleOffset)],
-                [posX + magnitude * Math.cos(rad),posY - magnitude * Math.sin(rad)]]
-  let polyline = new L.polygon(latlngs, {interactive: true, color: arrowColor, opacity: 1, weight: Math.abs(magnitude) / 15 + 1});
-  return polyline
+                [posX + magnitude * Math.cos(rad), posY - magnitude * Math.sin(rad)]]
+  return L.polygon(latlngs, {interactive: true, color: arrowColor, opacity: 1, weight: Math.abs(magnitude) / 15 + 1})
 }
 
-function getFixedMag(magnitude){
-  if(magnitude < smallArrowMax) {
-    magnitude = Math.sign(magnitude) * 10;
+function getFixedMag (magnitude) {
+  if (magnitude < smallArrowMax) {
+    magnitude = Math.sign(magnitude) * 10
+  } else if (magnitude < mediumArrowMax) {
+    magnitude = Math.sign(magnitude) * 15
+  } else {
+    magnitude = Math.sign(magnitude) * 20
   }
-  else if(magnitude < mediumArrowMax) {
-    magnitude = Math.sign(magnitude) * 15;
-  }
-  else {
-    magnitude = Math.sign(magnitude) * 20;
-  }
-  return magnitude;
+  return magnitude
 }
 
-function divergeArrowMaker(posX, posY, angle, magnitude)
-{
+function divergeArrowMaker (posX, posY, angle, magnitude) {
   let marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + magnitude + ' mm/yr</b>')
   magnitude = getFixedMag(magnitude)
 
@@ -67,14 +58,13 @@ function divergeArrowMaker(posX, posY, angle, magnitude)
   ])
 }
 
-function convergeArrowMaker(posX, posY, angle, magnitude)
-{
+function convergeArrowMaker (posX, posY, angle, magnitude) {
   let actualMag = magnitude
   magnitude = getFixedMag(magnitude)
 
   let rad = (angle - 180) * (Math.PI / 180)
-  posX += (magnitude)  * Math.sin(rad)
-  posY += (magnitude)  * Math.cos(rad)
+  posX += (magnitude) * Math.sin(rad)
+  posY += (magnitude) * Math.cos(rad)
 
   let arrow1 = markerMaker(posX, posY, angle, magnitude)
 
@@ -85,8 +75,7 @@ function convergeArrowMaker(posX, posY, angle, magnitude)
   ])
 }
 
-function transformArrowMaker(posX, posY, angle, magnitude)
-{
+function transformArrowMaker (posX, posY, angle, magnitude) {
   let marker = new L.Marker([posX, posY], {icon: arrowIcon}).bindPopup('<b>' + magnitude + ' mm/yr</b>')
 
   magnitude = getFixedMag(magnitude)
@@ -106,8 +95,7 @@ function transformArrowMaker(posX, posY, angle, magnitude)
   ])
 }
 
-function arrowLayerCreator()
-{
+function arrowLayerCreator () {
   let layer = new L.LayerGroup([
     transformArrowMaker(55.6776, 131.4844, -15, 9),
     transformArrowMaker(37.2303, -122.1021, 140, 40),
@@ -132,15 +120,15 @@ function arrowLayerCreator()
     convergeArrowMaker(15.2753, -99.5924, 60, 61),
     convergeArrowMaker(-50.1743, -77.0623, 4, 20),
     convergeArrowMaker(-19.5707, -72.6946, 15, 79),
-    convergeArrowMaker(	15.2154, -58.6994, 195, 18),
+    convergeArrowMaker(15.2154, -58.6994, 195, 18),
     convergeArrowMaker(-57.2585, -23.2260, 200, 78),
-    convergeArrowMaker(34.4465, 	23.9354, 115, 9),
-    convergeArrowMaker(	32.8410, 46.4989, 100, 27),
+    convergeArrowMaker(34.4465, 23.9354, 115, 9),
+    convergeArrowMaker(32.8410, 46.4989, 100, 27),
     convergeArrowMaker(28.4763, 79.7472, 80, 48),
     convergeArrowMaker(-9.0394, 103.9865, 80, 70),
-    convergeArrowMaker(	20.4039, 	122.8402, 165, 94),
+    convergeArrowMaker(20.4039, 122.8402, 165, 94),
     convergeArrowMaker(49.4326, 159.2444, 140, 78),
-    convergeArrowMaker(	39.2460, 145.2241, 165, 92),
+    convergeArrowMaker(39.2460, 145.2241, 165, 92),
     convergeArrowMaker(16.1708, 148.7026, 180, 63),
     convergeArrowMaker(-6.4011, 140.8744, 25, 106),
     convergeArrowMaker(-22.4161, 167.9387, 30, 123)
@@ -149,23 +137,22 @@ function arrowLayerCreator()
 }
 
 export class PlatesArrowsLayer extends MapLayer {
-
-  constructor() {
-    super();
+  constructor () {
+    super()
     this.leafletElement = arrowLayerCreator()
   }
 
-  componentWillMount() {
-    super.componentWillMount();
-    this.leafletElement =arrowLayerCreator()
+  componentWillMount () {
+    super.componentWillMount()
+    this.leafletElement = arrowLayerCreator()
   }
 
-   setLeafletElementProps() {
-    const { map, arrowClick } = this.props
+  setLeafletElementProps () {
+    const { arrowClick } = this.props
     this.leafletElement.onArrowClick(arrowClick)
   }
 
-  render() {
+  render () {
     return null
   }
 }

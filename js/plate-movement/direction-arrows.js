@@ -6,7 +6,7 @@ import Arrow from './direction-arrow'
 const MAX_COUNT = 250000
 
 export default class {
-  constructor() {
+  constructor () {
     const positions = new Float32Array(MAX_COUNT * 3)
     const angles = new Float32Array(MAX_COUNT * 1)
     const colors = new Float32Array(MAX_COUNT * 3)
@@ -28,43 +28,43 @@ export default class {
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      alphaTest: 0.5,
+      alphaTest: 0.5
     })
 
     this.root = new THREE.Points(geometry, material)
     this._renderedArrows = []
   }
 
-  destroy() {
+  destroy () {
     this.root.geometry.dispose()
     this.root.material.dispose()
     this.texture.dispose()
   }
 
-  setProps(data, latLngToPoint) {
+  setProps (data, latLngToPoint) {
     this._dataToProcess = data
     this._latLngToPoint = latLngToPoint
   }
 
-  arrowAt(x, y) {
+  arrowAt (x, y) {
     for (let i = this._renderedArrows.length - 1; i >= 0; i--) {
       if (this._renderedArrows[i].hitTest(x, y)) return this._renderedArrows[i].data
     }
     return null
   }
 
-  update(progress) {
+  update (progress) {
     let transitionInProgress = false
     this._processNewData()
     return transitionInProgress
   }
 
-  invalidatePositions(latLngToPoint) {
+  invalidatePositions (latLngToPoint) {
     this._latLngToPoint = latLngToPoint
     for (let i = 0, len = this._renderedArrows.length; i < len; i++) {
       const arrowData = this._currentData[i]
       const point = this._latLngToPoint(arrowData.position)
-      const size = arrowData.velocity.vMag * 5;
+      const size = arrowData.velocity.vMag * 5
       const angle = arrowData.velocity.vAngle
 
       this._renderedArrows[i].setPositionAttr(point)
@@ -73,7 +73,7 @@ export default class {
     }
   }
 
-  _processNewData() {
+  _processNewData () {
     if (!this._dataToProcess) return
     let data = this._dataToProcess
     if (data.length > MAX_COUNT) {
@@ -84,9 +84,9 @@ export default class {
 
     for (let i = 0, length = data.length; i < length; i++) {
       const arrowData = data[i]
-      if (!this._renderedArrows[i] || this._renderedArrows[i].id !== eqData.id) {
+      if (!this._renderedArrows[i] || this._renderedArrows[i].id !== arrowData.id) {
         const point = this._latLngToPoint(arrowData.position)
-        const size = arrowData.velocity.vMag * 3;
+        const size = arrowData.velocity.vMag * 3
         const angle = arrowData.velocity.vAngle
 
         this._renderedArrows[i] = new Arrow(arrowData, i, attributes)
@@ -94,7 +94,7 @@ export default class {
         this._renderedArrows[i].setSizeAttr(size)
         this._renderedArrows[i].setAngleAttr(angle)
       }
-      this._renderedArrows[i].targetVisibility = 1//arrowData.visible ? 1 : 0
+      this._renderedArrows[i].targetVisibility = 1// arrowData.visible ? 1 : 0
     }
     // Reset old data.
     for (let i = data.length, length = this._renderedArrows.length; i < length; i++) {
@@ -107,9 +107,9 @@ export default class {
   }
 }
 
-function getTexture() {
+function getTexture () {
   const size = 256
-  const arrowHeadSize = size/4
+  const arrowHeadSize = size / 4
   const strokeWidth = size * 0.04
   const canvas = document.createElement('canvas')
   canvas.width = size
@@ -118,10 +118,10 @@ function getTexture() {
 
   ctx.beginPath()
   // Arrow
-  ctx.moveTo(size / 2, size/2) // base of arrow
+  ctx.moveTo(size / 2, size / 2) // base of arrow
   ctx.lineTo(size / 2, size)// arrow tip
   ctx.lineTo(size / 2 + arrowHeadSize / 3, size - arrowHeadSize)
-  //ctx.moveTo(size / 2, size)// arrow tip
+  // ctx.moveTo(size / 2, size)// arrow tip
   ctx.lineTo(size / 2 - arrowHeadSize / 3, size - arrowHeadSize)
   ctx.lineTo(size / 2, size)// arrow tip
 

@@ -7,7 +7,7 @@ const CROSS_SECTION_RECTANGLE_ASPECT_RATIO = 0.4
 // [1] - left point, far from the observer
 // [2] - right point, far from the observer
 // [3] - right point, close to the observer
-export default function crossSectionRectangle(point1, point2) {
+export default function crossSectionRectangle (point1, point2) {
   if (!point1 || !point2) return null
   // Projection is necessary, as otherwise rectangle wouldn't look like rectangle on the map.
   const pLeft = leftPoint(project(point1), project(point2))
@@ -16,42 +16,42 @@ export default function crossSectionRectangle(point1, point2) {
   const middle1 = pointBetween(pLeft, pRight, ratio)
   const middle2 = pointBetween(pRight, pLeft, ratio)
   return [unproject(rotate(pLeft, middle1, 90)), unproject(rotate(pLeft, middle1, -90)),
-          unproject(rotate(pRight, middle2, 90)), unproject(rotate(pRight, middle2, -90))]
+    unproject(rotate(pRight, middle2, 90)), unproject(rotate(pRight, middle2, -90))]
 }
 
 // Converts Leaflet.LatLng or Leaflet.Point to array.
-export function pointToArray(point) {
+export function pointToArray (point) {
   if (point.lat !== undefined) return [point.lat, point.lng]
   if (point.x !== undefined) return [point.x, point.y]
   return point
 }
 
 // Left point in 3D view. point1 and point2 are projected.
-function leftPoint(point1, point2) {
+function leftPoint (point1, point2) {
   return point1[0] < point2[0] ? point1 : point2
 }
 
 // Right point in 3D view. point1 and point2 are projected.
-function rightPoint(point1, point2) {
+function rightPoint (point1, point2) {
   return point1[0] < point2[0] ? point2 : point1
 }
 
-function project(latLngArray) {
+function project (latLngArray) {
   return pointToArray(L.Projection.SphericalMercator.project(L.latLng(latLngArray)))
 }
 
-function unproject(pointArray) {
+function unproject (pointArray) {
   return pointToArray(L.Projection.SphericalMercator.unproject(L.point(pointArray)))
 }
 
-function pointBetween(point1, point2, ratio = 0.5) {
+function pointBetween (point1, point2, ratio = 0.5) {
   if (!point1 || !point2) return null
   const xDiff = point1[0] - point2[0]
   const yDiff = point1[1] - point2[1]
   return [point1[0] - xDiff * ratio, point1[1] - yDiff * ratio]
 }
 
-function rotate(center, point, angle) {
+function rotate (center, point, angle) {
   const radians = (Math.PI / 180) * angle
   const cos = Math.cos(radians)
   const sin = Math.sin(radians)

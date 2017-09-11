@@ -6,7 +6,7 @@ import Earthquake from './earthquake'
 const MAX_COUNT = 200000
 
 export default class {
-  constructor() {
+  constructor () {
     const positions = new Float32Array(MAX_COUNT * 3)
     const colors = new Float32Array(MAX_COUNT * 3)
     const sizes = new Float32Array(MAX_COUNT)
@@ -26,7 +26,7 @@ export default class {
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      alphaTest: 0.5,
+      alphaTest: 0.5
     })
 
     this.root = new THREE.Points(geometry, material)
@@ -34,25 +34,25 @@ export default class {
     this._renderedEarthquakes = []
   }
 
-  destroy() {
+  destroy () {
     this.root.geometry.dispose()
     this.root.material.dispose()
     this.texture.dispose()
   }
 
-  setProps(data, latLngDepthToPoint) {
+  setProps (data, latLngDepthToPoint) {
     this._dataToProcess = data
     this._latLngDepthToPoint = latLngDepthToPoint
   }
 
-  earthquakeAt(x, y) {
+  earthquakeAt (x, y) {
     for (let i = this._renderedEarthquakes.length - 1; i >= 0; i--) {
       if (this._renderedEarthquakes[i].hitTest(x, y)) return this._renderedEarthquakes[i].data
     }
     return null
   }
 
-  update(progress) {
+  update (progress) {
     let transitionInProgress = false
     this._processNewData()
     for (let i = 0, length = this._renderedEarthquakes.length; i < length; i++) {
@@ -63,7 +63,7 @@ export default class {
     return transitionInProgress
   }
 
-  invalidatePositions(latLngDepthToPoint) {
+  invalidatePositions (latLngDepthToPoint) {
     this._latLngDepthToPoint = latLngDepthToPoint
     for (let i = 0, len = this._renderedEarthquakes.length; i < len; i++) {
       const point = this._latLngDepthToPoint(this._currentData[i].geometry.coordinates)
@@ -71,7 +71,7 @@ export default class {
     }
   }
 
-  _processNewData() {
+  _processNewData () {
     if (!this._dataToProcess) return
     let data = this._dataToProcess
     if (data.length > MAX_COUNT) {
@@ -99,7 +99,7 @@ export default class {
   }
 }
 
-function getTexture() {
+function getTexture () {
   const size = 128
   const strokeWidth = size * 0.06
   const canvas = document.createElement('canvas')

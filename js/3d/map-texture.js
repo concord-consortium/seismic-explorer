@@ -7,7 +7,7 @@ const MAX_TEXTURE_SIZE = 2048 // px
 
 // Tiles can have negative X values or values bigger than allowed.
 // If so, limit it to the allowed range.
-function wrapTile(tile) {
+function wrapTile (tile) {
   const range = Math.pow(2, tile.zoom)
   if (tile.x >= 0 && tile.x < range) {
     return tile
@@ -19,13 +19,13 @@ function wrapTile(tile) {
   }
 }
 
-function textureDimensions(rectangle, zoom) {
+function textureDimensions (rectangle, zoom) {
   const tiles = tilesListByRow(rectangle, zoom)
   return { width: tiles[0].length * TILE_SIZE, height: tiles.length * TILE_SIZE }
 }
 
 // Returns zoom level that will generate biggest available texture within MAX_TEXTURE_SIZE x MAX_TEXTURE_SIZE limit.
-function optimalZoomLevel(rectangle) {
+function optimalZoomLevel (rectangle) {
   let zoom = -1
   let dim = {width: 0, height: 0}
   while (dim.width < MAX_TEXTURE_SIZE && dim.height < MAX_TEXTURE_SIZE) {
@@ -35,7 +35,7 @@ function optimalZoomLevel(rectangle) {
   return zoom
 }
 
-function tilesToTexture(tiles, layerType) {
+function tilesToTexture (tiles, layerType) {
   const rows = tiles.length
   const cols = tiles[0].length
   const height = rows * TILE_SIZE
@@ -70,12 +70,12 @@ function tilesToTexture(tiles, layerType) {
   return texture
 }
 
-function tileTexture(rectangle, zoom, layerType) {
+function tileTexture (rectangle, zoom, layerType) {
   const tiles = tilesListByRow(rectangle, zoom)
   return tilesToTexture(tiles, layerType)
 }
 
-function textureUVs(rectangle, zoom) {
+function textureUVs (rectangle, zoom) {
   const tileBBox = tileBoundingBox(rectangle, zoom)
   const width = tileBBox.right - tileBBox.left + 1
   const height = tileBBox.bottom - tileBBox.top + 1
@@ -86,7 +86,7 @@ function textureUVs(rectangle, zoom) {
   })
 }
 
-export default function mapTexture(rectangle, layerType) {
+export default function mapTexture (rectangle, layerType) {
   const zoom = optimalZoomLevel(rectangle)
   return {
     texture: tileTexture(rectangle, zoom, layerType),

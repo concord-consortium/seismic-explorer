@@ -9,7 +9,7 @@ import config from '../config'
 const INITIAL_DOWNLOAD_STATUS = Map({
   requestsInProgress: 0
 })
-function downloadStatus(state = INITIAL_DOWNLOAD_STATUS, action) {
+function downloadStatus (state = INITIAL_DOWNLOAD_STATUS, action) {
   switch (action.type) {
     case REQUEST_DATA:
       return state.set('requestsInProgress', state.get('requestsInProgress') + 1)
@@ -26,7 +26,7 @@ const INITIAL_DATA = Map({
   earthquakes: [],
   magnitudeCutOff: 0
 })
-function data(state = INITIAL_DATA, action) {
+function data (state = INITIAL_DATA, action) {
   switch (action.type) {
     case RESET_EARTHQUAKES:
       return INITIAL_DATA
@@ -55,7 +55,7 @@ const INITIAL_FILTERS = Map({
   animEndPoint: config.startTime,
   crossSection: false
 })
-function filters(state = INITIAL_FILTERS, action) {
+function filters (state = INITIAL_FILTERS, action) {
   switch (action.type) {
     case SET_FILTER:
       return state.set(action.name, action.value)
@@ -72,7 +72,7 @@ const INITIAL_LAYERS = Map({
   platemovement: false,
   platearrows: false
 })
-function layers(state = INITIAL_LAYERS, action) {
+function layers (state = INITIAL_LAYERS, action) {
   switch (action.type) {
     case SET_BASE_LAYER:
       return state.set('base', action.value)
@@ -87,50 +87,50 @@ function layers(state = INITIAL_LAYERS, action) {
     case SET_PLATE_ARROWS_VISIBLE:
       return state.set('platearrows', action.value)
     default:
-      return state;
+      return state
   }
 }
 
-function animationEnabled(state = false, action) {
+function animationEnabled (state = false, action) {
   switch (action.type) {
     case SET_ANIMATION_ENABLED:
       return action.value
     default:
-      return state;
+      return state
   }
 }
 
 // '2d', 'cross-section', '3d'
-function mode(state = '2d', action) {
+function mode (state = '2d', action) {
   switch (action.type) {
     case SET_MODE:
       return action.value
     default:
-      return state;
+      return state
   }
 }
 
-function crossSectionPoints(state = List(), action) {
+function crossSectionPoints (state = List(), action) {
   switch (action.type) {
     case SET_CROSS_SECTION_POINT:
       return state.set(action.index, action.latLng)
     default:
-      return state;
+      return state
   }
 }
 
-function changedViews(state = Set(), action) {
+function changedViews (state = Set(), action) {
   switch (action.type) {
     case MARK_2D_VIEW_MODIFIED:
       return action.value ? state.add('2d') : state.remove('2d')
     case MARK_3D_VIEW_MODIFIED:
       return action.value ? state.add('3d') : state.remove('3d')
     default:
-      return state;
+      return state
   }
 }
 
-export default function reducer(state = Map(), action) {
+export default function reducer (state = Map(), action) {
   return state.set('layers', layers(state.get('layers'), action))
               .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
               .set('mode', mode(state.get('mode'), action))
