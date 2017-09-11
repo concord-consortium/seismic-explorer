@@ -1,6 +1,6 @@
 import THREE from 'three'
-import vertexShader from 'raw!./earthquakes-vertex.glsl'
-import fragmentShader from 'raw!./earthquakes-fragment.glsl'
+import vertexShader from './earthquakes-vertex.glsl'
+import fragmentShader from './earthquakes-fragment.glsl'
 import Earthquake from './earthquake'
 
 const MAX_COUNT = 200000

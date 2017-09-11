@@ -1,6 +1,6 @@
 import { MapLayer } from 'react-leaflet'
 import L from 'leaflet'
-import 'imports?L=leaflet!leaflet-plugins/layer/Marker.Rotate.js'
+import 'leaflet-plugins/layer/Marker.Rotate.js'
 
 const arrowIcon = L.icon({
   iconUrl: 'plates-info.png',

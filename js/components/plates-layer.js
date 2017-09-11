@@ -1,5 +1,5 @@
 import { MapLayer } from 'react-leaflet'
-import 'imports?L=leaflet!leaflet-plugins/layer/vector/KML'
+import 'leaflet-plugins/layer/vector/KML'
 import L from 'leaflet'
 
 let _cachedKMLComplex

@@ -1,5 +1,5 @@
 import THREE from 'three'
-import 'imports?THREE=three!three/examples/js/controls/OrbitControls'
+import 'three/examples/js/controls/OrbitControls'
 import Volcanoes from './volcanoes'
 import Camera from './camera'
 

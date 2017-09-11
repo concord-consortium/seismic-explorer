@@ -33,6 +33,20 @@ module.exports = {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.eot?3179539#iefix
         test: /\.(eot|ttf|woff|woff2|svg)((\?|\#).*)?$/,
         loader: 'url-loader?limit=8192'
+      },
+      {
+        test: /\.glsl$/,
+        loader: 'raw-loader?THREE=three'
+      },
+      {
+        // Pass global THREE variable to OrbitControls
+        test: /three\/examples\/js/,
+        loader: 'imports-loader?THREE=three'
+      },
+      {
+        // Pass global THREE variable to OrbitControls
+        test: /leaflet-plugins\//,
+        loader: 'imports?L=leaflet'
       }
     ],
     // See: https://gist.github.com/mjackson/ecd3914ebee934f4daf4

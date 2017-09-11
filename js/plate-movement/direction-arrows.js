@@ -1,6 +1,6 @@
 import THREE from 'three'
-import vertexShader from 'raw!./direction-arrow-vertex.glsl'
-import fragmentShader from 'raw!./direction-arrow-fragment.glsl'
+import vertexShader from './direction-arrow-vertex.glsl'
+import fragmentShader from './direction-arrow-fragment.glsl'
 import Arrow from './direction-arrow'
 
 const MAX_COUNT = 250000

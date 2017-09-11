@@ -1,6 +1,6 @@
 import THREE from 'three'
-import vertexShader from 'raw!./volcano-vertex.glsl'
-import fragmentShader from 'raw!./volcano-fragment.glsl'
+import vertexShader from './volcano-vertex.glsl'
+import fragmentShader from './volcano-fragment.glsl'
 import Volcano from './volcano'
 
 const MAX_COUNT = 50000
