@@ -1,14 +1,29 @@
 import { Map, List, Set } from 'immutable'
 import {
-  REQUEST_DATA, RESET_EARTHQUAKES, RECEIVE_EARTHQUAKES, RECEIVE_DATA, RECEIVE_ERROR,
-  SET_FILTER, SET_BASE_LAYER, SET_PLATES_VISIBLE, SET_ANIMATION_ENABLED, SET_MODE,
-  SET_CROSS_SECTION_POINT, MARK_2D_VIEW_MODIFIED, MARK_3D_VIEW_MODIFIED, SET_EARTHQUAKES_VISIBLE, SET_VOLCANOES_VISIBLE, SET_PLATE_MOVEMENT_VISIBLE, SET_PLATE_ARROWS_VISIBLE
+  REQUEST_DATA,
+  RESET_EARTHQUAKES,
+  RECEIVE_EARTHQUAKES,
+  RECEIVE_DATA,
+  RECEIVE_ERROR,
+  SET_FILTER,
+  SET_BASE_LAYER,
+  SET_PLATES_VISIBLE,
+  SET_ANIMATION_ENABLED,
+  SET_MODE,
+  SET_CROSS_SECTION_POINT,
+  MARK_2D_VIEW_MODIFIED,
+  MARK_3D_VIEW_MODIFIED,
+  SET_EARTHQUAKES_VISIBLE,
+  SET_VOLCANOES_VISIBLE,
+  SET_PLATE_MOVEMENT_VISIBLE,
+  SET_PLATE_ARROWS_VISIBLE
 } from '../actions'
 import config from '../config'
 
 const INITIAL_DOWNLOAD_STATUS = Map({
   requestsInProgress: 0
 })
+
 function downloadStatus (state = INITIAL_DOWNLOAD_STATUS, action) {
   switch (action.type) {
     case REQUEST_DATA:
@@ -26,6 +41,7 @@ const INITIAL_DATA = Map({
   earthquakes: [],
   magnitudeCutOff: 0
 })
+
 function data (state = INITIAL_DATA, action) {
   switch (action.type) {
     case RESET_EARTHQUAKES:
@@ -39,7 +55,7 @@ function data (state = INITIAL_DATA, action) {
         .concat(action.response.earthquakes)
         .filter(e => e.properties.mag >= newCutOff)
       return state.set('earthquakes', earthquakes)
-                  .set('magnitudeCutOff', newCutOff)
+        .set('magnitudeCutOff', newCutOff)
     default:
       return state
   }
@@ -55,6 +71,7 @@ const INITIAL_FILTERS = Map({
   animEndPoint: config.startTime,
   crossSection: false
 })
+
 function filters (state = INITIAL_FILTERS, action) {
   switch (action.type) {
     case SET_FILTER:
@@ -72,6 +89,7 @@ const INITIAL_LAYERS = Map({
   platemovement: false,
   platearrows: false
 })
+
 function layers (state = INITIAL_LAYERS, action) {
   switch (action.type) {
     case SET_BASE_LAYER:
@@ -131,12 +149,13 @@ function changedViews (state = Set(), action) {
 }
 
 export default function reducer (state = Map(), action) {
-  return state.set('layers', layers(state.get('layers'), action))
-              .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
-              .set('mode', mode(state.get('mode'), action))
-              .set('crossSectionPoints', crossSectionPoints(state.get('crossSectionPoints'), action))
-              .set('data', data(state.get('data'), action))
-              .set('filters', filters(state.get('filters'), action))
-              .set('changedViews', changedViews(state.get('changedViews'), action))
-              .set('downloadStatus', downloadStatus(state.get('downloadStatus'), action))
+  return state
+    .set('layers', layers(state.get('layers'), action))
+    .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
+    .set('mode', mode(state.get('mode'), action))
+    .set('crossSectionPoints', crossSectionPoints(state.get('crossSectionPoints'), action))
+    .set('data', data(state.get('data'), action))
+    .set('filters', filters(state.get('filters'), action))
+    .set('changedViews', changedViews(state.get('changedViews'), action))
+    .set('downloadStatus', downloadStatus(state.get('downloadStatus'), action))
 }

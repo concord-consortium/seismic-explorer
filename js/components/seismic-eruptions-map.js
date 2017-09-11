@@ -131,7 +131,7 @@ export default class SeismicEruptionsMap extends PureComponent {
   handleVolcanoClick (event, volcano) {
     if (this._mapBeingDragged) return
     this.setState({selectedVolcano: volcano})
-    log('Volcano Clicked', volcano)
+    log('VolcanoClicked', volcano)
   }
 
   fitBounds (bounds = INITIAL_BOUNDS) {

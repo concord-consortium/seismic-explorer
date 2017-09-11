@@ -156,7 +156,7 @@ class BottomControls extends PureComponent {
   }
 
   render () {
-    const {animationEnabled, filters, layers, earthquakesCount, earthquakesCountVisible, magnitudeCutOff, dataLayerConfig} = this.props
+    const { animationEnabled, filters, layers, earthquakesCount, earthquakesCountVisible, magnitudeCutOff } = this.props
     const minMag = filters.get('minMag')
     const maxMag = filters.get('maxMag')
     let magFilter = magnitudeCutOff > 0
@@ -194,7 +194,7 @@ class BottomControls extends PureComponent {
               {this.mapLayerOptions}
             </select>
           </div>
-          <LayerControls dataLayerConfig={dataLayerConfig} />
+          <LayerControls />
           {layers.get('earthquakes') &&
             <div>
               <div className='stats'>

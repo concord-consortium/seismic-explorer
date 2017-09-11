@@ -17,7 +17,7 @@ const DEFAULT_CONFIG = {
   startTime: Date.parse('1980-01-01T12:00Z'),
   // Calculate noon in UTC timezone that was at least 1h ago (earthquakes DB is updated every few minutes, but let's be safe).
   // Don't use current time to be able cache API queries.
-  endTime: (function() {
+  endTime: (function () {
     const oneHour = 3600000 // ms
     const result = new Date(Date.now() - oneHour)
     if (result.getUTCHours() < 12) {
@@ -29,19 +29,21 @@ const DEFAULT_CONFIG = {
     result.setUTCMilliseconds(0)
     return result.getTime()
   }()),
-  mapStyle:'satellite',  // or 'street' or 'earthquake-density'
+  mapStyle: 'satellite',  // or 'street' or 'earthquake-density'
   // Enables / disables logging of user actions to parent frame (e.g. LARA).
-  logging: true
+  logging: true,
+  // It controls "Data type" menu. There are a few preset configurations available. Take a look at layer-data-config.js.
+  layerDataConfig: 5
 }
 
-function getURLParam(name) {
+function getURLParam (name) {
   const url = window.location.href
-  name = name.replace(/[\[\]]/g, "\\$&")
-  const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)")
+  name = name.replace(/[\[\]]/g, '\\$&')
+  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
   const results = regex.exec(url)
   if (!results) return null
   if (!results[2]) return true
-  return decodeURIComponent(results[2].replace(/\+/g, " "))
+  return decodeURIComponent(results[2].replace(/\+/g, ' '))
 }
 
 const urlConfig = {}

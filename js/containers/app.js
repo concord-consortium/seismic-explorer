@@ -9,7 +9,6 @@ import CrossSection3D from '../components/cross-section-3d'
 import LoadingIcon from '../components/loading-icon'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
 import filteredEarthquakes from '../core/filtered-earthquakes'
-import layerConfig from '../layer-data-config'
 
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
@@ -19,20 +18,10 @@ const APP_CLASS_NAME = 'seismic-explorer-app'
 class App extends PureComponent {
   constructor (props) {
     super(props)
-    const dataLayerConfig = this.props.location.query.p && layerConfig[this.props.location.query.p] ? this.props.location.query.p : 5
-    this.state = {
-      dataLayerConfig
-    }
     this.latLngToPoint = this.latLngToPoint.bind(this)
     this.resetView = this.resetView.bind(this)
   }
-  componentWillMount () {
-    const {dataLayerConfig} = this.state
-    const {setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible} = this.props
-    setPlateMovementVisible(layerConfig[dataLayerConfig].plateMovement.visible)
-    setVolcanoesVisible(layerConfig[dataLayerConfig].volcanoes.visible)
-    setEarthquakesVisible(layerConfig[dataLayerConfig].earthquakes.visible)
-  }
+
   componentDidMount () {
     enableShutterbug(APP_CLASS_NAME)
   }
@@ -71,8 +60,6 @@ class App extends PureComponent {
   renderApp () {
     const { dataFetching, earthquakes, layers, crossSectionPoints, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
-    const { dataLayerConfig } = this.state
-
     return (
       <div>
         {dataFetching && <LoadingIcon />}
@@ -92,7 +79,7 @@ class App extends PureComponent {
           <OverlayControls resetView={this.resetView} />
         </div>
         <div className='bottom-controls-container'>
-          <BottomControls dataLayerConfig={dataLayerConfig} />
+          <BottomControls />
         </div>
       </div>
     )
