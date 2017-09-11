@@ -65,10 +65,9 @@ const INITIAL_FILTERS = Map({
   minMag: 0,
   maxMag: 10,
   minTime: config.startTime,
-  maxTime: config.endTime,
+  maxTime: config.startTime,
   minTimeLimit: config.startTime,
   maxTimeLimit: config.endTime,
-  animEndPoint: config.startTime,
   crossSection: false
 })
 

@@ -105,23 +105,16 @@ class BottomControls extends PureComponent {
 
   handleAnimStep (newValue) {
     const {filters, setFilter, setAnimationEnabled} = this.props
-    if (newValue >= filters.get('animEndTime')) {
-      newValue = filters.get('animEndTime')
+    if (newValue > filters.get('maxTimeLimit')) {
+      newValue = filters.get('maxTimeLimit')
       setAnimationEnabled(false)
     }
     setFilter('maxTime', newValue)
   }
 
   handlePlayPauseBtnClick () {
-    const {filters, setFilter, animationEnabled, setAnimationEnabled} = this.props
-    if (!animationEnabled) {
-      setFilter('animEndTime', filters.get('maxTime'))
-      setFilter('maxTime', filters.get('minTime'))
-    } else {
-      setFilter('maxTime', filters.get('animEndTime'))
-    }
+    const {animationEnabled, setAnimationEnabled} = this.props
     setAnimationEnabled(!animationEnabled)
-
     log(animationEnabled ? 'PauseClicked' : 'PlayClicked')
   }
 

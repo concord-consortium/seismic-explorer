@@ -71,7 +71,7 @@ class LayerControls extends PureComponent {
   }
 
   handleEarthquakeLayerChange (event) {
-    const {setAnimationEnabled, setFilter, filters, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
+    const {setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible)
     log('ShowEarthquakes', { visible })
@@ -80,12 +80,8 @@ class LayerControls extends PureComponent {
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
     }
-
-    if (visible) {
-      setAnimationEnabled(true)
-      setFilter('animEndTime', filters.get('maxTimeLimit'))
-      setFilter('maxTime', filters.get('minTime'))
-    } else {
+    if (!visible) {
+      // Stop earthquakes animation when earthquakes layer is hidden.
       setAnimationEnabled(false)
     }
   }
