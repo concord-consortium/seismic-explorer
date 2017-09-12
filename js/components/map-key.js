@@ -28,6 +28,9 @@ export default class MapKey extends PureComponent {
   render () {
     const { showBoundariesInfo, volcanoes, earthquakes } = this.props
     const { opened } = this.state
+    if (!showBoundariesInfo && !volcanoes && !earthquakes) {
+      return null
+    }
     return !opened
       ? <OverlayButton title='Information about the symbols used on this map' onClick={this.open}>Key</OverlayButton>
       : < div className='modal-style map-key-content' >
