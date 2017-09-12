@@ -1,5 +1,6 @@
 import { Map, List, Set } from 'immutable'
 import {
+  SET_MAP_REGION,
   REQUEST_DATA,
   RESET_EARTHQUAKES,
   RECEIVE_EARTHQUAKES,
@@ -32,6 +33,17 @@ function downloadStatus (state = INITIAL_DOWNLOAD_STATUS, action) {
       return state.set('requestsInProgress', state.get('requestsInProgress') - 1)
     case RECEIVE_ERROR:
       return state.set('requestsInProgress', state.get('requestsInProgress') - 1)
+    default:
+      return state
+  }
+}
+
+function mapRegion (state = Map(), action) {
+  switch (action.type) {
+    case SET_MAP_REGION:
+      return state
+        .set('region', action.region)
+        .set('zoom', action.zoom)
     default:
       return state
   }
@@ -149,6 +161,7 @@ function changedViews (state = Set(), action) {
 
 export default function reducer (state = Map(), action) {
   return state
+    .set('mapRegion', mapRegion(state.get('mapRegion'), action))
     .set('layers', layers(state.get('layers'), action))
     .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
     .set('mode', mode(state.get('mode'), action))

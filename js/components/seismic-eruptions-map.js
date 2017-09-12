@@ -24,7 +24,7 @@ const INITIAL_BOUNDS = [
 
 // It delays download of earthquakes data on map moveend event, so user can pan or zoom map
 // a few times quickly before the download starts.
-const EARTQUAKES_DOWNLOAD_DELAY = 600 // ms
+const BOUNDS_UPDATE_DELAY = 600 // ms
 // When zoom level is >= than this value, plate boundaries will be rendered using more detailed data.
 const COMPLEX_BOUNDARIES_MIN_ZOOM_LEVEL = 4
 
@@ -51,7 +51,15 @@ export default class SeismicEruptionsMap extends PureComponent {
     return this.refs.map.getLeafletElement()
   }
 
+  get mapRegion () {
+    const bounds = this.map.getBounds()
+    return [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
+      .map(p => [p.lat, p.lng])
+  }
 
+  get mapZoom () {
+    return this.map.getZoom()
+  }
 
   latLngToPoint (latLng) {
     return this.map.latLngToContainerPoint(latLng)
@@ -66,8 +74,9 @@ export default class SeismicEruptionsMap extends PureComponent {
     // Initially Leaflet always triggers mapmove event, as probably real bounds are a bit different than
     // provided bounds (due to screen size etc.). That is causing mark2DViewModified to be called and reset view icon
     // being shown. This is unwanted, as there has been no user interaction. Mark this view unmodified again.
-    const { mark2DViewModified } = this.props
+    const { mark2DViewModified, setMapRegion } = this.props
     mark2DViewModified(false)
+    setMapRegion(this.mapRegion, this.mapZoom)
   }
 
   componentDidUpdate () {
@@ -90,29 +99,29 @@ export default class SeismicEruptionsMap extends PureComponent {
     mark2DViewModified(true)
   }
 
-  handleMoveEnd (event) {
+  handleMoveEnd () {
     this._mapBeingDragged = false
 
-    clearTimeout(this._tilesDownloadTimoutID)
-    this._tilesDownloadTimoutID = setTimeout(() => {
-      const { updateEarthquakesData } = this.props
-      const map = event.target
-      const bounds = map.getBounds()
-      const region = [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
-                      .map(p => [p.lat, p.lng])
-      updateEarthquakesData(region, map.getZoom())
+    clearTimeout(this._boundsUpdateTimeoutID)
+    this._boundsUpdateTimeoutID = setTimeout(() => {
+      const { layers, setMapRegion } = this.props
+      setMapRegion(this.mapRegion, this.mapZoom, layers.get('earthquakes'))
+
+      const bounds = this.map.getBounds()
       log('MapRegionChanged', {
         minLat: bounds.getSouthWest().lat,
         minLng: bounds.getSouthWest().lng,
         maxLat: bounds.getNorthEast().lat,
         maxLng: bounds.getNorthEast().lng
       })
-    }, EARTQUAKES_DOWNLOAD_DELAY)
+    }, BOUNDS_UPDATE_DELAY)
   }
 
   handleZoomEnd (event) {
     const map = event.target
     log('MapZoomChanged', {zoom: map.getZoom()})
+    // Note that we don't need to update map region, as #handleMoveEnd is called anyway when zoom is updated
+    // and it will take care of that.
   }
 
   handleEarthquakeClick (event, earthquake) {

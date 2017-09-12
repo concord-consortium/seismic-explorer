@@ -48,7 +48,6 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
     const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
     const pos = DomEvent.getMousePosition(event, this._canvas)
     const volcanoData = this.externalView.volcanoAt(pos.x, pos.y)
-    console.log(volcanoData)
     if (volcanoData) {
       this._volcanoClickHandler(e, volcanoData)
     }

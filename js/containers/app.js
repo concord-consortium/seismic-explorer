@@ -58,7 +58,7 @@ class App extends PureComponent {
   }
 
   renderApp () {
-    const { dataFetching, earthquakes, layers, crossSectionPoints, updateEarthquakesData,
+    const { dataFetching, earthquakes, layers, crossSectionPoints, setMapRegion, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
     return (
       <div>
@@ -69,7 +69,7 @@ class App extends PureComponent {
         <div className={`map-container mode-${mode}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes}
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints}
-            setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
+            setMapRegion={setMapRegion} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData} />
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}

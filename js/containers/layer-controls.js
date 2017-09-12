@@ -29,9 +29,9 @@ class LayerControls extends PureComponent {
   }
 
   componentWillMount () {
-    const { setPlatesVisible, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible } = this.props
+    const { setPlatesVisible, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    setEarthquakesVisible(selectedLayerConfig.earthquakes.visible, mapRegion, mapZoom)
     setPlatesVisible(selectedLayerConfig.plateOutlines.visible)
-    setEarthquakesVisible(selectedLayerConfig.earthquakes.visible)
     setVolcanoesVisible(selectedLayerConfig.volcanoes.visible)
     setPlateMovementVisible(selectedLayerConfig.plateMovement.visible)
     setPlateArrowsVisible(selectedLayerConfig.plateArrows.visible)
@@ -59,21 +59,21 @@ class LayerControls extends PureComponent {
   }
 
   handleVolcanoLayerChange (event) {
-    const {setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
+    const { setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setVolcanoesVisible(visible)
     log('VolcanoesVisibilityChanged', { visible })
     if (visible && selectedLayerConfig.exclusiveLayers) {
-      setEarthquakesVisible(false)
+      setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
     }
   }
 
   handleEarthquakeLayerChange (event) {
-    const {setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible} = this.props
+    const { setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
-    setEarthquakesVisible(visible)
+    setEarthquakesVisible(visible, mapRegion, mapZoom)
     log('ShowEarthquakes', { visible })
     if (visible && selectedLayerConfig.exclusiveLayers) {
       setVolcanoesVisible(false)
@@ -87,7 +87,7 @@ class LayerControls extends PureComponent {
   }
 
   handlePlateMovementLayerChange (event) {
-    const {layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
+    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible, mapRegion, mapZoom} = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
     log('ShowPlateMovement', { visible })
@@ -95,13 +95,13 @@ class LayerControls extends PureComponent {
     setPlatesVisible(visible || layers.get('platearrows'))
     if (visible && selectedLayerConfig.exclusiveLayers) {
       setVolcanoesVisible(false)
-      setEarthquakesVisible(false)
+      setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateArrowsVisible(false)
     }
   }
 
   handlePlateArrowLayerChange (event) {
-    const {layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible} = this.props
+    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setPlateArrowsVisible(visible)
     log('ShowPlateArrows', { visible })
@@ -109,7 +109,7 @@ class LayerControls extends PureComponent {
     setPlatesVisible(visible || layers.get('platemovement'))
     if (visible && selectedLayerConfig.exclusiveLayers) {
       setVolcanoesVisible(false)
-      setEarthquakesVisible(false)
+      setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
     }
   }
@@ -166,6 +166,8 @@ class LayerControls extends PureComponent {
 
 function mapStateToProps (state) {
   return {
+    mapRegion: state.get('mapRegion').get('region'),
+    mapZoom: state.get('mapRegion').get('zoom'),
     filters: state.get('filters'),
     layers: state.get('layers'),
     mode: state.get('mode')
