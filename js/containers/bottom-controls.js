@@ -9,7 +9,6 @@ import screenfull from 'screenfull'
 import {layerInfo} from '../map-layer-tiles'
 import log from '../logger'
 
-import '../../css/bottom-controls.less'
 import '../../css/settings-controls.less'
 import 'rc-slider/assets/index.css'
 import '../../css/slider.less'
@@ -156,26 +155,23 @@ class BottomControls extends PureComponent {
 
     return (
       <div>
-        <div className='bottom-controls'>
-          <div>
-            <AnimationButtons ref='playButton' animationEnabled={animationEnabled} value={filters.get('maxTime')}
-              speed={this.animSpeed}
-              onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
-              onAnimationStep={this.handleAnimStep}
-              layers={layers} />
-          </div>
-          {layers.get('earthquakes') &&
+        {layers.get('earthquakes') &&
+          <div className='earthquake-playback'>
+            <div>
+              <AnimationButtons ref='playButton' animationEnabled={animationEnabled} value={filters.get('maxTime')}
+                speed={this.animSpeed}
+                onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
+                onAnimationStep={this.handleAnimStep}
+                layers={layers}/>
+            </div>
             <div className='center'>
               <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
                 step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
                 onChange={this.handleTimeRange} onAfterChange={logTimeSliderChange}
-                tipFormatter={sliderDateFormatter} marks={this.dateMarks} />
+                tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
             </div>
-          }
-          {screenfull.enabled &&
-          <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title='Toggle Fullscreen' />
-          }
-        </div>
+          </div>
+        }
 
         <div className='settings'>
           <div>
@@ -189,20 +185,21 @@ class BottomControls extends PureComponent {
           </div>
           <LayerControls />
           {layers.get('earthquakes') &&
-            <div>
-              <div className='stats'>
-                <span>Displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
-                {magFilter && <span title='Zoom in to see weaker earthquakes.'><br />starting from magnitude <strong>{magnitudeCutOff}</strong></span>}
-              </div>
-
-              <div className='mag-slider'>
-                <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
-                  <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
-                    onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
-                </div>
-              </div>
-
+            <div className='stats'>
+              <span>Displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
+              {magFilter && <span title='Zoom in to see weaker earthquakes.'><br />starting from magnitude <strong>{magnitudeCutOff}</strong></span>}
             </div>
+          }
+          {layers.get('earthquakes') &&
+            <div className='mag-slider'>
+              <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
+                <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
+                  onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
+              </div>
+            </div>
+          }
+          {screenfull.enabled &&
+            <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title='Toggle Fullscreen' />
           }
         </div>
       </div>
