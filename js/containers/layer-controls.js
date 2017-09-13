@@ -148,13 +148,13 @@ class LayerControls extends PureComponent {
           { selectedLayerConfig.plateMovement.available &&
             <div className='toggle-plate-movement' title='Show or hide plate movement vectors'>
               <input type={inputType} id='plate-movement-toggle' checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
-              <label htmlFor='plate-movement-toggle'>Plate Movement</label>
+              <label htmlFor='plate-movement-toggle'>Plate movement</label>
             </div>
           }
           { selectedLayerConfig.plateArrows.available &&
             <div className='toggle-arrow-movement' title='Show or hide plate movement arrows'>
               <input type={inputType} id='plate-arrow-toggle' checked={layers.get('platearrows')} onChange={this.handlePlateArrowLayerChange} value='platearrows' name='datatype' />
-              <label htmlFor='plate-arrow-toggle'>Plate Arrows</label>
+              <label htmlFor='plate-arrow-toggle'>Plate arrows</label>
             </div>
           }
         </div>
