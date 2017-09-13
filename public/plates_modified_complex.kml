@@ -12,19 +12,19 @@
 		<heading>4.253410694126994</heading>
 		<altitudeMode>relativeToGround</altitudeMode>
 	</LookAt>
-	<Style id="sn_ylw-pushpinR">
+     <Style id="sn_ylw-pushpinR">
 		<LineStyle>
-			<color>ff0000ff</color>
+			<color>ff00ffff</color>
 		</LineStyle>
 	</Style>
 	<Style id="sn_ylw-pushpinG">
 		<LineStyle>
-			<color>ff00ff00</color>
+			<color>ffa6bf00</color>
 		</LineStyle>
 	</Style>
 	<Style id="sn_ylw-pushpinB">
 		<LineStyle>
-			<color>ffff0000</color>
+			<color>ffff00ff</color>
 		</LineStyle>
 	</Style>
 	<Placemark>

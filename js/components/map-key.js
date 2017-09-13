@@ -52,9 +52,9 @@ export default class MapKey extends PureComponent {
           <table className='boundaries'>
             <tbody>
               <tr><th colSpan='2'>Plate boundaries</th></tr>
-              <tr><td>{boundaryColor('#ff0000')}</td><td>Convergent boundary</td></tr>
-              <tr><td>{boundaryColor('#0000ff')}</td><td>Transform boundary</td></tr>
-              <tr><td>{boundaryColor('#00ff00')}</td><td>Divergent boundary</td></tr>
+              <tr><td>{boundaryColor('#ffff00')}</td><td>Convergent boundary</td></tr>
+              <tr><td>{boundaryColor('#ff00ff')}</td><td>Transform boundary</td></tr>
+              <tr><td>{boundaryColor('#00bfa6')}</td><td>Divergent boundary</td></tr>
             </tbody>
           </table>
         }
