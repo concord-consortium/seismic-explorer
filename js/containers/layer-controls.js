@@ -4,13 +4,11 @@ import * as actions from '../actions'
 import OverlayButton from '../components/overlay-button'
 import log from '../logger'
 import config from '../config'
-import layerConfig from '../layer-data-config'
 
 import '../../css/layer-controls.less'
 import '../../css/settings-controls.less'
 
-const selectedLayerConfig = layerConfig[config.layerDataConfig]
-const inputType = selectedLayerConfig.exclusiveLayers ? 'radio' : 'checkbox'
+const inputType = config.exclusiveDataLayers ? 'radio' : 'checkbox'
 
 class LayerControls extends PureComponent {
   constructor (props) {
@@ -26,15 +24,6 @@ class LayerControls extends PureComponent {
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
     this.handlePlateArrowLayerChange = this.handlePlateArrowLayerChange.bind(this)
-  }
-
-  componentWillMount () {
-    const { setPlatesVisible, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
-    setEarthquakesVisible(selectedLayerConfig.earthquakes.visible, mapRegion, mapZoom)
-    setPlatesVisible(selectedLayerConfig.plateOutlines.visible)
-    setVolcanoesVisible(selectedLayerConfig.volcanoes.visible)
-    setPlateMovementVisible(selectedLayerConfig.plateMovement.visible)
-    setPlateArrowsVisible(selectedLayerConfig.plateArrows.visible)
   }
 
   toggle () {
@@ -63,7 +52,7 @@ class LayerControls extends PureComponent {
     const visible = event.target.checked
     setVolcanoesVisible(visible)
     log('VolcanoesVisibilityChanged', { visible })
-    if (visible && selectedLayerConfig.exclusiveLayers) {
+    if (visible && config.exclusiveDataLayers) {
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
@@ -75,7 +64,7 @@ class LayerControls extends PureComponent {
     const visible = event.target.checked
     setEarthquakesVisible(visible, mapRegion, mapZoom)
     log('ShowEarthquakes', { visible })
-    if (visible && selectedLayerConfig.exclusiveLayers) {
+    if (visible && config.exclusiveDataLayers) {
       setVolcanoesVisible(false)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
@@ -87,13 +76,13 @@ class LayerControls extends PureComponent {
   }
 
   handlePlateMovementLayerChange (event) {
-    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible, mapRegion, mapZoom} = this.props
+    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlatesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
     log('ShowPlateMovement', { visible })
     // show plate borders when movement layer is visible
     setPlatesVisible(visible || layers.get('platearrows'))
-    if (visible && selectedLayerConfig.exclusiveLayers) {
+    if (visible && config.exclusiveDataLayers) {
       setVolcanoesVisible(false)
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateArrowsVisible(false)
@@ -107,7 +96,7 @@ class LayerControls extends PureComponent {
     log('ShowPlateArrows', { visible })
     // show plate borders when arrows layer is visible
     setPlatesVisible(visible || layers.get('platemovement'))
-    if (visible && selectedLayerConfig.exclusiveLayers) {
+    if (visible && config.exclusiveDataLayers) {
       setVolcanoesVisible(false)
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
@@ -115,7 +104,7 @@ class LayerControls extends PureComponent {
   }
 
   render () {
-    const {layers, mode} = this.props
+    const {layers } = this.props
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>
@@ -124,37 +113,37 @@ class LayerControls extends PureComponent {
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close' />
           <div>Data Available:</div>
-          { mode !== '3d' && selectedLayerConfig.plateOutlines.available &&
+          { config.plateBoundariesAvailable &&
           <div title='Show Plate Boundaries Overlay'>
             <input type='checkbox' checked={layers.get('plates')} onChange={this.handlePlateLayerChange}
               id='plate-border-box' />
             <label htmlFor='plate-border-box'>Plate boundaries</label>
           </div>
           }
-          { selectedLayerConfig.plateOutlines.available && <div><hr /></div> }
-          { selectedLayerConfig.volcanoes.available &&
+          { config.plateBoundariesAvailable && <div><hr /></div> }
+          { config.volcanoesAvailable &&
             <div title='Show Volcanoes'>
               <input type={inputType} checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange}
                 id='volcano-box' value='volcanoes' name='datatype' />
               <label htmlFor='volcano-box'>Volcanoes</label>
             </div>
           }
-          { selectedLayerConfig.earthquakes.available &&
+          { config.earthquakesAvailable &&
             <div className='toggle-earthquakes' title='Show or hide all earthquakes on the map'>
               <input type={inputType} id='earthquake-toggle' checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} value='earthquakes' name='datatype' />
               <label htmlFor='earthquake-toggle'>Earthquakes</label>
             </div>
           }
-          { selectedLayerConfig.plateMovement.available &&
-            <div className='toggle-plate-movement' title='Show or hide plate movement vectors'>
-              <input type={inputType} id='plate-movement-toggle' checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
-              <label htmlFor='plate-movement-toggle'>Plate movement</label>
-            </div>
+          { config.plateMovementAvailable &&
+          <div className='toggle-arrow-movement' title='Show or hide plate movement arrows'>
+            <input type={inputType} id='plate-arrow-toggle' checked={layers.get('platearrows')} onChange={this.handlePlateArrowLayerChange} value='platearrows' name='datatype' />
+            <label htmlFor='plate-arrow-toggle'>Plate movement</label>
+          </div>
           }
-          { selectedLayerConfig.plateArrows.available &&
-            <div className='toggle-arrow-movement' title='Show or hide plate movement arrows'>
-              <input type={inputType} id='plate-arrow-toggle' checked={layers.get('platearrows')} onChange={this.handlePlateArrowLayerChange} value='platearrows' name='datatype' />
-              <label htmlFor='plate-arrow-toggle'>Plate arrows</label>
+          { config.detailedPlateMovementAvailable &&
+            <div className='toggle-plate-movement' title='Show or hide plate movement arrows'>
+              <input type={inputType} id='plate-movement-toggle' checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
+              <label htmlFor='plate-movement-toggle'>Plate movement (detailed)</label>
             </div>
           }
         </div>

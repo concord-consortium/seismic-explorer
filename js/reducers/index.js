@@ -95,11 +95,11 @@ function filters (state = INITIAL_FILTERS, action) {
 
 const INITIAL_LAYERS = Map({
   base: config.mapStyle,
-  plates: false,
-  earthquakes: false,
-  volcanoes: false,
-  platemovement: false,
-  platearrows: false
+  plates: config.plateBoundariesVisible,
+  earthquakes: config.earthquakesVisible,
+  volcanoes: config.volcanoesVisible,
+  platemovement: config.detailedPlateMovementVisible,
+  platearrows: config.plateMovementVisible
 })
 
 function layers (state = INITIAL_LAYERS, action) {

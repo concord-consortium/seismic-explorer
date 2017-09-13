@@ -32,8 +32,18 @@ const DEFAULT_CONFIG = {
   mapStyle: 'satellite',  // or 'street' or 'earthquake-density'
   // Enables / disables logging of user actions to parent frame (e.g. LARA).
   logging: true,
-  // It controls "Data type" menu. There are a few preset configurations available. Take a look at layer-data-config.js.
-  layerDataConfig: 5
+  // Data layers.
+  exclusiveDataLayers: false,
+  plateBoundariesAvailable: true,
+  plateBoundariesVisible: false,
+  earthquakesAvailable: true,
+  earthquakesVisible: true,
+  volcanoesAvailable: true,
+  volcanoesVisible: false,
+  plateMovementAvailable: true,
+  plateMovementVisible: false,
+  detailedPlateMovementAvailable: false,
+  detailedPlateMovementVisible: false
 }
 
 function getURLParam (name) {
