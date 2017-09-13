@@ -78,6 +78,7 @@ const INITIAL_FILTERS = Map({
   maxMag: 10,
   minTime: config.startTime,
   maxTime: config.startTime,
+  playbackMaxTime: config.endTime,
   minTimeLimit: config.startTime,
   maxTimeLimit: config.endTime,
   crossSection: false

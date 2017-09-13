@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import * as actions from '../actions'
 import AnimationButtons from '../components/animation-buttons'
 import LayerControls from './layer-controls'
-import Slider from 'rc-slider'
+import { Range } from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
 import {layerInfo} from '../map-layer-tiles'
@@ -49,12 +49,27 @@ function toggleFullscreen () {
   }
 }
 
+function logPlaybackRangeChange (value) {
+  log('PlaybackRangeChanged', {minTime: (new Date(value[0])).toString(), maxTime: (new Date(value[1])).toString()})
+}
+
 function logTimeSliderChange (value) {
-  log('TimeSliderChanged', {minTime: (new Date(value[0])).toString(), maxTime: (new Date(value[1])).toString()})
+  log('TimeSliderChanged', {time: (new Date(value[1])).toString()})
 }
 
 function logMagSliderChange (value) {
   log('MagnitudeSliderChanged', {minMag: value[0], maxMag: value[1]})
+}
+
+const rangeHandle = (props) => {
+  const { index, offset } = props
+  return (
+    <div key={index} className='custom-handle' style={{left: `${offset}%`}}>
+      <svg height='100%' width='100%' viewBox='0 0 20 20'>
+        <polygon points='0,0 10,20 20,0' />
+      </svg>
+    </div>
+  )
 }
 
 class BottomControls extends PureComponent {
@@ -63,7 +78,8 @@ class BottomControls extends PureComponent {
     this.state = {
       fullscreen: false
     }
-    this.handleTimeRange = this.handleTimeRange.bind(this)
+    this.handleCurrentTimeChange = this.handleCurrentTimeChange.bind(this)
+    this.handlePlaybackRangeChange = this.handlePlaybackRangeChange.bind(this)
     this.handleMagRange = this.handleMagRange.bind(this)
     this.handleAnimStep = this.handleAnimStep.bind(this)
     this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
@@ -90,10 +106,19 @@ class BottomControls extends PureComponent {
     log('MapLayerChanged', {layer})
   }
 
-  handleTimeRange (value) {
-    const {setFilter} = this.props
+  handleCurrentTimeChange (value) {
+    const {setFilter, filters} = this.props
+    setFilter('maxTime', Math.min(value[1], filters.get('playbackMaxTime')))
+  }
+
+  handlePlaybackRangeChange (value) {
+    const {setFilter, filters} = this.props
     setFilter('minTime', value[0])
-    setFilter('maxTime', value[1])
+    setFilter('playbackMaxTime', value[1])
+    const newMaxTime = Math.max(value[0], Math.min(value[1], filters.get('maxTime')))
+    if (newMaxTime !== filters.get('maxTime')) {
+      setFilter('maxTime', newMaxTime)
+    }
   }
 
   handleMagRange (value) {
@@ -104,8 +129,8 @@ class BottomControls extends PureComponent {
 
   handleAnimStep (newValue) {
     const {filters, setFilter, setAnimationEnabled} = this.props
-    if (newValue > filters.get('maxTimeLimit')) {
-      newValue = filters.get('maxTimeLimit')
+    if (newValue > filters.get('playbackMaxTime')) {
+      newValue = filters.get('playbackMaxTime')
       setAnimationEnabled(false)
     }
     setFilter('maxTime', newValue)
@@ -162,13 +187,20 @@ class BottomControls extends PureComponent {
                 speed={this.animSpeed}
                 onPlayPause={this.handlePlayPauseBtnClick} onReset={this.handleResetBtnClick}
                 onAnimationStep={this.handleAnimStep}
-                layers={layers}/>
+                layers={layers}
+              />
             </div>
             <div className='center'>
-              <Slider className='slider-big' range min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
+              <Range className='slider-range-only' allowCross={false} min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
+                 step={86400} value={[filters.get('minTime'), filters.get('playbackMaxTime')]}
+                 onChange={this.handlePlaybackRangeChange} onAfterChange={logPlaybackRangeChange}
+                 handle={rangeHandle}
+              />
+              <Range className='slider-big' min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
                 step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
-                onChange={this.handleTimeRange} onAfterChange={logTimeSliderChange}
-                tipFormatter={sliderDateFormatter} marks={this.dateMarks}/>
+                handleStyle={[{display: 'none'}, {display: 'block'}]}
+                onChange={this.handleCurrentTimeChange} onAfterChange={logTimeSliderChange} marks={this.dateMarks}
+              />
             </div>
           </div>
         }
@@ -193,7 +225,7 @@ class BottomControls extends PureComponent {
           {layers.get('earthquakes') &&
             <div className='mag-slider'>
               <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
-                <Slider range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
+                <Range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
                   onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
               </div>
             </div>

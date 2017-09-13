@@ -159,12 +159,11 @@ export function setAnimationEnabled (value) {
   }
 }
 
-// Reset stops animation and moves two slider handles back to the left edge (min and max time filters).
+// Reset stops animation and moves current animation progress to the beginning.
 export function reset () {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch(setAnimationEnabled(false))
-    dispatch(setFilter('minTime', config.startTime))
-    dispatch(setFilter('maxTime', config.startTime))
+    dispatch(setFilter('maxTime', getState().get('filters').get('minTime')))
   }
 }
 

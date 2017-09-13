@@ -1,48 +1,87 @@
+// Basic slider style.
 .rc-slider {
   font-size: 0.6em;
   height: 0.7em;
-}
+  padding: 0;
 
-.rc-slider-track {
-  height: 0.7em;
-  background-color: #D85900;
-}
+  .rc-slider-rail {
+    height: 0.7em;
+  }
 
-.rc-slider-handle {
-  margin-left: -1em;
-  margin-top: -0.65em;
-  width: 2em;
-  height: 2em;
-  border-color: #D85900;
-  &:hover {
-    border-color: #9F3903;
+  .rc-slider-track {
+    height: 0.7em;
+    background-color: #D85900;
+  }
+
+  .rc-slider-handle {
+    margin-left: -1em;
+    margin-top: -0.65em;
+    width: 2em;
+    height: 2em;
+    border-color: #D85900;
+    &:hover {
+      border-color: #9F3903;
+      background-color: #f6ca7a;
+    }
+    &:active {
+      border-color: #D85900;
+      box-shadow: 0 0 5px #D95900;
+      background-color: #f6ca7a;
+    }
+  }
+
+  .rc-slider-dot {
+    top: -1px;
+    width: 0.9em;
+    height: 0.9em;
+  }
+
+  .rc-slider-dot-active {
+    border-color: #D95900;
+    background-color: #f66e2a;
+  }
+
+  .rc-slider-mark {
+    top: 1.3em;
+    font-size: 1em;
+  }
+
+  .rc-slider-mark-text {
+    font-size: 1.5em;
+    pointer-events: none;
   }
 }
 
-.rc-slider-dot {
-  top: -1px;
-  width: 0.9em;
-  height: 0.9em;
-}
-
-.rc-slider-dot-active {
-  border-color: #D95900;
-}
-
-.rc-slider-mark {
-  top: 1.3em;
-  font-size: 1em;
-}
-
-.rc-slider-mark-text {
-  font-size: 1.5em;
-  pointer-events: none;
-}
-
+// Theme - big slider.
 .slider-big {
   font-size: 1em;
 
   .rc-slider-mark-text {
     font-size: 0.9em;
+  }
+}
+
+// Theme - slider with two handles and no rail.
+.slider-range-only {
+  .rc-slider-rail, .rc-slider-track {
+    display: none;
+  }
+
+  .custom-handle {
+    position: absolute;
+    width: 2em;
+    height: 2em;
+    margin-left: -0.9em;
+
+    polygon {
+      fill: white;
+      stroke: #D85900;
+      stroke-width: 2;
+
+      &:active, &:hover {
+        cursor: pointer;
+        fill: #f6ca7a;
+      }
+    }
   }
 }
