@@ -104,7 +104,7 @@ class LayerControls extends PureComponent {
   }
 
   render () {
-    const {layers } = this.props
+    const { layers } = this.props
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>

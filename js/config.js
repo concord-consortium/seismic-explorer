@@ -1,15 +1,13 @@
 // Exports global app configuration. Each option can be overwritten by URL query parameter, e.g.:
 // ?api='USGS'&cache=false
 const DEFAULT_CONFIG = {
+  // Enables authoring mode
+  authoring: false,
   // Initial map region.
   minLat: -60,
   minLng: -120,
   maxLat: 60,
   maxLng: 120,
-  // 'CC', 'USGS' or 'fake'
-  api: 'CC',
-  // Use CloudFront caching for API calls.
-  cache: true,
   // Max number of earthquakes that can be provided for one tile.
   tileLimit: 12000,
   // Use dates independent of the current time zone to make sure that caching works better.
@@ -29,7 +27,11 @@ const DEFAULT_CONFIG = {
     result.setUTCMilliseconds(0)
     return result.getTime()
   }()),
+  // 'CC', 'USGS' or 'fake'
+  api: 'CC',
   mapStyle: 'satellite',  // or 'street' or 'earthquake-density'
+  // Use CloudFront caching for API calls.
+  cache: true,
   // Enables / disables logging of user actions to parent frame (e.g. LARA).
   logging: true,
   // Data layers.
@@ -60,7 +62,7 @@ const urlConfig = {}
 
 Object.keys(DEFAULT_CONFIG).forEach(key => {
   const urlValue = getURLParam(key)
-  if (urlValue === 'true') {
+  if (urlValue === true || urlValue === 'true') {
     urlConfig[key] = true
   } else if (urlValue === 'false') {
     urlConfig[key] = false
