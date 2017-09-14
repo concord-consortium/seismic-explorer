@@ -14,14 +14,29 @@ http://seismic-explorer.concord.org/version/1.1.0/index.html
 
 ## Configuration
 
+Take a look at the [authoring page]( http://seismic-explorer.concord.org/?authoring).
+
 Some options can be set using URL parameters, for example:
 
-* http://seismic-explorer.concord.org/?minLat=5&maxLat=70&minLng=-170&maxLng=-50 - limit initial map boundaries to North America.
-* http://seismic-explorer.concord.org/?startTime=2016-08-01&endTime=2016-08-31 - limit date range to one month.
-* http://seismic-explorer.concord.org/?tileLimit=20000 - set max number of earthquakes downloaded per one map tile to 20000 (default 12000).
-* http://seismic-explorer.concord.org/?api=USGS - use USGS API instead of Concord API.
-* http://seismic-explorer.concord.org/?cache=false - don't use CloudFront CDN / caching.
-* http://seismic-explorer.concord.org/?logging=false - disable logging (to CC Log Manager, Google Analytics and the web browser console).
+* https://seismic-explorer.concord.org/?minLat=5&maxLat=70&minLng=-170&maxLng=-50 - limit initial map boundaries to North America.
+* https://seismic-explorer.concord.org/?startTime=2016-08-01&endTime=2016-08-31 - limit date range to one month.
+* https://seismic-explorer.concord.org/?tileLimit=20000 - set max number of earthquakes downloaded per one map tile to 20000 (default 12000).
+* https://seismic-explorer.concord.org/?api=USGS - use USGS API instead of Concord API.
+* https://seismic-explorer.concord.org/?cache=false - don't use CloudFront CDN / caching.
+* https://seismic-explorer.concord.org/?logging=false - disable logging (to CC Log Manager, Google Analytics and the web browser console).
+
+### Data layer presets:
+
+1. https://seismic-explorer.concord.org/?exclusiveDataLayers&plateBoundariesAvailable=false&volcanoesAvailable=false&plateMovementAvailable=false
+2. https://seismic-explorer.concord.org/?exclusiveDataLayers&volcanoesAvailable=false&plateMovementAvailable=false
+3. https://seismic-explorer.concord.org/?exclusiveDataLayers&volcanoesAvailable=false&volcanoesVisible&plateMovementAvailable=false
+4. https://seismic-explorer.concord.org/?exclusiveDataLayers
+5. https://seismic-explorer.concord.org/
+6. https://seismic-explorer.concord.org/?exclusiveDataLayers&plateBoundariesAvailable=false&earthquakesAvailable=false&earthquakesVisible=false&volcanoesVisible&plateMovementAvailable=false
+7. https://seismic-explorer.concord.org/?plateBoundariesAvailable=false&volcanoesVisible&plateMovementAvailable=false
+8. https://seismic-explorer.concord.org/?volcanoesVisible&plateMovementAvailable=false
+9. https://seismic-explorer.concord.org/?plateBoundariesAvailable=false&earthquakesAvailable=false&earthquakesVisible=false&volcanoesVisible&plateMovementAvailable=false
+10. https://seismic-explorer.concord.org/?plateBoundariesVisible&volcanoesVisible&plateMovementVisible
 
 ## Development
 
