@@ -20,10 +20,16 @@
     height: 2em;
     border-color: #D85900;
     &:hover {
+      .tooltip {
+        display: block;
+      }
       border-color: #9F3903;
       background-color: #f6ca7a;
     }
     &:active {
+      .tooltip {
+        display: block;
+      }
       border-color: #D85900;
       box-shadow: 0 0 5px #D95900;
       background-color: #f6ca7a;
@@ -83,5 +89,20 @@
         fill: #f6ca7a;
       }
     }
+  }
+}
+
+.tooltip {
+  background: #fff;
+  margin-top: -1.7em;
+  width: 6em;
+  text-align: center;
+  margin-left: -2em;
+  font-size: 0.9em;
+  border-radius: 5px;
+  padding: 2px;
+  display: none;
+  &.visible {
+    display: block;
   }
 }

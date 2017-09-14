@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import * as actions from '../actions'
 import AnimationButtons from '../components/animation-buttons'
 import LayerControls from './layer-controls'
-import { Range } from 'rc-slider'
+import { Range, Handle } from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
 import {layerInfo} from '../map-layer-tiles'
@@ -16,7 +16,9 @@ import '../../css/slider.less'
 function sliderDateFormatter (value) {
   const date = new Date(value)
   // .getMoth() returns [0, 11] range.
-  return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`
+  let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+  let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+  return `${month}/${day}/${date.getFullYear()}`
 }
 
 function sliderTickFormatter (valueMin, valueMax) {
@@ -70,6 +72,17 @@ const rangeHandle = (props) => {
       </svg>
     </div>
   )
+}
+
+const tooltipHandle = (alwaysVisible) => {
+  return (props) => {
+    const {value, index, dragging, ...restProps} = props
+    return (
+      <Handle key={index} value={value} {...restProps} >
+        <div className={`tooltip ${alwaysVisible ? 'visible' : ''}`}>{ sliderDateFormatter(value) }</div>
+      </Handle>
+    )
+  }
 }
 
 class BottomControls extends PureComponent {
@@ -198,8 +211,9 @@ class BottomControls extends PureComponent {
               />
               <Range className='slider-big' min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
                 step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
-                handleStyle={[{display: 'none'}, {display: 'block'}]}
+                handleStyle={[{display: 'none'}, {}]}
                 onChange={this.handleCurrentTimeChange} onAfterChange={logTimeSliderChange} marks={this.dateMarks}
+                handle={tooltipHandle(animationEnabled)}
               />
             </div>
           </div>
