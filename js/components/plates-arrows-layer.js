@@ -137,22 +137,7 @@ function arrowLayerCreator () {
 }
 
 export class PlatesArrowsLayer extends MapLayer {
-  constructor () {
-    super()
-    this.leafletElement = arrowLayerCreator()
-  }
-
-  componentWillMount () {
-    super.componentWillMount()
-    this.leafletElement = arrowLayerCreator()
-  }
-
-  setLeafletElementProps () {
-    const { arrowClick } = this.props
-    this.leafletElement.onArrowClick(arrowClick)
-  }
-
-  render () {
-    return null
+  createLeafletElement (props) {
+    return arrowLayerCreator()
   }
 }

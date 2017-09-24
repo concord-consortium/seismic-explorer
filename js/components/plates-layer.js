@@ -19,33 +19,13 @@ export function getKMLSimple () {
 }
 
 export class PlatesLayerSimple extends MapLayer {
-  constructor () {
-    super()
-    this.leafletElement = getKMLSimple()
-  }
-
-  componentWillMount () {
-    super.componentWillMount()
-    this.leafletElement = getKMLSimple()
-  }
-
-  render () {
-    return null
+  createLeafletElement (props) {
+    return getKMLSimple()
   }
 }
 
 export class PlatesLayerComplex extends MapLayer {
-  constructor () {
-    super()
-    this.leafletElement = getKMLComplex()
-  }
-
-  componentWillMount () {
-    super.componentWillMount()
-    this.leafletElement = getKMLComplex()
-  }
-
-  render () {
-    return null
+  createLeafletElement (props) {
+    return getKMLComplex()
   }
 }
