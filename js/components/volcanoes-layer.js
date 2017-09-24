@@ -3,7 +3,7 @@ import { volcanoCanvasLayer } from '../custom-leaflet/volcano-canvas-layer'
 import volcanoes from '../data/volcanoes_full.js'
 
 let _cachedVolcanoes
-function getVolcanoes (map) {
+function getVolcanoes () {
   if (!_cachedVolcanoes) {
     _cachedVolcanoes = []
     if (volcanoes) {
@@ -40,23 +40,18 @@ function getVolcanoes (map) {
 }
 
 export default class VolcanoLayer extends MapLayer {
-  componentWillMount () {
-    super.componentWillMount()
-    this.leafletElement = volcanoCanvasLayer()
-    this.setLeafletElementProps()
+  componentDidMount () {
+    super.componentDidMount()
+    this.updateLeafletElement(null, this.props)
   }
 
-  componentDidUpdate () {
-    this.setLeafletElementProps()
+  createLeafletElement (props) {
+    return volcanoCanvasLayer()
   }
 
-  setLeafletElementProps () {
-    const { map, volcanoClick } = this.props
-    this.leafletElement.setVolcanoPoints(getVolcanoes(map))
+  updateLeafletElement (fromProps, toProps) {
+    const { volcanoClick } = toProps
+    this.leafletElement.setVolcanoPoints(getVolcanoes())
     this.leafletElement.onVolcanoClick(volcanoClick)
-  }
-
-  render () {
-    return null
   }
 }

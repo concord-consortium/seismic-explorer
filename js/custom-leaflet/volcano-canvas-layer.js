@@ -6,37 +6,16 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
   initialize: function (options) {
     CanvasLayer.prototype.initialize.call(this, options)
     this.draw = this.draw.bind(this)
-    this.latLngToPoint = this.latLngToPoint.bind(this)
-    this._onMouseMove = this._onMouseMove.bind(this)
-    this._onMouseClick = this._onMouseClick.bind(this)
     this._volcanoClickHandler = function (event, volcanoData) {}
   },
 
-  _initCanvas: function () {
+  initCanvas: function () {
     this.externalView = new VolcanoView()
-    CanvasLayer.prototype._initCanvas.call(this, this.externalView.canvas)
+    CanvasLayer.prototype.initCanvas.call(this, this.externalView.canvas)
     DomUtil.addClass(this._canvas, 'volcanoes-canvas-layer')
   },
 
-  onAdd: function (map) {
-    CanvasLayer.prototype.onAdd.call(this, map)
-    DomEvent.on(this._canvas, 'mousemove', this._onMouseMove, this)
-    DomEvent.on(this._canvas, 'mouseup', this._onMouseClick, this)
-    DomEvent.on(this._canvas, 'touchend', this._onMouseClick, this)
-  },
-
-  onRemove: function (map) {
-    CanvasLayer.prototype.onRemove.call(this, map)
-    DomEvent.off(this._canvas, 'mousemove', this._onMouseMove)
-    DomEvent.off(this._canvas, 'mouseup', this._onMouseClick)
-    DomEvent.off(this._canvas, 'touchend', this._onMouseClick)
-    // Very important, without it, there's a significant memory leak (each time this layer is added and removed,
-    // what may happen quite often).
-    this.externalView.destroy()
-  },
-
-  _onMouseMove: function (e) {
-    const pos = DomEvent.getMousePosition(e, this._canvas)
+  onMouseMove: function (e, pos) {
     if (this.externalView.volcanoAt(pos.x, pos.y)) {
       this._canvas.style.cursor = 'pointer'
     } else {
@@ -44,9 +23,7 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
     }
   },
 
-  _onMouseClick: function (e) {
-    const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
-    const pos = DomEvent.getMousePosition(event, this._canvas)
+  onMouseClick: function (e, pos) {
     const volcanoData = this.externalView.volcanoAt(pos.x, pos.y)
     if (volcanoData) {
       this._volcanoClickHandler(e, volcanoData)
@@ -57,6 +34,7 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
     this._volcanoPoints = points
     this.scheduleRedraw()
   },
+
   onVolcanoClick: function (handler) {
     this._volcanoClickHandler = handler || function (event, earthquakeData) {}
   },
@@ -71,19 +49,14 @@ export const VolcanoCanvasLayer = CanvasLayer.extend({
     this._redraw()
   },
 
-  // This function is expensive
-  // Try to limit position recalculation
-  latLngToPoint: function (latLng) {
-    return this._map.latLngToContainerPoint(latLng)
-  },
 
   draw: function () {
     if (this._volcanoPoints) {
       this.externalView.setProps({VolcanoPoints: this._volcanoPoints, latLngToPoint: this.latLngToPoint})
       this._volcanoPoints = null
     }
-    const transitionInProgess = this.externalView.render()
-    if (transitionInProgess) {
+    const transitionInProgress = this.externalView.render()
+    if (transitionInProgress) {
       this.scheduleRedraw()
     }
   }

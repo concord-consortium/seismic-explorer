@@ -1,73 +1,18 @@
 import { CanvasLayer } from './canvas-layer'
-import { DomUtil, DomEvent } from 'leaflet'
+import { DomUtil } from 'leaflet'
 import TopView from '../3d/top-view'
 
 export const EarthquakesCanvasLayer = CanvasLayer.extend({
   initialize: function (options) {
     CanvasLayer.prototype.initialize.call(this, options)
     this.draw = this.draw.bind(this)
-    this.latLngToPoint = this.latLngToPoint.bind(this)
-    this._onMouseDown = this._onMouseDown.bind(this)
-    this._onMouseMove = this._onMouseMove.bind(this)
-    this._onMouseClick = this._onMouseClick.bind(this)
     this._earthquakeClickHandler = function (event, earthquakeData) {}
   },
 
-  _initCanvas: function () {
+  initCanvas: function () {
     this.externalView = new TopView()
-    CanvasLayer.prototype._initCanvas.call(this, this.externalView.canvas)
+    CanvasLayer.prototype.initCanvas.call(this, this.externalView.canvas)
     DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer')
-  },
-
-  onAdd: function (map) {
-    CanvasLayer.prototype.onAdd.call(this, map)
-    DomEvent.on(this._canvas, 'mousedown', this._onMouseDown, this)
-    DomEvent.on(this._canvas, 'touchstart', this._onMouseDown, this)
-    DomEvent.on(this._canvas, 'mousemove', this._onMouseMove, this)
-    DomEvent.on(this._canvas, 'touchmove', this._onMouseMove, this)
-    DomEvent.on(this._canvas, 'mouseup', this._onMouseClick, this)
-    DomEvent.on(this._canvas, 'touchend', this._onMouseClick, this)
-  },
-
-  onRemove: function (map) {
-    CanvasLayer.prototype.onRemove.call(this, map)
-    DomEvent.off(this._canvas, 'mousedown', this._onMouseDown)
-    DomEvent.off(this._canvas, 'touchstart', this._onMouseDown)
-    DomEvent.off(this._canvas, 'mousemove', this._onMouseMove)
-    DomEvent.off(this._canvas, 'touchmove', this._onMouseMove)
-    DomEvent.off(this._canvas, 'mouseup', this._onMouseClick)
-    DomEvent.off(this._canvas, 'touchend', this._onMouseClick)
-    // Very important, without it, there's a significant memory leak (each time this layer is added and removed,
-    // what may happen quite often).
-    this.externalView.destroy()
-  },
-
-  _onMouseDown: function () {
-    this._wasMoving = false
-  },
-
-  _onMouseMove: function (e) {
-    this._wasMoving = true
-    const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
-    const pos = DomEvent.getMousePosition(event, this._canvas)
-    if (this.externalView.earthquakeAt(pos.x, pos.y)) {
-      this._canvas.style.cursor = 'pointer'
-    } else {
-      this._canvas.style.cursor = 'inherit'
-    }
-  },
-
-  _onMouseClick: function (e) {
-    if (this._wasMoving) {
-      // Do not trigger click if pointer was moving around.
-      return
-    }
-    const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
-    const pos = DomEvent.getMousePosition(event, this._canvas)
-    const eqData = this.externalView.earthquakeAt(pos.x, pos.y)
-    if (eqData) {
-      this._earthquakeClickHandler(e, eqData)
-    }
   },
 
   setEarthquakes: function (earthquakes) {
@@ -79,22 +24,6 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     this._earthquakeClickHandler = handler || function (event, earthquakeData) {}
   },
 
-  _reset: function () {
-    let topLeft = this._map.containerPointToLayerPoint([0, 0])
-    DomUtil.setPosition(this._canvas, topLeft)
-
-    let size = this._map.getSize()
-    this.externalView.setSize(size.x, size.y)
-    this.externalView.invalidatePositions()
-    this._redraw()
-  },
-
-  // This function is really expensive (especially when we call it for 10-20k earthquakes).
-  // That's why we try to limit position recalculation if it's possible.
-  latLngToPoint: function (latLng) {
-    return this._map.latLngToContainerPoint(latLng)
-  },
-
   draw: function () {
     if (this._earthquakesToProcess) {
       this.externalView.setProps({earthquakes: this._earthquakesToProcess, latLngToPoint: this.latLngToPoint})
@@ -103,6 +32,21 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     const transitionInProgress = this.externalView.render()
     if (transitionInProgress) {
       this.scheduleRedraw()
+    }
+  },
+
+  onMouseMove (event, pos) {
+    if (this.externalView.earthquakeAt(pos.x, pos.y)) {
+      this._canvas.style.cursor = 'pointer'
+    } else {
+      this._canvas.style.cursor = 'inherit'
+    }
+  },
+
+  onMouseClick (event, pos) {
+    const eqData = this.externalView.earthquakeAt(pos.x, pos.y)
+    if (eqData) {
+      this._earthquakeClickHandler(event, eqData)
     }
   }
 })
