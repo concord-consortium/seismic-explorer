@@ -9,7 +9,7 @@ export default class VolcanoPopup extends PureComponent {
   }
 
   componentDidMount () {
-    this.refs.marker.getLeafletElement().openPopup()
+    this.refs.marker.leafletElement.openPopup()
   }
 
   onPopupClose () {

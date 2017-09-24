@@ -38,17 +38,15 @@ export default class SeismicEruptionsMap extends PureComponent {
       selectedEarthquake: null,
       selectedVolcano: null
     }
-    this.handleMoveStart = this.handleMoveStart.bind(this)
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
     this.handleVolcanoClick = this.handleVolcanoClick.bind(this)
     this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
-    this.handleMoveEnd = this.handleMoveEnd.bind(this)
-    this.handleZoomEnd = this.handleZoomEnd.bind(this)
+    this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
   }
 
   get map () {
-    return this.refs.map.getLeafletElement()
+    return this.refs.map.leafletElement
   }
 
   get mapRegion () {
@@ -79,27 +77,10 @@ export default class SeismicEruptionsMap extends PureComponent {
     setMapRegion(this.mapRegion, this.mapZoom)
   }
 
-  componentDidUpdate () {
-    const { selectedEarthquake } = this.state
-    const { earthquakes } = this.props
-    if (selectedEarthquake) {
-      let found = false
-      // Check if selected earthquake is still present and visible.
-      earthquakes.forEach(e => {
-        if (e.id === selectedEarthquake.id && e.visible) found = true
-      })
-      // Reset it if not.
-      if (!found) this.setState({selectedEarthquake: null})
-    }
-  }
-
-  handleMoveStart () {
-    this._mapBeingDragged = true
+  handleMapViewportChanged () {
     const { mark2DViewModified } = this.props
     mark2DViewModified(true)
-  }
 
-  handleMoveEnd () {
     this._mapBeingDragged = false
 
     clearTimeout(this._boundsUpdateTimeoutID)
@@ -112,16 +93,10 @@ export default class SeismicEruptionsMap extends PureComponent {
         minLat: bounds.getSouthWest().lat,
         minLng: bounds.getSouthWest().lng,
         maxLat: bounds.getNorthEast().lat,
-        maxLng: bounds.getNorthEast().lng
+        maxLng: bounds.getNorthEast().lng,
+        zoom: this.mapZoom
       })
     }, BOUNDS_UPDATE_DELAY)
-  }
-
-  handleZoomEnd (event) {
-    const map = event.target
-    log('MapZoomChanged', {zoom: map.getZoom()})
-    // Note that we don't need to update map region, as #handleMoveEnd is called anyway when zoom is updated
-    // and it will take care of that.
   }
 
   handleEarthquakeClick (event, earthquake) {
@@ -134,9 +109,11 @@ export default class SeismicEruptionsMap extends PureComponent {
   handleEarthquakePopupClose () {
     this.setState({selectedEarthquake: null})
   }
+
   handleVolcanoPopupClose () {
     this.setState({selectedVolcano: null})
   }
+
   handleVolcanoClick (event, volcano) {
     if (this._mapBeingDragged) return
     this.setState({selectedVolcano: volcano})
@@ -163,8 +140,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     const { selectedEarthquake, selectedVolcano } = this.state
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' onLeafletMovestart={this.handleMoveStart} onLeafletMoveend={this.handleMoveEnd}
-          onLeafletZoomend={this.handleZoomEnd}
+        <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
           bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && (this.map.getZoom() > COMPLEX_BOUNDARIES_MIN_ZOOM_LEVEL ? <PlatesLayerComplex /> : <PlatesLayerSimple />)}

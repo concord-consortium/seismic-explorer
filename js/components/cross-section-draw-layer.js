@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react'
+import { Map } from 'leaflet'
+import PropTypes from 'prop-types'
 import { LayerGroup, Marker, Polyline, Polygon } from 'react-leaflet'
 import { circleIcon } from '../custom-leaflet/icons'
 import crossSectionRectangle, { pointToArray } from '../core/cross-section-rectangle'
@@ -7,7 +9,7 @@ const MOUSE_DOWN = 'mousedown touchstart'
 const MOUSE_MOVE = 'mousemove touchmove'
 const MOVE_UP = 'mouseup touchend'
 
-export default class CrossSectionLayer extends PureComponent {
+export default class CrossSectionDrawLayer extends PureComponent {
   constructor (props) {
     super(props)
     this.drawStart = this.drawStart.bind(this)
@@ -17,19 +19,19 @@ export default class CrossSectionLayer extends PureComponent {
   }
 
   componentDidMount () {
-    const { map } = this.props
+    const { map } = this.context
     map.dragging.disable()
     map.on(MOUSE_DOWN, this.drawStart)
   }
 
   componentWillUnmount () {
-    const { map } = this.props
+    const { map } = this.context
     map.dragging.enable()
     map.off(MOUSE_DOWN, this.drawStart)
   }
 
   drawStart (event) {
-    const { map } = this.props
+    const { map } = this.context
     this.setPoint1(event)
     this.setPoint2(event)
     map.on(MOUSE_MOVE, this.setPoint2)
@@ -37,7 +39,7 @@ export default class CrossSectionLayer extends PureComponent {
   }
 
   drawEnd () {
-    const { map } = this.props
+    const { map } = this.context
     map.off(MOUSE_MOVE, this.setPoint2)
     map.off(MOVE_UP, this.drawEnd)
   }
@@ -57,7 +59,8 @@ export default class CrossSectionLayer extends PureComponent {
   }
 
   render () {
-    const { map, crossSectionPoints } = this.props
+    const { map } = this.context
+    const { crossSectionPoints } = this.props
     const point1 = crossSectionPoints.get(0)
     const point2 = crossSectionPoints.get(1)
     const rect = crossSectionRectangle(point1, point2)
@@ -70,4 +73,8 @@ export default class CrossSectionLayer extends PureComponent {
       </LayerGroup>
     )
   }
+}
+
+CrossSectionDrawLayer.contextTypes = {
+  map: PropTypes.instanceOf(Map)
 }

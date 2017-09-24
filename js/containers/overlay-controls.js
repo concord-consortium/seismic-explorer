@@ -15,12 +15,14 @@ class OverlayControls extends PureComponent {
     this.setCrossSectionDrawMode = this.setCrossSectionDrawMode.bind(this)
     this.cancelCrossSectionDrawMode = this.cancelCrossSectionDrawMode.bind(this)
   }
+
   componentDidUpdate () {
     const {layers, crossSectionPoints} = this.props
     if (layers.get('volcanoes') && !layers.get('earthquakes') && crossSectionPoints) {
       this.cancelCrossSectionDrawMode()
     }
   }
+
   exit3DMode () {
     const { setMode, crossSectionPoints } = this.props
     if (crossSectionPoints) {

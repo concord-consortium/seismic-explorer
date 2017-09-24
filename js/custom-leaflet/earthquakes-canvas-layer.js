@@ -7,6 +7,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     CanvasLayer.prototype.initialize.call(this, options)
     this.draw = this.draw.bind(this)
     this.latLngToPoint = this.latLngToPoint.bind(this)
+    this._onMouseDown = this._onMouseDown.bind(this)
     this._onMouseMove = this._onMouseMove.bind(this)
     this._onMouseClick = this._onMouseClick.bind(this)
     this._earthquakeClickHandler = function (event, earthquakeData) {}
@@ -20,14 +21,20 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
 
   onAdd: function (map) {
     CanvasLayer.prototype.onAdd.call(this, map)
+    DomEvent.on(this._canvas, 'mousedown', this._onMouseDown, this)
+    DomEvent.on(this._canvas, 'touchstart', this._onMouseDown, this)
     DomEvent.on(this._canvas, 'mousemove', this._onMouseMove, this)
+    DomEvent.on(this._canvas, 'touchmove', this._onMouseMove, this)
     DomEvent.on(this._canvas, 'mouseup', this._onMouseClick, this)
     DomEvent.on(this._canvas, 'touchend', this._onMouseClick, this)
   },
 
   onRemove: function (map) {
     CanvasLayer.prototype.onRemove.call(this, map)
+    DomEvent.off(this._canvas, 'mousedown', this._onMouseDown)
+    DomEvent.off(this._canvas, 'touchstart', this._onMouseDown)
     DomEvent.off(this._canvas, 'mousemove', this._onMouseMove)
+    DomEvent.off(this._canvas, 'touchmove', this._onMouseMove)
     DomEvent.off(this._canvas, 'mouseup', this._onMouseClick)
     DomEvent.off(this._canvas, 'touchend', this._onMouseClick)
     // Very important, without it, there's a significant memory leak (each time this layer is added and removed,
@@ -35,8 +42,14 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     this.externalView.destroy()
   },
 
+  _onMouseDown: function () {
+    this._wasMoving = false
+  },
+
   _onMouseMove: function (e) {
-    const pos = DomEvent.getMousePosition(e, this._canvas)
+    this._wasMoving = true
+    const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
+    const pos = DomEvent.getMousePosition(event, this._canvas)
     if (this.externalView.earthquakeAt(pos.x, pos.y)) {
       this._canvas.style.cursor = 'pointer'
     } else {
@@ -45,6 +58,10 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   _onMouseClick: function (e) {
+    if (this._wasMoving) {
+      // Do not trigger click if pointer was moving around.
+      return
+    }
     const event = (e.touches && e.touches[0]) || (e.changedTouches && e.changedTouches[0]) || e
     const pos = DomEvent.getMousePosition(event, this._canvas)
     const eqData = this.externalView.earthquakeAt(pos.x, pos.y)
@@ -83,8 +100,8 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
       this.externalView.setProps({earthquakes: this._earthquakesToProcess, latLngToPoint: this.latLngToPoint})
       this._earthquakesToProcess = null
     }
-    const transitionInPgoress = this.externalView.render()
-    if (transitionInPgoress) {
+    const transitionInProgress = this.externalView.render()
+    if (transitionInProgress) {
       this.scheduleRedraw()
     }
   }
