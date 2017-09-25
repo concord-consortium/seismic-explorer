@@ -2,7 +2,7 @@ const data = [
   {idx: 1, lat: 52, lng: 180, info: 'PAC-NAM', velocity: 74, angle: 315, type: 'convergent'},
   {idx: 2, lat: 56, lng: -158, info: 'PAC-NAM', velocity: 63, angle: 330, type: 'convergent'},
   {idx: 3, lat: 46, lng: -124, info: 'JdF-NAM', velocity: 35, angle: 52, type: 'convergent'},
-  {idx: 4, lat: 37, lng: -122, info: 'PAC-NAM', velocity: 51, angle: 145, type: 'divergent'},
+  {idx: 4, lat: 37, lng: -122, info: 'PAC-NAM', velocity: 51, angle: 145, type: 'transform'},
   {idx: 5, lat: 15, lng: -98, info: 'COC-NAM', velocity: 71, angle: 33, type: 'convergent'},
   {idx: 6, lat: 6, lng: -104, info: 'PAC-COC', velocity: 112, angle: 259, type: 'divergent'},
   {idx: 7, lat: 2, lng: -88, info: 'COC-NAZ', velocity: 58, angle: 29, type: 'divergent'},

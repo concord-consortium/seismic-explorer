@@ -8,20 +8,22 @@ import infoIconPng from '../../images/plates-info.png'
 import divArrowsShortPng from '../../images/div-arrows-short.png'
 import divArrowsMediumPng from '../../images/div-arrows-medium.png'
 import divArrowsLongPng from '../../images/div-arrows-long.png'
+import transformArrowsShortPng from '../../images/transform-arrows-short.png'
+import transformArrowsMediumPng from '../../images/transform-arrows-medium.png'
+import transformArrowsLongPng from '../../images/transform-arrows-long.png'
 import arrowShortPng from '../../images/arrow-short.png'
 import arrowMediumPng from '../../images/arrow-medium.png'
 import arrowLongPng from '../../images/arrow-long.png'
 
 const infoIcon = L.icon({
   iconUrl: infoIconPng,
-  iconAnchor: [12, 12],
-  popupAnchor: [0, 0]
+  iconSize: [19, 19]
 })
 
 const arrows = {
   divergentShort: L.icon({
     iconUrl: divArrowsShortPng,
-    iconSize: [20, 65]
+    iconSize: [20, 50]
   }),
   divergentMedium: L.icon({
     iconUrl: divArrowsMediumPng,
@@ -31,20 +33,32 @@ const arrows = {
     iconUrl: divArrowsLongPng,
     iconSize: [20, 100]
   }),
+  transformShort: L.icon({
+    iconUrl: transformArrowsShortPng,
+    iconSize: [20, 50]
+  }),
+  transformMedium: L.icon({
+    iconUrl: transformArrowsMediumPng,
+    iconSize: [20, 77]
+  }),
+  transformLong: L.icon({
+    iconUrl: transformArrowsLongPng,
+    iconSize: [20, 100]
+  }),
   convergentShort: L.icon({
     iconUrl: arrowShortPng,
-    iconSize: [20, 40.5],
-    iconAnchor: [10, 40.5]
+    iconSize: [20, 25],
+    iconAnchor: [10, 25]
   }),
   convergentMedium: L.icon({
     iconUrl: arrowMediumPng,
-    iconSize: [20, 48.5],
-    iconAnchor: [10, 48.5]
+    iconSize: [20, 38.5],
+    iconAnchor: [10, 38.5]
   }),
   convergentLong: L.icon({
     iconUrl: arrowLongPng,
-    iconSize: [20, 62.5],
-    iconAnchor: [10, 62.5]
+    iconSize: [20, 60],
+    iconAnchor: [10, 60]
   })
 }
 
@@ -57,10 +71,6 @@ function getArrowIcon (type, velocity) {
     size = 'Short'
   } else if (velocity < MEDIUM_ARROW_MAX_VELOCITY) {
     size = 'Medium'
-  }
-  if (type === 'transform') {
-    // The same image is used for divergent and transform boundaries.
-    type = 'divergent'
   }
   return arrows[type + size]
 }
