@@ -9,7 +9,7 @@ function ageToColor (age) {
   return 0x808080
 }
 
-export default class {
+export default class Volcano {
   constructor (data, idx, attributes) {
     this.id = data.id
     this.age = data.age

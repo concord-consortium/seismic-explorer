@@ -1,0 +1,40 @@
+const data = [
+  {idx: 1, lat: 52, lng: 180, info: 'PAC-NAM', velocity: 74, angle: 315, type: 'convergent'},
+  {idx: 2, lat: 56, lng: -158, info: 'PAC-NAM', velocity: 63, angle: 330, type: 'convergent'},
+  {idx: 3, lat: 46, lng: -124, info: 'JdF-NAM', velocity: 35, angle: 52, type: 'convergent'},
+  {idx: 4, lat: 37, lng: -122, info: 'PAC-NAM', velocity: 51, angle: 145, type: 'divergent'},
+  {idx: 5, lat: 15, lng: -98, info: 'COC-NAM', velocity: 71, angle: 33, type: 'convergent'},
+  {idx: 6, lat: 6, lng: -104, info: 'PAC-COC', velocity: 112, angle: 259, type: 'divergent'},
+  {idx: 7, lat: 2, lng: -88, info: 'COC-NAZ', velocity: 58, angle: 29, type: 'divergent'},
+  {idx: 8, lat: -17, lng: -113, info: 'PAC-NAZ', velocity: 141, angle: 284, type: 'divergent'},
+  {idx: 9, lat: -47, lng: -113, info: 'PAC-ANT', velocity: 89, angle: 285, type: 'divergent'},
+  {idx: 10, lat: -40, lng: -92, info: 'ANT-NAZ', velocity: 51, angle: 266, type: 'divergent'},
+  {idx: 11, lat: -17, lng: -172, info: 'PAC-AUS', velocity: 82, angle: 271, type: 'convergent'},
+  {idx: 12, lat: -33, lng: -117, info: 'PAC-AUS', velocity: 85, angle: 306, type: 'divergent'},
+  {idx: 13, lat: -20, lng: -71, info: 'NAZ-SAM', velocity: 73, angle: 75, type: 'convergent'},
+  {idx: 14, lat: -50, lng: -75, info: 'ANT-SAM', velocity: 19, angle: 267, type: 'convergent'},
+  {idx: 15, lat: 48, lng: -28, info: 'NAM-EUR', velocity: 22, angle: 276, type: 'divergent'},
+  {idx: 16, lat: 28, lng: -44, info: 'NAM-AFR (Nubia)', velocity: 23, angle: 282, type: 'divergent'},
+  {idx: 17, lat: 12, lng: -60, info: 'SAM-CAR', velocity: 20, angle: 255, type: 'transform'},
+  {idx: 18, lat: -26, lng: -12, info: 'SAM-AFR (Nubia)', velocity: 33, angle: 257, type: 'divergent'},
+  {idx: 19, lat: -57, lng: -23, info: 'SAM-Sandw', velocity: 71, angle: 254, type: 'convergent'},
+  {idx: 20, lat: 34, lng: 25, info: 'AFR (Nubia)-EUR', velocity: 10, angle: 355, type: 'convergent'},
+  {idx: 21, lat: 32, lng: 48, info: 'ARA-EUR', velocity: 27, angle: 9, type: 'convergent'},
+  {idx: 22, lat: -53, lng: 21, info: 'AFR (Nubia)-ANT', velocity: 16, angle: 24, type: 'divergent'},
+  {idx: 23, lat: 7, lng: 58, info: 'AFR (Somalia)-IND', velocity: 23, angle: 214, type: 'divergent'},
+  {idx: 24, lat: 28, lng: 81, info: 'IND-EUR', velocity: 43, angle: 21, type: 'convergent'},
+  {idx: 25, lat: -20, lng: 65, info: 'AFR (Somalia)-IND', velocity: 37, angle: 231, type: 'divergent'},
+  {idx: 26, lat: -36, lng: 53, info: 'AFR (Somalia)-ANT', velocity: 15, angle: 357, type: 'divergent'},
+  {idx: 27, lat: -44, lng: 92, info: 'ANT-AUS', velocity: 67, angle: 217, type: 'divergent'},
+  {idx: 28, lat: -8, lng: 105, info: 'AUS-Sunda', velocity: 64, angle: 15, type: 'convergent'},
+  {idx: 29, lat: 22, lng: 122, info: 'PHL-EUR', velocity: 79, angle: 304, type: 'convergent'},
+  {idx: 30, lat: 55, lng: 132, info: 'Amur-EUR', velocity: 2.5, angle: 102, type: 'transform'},
+  // Missing angle and velocity data:
+  // {idx: 31, lat: -7, lng: 138, info: 'AUS-PNG (?)'}
+  {idx: 32, lat: -24, lng: 168, info: 'AUS-PAC', velocity: 74, angle: 75, type: 'convergent'},
+  {idx: 33, lat: 16, lng: 148, info: 'PAC-PHL', velocity: 26, angle: 312, type: 'convergent'},
+  {idx: 34, lat: 40, lng: 144, info: 'PAC-NAM', velocity: 83, angle: 293, type: 'convergent'},
+  {idx: 35, lat: 50, lng: 169, info: 'PAC-NAM', velocity: 77, angle: 308, type: 'convergent'}
+]
+
+export default data

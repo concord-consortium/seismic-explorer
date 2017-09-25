@@ -75,6 +75,11 @@ export default class SeismicEruptionsMap extends PureComponent {
     const { mark2DViewModified, setMapRegion } = this.props
     mark2DViewModified(false)
     setMapRegion(this.mapRegion, this.mapZoom)
+
+    this.map.on('click', (e) => {
+      // TOOD: remove, it can be useful to tweak position of plate arrows.
+      console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
+    })
   }
 
   handleMapViewportChanged () {
