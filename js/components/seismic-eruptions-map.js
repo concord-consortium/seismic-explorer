@@ -6,7 +6,6 @@ import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
 import {PlatesLayerSimple, PlatesLayerComplex} from './plates-layer'
 import { PlatesArrowsLayer } from './plates-arrows-layer'
-import VolcanoesLayer from './volcanoes-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
@@ -141,7 +140,7 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   render () {
-    const { mode, earthquakes, layers, crossSectionPoints, mapRegion, setCrossSectionPoint } = this.props
+    const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapRegion, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
@@ -150,11 +149,11 @@ export default class SeismicEruptionsMap extends PureComponent {
           {this.renderBaseLayer()}
           {layers.get('plates') && (mapRegion.get('zoom') > COMPLEX_BOUNDARIES_MIN_ZOOM_LEVEL ? <PlatesLayerComplex /> : <PlatesLayerSimple />)}
           {layers.get('platearrows') && <PlatesArrowsLayer />}
-          {layers.get('volcanoes') && <VolcanoesLayer volcanoClick={this.handleVolcanoClick} />}
           {layers.get('platemovement') && <PlateMovementLayer />}
-          {mode !== '3d' && layers.get('earthquakes') &&
+          {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
-            <EarthquakesCanvasLayer earthquakes={earthquakes} earthquakeClick={this.handleEarthquakeClick} />
+            <EarthquakesCanvasLayer earthquakes={earthquakes} volcanoes={volcanoes}
+              earthquakeClick={this.handleEarthquakeClick} volcanoClick={this.handleVolcanoClick} />
           }
           {mode === '2d' && selectedEarthquake &&
             <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose} />

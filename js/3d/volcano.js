@@ -1,28 +1,37 @@
 import THREE from 'three'
 import Point from './point'
-import { depthToColor, magnitudeToRadius } from '../earthquake-properties'
 
-function magnitudeToDiameter (mag) {
-  // * 2 because size describes diameter, not radius. It ensures that both 2D and 3D view use
-  // exactly the same dimensions.
-  return window.devicePixelRatio * 2 * magnitudeToRadius(mag)
+function ageToColor (age) {
+  if (age <= 100) return 0xFF6600
+  if (age <= 400) return 0xD26F2D
+  if (age <= 1600) return 0xAC7753
+  if (age <= 6400) return 0x8C7D73
+  return 0x808080
 }
 
-export default class Earthquake extends Point {
+export default class Volcano extends Point {
   static getTexture () {
     const size = 128
-    const strokeWidth = size * 0.06
+    const strokeWidth = size * 0.07
     const canvas = document.createElement('canvas')
     canvas.width = size
     canvas.height = size
     const ctx = canvas.getContext('2d')
-    // Point
-    ctx.arc(size / 2, size / 2, size / 2 - strokeWidth / 2, 0, 2 * Math.PI)
+
+    ctx.beginPath()
+    // Triangle
+    ctx.moveTo(0, 0) // corner
+    ctx.lineTo(size / 2, size)// tip
+    ctx.lineTo(size, 0)
+    ctx.lineTo(0, 0)
+
     ctx.fillStyle = '#fff'
     ctx.fill()
+
     ctx.lineWidth = strokeWidth
     ctx.strokeStyle = '#000'
     ctx.stroke()
+
     const texture = new THREE.Texture(canvas)
     texture.needsUpdate = true
     return texture
@@ -30,8 +39,9 @@ export default class Earthquake extends Point {
 
   constructor (data, idx, attributes) {
     super(data, idx, attributes)
-    this.color = depthToColor(data.geometry.coordinates[2])
-    this.size = magnitudeToDiameter(data.properties.mag)
+    this.color = ageToColor(data.age)
+    this.size = 30
+    this.targetVisibility = 1
     this.currentVisibility = this.targetVisibility
   }
 }

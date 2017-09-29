@@ -1,5 +1,4 @@
 import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
-import config from '../config'
 import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 
 export const SET_MAP_REGION = 'SET_MAP_REGION'

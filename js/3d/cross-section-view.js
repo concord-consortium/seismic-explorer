@@ -1,6 +1,8 @@
 import THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
-import Earthquakes from './earthquakes'
+import Earthquake from './earthquake'
+import Volcano from './volcano'
+import PointsContainer from './points-container'
 import CrossSectionBox from './cross-section-box'
 import Camera from './camera'
 import log from '../logger'
@@ -19,7 +21,8 @@ export default class {
     parentEl.appendChild(renderer.domElement)
     this.props = {}
     this.camera = new Camera(renderer.domElement)
-    this.earthquakes = new Earthquakes()
+    this.volcanoes = new PointsContainer(Volcano, 20000)
+    this.earthquakes = new PointsContainer(Earthquake, 200000)
     this.crossSectionBox = new CrossSectionBox()
     this.resize()
     this._initScene()
@@ -37,6 +40,7 @@ export default class {
 
   destroy () {
     // Prevent memory leaks.
+    this.volcanoes.destroy()
     this.earthquakes.destroy()
     this.crossSectionBox.destroy()
     this.camera.destroy()
@@ -52,6 +56,9 @@ export default class {
 
     if (this.props.earthquakes !== newProps.earthquakes) {
       this.earthquakes.setProps(newProps.earthquakes, latLngDepthToPoint)
+    }
+    if (this.props.volcanoes !== newProps.volcanoes) {
+      this.volcanoes.setProps(newProps.volcanoes, latLngDepthToPoint)
     }
     if (this.props.crossSectionPoints !== newProps.crossSectionPoints) {
       this.crossSectionBox.setProps(newProps.crossSectionPoints, newProps.mapType, finalZoom, latLngDepthToPoint)
@@ -79,6 +86,7 @@ export default class {
     this.resize()
 
     this.camera.update()
+    this.volcanoes.update(progress)
     this.earthquakes.update(progress)
     this.crossSectionBox.update(this.camera.zoom, this.camera.polarAngle)
 
@@ -106,6 +114,7 @@ export default class {
   _initScene () {
     this.scene = new THREE.Scene()
     this.sceneOverlay = new THREE.Scene()
+    this.scene.add(this.volcanoes.root)
     this.scene.add(this.earthquakes.root)
     this.scene.add(this.crossSectionBox.root)
     this.sceneOverlay.add(this.crossSectionBox.overlay)

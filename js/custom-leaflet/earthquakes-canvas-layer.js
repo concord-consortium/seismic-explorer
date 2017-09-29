@@ -15,8 +15,9 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer')
   },
 
-  setEarthquakes: function (earthquakes) {
+  setData: function (earthquakes, volcanoes) {
     this._earthquakesToProcess = earthquakes
+    this._volcanoesToProcess = volcanoes
     this.scheduleRedraw()
   },
 
@@ -25,8 +26,13 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   draw: function () {
-    if (this._earthquakesToProcess) {
-      this.externalView.setProps({earthquakes: this._earthquakesToProcess, latLngToPoint: this.latLngToPoint})
+    if (this._earthquakesToProcess && this._volcanoesToProcess) {
+      this.externalView.setProps({
+        earthquakes: this._earthquakesToProcess,
+        volcanoes: this._volcanoesToProcess,
+        latLngToPoint: this.latLngToPoint
+      })
+      this._volcanoesToProcess = null
       this._earthquakesToProcess = null
     }
     const transitionInProgress = this.externalView.render()
@@ -36,7 +42,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   onMouseMove (event, pos) {
-    if (this.externalView.earthquakeAt(pos.x, pos.y)) {
+    if (this.externalView.pointAt(pos.x, pos.y)) {
       this._canvas.style.cursor = 'pointer'
     } else {
       this._canvas.style.cursor = 'inherit'
@@ -44,7 +50,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   onMouseClick (event, pos) {
-    const eqData = this.externalView.earthquakeAt(pos.x, pos.y)
+    const eqData = this.externalView.pointAt(pos.x, pos.y)
     if (eqData) {
       this._earthquakeClickHandler(event, eqData)
     }

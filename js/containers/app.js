@@ -9,6 +9,7 @@ import CrossSection3D from '../components/cross-section-3d'
 import LoadingIcon from '../components/loading-icon'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
 import filteredEarthquakes from '../core/filtered-earthquakes'
+import { getVisibleVolcanoes } from '../selectors'
 
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
@@ -58,7 +59,7 @@ class App extends PureComponent {
   }
 
   renderApp () {
-    const { dataFetching, earthquakes, layers, crossSectionPoints, mapRegion, setMapRegion, updateEarthquakesData,
+    const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapRegion, setMapRegion, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
     return (
       <div>
@@ -67,12 +68,12 @@ class App extends PureComponent {
           <TopControls />
         </div>
         <div className={`map-container mode-${mode}`}>
-          <SeismicEruptionsMap ref='map' earthquakes={earthquakes}
+          <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapRegion={mapRegion}
             setMapRegion={setMapRegion} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData} />
           {mode === '3d' &&
-            <CrossSection3D ref='view3d' earthquakes={earthquakes} crossSectionPoints={crossSectionPoints}
+            <CrossSection3D ref='view3d' earthquakes={earthquakes} volcanoes={volcanoes} crossSectionPoints={crossSectionPoints}
               mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
               mark3DViewModified={mark3DViewModified} />
           }
@@ -103,6 +104,7 @@ function mapStateToProps (state) {
     filters: state.get('filters'),
     layers: state.get('layers'),
     earthquakes: filteredEarthquakes(state),
+    volcanoes: getVisibleVolcanoes(state),
     crossSectionPoints: state.get('crossSectionPoints'),
     mapRegion: state.get('mapRegion')
   }

@@ -12,8 +12,8 @@ export default class EarthquakesCanvasLayer extends MapLayer {
   }
 
   updateLeafletElement (fromProps, toProps) {
-    const { earthquakes, earthquakeClick } = toProps
-    this.leafletElement.setEarthquakes(earthquakes)
+    const { earthquakes, volcanoes, earthquakeClick } = toProps
+    this.leafletElement.setData(earthquakes, volcanoes)
     this.leafletElement.onEarthquakeClick(earthquakeClick)
   }
 }
