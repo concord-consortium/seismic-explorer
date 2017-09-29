@@ -205,9 +205,9 @@ class BottomControls extends PureComponent {
             </div>
             <div className='center'>
               <Range className='slider-range-only' allowCross={false} min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
-                 step={86400} value={[filters.get('minTime'), filters.get('playbackMaxTime')]}
-                 onChange={this.handlePlaybackRangeChange} onAfterChange={logPlaybackRangeChange}
-                 handle={rangeHandle}
+                step={86400} value={[filters.get('minTime'), filters.get('playbackMaxTime')]}
+                onChange={this.handlePlaybackRangeChange} onAfterChange={logPlaybackRangeChange}
+                handle={rangeHandle}
               />
               <Range className='slider-big' min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
                 step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}

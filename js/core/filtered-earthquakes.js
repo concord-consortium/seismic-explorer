@@ -9,23 +9,26 @@ let props = {}
 // 2. If we call this function two times with the same data, it will return the same (cached) array object.
 // The second point ensures that pure components won't re-render themselves unnecessary if data isn't changed.
 export default function filteredEarthquakes (state) {
+  const earthquakesEnabled = state.get('layers').get('earthquakes')
   const data = state.get('data').get('earthquakes')
   const filters = state.get('filters')
   const crossSection = state.get('crossSectionPoints')
-  if (cachedValue == null || propsChanged(data, filters, crossSection)) {
-    props = {data, filters, crossSection}
-    cachedValue = calcEarthquakes(data, filters, crossSection)
+  if (cachedValue === null || propsChanged(earthquakesEnabled, data, filters, crossSection)) {
+    props = {earthquakesEnabled, data, filters, crossSection}
+    cachedValue = earthquakesEnabled ? calcEarthquakes(data, filters, crossSection) : []
   }
   return cachedValue
 }
 
-function propsChanged (data, filters, crossSection) {
+function propsChanged (earthquakesEnabled, data, filters, crossSection) {
   // Note that we're dealing with immutable structures. Shallow comparison is enough.
   // We need to recalculate filtered earthquakes when:
-  // 1. Data has been changed
-  // 2. Filters has been changed
-  // 3. Cross section line has been changed, but only if cross section filtering is enabled.
-  return props.data !== data ||
+  // - Earthquakes switch has been toggled on or off.
+  // - Data has been changed
+  // - Filters has been changed
+  // - Cross section line has been changed, but only if cross section filtering is enabled.
+  return props.earthquakesEnabled !== earthquakesEnabled ||
+         props.data !== data ||
          props.filters !== filters ||
          (filters.get('crossSection') && props.crossSection !== crossSection)
 }

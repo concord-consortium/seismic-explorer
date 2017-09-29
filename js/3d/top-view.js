@@ -1,6 +1,8 @@
 import THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
-import Earthquakes from './earthquakes'
+import Earthquake from './earthquake'
+import Volcano from './volcano'
+import PointsContainer from './points-container'
 import Camera from './camera'
 
 // Share one renderer to avoid memory leaks (I couldn't fix them in other way).
@@ -15,7 +17,8 @@ export default class {
     }
     this.props = {}
     this.camera = new Camera(renderer.domElement, false)
-    this.earthquakes = new Earthquakes()
+    this.volcanoes = new PointsContainer(Volcano, 20000)
+    this.earthquakes = new PointsContainer(Earthquake, 200000)
     this._initScene()
     // [ Shutterbug support ]
     // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
@@ -28,6 +31,7 @@ export default class {
 
   destroy () {
     // Prevent memory leaks.
+    this.volcanoes.destroy()
     this.earthquakes.destroy()
     this.camera.destroy()
   }
@@ -40,18 +44,24 @@ export default class {
       const latLngDepthToPoint = getLatLngDepthToPoint(this.props.latLngToPoint, this._height)
       this.earthquakes.setProps(newProps.earthquakes, latLngDepthToPoint)
     }
+    if (this.props.volcanoes !== newProps.volcanoes) {
+      const latLngDepthToPoint = getLatLngDepthToPoint(this.props.latLngToPoint, this._height)
+      this.volcanoes.setProps(newProps.volcanoes, latLngDepthToPoint)
+    }
     this.props = newProps
   }
 
-  earthquakeAt (x, y) {
-    return this.earthquakes.earthquakeAt(x, this._height - y)
+  pointAt (x, y) {
+    return this.earthquakes.pointAt(x, this._height - y) || this.volcanoes.pointAt(x, this._height - y)
   }
 
   // Renders scene and returns true if some transitions are in progress (e.g. earthquakes visibility transition).
   render (timestamp = window.performance.now()) {
     const progress = this._prevTimestamp ? timestamp - this._prevTimestamp : 0
     this.camera.update()
-    const transitionInProgress = this.earthquakes.update(progress)
+    const volcanoesTransition = this.volcanoes.update(progress)
+    const earthquakesTransition = this.earthquakes.update(progress)
+    const transitionInProgress = volcanoesTransition || earthquakesTransition
     renderer.render(this.scene, this.camera.camera)
     // Reset timestamp if transition has just ended, so when it starts next time, `progress` value starts from 0 again.
     this._prevTimestamp = transitionInProgress ? timestamp : null
@@ -69,11 +79,13 @@ export default class {
   }
 
   invalidatePositions () {
+    this.volcanoes.invalidatePositions(getLatLngDepthToPoint(this.props.latLngToPoint, this._height))
     this.earthquakes.invalidatePositions(getLatLngDepthToPoint(this.props.latLngToPoint, this._height))
   }
 
   _initScene () {
     this.scene = new THREE.Scene()
+    this.scene.add(this.volcanoes.root)
     this.scene.add(this.earthquakes.root)
   }
 
