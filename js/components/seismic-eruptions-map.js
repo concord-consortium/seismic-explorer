@@ -141,14 +141,14 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   render () {
-    const { mode, earthquakes, layers, crossSectionPoints, setCrossSectionPoint } = this.props
+    const { mode, earthquakes, layers, crossSectionPoints, mapRegion, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
           bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
-          {layers.get('plates') && (this.map.getZoom() > COMPLEX_BOUNDARIES_MIN_ZOOM_LEVEL ? <PlatesLayerComplex /> : <PlatesLayerSimple />)}
+          {layers.get('plates') && (mapRegion.get('zoom') > COMPLEX_BOUNDARIES_MIN_ZOOM_LEVEL ? <PlatesLayerComplex /> : <PlatesLayerSimple />)}
           {layers.get('platearrows') && <PlatesArrowsLayer />}
           {layers.get('volcanoes') && <VolcanoesLayer volcanoClick={this.handleVolcanoClick} />}
           {layers.get('platemovement') && <PlateMovementLayer />}

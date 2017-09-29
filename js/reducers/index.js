@@ -38,7 +38,12 @@ function downloadStatus (state = INITIAL_DOWNLOAD_STATUS, action) {
   }
 }
 
-function mapRegion (state = Map(), action) {
+const INITIAL_REGION = Map({
+  region: [],
+  zoom: 0
+})
+
+function mapRegion (state = INITIAL_REGION, action) {
   switch (action.type) {
     case SET_MAP_REGION:
       return state
