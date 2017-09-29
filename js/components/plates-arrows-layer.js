@@ -35,30 +35,30 @@ const arrows = {
   }),
   transformShort: L.icon({
     iconUrl: transformArrowsShortPng,
-    iconSize: [20, 50]
+    iconSize: [27, 55]
   }),
   transformMedium: L.icon({
     iconUrl: transformArrowsMediumPng,
-    iconSize: [20, 77]
+    iconSize: [27, 77]
   }),
   transformLong: L.icon({
     iconUrl: transformArrowsLongPng,
-    iconSize: [20, 100]
+    iconSize: [27, 100]
   }),
   convergentShort: L.icon({
     iconUrl: arrowShortPng,
-    iconSize: [20, 25],
-    iconAnchor: [10, 25]
+    iconSize: [20, 35],
+    iconAnchor: [10, 0]
   }),
   convergentMedium: L.icon({
     iconUrl: arrowMediumPng,
-    iconSize: [20, 38.5],
-    iconAnchor: [10, 38.5]
+    iconSize: [20, 51],
+    iconAnchor: [10, 0]
   }),
   convergentLong: L.icon({
     iconUrl: arrowLongPng,
-    iconSize: [20, 60],
-    iconAnchor: [10, 60]
+    iconSize: [20, 70],
+    iconAnchor: [10, 0]
   })
 }
 
@@ -88,7 +88,7 @@ function arrowMaker (data) {
   const arrows = new L.Marker([lat, lng], {
     icon: getArrowIcon(type, velocity),
     rotationAngle: angle,
-    rotationOrigin: type === 'convergent' ? 'bottom center' : 'center center'
+    rotationOrigin: type === 'convergent' ? 'top center' : 'center center'
   })
   return new L.LayerGroup([
     arrows, infoIconAndPopup
