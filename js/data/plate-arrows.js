@@ -113,7 +113,7 @@ const data = [
     lng: -76.88232421875001,
     info: 'ANT-SAM',
     velocity: 19,
-    angle: 267,
+    angle: 87,
     type: 'convergent'
   },
   {
@@ -150,7 +150,7 @@ const data = [
     info: 'SAM-AFR (Nubia)',
     velocity: 33,
     angle: 257,
-    type: 'transform'
+    type: 'divergent'
   },
   {
     idx: 19,
