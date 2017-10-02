@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Earthquake from './earthquake'
 import Volcano from './volcano'

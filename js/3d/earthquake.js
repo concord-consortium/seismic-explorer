@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import Point from './point'
 import { depthToColor, magnitudeToRadius } from '../earthquake-properties'
 

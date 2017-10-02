@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import { tileUrl } from '../map-layer-tiles'
 import { tilesListByRow, lat2tilePos, lng2tilePos, tileBoundingBox, tileYOutOfBounds } from '../map-tile-helpers'
 

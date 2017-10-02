@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 
 const DISTANCE_FROM_TARGET = 1000
 

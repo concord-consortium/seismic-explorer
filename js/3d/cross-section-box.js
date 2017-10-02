@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import crossSectionRectangle from '../core/cross-section-rectangle'
 import TickMarks from './tick-marks'
 import { latLng } from 'leaflet'
