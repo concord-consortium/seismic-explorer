@@ -28,10 +28,11 @@ export default class Earthquake extends Point {
     return texture
   }
 
-  constructor (data, idx, attributes) {
-    super(data, idx, attributes)
-    this.color = depthToColor(data.geometry.coordinates[2])
-    this.size = magnitudeToDiameter(data.properties.mag)
-    this.currentVisibility = this.targetVisibility
+  getColor (data) {
+    return depthToColor(data.geometry.coordinates[2])
+  }
+
+  getSize (data) {
+    return magnitudeToDiameter(data.properties.mag)
   }
 }

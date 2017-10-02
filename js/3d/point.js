@@ -15,7 +15,20 @@ export default class Point {
     // Particle system attributes (position, customColor, size). See points-container.js.
     this.attributes = attributes
 
+    // getSize and getColor need to be implemented by subclass.
+    this.size = this.getSize(data)
+    this.color = this.getColor(data)
+
     this.targetVisibility = data.visible ? 1 : 0
+    this.currentVisibility = data.transiton ? Number(!this.targetVisibility) : this.targetVisibility
+  }
+
+  getSize (data) {
+    throw new Error('getSize not implemented')
+  }
+
+  getColor (data) {
+    throw new Error('getColor not implemented')
   }
 
   destroy () {
