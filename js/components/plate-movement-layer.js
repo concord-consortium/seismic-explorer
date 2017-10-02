@@ -3,7 +3,7 @@ import { plateMovementCanvasLayer } from '../custom-leaflet/plate-movement-canva
 import points from '../data/plate-movement-unavco.js'
 
 let _cachedPoints
-function getPoints (map) {
+function getPoints () {
   if (!_cachedPoints) {
     _cachedPoints = []
     if (points) {
@@ -32,22 +32,17 @@ function getPoints (map) {
 }
 
 export default class PlateMovementCanvasLayer extends MapLayer {
-  componentWillMount () {
-    super.componentWillMount()
-    this.leafletElement = plateMovementCanvasLayer()
-    this.setLeafletElementProps()
+  componentDidMount () {
+    super.componentDidMount()
+    this.updateLeafletElement(null, this.props)
   }
 
-  componentDidUpdate () {
-    this.setLeafletElementProps()
+  createLeafletElement (props) {
+    return plateMovementCanvasLayer()
   }
 
-  setLeafletElementProps () {
-    const { map } = this.props
+  updateLeafletElement (fromProps, toProps) {
+    const { map } = toProps
     this.leafletElement.setPlateMovementPoints(getPoints(map))
-  }
-
-  render () {
-    return null
   }
 }
