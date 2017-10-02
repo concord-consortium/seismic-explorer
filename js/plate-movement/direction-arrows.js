@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import vertexShader from './direction-arrow-vertex.glsl'
 import fragmentShader from './direction-arrow-fragment.glsl'
 import Arrow from './direction-arrow'

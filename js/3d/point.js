@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import { easeOutBounce, TRANSITION_TIME } from '../earthquake-properties'
 
 const TRANSITION_COLOR = 0xFFFFFF

@@ -1,4 +1,4 @@
-import THREE from 'three'
+import * as THREE from 'three'
 import vertexShader from './earthquakes-vertex.glsl'
 import fragmentShader from './earthquakes-fragment.glsl'
 
