@@ -104,7 +104,7 @@ class LayerControls extends PureComponent {
   }
 
   render () {
-    const { layers } = this.props
+    const { layers, mode } = this.props
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>
@@ -113,14 +113,14 @@ class LayerControls extends PureComponent {
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close' />
           <div>Data Available:</div>
-          { config.plateBoundariesAvailable &&
+          { config.plateBoundariesAvailable && mode !== '3d' &&
           <div title='Show Plate Boundaries Overlay'>
             <input type='checkbox' checked={layers.get('plates')} onChange={this.handlePlateLayerChange}
               id='plate-border-box' />
             <label htmlFor='plate-border-box'>Plate boundaries</label>
           </div>
           }
-          { config.plateBoundariesAvailable && <div><hr /></div> }
+          { config.plateBoundariesAvailable && mode !== '3d' && <div><hr /></div> }
           { config.volcanoesAvailable &&
             <div title='Show Volcanoes'>
               <input type={inputType} checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange}
@@ -134,13 +134,13 @@ class LayerControls extends PureComponent {
               <label htmlFor='earthquake-toggle'>Earthquakes</label>
             </div>
           }
-          { config.plateMovementAvailable &&
+          { config.plateMovementAvailable && mode !== '3d' &&
           <div className='toggle-arrow-movement' title='Show or hide plate movement arrows'>
             <input type={inputType} id='plate-arrow-toggle' checked={layers.get('platearrows')} onChange={this.handlePlateArrowLayerChange} value='platearrows' name='datatype' />
             <label htmlFor='plate-arrow-toggle'>Plate movement</label>
           </div>
           }
-          { config.detailedPlateMovementAvailable &&
+          { config.detailedPlateMovementAvailable && mode !== '3d' &&
             <div className='toggle-plate-movement' title='Show or hide plate movement arrows'>
               <input type={inputType} id='plate-movement-toggle' checked={layers.get('platemovement')} onChange={this.handlePlateMovementLayerChange} value='platemovement' name='datatype' />
               <label htmlFor='plate-movement-toggle'>Plate movement (detailed)</label>
