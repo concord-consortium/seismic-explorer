@@ -30,6 +30,11 @@ export default class PointsContainer {
     })
 
     this.root = new THREE.Points(geometry, material)
+    // Fixes this issue:
+    // https://stackoverflow.com/questions/32855271/three-js-buffergeometry-disappears-after-moving-camera-to-close
+    // Another option would be to call this.root.geometry.computeBoundingSphere() each time we process new data, but it
+    // doesn't make much sense - points are always visible in practice.
+    this.root.frustumCulled = false
 
     this._renderedPoints = []
   }

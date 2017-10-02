@@ -37,11 +37,11 @@ export default class Volcano extends Point {
     return texture
   }
 
-  constructor (data, idx, attributes) {
-    super(data, idx, attributes)
-    this.color = ageToColor(data.age)
-    this.size = 30
-    this.targetVisibility = 1
-    this.currentVisibility = this.targetVisibility
+  getColor (data) {
+    return ageToColor(data.age)
+  }
+
+  getSize (data) {
+    return 30
   }
 }

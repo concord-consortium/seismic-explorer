@@ -38,20 +38,27 @@ const crossSectionPoints = state => state.get('crossSectionPoints')
 
 export const getVisibleVolcanoes = createSelector(
   [ volcanoesLayerEnabled, crossSectionMode, crossSectionPoints ],
-  (volcanoesLayerEnabled, crossSectionMode, crossSectionPoints) => {
-    if (!volcanoesLayerEnabled) {
-      return []
+  (() => {
+    let prevCrossSectionMode = false
+    return (volcanoesLayerEnabled, crossSectionMode, crossSectionPoints) => {
+      const animationRequired = crossSectionMode && !prevCrossSectionMode
+      prevCrossSectionMode = crossSectionMode
+
+      if (!volcanoesLayerEnabled) {
+        return []
+      }
+      const crossSectionFilter = getCrossSectionFilter(crossSectionMode, crossSectionPoints)
+      // Two important notes:
+      // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
+      // - Yes, I don't copy and do mutate elements. It's been done due to performance reasons.
+      const result = []
+      volcanoesData.forEach(v => {
+        // When cross section mode is disabled, this filter returns true.
+        v.visible = volcanoesLayerEnabled && crossSectionFilter(v.geometry.coordinates)
+        v.transition = animationRequired
+        result.push(v)
+      })
+      return result
     }
-    const crossSectionFilter = getCrossSectionFilter(crossSectionMode, crossSectionPoints)
-    // Two important notes:
-    // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
-    // - Yes, I don't copy and do mutate elements. It's been done due to performance reasons.
-    const result = []
-    volcanoesData.forEach(v => {
-      // When cross section mode is disabled, this filter returns true.
-      v.visible = crossSectionFilter(v.geometry.coordinates)
-      result.push(v)
-    })
-    return result
-  }
+  })()
 )

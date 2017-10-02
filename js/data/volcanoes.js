@@ -9,11 +9,11 @@ function getVolcanoes () {
     let age = v.lasteruptionyear !== 'Unknown' ? -(v.lasteruptionyear - 2017) : -15000
 
     let volcanoData = {
+      id: i,
       geometry: {
         // Why -10 depth? It will place volcanoes above the ground in the 3D cross section view.
         coordinates: [lat, lng, -10]
       },
-      visible: true,
       age,
       lastactivedate: v.lasteruptionyear,
       name: v.volcanoname,
