@@ -39,6 +39,8 @@ function downloadStatus (state = INITIAL_DOWNLOAD_STATUS, action) {
 }
 
 const INITIAL_REGION = Map({
+  // Map region doesn't have very descriptive structure. It's an array of four points.
+  // [ SouthWest, NorthWest, NorthEast, SouthEast ]
   region: [],
   zoom: 0
 })
