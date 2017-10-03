@@ -20,7 +20,7 @@ export default class Point {
     this.color = this.getColor(data)
 
     this.targetVisibility = data.visible ? 1 : 0
-    this.currentVisibility = data.transiton ? Number(!this.targetVisibility) : this.targetVisibility
+    this.currentVisibility = data.visible ? 1 : 0
   }
 
   getSize (data) {

@@ -87,9 +87,9 @@ export default class SpritesContainer {
     for (let i = 0, length = data.length; i < length; i++) {
       const spriteData = data[i]
       if (!this._renderedSprites[i] || this._renderedSprites[i].id !== spriteData.id) {
-        const sprite = this._latLngDepthToSprite(spriteData.geometry.coordinates)
         this._renderedSprites[i] = new this.SpriteClass(spriteData, i, attributes)
-        this._renderedSprites[i].setPositionAttr(sprite)
+        const pos = this._latLngDepthToSprite(spriteData.geometry.coordinates)
+        this._renderedSprites[i].setPositionAttr(pos)
       }
       this._renderedSprites[i].targetVisibility = spriteData.visible ? 1 : 0
     }

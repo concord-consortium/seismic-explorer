@@ -8,8 +8,7 @@ import SeismicEruptionsMap from '../components/seismic-eruptions-map'
 import CrossSection3D from '../components/cross-section-3d'
 import LoadingIcon from '../components/loading-icon'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
-import filteredEarthquakes from '../core/filtered-earthquakes'
-import { getVisibleVolcanoes } from '../selectors'
+import { getVisibleEarthquakes, getVisibleVolcanoes } from '../selectors'
 
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
@@ -103,7 +102,7 @@ function mapStateToProps (state) {
     mode: state.get('mode'),
     filters: state.get('filters'),
     layers: state.get('layers'),
-    earthquakes: filteredEarthquakes(state),
+    earthquakes: getVisibleEarthquakes(state),
     volcanoes: getVisibleVolcanoes(state),
     crossSectionPoints: state.get('crossSectionPoints'),
     mapRegion: state.get('mapRegion')
