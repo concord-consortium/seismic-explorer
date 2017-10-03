@@ -8,10 +8,11 @@ export default class EarthquakePopup extends PureComponent {
     return (
       <Popup closeOnClick={false} onClose={onPopupClose} position={earthquakePos}>
         <div>
-          Place: <b>{earthquake.properties.place}</b><br />
-          Magnitude: <b>{earthquake.properties.mag.toFixed(1)}</b><br />
-          Date: <b>{date(earthquake.properties.time)}</b><br />
-          Depth: <b>{earthquake.geometry.coordinates[2]} km</b>
+          <div>Earthquake</div>
+          <div>Place: <b>{earthquake.properties.place}</b></div>
+          <div>Magnitude: <b>{earthquake.properties.mag.toFixed(1)}</b></div>
+          <div>Date: <b>{date(earthquake.properties.time)}</b></div>
+          <div>Depth: <b>{earthquake.geometry.coordinates[2]} km</b></div>
         </div>
       </Popup>
     )

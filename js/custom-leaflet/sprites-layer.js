@@ -2,11 +2,12 @@ import { CanvasLayer } from './canvas-layer'
 import { DomUtil } from 'leaflet'
 import TopView from '../3d/top-view'
 
-export const EarthquakesCanvasLayer = CanvasLayer.extend({
+export const SpritesLayer = CanvasLayer.extend({
   initialize: function (options) {
     CanvasLayer.prototype.initialize.call(this, options)
     this.draw = this.draw.bind(this)
-    this._earthquakeClickHandler = function (event, earthquakeData) {}
+    this.onEarthquakeClick = function (event, earthquakeData) {}
+    this.onVolcanoClick = function (event, volcanoData) {}
   },
 
   initCanvas: function () {
@@ -19,10 +20,6 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
     this._earthquakesToProcess = earthquakes
     this._volcanoesToProcess = volcanoes
     this.scheduleRedraw()
-  },
-
-  onEarthquakeClick: function (handler) {
-    this._earthquakeClickHandler = handler || function (event, earthquakeData) {}
   },
 
   draw: function () {
@@ -42,7 +39,7 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   onMouseMove (event, pos) {
-    if (this.externalView.pointAt(pos.x, pos.y)) {
+    if (this.externalView.spriteAt(pos.x, pos.y)) {
       this._canvas.style.cursor = 'pointer'
     } else {
       this._canvas.style.cursor = 'inherit'
@@ -50,13 +47,15 @@ export const EarthquakesCanvasLayer = CanvasLayer.extend({
   },
 
   onMouseClick (event, pos) {
-    const eqData = this.externalView.pointAt(pos.x, pos.y)
-    if (eqData) {
-      this._earthquakeClickHandler(event, eqData)
+    const sprite = this.externalView.spriteAt(pos.x, pos.y)
+    if (sprite && sprite.type === 'earthquake') {
+      this.onEarthquakeClick(event, sprite.data)
+    } else if (sprite && sprite.type === 'volcano') {
+      this.onVolcanoClick(event, sprite.data)
     }
   }
 })
 
-export function earthquakesCanvasLayer () {
-  return new EarthquakesCanvasLayer()
+export function spritesLayer () {
+  return new SpritesLayer()
 }

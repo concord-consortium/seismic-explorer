@@ -67,7 +67,7 @@ class OverlayControls extends PureComponent {
             <OverlayButton title='Reset map to show world view' onClick={resetView} icon='globe' />}
         </div>
         <div className='controls bottom right inline'>
-          {mode === '2d' &&
+          {mode === '2d' && layers.get('earthquakes') &&
             <OverlayButton title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode} icon='paint-brush'>
               Draw a cross section line and open 3D view
             </OverlayButton>

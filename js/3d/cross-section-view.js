@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Earthquake from './earthquake'
 import Volcano from './volcano'
-import PointsContainer from './points-container'
+import SpritesContainer from './sprites-container'
 import CrossSectionBox from './cross-section-box'
 import Camera from './camera'
 import log from '../logger'
@@ -21,8 +21,8 @@ export default class {
     parentEl.appendChild(renderer.domElement)
     this.props = {}
     this.camera = new Camera(renderer.domElement)
-    this.volcanoes = new PointsContainer(Volcano, 20000)
-    this.earthquakes = new PointsContainer(Earthquake, 200000)
+    this.earthquakes = new SpritesContainer(Earthquake, 200000)
+    this.volcanoes = new SpritesContainer(Volcano, 5000)
     this.crossSectionBox = new CrossSectionBox()
     this.resize()
     this._initScene()
@@ -114,8 +114,8 @@ export default class {
   _initScene () {
     this.scene = new THREE.Scene()
     this.sceneOverlay = new THREE.Scene()
-    this.scene.add(this.volcanoes.root)
     this.scene.add(this.earthquakes.root)
+    this.scene.add(this.volcanoes.root)
     this.scene.add(this.crossSectionBox.root)
     this.sceneOverlay.add(this.crossSectionBox.overlay)
   }

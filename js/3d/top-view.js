@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Earthquake from './earthquake'
 import Volcano from './volcano'
-import PointsContainer from './points-container'
+import SpritesContainer from './sprites-container'
 import Camera from './camera'
 
 // Share one renderer to avoid memory leaks (I couldn't fix them in other way).
@@ -17,8 +17,8 @@ export default class {
     }
     this.props = {}
     this.camera = new Camera(renderer.domElement, false)
-    this.volcanoes = new PointsContainer(Volcano, 20000)
-    this.earthquakes = new PointsContainer(Earthquake, 200000)
+    this.earthquakes = new SpritesContainer(Earthquake, 200000)
+    this.volcanoes = new SpritesContainer(Volcano, 5000)
     this._initScene()
     // [ Shutterbug support ]
     // Since we use 3D context, it's necessary re-render canvas explicitly when snapshot is taken,
@@ -51,8 +51,16 @@ export default class {
     this.props = newProps
   }
 
-  pointAt (x, y) {
-    return this.earthquakes.pointAt(x, this._height - y) || this.volcanoes.pointAt(x, this._height - y)
+  spriteAt (x, y) {
+    const volcano = this.volcanoes.spriteAt(x, this._height - y)
+    if (volcano) {
+      return { type: 'volcano', data: volcano }
+    }
+    const earthquake = this.earthquakes.spriteAt(x, this._height - y)
+    if (earthquake) {
+      return { type: 'earthquake', data: earthquake }
+    }
+    return null
   }
 
   // Renders scene and returns true if some transitions are in progress (e.g. earthquakes visibility transition).
@@ -85,8 +93,8 @@ export default class {
 
   _initScene () {
     this.scene = new THREE.Scene()
-    this.scene.add(this.volcanoes.root)
     this.scene.add(this.earthquakes.root)
+    this.scene.add(this.volcanoes.root)
   }
 
   get canvas () {

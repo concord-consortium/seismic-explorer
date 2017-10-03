@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Map, TileLayer } from 'react-leaflet'
 import { Circle } from 'leaflet'
-import EarthquakesCanvasLayer from './earthquakes-canvas-layer'
+import SpritesLayer from './sprites-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
 import {PlatesLayerSimple, PlatesLayerComplex} from './plates-layer'
@@ -114,14 +114,14 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.setState({selectedEarthquake: null})
   }
 
-  handleVolcanoPopupClose () {
-    this.setState({selectedVolcano: null})
-  }
-
   handleVolcanoClick (event, volcano) {
     if (this._mapBeingDragged) return
     this.setState({selectedVolcano: volcano})
     log('Volcano Clicked', volcano)
+  }
+
+  handleVolcanoPopupClose () {
+    this.setState({selectedVolcano: null})
   }
 
   fitBounds (bounds = INITIAL_BOUNDS) {
@@ -152,8 +152,8 @@ export default class SeismicEruptionsMap extends PureComponent {
           {layers.get('platemovement') && <PlateMovementLayer />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
-            <EarthquakesCanvasLayer earthquakes={earthquakes} volcanoes={volcanoes}
-              earthquakeClick={this.handleEarthquakeClick} volcanoClick={this.handleVolcanoClick} />
+            <SpritesLayer earthquakes={earthquakes} volcanoes={volcanoes}
+              onEarthquakeClick={this.handleEarthquakeClick} onVolcanoClick={this.handleVolcanoClick} />
           }
           {mode === '2d' && selectedEarthquake &&
             <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose} />

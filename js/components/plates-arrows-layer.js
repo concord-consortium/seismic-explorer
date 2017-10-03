@@ -77,19 +77,18 @@ function getArrowIcon (type, velocity) {
 
 function arrowMaker (data) {
   const { idx, lat, lng, angle, info, velocity, type } = data
-  const infoIconAndPopup = new L.Marker([lat, lng], {icon: infoIcon}).bindPopup(
-    `
-    <div>Index: ${idx}</div>
-    <div>Velocity: ${velocity} mm/year</div>
-    <div>Info: ${info}</div>
-    <div>Type: ${type}</div>
-    `
-  )
+  const popupContent = `
+    <div>Plate boundary (${idx})</div>
+    <div>Velocity: <b>${velocity} mm/year</b></div>
+    <div>Info: <b>${info}</b></div>
+    <div>Type: <b>${type}</b></div>
+  `
+  const infoIconAndPopup = new L.Marker([lat, lng], {icon: infoIcon}).bindPopup(popupContent)
   const arrows = new L.Marker([lat, lng], {
     icon: getArrowIcon(type, velocity),
     rotationAngle: angle,
     rotationOrigin: type === 'convergent' ? 'top center' : 'center center'
-  })
+  }).bindPopup(popupContent)
   return new L.LayerGroup([
     arrows, infoIconAndPopup
   ])

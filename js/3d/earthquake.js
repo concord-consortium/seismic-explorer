@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import Point from './point'
+import Sprite from './sprite'
 import { depthToColor, magnitudeToRadius } from '../earthquake-properties'
 
 function magnitudeToDiameter (mag) {
@@ -8,7 +8,7 @@ function magnitudeToDiameter (mag) {
   return window.devicePixelRatio * 2 * magnitudeToRadius(mag)
 }
 
-export default class Earthquake extends Point {
+export default class Earthquake extends Sprite {
   static getTexture () {
     const size = 128
     const strokeWidth = size * 0.06

@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import Point from './point'
+import Sprite from './sprite'
 
 function ageToColor (age) {
   if (age <= 100) return 0xFF6600
@@ -9,7 +9,7 @@ function ageToColor (age) {
   return 0x808080
 }
 
-export default class Volcano extends Point {
+export default class Volcano extends Sprite {
   static getTexture () {
     const size = 128
     const strokeWidth = size * 0.07
