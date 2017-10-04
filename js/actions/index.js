@@ -1,7 +1,7 @@
 import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
 import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 
-export const SET_MAP_REGION = 'SET_MAP_REGION'
+export const SET_MAP_STATUS = 'SET_MAP_STATUS'
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
@@ -58,7 +58,7 @@ function receiveError (error) {
 }
 
 // Each time map region is changed (moved, panned, zoomed in / out), we need to update earthquakes data.
-// - region is an array of points that defines shape, e.g. [[lat, lng], [lat, lng], ...]
+// - region is an object with min/max values of lng and lat
 // - zoom is simple number, the current map zoom
 function updateEarthquakesData (region, zoom) {
   return dispatch => {
@@ -83,10 +83,10 @@ function updateEarthquakesData (region, zoom) {
   }
 }
 
-export function setMapRegion (region, zoom, earthquakesVisible) {
+export function setMapStatus (region, zoom, earthquakesVisible) {
   return dispatch => {
     dispatch({
-      type: SET_MAP_REGION,
+      type: SET_MAP_STATUS,
       region,
       zoom
     })

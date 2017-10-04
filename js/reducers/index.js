@@ -1,6 +1,6 @@
 import { Map, List, Set } from 'immutable'
 import {
-  SET_MAP_REGION,
+  SET_MAP_STATUS,
   REQUEST_DATA,
   RESET_EARTHQUAKES,
   RECEIVE_EARTHQUAKES,
@@ -38,16 +38,19 @@ function downloadStatus (state = INITIAL_DOWNLOAD_STATUS, action) {
   }
 }
 
-const INITIAL_REGION = Map({
-  // Map region doesn't have very descriptive structure. It's an array of four points.
-  // [ SouthWest, NorthWest, NorthEast, SouthEast ]
-  region: [],
+const INITIAL_MAP_STATUS = Map({
+  region: {
+    minLng: 0,
+    maxLng: 0,
+    minLat: 0,
+    maxLat: 0
+  },
   zoom: 0
 })
 
-function mapRegion (state = INITIAL_REGION, action) {
+function mapStatus (state = INITIAL_MAP_STATUS, action) {
   switch (action.type) {
-    case SET_MAP_REGION:
+    case SET_MAP_STATUS:
       return state
         .set('region', action.region)
         .set('zoom', action.zoom)
@@ -169,7 +172,7 @@ function changedViews (state = Set(), action) {
 
 export default function reducer (state = Map(), action) {
   return state
-    .set('mapRegion', mapRegion(state.get('mapRegion'), action))
+    .set('mapStatus', mapStatus(state.get('mapStatus'), action))
     .set('layers', layers(state.get('layers'), action))
     .set('animationEnabled', animationEnabled(state.get('animationEnabled'), action))
     .set('mode', mode(state.get('mode'), action))

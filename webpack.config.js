@@ -36,7 +36,11 @@ module.exports = {
       },
       {
         test: /\.glsl$/,
-        loader: 'raw-loader?THREE=three'
+        loader: 'raw-loader'
+      },
+      {
+        test: /\.kml$/,
+        loader: 'raw-loader'
       },
       {
         // Pass global THREE variable to OrbitControls

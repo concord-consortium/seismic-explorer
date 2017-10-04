@@ -1,5 +1,5 @@
 import { CanvasLayer } from './canvas-layer'
-import { DomUtil, DomEvent } from 'leaflet'
+import { DomUtil } from 'leaflet'
 import PlateMovementView from '../plate-movement/plate-movement-view'
 
 export const PlateMovementCanvasLayer = CanvasLayer.extend({

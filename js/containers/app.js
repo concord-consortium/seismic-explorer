@@ -58,7 +58,7 @@ class App extends PureComponent {
   }
 
   renderApp () {
-    const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapRegion, setMapRegion, updateEarthquakesData,
+    const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
     return (
       <div>
@@ -68,8 +68,8 @@ class App extends PureComponent {
         </div>
         <div className={`map-container mode-${mode}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
-            mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapRegion={mapRegion}
-            setMapRegion={setMapRegion} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
+            mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus}
+            setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData} />
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} volcanoes={volcanoes} crossSectionPoints={crossSectionPoints}
@@ -105,7 +105,7 @@ function mapStateToProps (state) {
     earthquakes: getVisibleEarthquakes(state),
     volcanoes: getVisibleVolcanoes(state),
     crossSectionPoints: state.get('crossSectionPoints'),
-    mapRegion: state.get('mapRegion')
+    mapStatus: state.get('mapStatus')
   }
 }
 

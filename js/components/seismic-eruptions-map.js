@@ -4,7 +4,7 @@ import { Circle } from 'leaflet'
 import SpritesLayer from './sprites-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
-import {PlatesLayerSimple, PlatesLayerComplex} from './plates-layer'
+import PlateBoundariesLayer from './plate-boundaries-layer'
 import { PlatesArrowsLayer } from './plates-arrows-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
@@ -24,8 +24,6 @@ const INITIAL_BOUNDS = [
 // It delays download of earthquakes data on map moveend event, so user can pan or zoom map
 // a few times quickly before the download starts.
 const BOUNDS_UPDATE_DELAY = 600 // ms
-// When zoom level is >= than this value, plate boundaries will be rendered using more detailed data.
-const COMPLEX_BOUNDARIES_MIN_ZOOM_LEVEL = 4
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
@@ -50,8 +48,12 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   get mapRegion () {
     const bounds = this.map.getBounds()
-    return [bounds.getSouthWest(), bounds.getNorthWest(), bounds.getNorthEast(), bounds.getSouthEast()]
-      .map(p => [p.lat, p.lng])
+    return {
+      minLng: bounds.getWest(),
+      maxLng: bounds.getEast(),
+      minLat: bounds.getSouth(),
+      maxLat: bounds.getNorth()
+    }
   }
 
   get mapZoom () {
@@ -71,9 +73,9 @@ export default class SeismicEruptionsMap extends PureComponent {
     // Initially Leaflet always triggers mapmove event, as probably real bounds are a bit different than
     // provided bounds (due to screen size etc.). That is causing mark2DViewModified to be called and reset view icon
     // being shown. This is unwanted, as there has been no user interaction. Mark this view unmodified again.
-    const { mark2DViewModified, setMapRegion } = this.props
+    const { mark2DViewModified, setMapStatus } = this.props
     mark2DViewModified(false)
-    setMapRegion(this.mapRegion, this.mapZoom)
+    setMapStatus(this.mapRegion, this.mapZoom)
 
     this.map.on('click', (e) => {
       // TOOD: remove, it can be useful to tweak position of plate arrows.
@@ -89,8 +91,8 @@ export default class SeismicEruptionsMap extends PureComponent {
 
     clearTimeout(this._boundsUpdateTimeoutID)
     this._boundsUpdateTimeoutID = setTimeout(() => {
-      const { layers, setMapRegion } = this.props
-      setMapRegion(this.mapRegion, this.mapZoom, layers.get('earthquakes'))
+      const { layers, setMapStatus } = this.props
+      setMapStatus(this.mapRegion, this.mapZoom, layers.get('earthquakes'))
 
       const bounds = this.map.getBounds()
       log('MapRegionChanged', {
@@ -140,14 +142,14 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   render () {
-    const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapRegion, setCrossSectionPoint } = this.props
+    const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
           bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
-          {layers.get('plates') && (mapRegion.get('zoom') > COMPLEX_BOUNDARIES_MIN_ZOOM_LEVEL ? <PlatesLayerComplex /> : <PlatesLayerSimple />)}
+          {layers.get('plates') && <PlateBoundariesLayer mapRegion={mapStatus.get('region')} mapZoom={mapStatus.get('zoom')} />}
           {layers.get('platearrows') && <PlatesArrowsLayer />}
           {layers.get('platemovement') && <PlateMovementLayer />}
           {mode !== '3d' &&

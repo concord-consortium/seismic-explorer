@@ -155,8 +155,8 @@ class LayerControls extends PureComponent {
 
 function mapStateToProps (state) {
   return {
-    mapRegion: state.get('mapRegion').get('region'),
-    mapZoom: state.get('mapRegion').get('zoom'),
+    mapRegion: state.get('mapStatus').get('region'),
+    mapZoom: state.get('mapStatus').get('zoom'),
     filters: state.get('filters'),
     layers: state.get('layers'),
     mode: state.get('mode')

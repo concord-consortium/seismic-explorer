@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import crossSectionRectangle from '../core/cross-section-rectangle'
 import pointInsidePolygon from '../core/point-inside-polygon'
+import mapAreaMultipliers from '../core/map-area-multipliers'
 import volcanoesData from '../data/volcanoes'
 
 function getCrossSectionFilter (crossSectionPoints) {
@@ -12,23 +13,6 @@ function getCrossSectionFilter (crossSectionPoints) {
   return pointInsidePolygon.bind(null, crossSectionRectangle(p1, p2))
 }
 
-// Basic map area and data coordinates are assumed to be between -180 and 180 lng.
-// This function will return an array of multipliers that can be used to calculate shifted coordinates.
-// E.g.:
-// -180, 180 => [ 0 ]
-// -200, 180 => [ -1, 0 ]
-// -100, 250 => [ 0, 1 ]
-// 600, 1000 => [ 2, 3 ]
-function getMapAreaMultipliers (minLng, maxLng) {
-  minLng += 180
-  maxLng += 180
-  const result = []
-  for (let i = Math.floor(minLng / 360); i < Math.ceil(maxLng / 360); i += 1) {
-    result.push(i)
-  }
-  return result
-}
-
 // Inputs
 
 const earthquakesEnabled = state => state.get('layers').get('earthquakes')
@@ -37,7 +21,7 @@ const earthquakesData = state => state.get('data').get('earthquakes')
 const filters = state => state.get('filters')
 // It will limit recalculation when user is just drawing cross section points in 2d mode.
 const crossSectionPoints = state => state.get('filters').get('crossSection') && state.get('crossSectionPoints')
-const mapRegion = state => state.get('mapRegion').get('region')
+const mapRegion = state => state.get('mapStatus').get('region')
 
 // Earthquakes
 
@@ -79,20 +63,15 @@ export const getVisibleVolcanoes = createSelector(
       return []
     }
     const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
-
-    // Map region doesn't have very descriptive structure. It's an array of four points.
-    const minLng = mapRegion[0][1] // south west lng
-    const maxLng = mapRegion[3][1] // south east lng
-    const mapAreaMultipliers = getMapAreaMultipliers(minLng, maxLng)
-
+    const mapMultipliers = mapAreaMultipliers(mapRegion.minLng, mapRegion.maxLng)
     const result = []
     // Two important notes:
     // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
     // - Yes, I don't copy and do mutate elements. It's been done due to performance reasons.
-    mapAreaMultipliers.forEach(multiplier => {
+    mapMultipliers.forEach(multiplier => {
       volcanoesData.forEach(v => {
         const shiftedLng = v.geometry.coordinates[1] + multiplier * 360
-        if (shiftedLng < minLng || shiftedLng > maxLng) return
+        if (shiftedLng < mapRegion.minLng || shiftedLng > mapRegion.maxLng) return
         const lat = v.geometry.coordinates[0]
         const depth = v.geometry.coordinates[2]
         const volcCopy = Object.assign({}, v)
