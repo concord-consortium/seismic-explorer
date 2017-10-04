@@ -91,8 +91,8 @@ const data = [
   },
   {
     idx: 12,
-    lat: -33,
-    lng: -117,
+    lat: -33.26165676732799,
+    lng: -112.44506835937501,
     info: 'PAC-AUS',
     velocity: 85,
     angle: 306,

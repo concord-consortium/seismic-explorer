@@ -150,7 +150,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
           {this.renderBaseLayer()}
           {layers.get('plates') && <PlateBoundariesLayer mapRegion={mapStatus.get('region')} mapZoom={mapStatus.get('zoom')} />}
-          {layers.get('platearrows') && <PlatesArrowsLayer />}
+          {layers.get('platearrows') && <PlatesArrowsLayer mapRegion={mapStatus.get('region')} />}
           {layers.get('platemovement') && <PlateMovementLayer />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
