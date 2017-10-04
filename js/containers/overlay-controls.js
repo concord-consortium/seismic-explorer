@@ -89,8 +89,8 @@ class OverlayControls extends PureComponent {
           }
         </div>
         <div className='controls top right'>
-          <MapKey showBoundariesInfo={layers.get('plates') && mode !== '3d'}
-            earthquakesCount={earthquakesCount} earthquakes={layers.get('earthquakes')} magnitudeCutOff={magnitudeCutOff} volcanoes={layers.get('volcanoes')} />
+          <MapKey boundaries={layers.get('plates') && mode !== '3d'} plateArrows={layers.get('platearrows') && mode !== '3d'}
+            earthquakes={layers.get('earthquakes')} volcanoes={layers.get('volcanoes')} />
         </div>
       </div>
     )

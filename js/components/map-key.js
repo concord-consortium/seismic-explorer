@@ -2,6 +2,9 @@ import React, { PureComponent } from 'react'
 import { magnitudeToRadius, depthToColor } from '../earthquake-properties'
 import OverlayButton from './overlay-button'
 import log from '../logger'
+import keyArrowShort from '../../images/key-arrow-short.png'
+import keyArrowMedium from '../../images/key-arrow-medium.png'
+import keyArrowLong from '../../images/key-arrow-long.png'
 
 import '../../css/map-key.less'
 import '../../css/modal-style.less'
@@ -26,9 +29,9 @@ export default class MapKey extends PureComponent {
   }
 
   render () {
-    const { showBoundariesInfo, volcanoes, earthquakes } = this.props
+    const { boundaries, plateArrows, volcanoes, earthquakes } = this.props
     const { opened } = this.state
-    if (!showBoundariesInfo && !volcanoes && !earthquakes) {
+    if (!plateArrows && !boundaries && !volcanoes && !earthquakes) {
       return null
     }
     return !opened
@@ -48,13 +51,24 @@ export default class MapKey extends PureComponent {
           </tbody>
         </table>
         }
-        { showBoundariesInfo &&
+        { boundaries &&
           <table className='boundaries'>
             <tbody>
               <tr><th colSpan='2'>Plate boundaries</th></tr>
               <tr><td>{boundaryColor('#ffff00')}</td><td>Convergent boundary</td></tr>
               <tr><td>{boundaryColor('#ff00ff')}</td><td>Transform boundary</td></tr>
               <tr><td>{boundaryColor('#00bfa6')}</td><td>Divergent boundary</td></tr>
+            </tbody>
+          </table>
+        }
+        {
+          plateArrows &&
+          <table className='plateArrows'>
+            <tbody>
+              <tr><th colSpan='2'>Plate movement arrows</th></tr>
+              <tr><td><img src={keyArrowShort} width='28px' /></td><td>Velocity 0-30 mm/year</td></tr>
+              <tr><td><img src={keyArrowMedium} width='42px' /></td><td>Velocity 30-60 mm/year</td></tr>
+              <tr><td><img src={keyArrowLong} width='58px' /></td><td>Velocity > 60 mm/year</td></tr>
             </tbody>
           </table>
         }
