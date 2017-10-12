@@ -20,7 +20,8 @@ function wrapTile (tile) {
 }
 
 function textureDimensions (rectangle, zoom) {
-  const tiles = tilesListByRow(rectangle, zoom)
+  const bounds = getBounds(rectangle)
+  const tiles = tilesListByRow(bounds, zoom)
   return { width: tiles[0].length * TILE_SIZE, height: tiles.length * TILE_SIZE }
 }
 
@@ -70,13 +71,24 @@ function tilesToTexture (tiles, layerType) {
   return texture
 }
 
+function getBounds (rectangle) {
+  return {
+    maxLat: Math.max(...rectangle.map(p => p[0])),
+    minLat: Math.min(...rectangle.map(p => p[0])),
+    minLng: Math.min(...rectangle.map(p => p[1])),
+    maxLng: Math.max(...rectangle.map(p => p[1]))
+  }
+}
+
 function tileTexture (rectangle, zoom, layerType) {
-  const tiles = tilesListByRow(rectangle, zoom)
+  const bounds = getBounds(rectangle)
+  const tiles = tilesListByRow(bounds, zoom)
   return tilesToTexture(tiles, layerType)
 }
 
 function textureUVs (rectangle, zoom) {
-  const tileBBox = tileBoundingBox(rectangle, zoom)
+  const bounds = getBounds(rectangle)
+  const tileBBox = tileBoundingBox(bounds, zoom)
   const width = tileBBox.right - tileBBox.left + 1
   const height = tileBBox.bottom - tileBBox.top + 1
   return rectangle.map(point => {
