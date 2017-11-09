@@ -1,8 +1,4 @@
 import Shutterbug from 'shutterbug'
-import L from 'leaflet'
-import $ from 'jquery'
-
-const TRANSFORM = L.DomUtil.TRANSFORM
 
 export function enableShutterbug (appClassName) {
   Shutterbug.enable('.' + appClassName)
@@ -21,39 +17,4 @@ function beforeSnapshotHandler () {
   Array.from(document.querySelectorAll('.canvas-3d')).forEach(canvas => {
     if (canvas.render) canvas.render()
   })
-
-  // TODO: remove it when LARA uses Shutterbug 1.x
-  shutterbug0xSupport()
-}
-
-// TODO: remove it when LARA uses Shutterbug 1.x
-function shutterbug0xSupport () {
-  // Note that PhantomJS doesn't support 3D transforms that are extensively used by Leaflet maps.
-  // This function replaces `transform: translate3d(10px, 20px, ...)` with `left: 10px; top: 20px`
-  // for element which require that (map pane, markers). It also setups a handler that restores
-  // the original styles after snapshot has been taken.
-  const oldStyles = new Map()
-  Array.from(document.querySelectorAll('.leaflet-container *')).forEach(elem => {
-    if (!!elem.style[TRANSFORM]) {
-      oldStyles.set(elem, {
-        transform: elem.style[TRANSFORM],
-        left: elem.style.left,
-        top: elem.style.top
-      })
-      const position = $(elem).position()
-      elem.style[TRANSFORM] = ''
-      elem.style.left = position.left + 'px'
-      elem.style.top = position.top + 'px'
-    }
-  })
-  // Setup cleanup function executed after snapshot has been taken.
-  Shutterbug.on('asyouwere', afterSnapshotHandler)
-  function afterSnapshotHandler () {
-    oldStyles.forEach((oldStyle, elem) => {
-      elem.style[TRANSFORM] = oldStyle.transform
-      elem.style.left = oldStyle.left
-      elem.style.top = oldStyle.top
-    })
-    Shutterbug.off('asyouwere', afterSnapshotHandler)
-  }
 }
