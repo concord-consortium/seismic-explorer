@@ -14,8 +14,8 @@ export default class CrossSectionDrawLayer extends PureComponent {
     super(props)
     this.drawStart = this.drawStart.bind(this)
     this.drawEnd = this.drawEnd.bind(this)
-    this.setPoint1 = this.setPoint1.bind(this)
-    this.setPoint2 = this.setPoint2.bind(this)
+    this.setPoint1 = this.setPoint.bind(this, 0)
+    this.setPoint2 = this.setPoint.bind(this, 1)
   }
 
   componentDidMount () {
@@ -33,7 +33,7 @@ export default class CrossSectionDrawLayer extends PureComponent {
   drawStart (event) {
     const { map } = this.context
     this.setPoint1(event)
-    this.setPoint2(event)
+    this.setPoint2(null)
     map.on(MOUSE_MOVE, this.setPoint2)
     map.on(MOVE_UP, this.drawEnd)
   }
@@ -44,18 +44,15 @@ export default class CrossSectionDrawLayer extends PureComponent {
     map.off(MOVE_UP, this.drawEnd)
   }
 
-  setPoint1 (event) {
+  setPoint (index, event) {
     const { setCrossSectionPoint } = this.props
-    // Event might be either Leaflet mouse event or Leaflet drag event.
-    const latLng = event.latlng ? event.latlng : event.target.getLatLng()
-    setCrossSectionPoint(0, pointToArray(latLng))
-  }
-
-  setPoint2 (event) {
-    const { setCrossSectionPoint } = this.props
-    // Event might be either Leaflet mouse event or Leaflet drag event.
-    const latLng = event.latlng ? event.latlng : event.target.getLatLng()
-    setCrossSectionPoint(1, pointToArray(latLng))
+    let point = null
+    if (event) {
+      // Event might be either Leaflet mouse event or Leaflet drag event.
+      const latLng = event.latlng ? event.latlng : event.target.getLatLng()
+      point = pointToArray(latLng)
+    }
+    setCrossSectionPoint(index, point)
   }
 
   render () {
