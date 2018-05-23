@@ -1,4 +1,4 @@
-import L from 'leaflet'
+import L, { latLng } from 'leaflet'
 
 const CROSS_SECTION_RECTANGLE_ASPECT_RATIO = 0.4
 
@@ -26,6 +26,23 @@ export function pointToArray (point) {
   return point
 }
 
+// Limits distance between point1 and point2 to maxDistance by moving point2 if necessary. Returns modified point2.
+export function limitDistance (point1, point2, maxDistance) {
+  const p1Proj = project(point1)
+  const p2Proj = project(point2)
+  const dist = distanceBetween(p1Proj,p2Proj) / 1000
+  if (dist <= maxDistance) {
+    return point2
+  }
+  const ratio = maxDistance / dist
+  return unproject(pointBetween(p1Proj, p2Proj, ratio))
+}
+
+// Distance between points on a plane (projected points).
+function distanceBetween (point1, point2) {
+  return Math.sqrt(Math.pow(point1[0] - point2[0], 2) + Math.pow(point1[1] - point2[1], 2))
+}
+
 // Left point in 3D view. point1 and point2 are projected.
 function leftPoint (point1, point2) {
   return point1[0] < point2[0] ? point1 : point2
@@ -44,7 +61,7 @@ function unproject (pointArray) {
   return pointToArray(L.Projection.SphericalMercator.unproject(L.point(pointArray)))
 }
 
-function pointBetween (point1, point2, ratio = 0.5) {
+export function pointBetween (point1, point2, ratio = 0.5) {
   if (!point1 || !point2) return null
   const xDiff = point1[0] - point2[0]
   const yDiff = point1[1] - point2[1]

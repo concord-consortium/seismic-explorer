@@ -3,7 +3,8 @@ import { Map } from 'leaflet'
 import PropTypes from 'prop-types'
 import { LayerGroup, Marker, Polyline, Polygon } from 'react-leaflet'
 import { circleIcon } from '../custom-leaflet/icons'
-import crossSectionRectangle, { pointToArray } from '../core/cross-section-rectangle'
+import crossSectionRectangle, { pointToArray, limitDistance } from '../core/cross-section-rectangle'
+import config from '../config'
 
 const MOUSE_DOWN = 'mousedown touchstart'
 const MOUSE_MOVE = 'mousemove touchmove'
@@ -51,6 +52,12 @@ export default class CrossSectionDrawLayer extends PureComponent {
       // Event might be either Leaflet mouse event or Leaflet drag event.
       const latLng = event.latlng ? event.latlng : event.target.getLatLng()
       point = pointToArray(latLng)
+    }
+    if (index === 0 && point !== null) {
+      this._tempPoint1 = point
+    }
+    if (index === 1 && point !== null && this._tempPoint1 !== null) {
+      point = limitDistance(this._tempPoint1, point, config.maxCrossSectionLength)
     }
     setCrossSectionPoint(index, point)
   }

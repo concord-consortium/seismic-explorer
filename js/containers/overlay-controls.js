@@ -57,7 +57,7 @@ class OverlayControls extends PureComponent {
   }
 
   render () {
-    const { mode, layers, changedViews, resetView, earthquakesCount, magnitudeCutOff } = this.props
+    const { mode, layers, changedViews, resetView } = this.props
     const canOpen3D = this.canOpen3D()
     const viewChanged = (mode !== '3d' && changedViews.has('2d')) || (mode === '3d' && changedViews.has('3d'))
     return (

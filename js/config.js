@@ -36,6 +36,8 @@ const DEFAULT_CONFIG = {
   logging: true,
   // Data layers.
   crossSection: true,
+  // In KM, but very very approximate, it doesn't respect map projection.
+  maxCrossSectionLength: 4000,
   exclusiveDataLayers: false,
   plateBoundariesAvailable: true,
   plateBoundariesVisible: false,
