@@ -35,6 +35,7 @@ const DEFAULT_CONFIG = {
   // Enables / disables logging of user actions to parent frame (e.g. LARA).
   logging: true,
   // Data layers.
+  crossSection: true,
   exclusiveDataLayers: false,
   plateBoundariesAvailable: true,
   plateBoundariesVisible: false,
