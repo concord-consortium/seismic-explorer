@@ -15,24 +15,18 @@ export const layerInfo = [
   {
     type: 'relief',
     name: 'Relief',
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Source: Esri',
-    maxZoom: 13,
-    subdomains: []
-  },
-  {
-    type: 'ocean-basemap',
-    name: 'Ocean basemap',
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
-    maxZoom: 13,
+    url: 'https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/ETOPO1_Global_Relief_Model_Color_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'NOAA National Centers for Environmental Information (NCEI), https://noaa.maps.arcgis.com/home/item.html?id=c7cdc62ec1d44297becf264bf67449f9',
+    maxZoom: 7,
     subdomains: []
   }
 ]
-export function mapLayer(layerType) {
-  return layerInfo.filter(m => m.type == layerType)[0]
+
+export function mapLayer (layerType) {
+  return layerInfo.find(m => m.type === layerType)
 }
-export function tileUrl(layerType, zoom, x, y) {
+
+export function tileUrl (layerType, zoom, x, y) {
   const layer = mapLayer(layerType)
   const url = layer.url
   const subdomains = layer.subdomains
