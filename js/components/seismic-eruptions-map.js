@@ -25,6 +25,8 @@ const INITIAL_BOUNDS = [
 // a few times quickly before the download starts.
 const BOUNDS_UPDATE_DELAY = 600 // ms
 
+const DEFAULT_MAX_ZOOM = 13
+
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
 
@@ -60,6 +62,11 @@ export default class SeismicEruptionsMap extends PureComponent {
     return this.map.getZoom()
   }
 
+  get baseLayer () {
+    const { layers } = this.props
+    return mapLayer(layers.get('base'))
+  }
+
   latLngToPoint (latLng) {
     return this.map.latLngToContainerPoint(latLng)
   }
@@ -81,6 +88,12 @@ export default class SeismicEruptionsMap extends PureComponent {
       // TOOD: remove, it can be useful to tweak position of plate arrows.
       console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
     })
+  }
+
+  componentDidUpdate () {
+    // This maxZoom option is not handled by react-leaftlet as a dynamic react property (it doesn't update after
+    // Map component is created), so we need to use raw Leaflet API to dynamically change it.
+    this.refs.map.leafletElement.setMaxZoom(this.baseLayer.maxZoom || DEFAULT_MAX_ZOOM)
   }
 
   handleMapViewportChanged () {
@@ -133,22 +146,17 @@ export default class SeismicEruptionsMap extends PureComponent {
     log('ResetMapClicked')
   }
 
-  renderBaseLayer () {
-    // #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same
-    // component instance when we switch between maps with subdomains and without.
-    const { layers } = this.props
-    const layer = mapLayer(layers.get('base'))
-    return <TileLayer key={layers.get('base')} url={layer.url} subdomains={layer.subdomains} attribution={layer.attribution} />
-  }
-
   render () {
     const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
+    const baseLayer = this.baseLayer
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
-          bounds={INITIAL_BOUNDS} minZoom={2} maxZoom={13}>
-          {this.renderBaseLayer()}
+          bounds={INITIAL_BOUNDS} minZoom={2}>
+          {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
+          {/* component instance when we switch between maps with subdomains and without. */}
+          <TileLayer key={baseLayer.type} url={baseLayer.url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
           {layers.get('plates') && <PlateBoundariesLayer mapRegion={mapStatus.get('region')} mapZoom={mapStatus.get('zoom')} />}
           {layers.get('platearrows') && <PlatesArrowsLayer mapRegion={mapStatus.get('region')} />}
           {layers.get('platemovement') && <PlateMovementLayer />}
