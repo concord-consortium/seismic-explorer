@@ -1,9 +1,8 @@
-import { MapLayer } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet-rotatedmarker'
 import 'leaflet-plugins/layer/Marker.Rotate.js'
+import WrappingMapLayer from './wrapping-map-layer'
 import plateMovementData from '../data/plate-arrows'
-import mapAreaMultipliers from '../core/map-area-multipliers'
 
 import infoIconPng from '../../images/plates-info.png'
 import divArrowsShortPng from '../../images/div-arrows-short.png'
@@ -76,11 +75,13 @@ function getArrowIcon (type, velocity) {
   return arrows[type + size]
 }
 
-const _cachedArrows = {}
-function arrowMaker (data) {
-  const { idx, lat, lng, angle, info, velocity, type } = data
-  const key = `${lat}:${lng}`
-  if (!_cachedArrows[key]) {
+export default class PlateArrowsLayer extends WrappingMapLayer {
+  getData () {
+    return plateMovementData
+  }
+
+  getElement (data) {
+    const { idx, lat, lng, angle, info, velocity, type } = data
     const infoIconAndPopup = new L.Marker([lat, lng], {icon: infoIcon})
     const arrows = new L.Marker([lat, lng], {
       icon: getArrowIcon(type, velocity),
@@ -90,48 +91,13 @@ function arrowMaker (data) {
     const group = new L.FeatureGroup([
       arrows, infoIconAndPopup
     ]).bindPopup(`
-    <div>Plate boundary (${idx})</div>
-    <div>Velocity: <b>${velocity} mm/year</b></div>
-    <div>Info: <b>${info}</b></div>
-    <div>Type: <b>${type}</b></div>
-  `)
-    group.coords = {lat, lng}
-    _cachedArrows[key] = group
-  }
-  return _cachedArrows[key]
-}
-
-export default class PlateArrowsLayer extends MapLayer {
-  createLeafletElement (props) {
-    this.group = new L.FeatureGroup()
-    this.visibleArrows = {}
-    this.updateLeafletElement(null, props)
-    return this.group
-  }
-
-  updateLeafletElement (fromProps, toProps) {
-    const { mapRegion } = toProps
-    const areas = mapAreaMultipliers(mapRegion.minLng, mapRegion.maxLng)
-    areas.forEach(multiplier => {
-      plateMovementData.map(data => {
-        const dataCopy = Object.assign({}, data)
-        dataCopy.lng += multiplier * 360
-        const lng = dataCopy.lng
-        const key = `${dataCopy.lat}:${lng}`
-        if (lng >= mapRegion.minLng && lng <= mapRegion.maxLng && !this.visibleArrows[key]) {
-          const arrow = arrowMaker(dataCopy)
-          this.group.addLayer(arrow)
-          this.visibleArrows[key] = arrow
-        }
-      })
-    })
-    Object.keys(this.visibleArrows).forEach(key => {
-      const arrow = this.visibleArrows[key]
-      const { lat, lng } = arrow.coords
-      if (lat > mapRegion.maxLat || lat < mapRegion.minLat || lng > mapRegion.maxLng || lng < mapRegion.minLng) {
-        this.group.removeLayer(arrow)
-        delete this.visibleArrows[key]
-      }
-    })
+      <div>Plate boundary (${idx})</div>
+      <div>Velocity: <b>${velocity} mm/year</b></div>
+      <div>Info: <b>${info}</b></div>
+      <div>Type: <b>${type}</b></div>
+    `)
+    group.lat = lat
+    group.lng = lng
+    return group
   }
 }
