@@ -8,7 +8,8 @@ import {
   RECEIVE_ERROR,
   SET_FILTER,
   SET_BASE_LAYER,
-  SET_PLATES_VISIBLE,
+  SET_PLATE_BOUNDARIES_VISIBLE,
+  SET_PLATE_NAMES_VISIBLE,
   SET_ANIMATION_ENABLED,
   SET_MODE,
   SET_CROSS_SECTION_POINT,
@@ -105,27 +106,30 @@ function filters (state = INITIAL_FILTERS, action) {
 
 const INITIAL_LAYERS = Map({
   base: config.mapStyle,
-  plates: config.plateBoundariesVisible,
+  plateBoundaries: config.plateBoundariesVisible,
+  plateNames: config.plateNamesVisible,
   earthquakes: config.earthquakesVisible,
   volcanoes: config.volcanoesVisible,
-  platemovement: config.detailedPlateMovementVisible,
-  platearrows: config.plateMovementVisible
+  plateMovement: config.detailedPlateMovementVisible,
+  plateArrows: config.plateMovementVisible
 })
 
 function layers (state = INITIAL_LAYERS, action) {
   switch (action.type) {
     case SET_BASE_LAYER:
       return state.set('base', action.value)
-    case SET_PLATES_VISIBLE:
-      return state.set('plates', action.value)
+    case SET_PLATE_BOUNDARIES_VISIBLE:
+      return state.set('plateBoundaries', action.value)
+    case SET_PLATE_NAMES_VISIBLE:
+      return state.set('plateNames', action.value)
     case SET_EARTHQUAKES_VISIBLE:
       return state.set('earthquakes', action.value)
     case SET_VOLCANOES_VISIBLE:
       return state.set('volcanoes', action.value)
     case SET_PLATE_MOVEMENT_VISIBLE:
-      return state.set('platemovement', action.value)
+      return state.set('plateMovement', action.value)
     case SET_PLATE_ARROWS_VISIBLE:
-      return state.set('platearrows', action.value)
+      return state.set('plateArrows', action.value)
     default:
       return state
   }

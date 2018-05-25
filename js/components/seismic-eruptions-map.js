@@ -5,7 +5,8 @@ import SpritesLayer from './sprites-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
 import PlateBoundariesLayer from './plate-boundaries-layer'
-import { PlatesArrowsLayer } from './plates-arrows-layer'
+import PlateArrowsLayer from './plate-arrows-layer'
+import PlateNamesLayer from './plate-names-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
@@ -157,9 +158,10 @@ export default class SeismicEruptionsMap extends PureComponent {
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
           <TileLayer key={baseLayer.type} url={baseLayer.url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
-          {layers.get('plates') && <PlateBoundariesLayer mapRegion={mapStatus.get('region')} mapZoom={mapStatus.get('zoom')} />}
-          {layers.get('platearrows') && <PlatesArrowsLayer mapRegion={mapStatus.get('region')} />}
-          {layers.get('platemovement') && <PlateMovementLayer />}
+          {layers.get('plateBoundaries') && <PlateBoundariesLayer mapRegion={mapStatus.get('region')} mapZoom={mapStatus.get('zoom')} />}
+          {layers.get('plateNames') && <PlateNamesLayer mapRegion={mapStatus.get('region')} />}
+          {layers.get('plateArrows') && <PlateArrowsLayer mapRegion={mapStatus.get('region')} />}
+          {layers.get('plateMovement') && <PlateMovementLayer />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <SpritesLayer earthquakes={earthquakes} volcanoes={volcanoes}

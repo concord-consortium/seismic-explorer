@@ -9,7 +9,8 @@ export const RECEIVE_EARTHQUAKES = 'RECEIVE_EARTHQUAKES'
 export const RECEIVE_ERROR = 'RECEIVE_ERROR'
 export const SET_FILTER = 'SET_FILTER'
 export const SET_BASE_LAYER = 'SET_BASE_LAYER'
-export const SET_PLATES_VISIBLE = 'SET_PLATES_VISIBLE'
+export const SET_PLATE_BOUNDARIES_VISIBLE = 'SET_PLATE_BOUNDARIES_VISIBLE'
+export const SET_PLATE_NAMES_VISIBLE = 'SET_PLATE_NAMES_VISIBLE'
 export const SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED'
 export const SET_MODE = 'SET_MODE'
 export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
@@ -123,9 +124,16 @@ export function setBaseLayer (value) {
   }
 }
 
-export function setPlatesVisible (value) {
+export function setPlateBoundariesVisible (value) {
   return {
-    type: SET_PLATES_VISIBLE,
+    type: SET_PLATE_BOUNDARIES_VISIBLE,
+    value
+  }
+}
+
+export function setPlateNamesVisible (value) {
+  return {
+    type: SET_PLATE_NAMES_VISIBLE,
     value
   }
 }

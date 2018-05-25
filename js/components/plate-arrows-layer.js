@@ -101,7 +101,7 @@ function arrowMaker (data) {
   return _cachedArrows[key]
 }
 
-export class PlatesArrowsLayer extends MapLayer {
+export default class PlateArrowsLayer extends MapLayer {
   createLeafletElement (props) {
     this.group = new L.FeatureGroup()
     this.visibleArrows = {}

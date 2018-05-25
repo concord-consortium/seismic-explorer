@@ -41,6 +41,8 @@ const DEFAULT_CONFIG = {
   exclusiveDataLayers: false,
   plateBoundariesAvailable: true,
   plateBoundariesVisible: false,
+  plateNamesAvailable: true,
+  plateNamesVisible: false,
   earthquakesAvailable: true,
   earthquakesVisible: true,
   volcanoesAvailable: true,
