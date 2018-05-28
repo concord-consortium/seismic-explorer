@@ -7,6 +7,7 @@ import VolcanoPopup from './volcano-popup'
 import PlateBoundariesLayer from './plate-boundaries-layer'
 import PlateArrowsLayer from './plate-arrows-layer'
 import PlateNamesLayer from './plate-names-layer'
+import PinsLayer from './pins-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
@@ -162,6 +163,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           {layers.get('plateNames') && <PlateNamesLayer mapRegion={mapStatus.get('region')} />}
           {layers.get('plateArrows') && <PlateArrowsLayer mapRegion={mapStatus.get('region')} />}
           {layers.get('plateMovement') && <PlateMovementLayer />}
+          {config.pins && config.pins.length > 0 && <PinsLayer mapRegion={mapStatus.get('region')} />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <SpritesLayer earthquakes={earthquakes} volcanoes={volcanoes}

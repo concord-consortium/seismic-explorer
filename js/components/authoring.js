@@ -8,7 +8,7 @@ function camelCaseToWords (name) {
 }
 
 const HIDDEN_OPTIONS = [ 'authoring' ]
-const SEPARATOR_AFTER = [ 'logging', 'endTime' ]
+const SEPARATOR_AFTER = [ 'pins', 'logging', 'endTime' ]
 
 const OPTIONS_WITH_SEPARATORS = (function () {
   const result = []
@@ -59,7 +59,7 @@ export default class Authoring extends PureComponent {
       this.setState({[name]: !this.state[name]})
     }
     return (
-      <label key={name}><input type='checkbox' checked={this.state[name]} onChange={toggleOption} /> { camelCaseToWords(name) }</label>
+      <div key={name}><label><input type='checkbox' checked={this.state[name]} onChange={toggleOption} /> { camelCaseToWords(name) }</label></div>
     )
   }
 
@@ -68,7 +68,41 @@ export default class Authoring extends PureComponent {
       this.setState({[name]: event.target.value})
     }
     return (
-      <label key={name}>{ camelCaseToWords(name) } <input type='text' value={this.state[name]} onChange={setOption} /></label>
+      <div key={name}><label>{ camelCaseToWords(name) } <input type='text' value={this.state[name]} onChange={setOption} /></label></div>
+    )
+  }
+
+  renderPinsAuthoring () {
+    const addPin = () => {
+      const { pins } = this.state
+      this.setState({pins: pins.concat([[0, 0, 'label']])})
+    }
+    const removePin = idx => {
+      const { pins } = this.state
+      const newPins = pins.concat()
+      newPins.splice(idx, 1)
+      this.setState({pins: newPins})
+    }
+    const setProp = (idx, prop, event) => {
+      const { pins } = this.state
+      const newPins = pins.concat()
+      newPins[idx][prop] = event.target.value
+      this.setState({pins: newPins})
+    }
+    const { pins } = this.state
+    return (
+      <div key='pins' className='pins'>
+        map pins
+        { pins.map((pin, idx) =>
+          <div key={idx}>
+            <label>lat <input type='text' className='coords' value={pins[idx][0]} onChange={setProp.bind(null, idx, 0)} /></label>
+            <label>lng <input type='text' className='coords' value={pins[idx][1]} onChange={setProp.bind(null, idx, 1)} /></label>
+            <label>label <input type='text' value={pins[idx][2]} onChange={setProp.bind(null, idx, 2)} /></label>
+            <span className='remove' onClick={removePin.bind(idx)}><i className='fa fa-minus-circle' /></span>
+          </div>
+        )}
+        <div><span className='add' onClick={addPin}><i className='fa fa-plus-circle' /></span></div>
+      </div>
     )
   }
 
@@ -77,6 +111,9 @@ export default class Authoring extends PureComponent {
       const value = this.state[name]
       if (name === '___separator___') {
         return <hr key={'sep' + idx} />
+      }
+      if (name === 'pins') {
+        return this.renderPinsAuthoring()
       }
       if (typeof value === 'boolean') {
         return this.renderCheckbox(name)
@@ -96,6 +133,11 @@ export default class Authoring extends PureComponent {
       let configValue = config[name]
       if (name === 'startTime' || name === 'endTime') {
         configValue = (new Date(configValue)).toISOString()
+      }
+      if (name === 'pins') {
+        configValue = JSON.stringify(configValue)
+        // Make sure that coordinates have numeric format.
+        value = JSON.stringify(value.map(a => [parseFloat(a[0]), parseFloat(a[1]), a[2]]))
       }
       if (value !== configValue) {
         if (value === true) {

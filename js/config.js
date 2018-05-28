@@ -3,6 +3,9 @@
 const DEFAULT_CONFIG = {
   // Enables authoring mode
   authoring: false,
+  // Authorable pins. A single pin is defined by array: [<lat>, <lng>, <label>]. E.g.:
+  // pins=[[0, 0, "test pin"], [20, 50, "another pin"]]
+  pins: [],
   // Initial map region.
   minLat: -60,
   minLng: -120,
@@ -65,12 +68,20 @@ function getURLParam (name) {
 
 const urlConfig = {}
 
+function isArray (value) {
+  return typeof value === 'string' && value.match(/^\[.*\]$/)
+}
+
 Object.keys(DEFAULT_CONFIG).forEach(key => {
   const urlValue = getURLParam(key)
   if (urlValue === true || urlValue === 'true') {
     urlConfig[key] = true
   } else if (urlValue === 'false') {
     urlConfig[key] = false
+  } else if (isArray(urlValue)) {
+    // Array can be provided in URL using following format:
+    // &parameter=[value1,value2,value3]
+    urlConfig[key] = JSON.parse(urlValue)
   } else if (urlValue !== null && !isNaN(urlValue)) {
     // !isNaN(string) means isNumber(string).
     urlConfig[key] = parseFloat(urlValue)

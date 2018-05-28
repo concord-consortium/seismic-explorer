@@ -1,4 +1,4 @@
-import L, { latLng } from 'leaflet'
+import L from 'leaflet'
 
 const CROSS_SECTION_RECTANGLE_ASPECT_RATIO = 0.4
 
@@ -30,7 +30,7 @@ export function pointToArray (point) {
 export function limitDistance (point1, point2, maxDistance) {
   const p1Proj = project(point1)
   const p2Proj = project(point2)
-  const dist = distanceBetween(p1Proj,p2Proj) / 1000
+  const dist = distanceBetween(p1Proj, p2Proj) / 1000
   if (dist <= maxDistance) {
     return point2
   }
