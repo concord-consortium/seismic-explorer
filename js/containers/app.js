@@ -7,6 +7,7 @@ import BottomControls from './bottom-controls'
 import SeismicEruptionsMap from '../components/seismic-eruptions-map'
 import CrossSection3D from '../components/cross-section-3d'
 import LoadingIcon from '../components/loading-icon'
+import SplashScreen from '../components/splash-screen'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
 import { getVisibleEarthquakes, getVisibleVolcanoes } from '../selectors'
 
@@ -89,6 +90,7 @@ class App extends PureComponent {
     const { error } = this.props
     return (
       <div className={APP_CLASS_NAME}>
+        <SplashScreen />
         {error ? this.renderError() : this.renderApp()}
       </div>
     )
