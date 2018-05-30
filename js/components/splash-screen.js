@@ -11,15 +11,20 @@ const TRANSITION_DURATION = 500 // ms
 const MIN_HEIGHT = 700 // px
 const MIN_WIDTH = 500 // px
 
+function scale () {
+  const height = window.innerHeight
+  const width = window.innerWidth
+  return Math.min(1, height / MIN_HEIGHT, width / MIN_WIDTH)
+}
+
 export default class SplashScreen extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
       show: true,
       fadeOut: false,
-      scale: 1
+      scale: scale()
     }
-    this.onWindowResize = this.onWindowResize.bind(this)
   }
 
   componentDidMount () {
@@ -29,18 +34,6 @@ export default class SplashScreen extends PureComponent {
     setTimeout(() => {
       this.setState({ show: false })
     }, HIDE_AFTER)
-    window.addEventListener('resize', this.onWindowResize)
-    this.onWindowResize()
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('resize', this.onWindowResize)
-  }
-
-  onWindowResize () {
-    const height = window.innerHeight
-    const width = window.innerWidth
-    this.setState({ scale: Math.min(1, height / MIN_HEIGHT, width / MIN_WIDTH) })
   }
 
   render () {
