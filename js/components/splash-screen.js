@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import splashScreen from '../../images/splash-screen.png'
+import splashScreen from '../../images/splash-screen.svg'
 import ccLogo from '../../images/cc-logo.png'
 
 import '../../css/splash-screen.less'
