@@ -1,4 +1,6 @@
 var path = require('path');
+var webpack = require('webpack');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -25,13 +27,14 @@ module.exports = {
         loader: 'style!css!less!autoprefixer'
       },
       {
-        test: /\.(png|jpg|gif)$/,
-        // inline base64 URLs for <=8k images, direct URLs for the rest
-        loader: 'url-loader?limit=8192'
+        // Support ?123 suffix, e.g. ../fonts/m4d-icons.svg?3179539#iefix (for svg)
+        test: /\.(png|jpg|gif|svg)((\?|\#).*)?$/,
+        // inline base64 URLs for <=64k images, direct URLs for the rest
+        loader: 'url-loader?limit=65536'
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.eot?3179539#iefix
-        test: /\.(eot|ttf|woff|woff2|svg)((\?|\#).*)?$/,
+        test: /\.(eot|ttf|woff|woff2)((\?|\#).*)?$/,
         loader: 'url-loader?limit=8192'
       },
       {
@@ -67,3 +70,19 @@ module.exports = {
     ])
   ]
 };
+
+if (process.env.PRODUCTION) {
+  // We could use NODE_ENV directly (instead of PRODUCTION), but for some reason,
+  // when NODE_ENV is defined in command line, React does not seem to recognize it.
+  module.exports.plugins.push(
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    })
+  )
+  module.exports.plugins.push(
+    new UglifyJsPlugin({
+      sourceMap: true
+    })
+  )
+}
+

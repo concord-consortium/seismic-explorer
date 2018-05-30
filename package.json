@@ -7,7 +7,9 @@
     "url": "git+https://github.com/concord-consortium/seismic-explorer.git"
   },
   "scripts": {
-    "lint": "standard --fix js/**/*.js"
+    "lint": "standard --fix js/**/*.js",
+    "build": "webpack",
+    "build-production": "PRODUCTION=true webpack"
   },
   "standard": {
     "ignore": [
@@ -45,6 +47,7 @@
     "standard": "^10.0.2",
     "style-loader": "^0.13.0",
     "transform-loader": "^0.2.3",
+    "uglifyjs-webpack-plugin": "^1.2.5",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.14",
     "webpack-dev-server": "^1.14.1"

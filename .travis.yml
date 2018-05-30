@@ -4,7 +4,13 @@ node_js:
 install:
   - travis_retry npm install
   - travis_retry gem install s3_website -v 2.12.3
-before_script: webpack
+before_script:
+  - 'CURRENT_TAG=`git describe --tags --exact-match $TRAVIS_COMMIT 2> /dev/null`;
+     if [ "$TRAVIS_BRANCH" = "production" ] || [ "$TRAVIS_BRANCH" = "$CURRENT_TAG" ]; then
+       npm run build-production;
+     else
+       npm run build;
+     fi'
 script: deploy/s3_deploy.sh
 cache:
   directories:
