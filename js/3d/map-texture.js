@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { tileUrl } from '../map-layer-tiles'
+import { tileUrl, mapLayer } from '../map-layer-tiles'
 import { tilesListByRow, lat2tilePos, lng2tilePos, tileBoundingBox, tileYOutOfBounds } from '../map-tile-helpers'
 
 const TILE_SIZE = 256 // px
@@ -26,10 +26,10 @@ function textureDimensions (rectangle, zoom) {
 }
 
 // Returns zoom level that will generate biggest available texture within MAX_TEXTURE_SIZE x MAX_TEXTURE_SIZE limit.
-function optimalZoomLevel (rectangle) {
+function optimalZoomLevel (rectangle, maxZoom) {
   let zoom = -1
   let dim = {width: 0, height: 0}
-  while (dim.width < MAX_TEXTURE_SIZE && dim.height < MAX_TEXTURE_SIZE) {
+  while (dim.width < MAX_TEXTURE_SIZE && dim.height < MAX_TEXTURE_SIZE && zoom < maxZoom) {
     zoom += 1
     dim = textureDimensions(rectangle, zoom + 1)
   }
@@ -99,7 +99,8 @@ function textureUVs (rectangle, zoom) {
 }
 
 export default function mapTexture (rectangle, layerType) {
-  const zoom = optimalZoomLevel(rectangle)
+  const maxZoom = mapLayer(layerType).maxZoom
+  const zoom = optimalZoomLevel(rectangle, maxZoom)
   return {
     texture: tileTexture(rectangle, zoom, layerType),
     uvs: textureUVs(rectangle, zoom)
