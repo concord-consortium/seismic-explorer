@@ -21,6 +21,7 @@ class LayerControls extends PureComponent {
 
     this.handlePlateBoundariesChange = this.handlePlateBoundariesChange.bind(this)
     this.handlePlateNamesChange = this.handlePlateNamesChange.bind(this)
+    this.handleContinentOceanNamesChange = this.handleContinentOceanNamesChange.bind(this)
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
@@ -53,6 +54,13 @@ class LayerControls extends PureComponent {
     const visible = event.target.checked
     setPlateNamesVisible(visible)
     log('PlatesNamesVisibilityChanged', {visible})
+  }
+
+  handleContinentOceanNamesChange (event) {
+    const { setContinentOceanNamesVisible } = this.props
+    const visible = event.target.checked
+    setContinentOceanNamesVisible(visible)
+    log('ContinentOceanNamesVisibilityChanged', {visible})
   }
 
   handleVolcanoLayerChange (event) {
@@ -135,7 +143,16 @@ class LayerControls extends PureComponent {
               <label htmlFor='plate-names-box'>Plate names</label>
             </div>
           }
-          { (config.plateBoundariesAvailable || config.plateNamesAvailable) && mode !== '3d' && <div><hr /></div> }
+          { config.continentOceanNamesAvailable && mode !== '3d' &&
+          <div title='Show Continent and Ocean Names Overlay'>
+            <input type='checkbox' checked={layers.get('continentOceanNames')} onChange={this.handleContinentOceanNamesChange}
+              id='continent-ocean-names-box' />
+            <label htmlFor='continent-ocean-box'>Continent and ocean names</label>
+          </div>
+          }
+          { (config.plateBoundariesAvailable || config.plateNamesAvailable || config.continentOceanNamesAvailable) && mode !== '3d' &&
+            <div><hr /></div>
+          }
           { config.volcanoesAvailable &&
             <div title='Show Volcanoes'>
               <input type={inputType} checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange}

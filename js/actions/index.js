@@ -11,6 +11,7 @@ export const SET_FILTER = 'SET_FILTER'
 export const SET_BASE_LAYER = 'SET_BASE_LAYER'
 export const SET_PLATE_BOUNDARIES_VISIBLE = 'SET_PLATE_BOUNDARIES_VISIBLE'
 export const SET_PLATE_NAMES_VISIBLE = 'SET_PLATE_NAMES_VISIBLE'
+export const SET_CONTINENT_OCEAN_NAMES_VISIBLE = 'SET_CONTINENT_OCEAN_NAMES_VISIBLE'
 export const SET_ANIMATION_ENABLED = 'SET_ANIMATION_ENABLED'
 export const SET_MODE = 'SET_MODE'
 export const SET_CROSS_SECTION_POINT = 'SET_CROSS_SECTION_POINT'
@@ -134,6 +135,13 @@ export function setPlateBoundariesVisible (value) {
 export function setPlateNamesVisible (value) {
   return {
     type: SET_PLATE_NAMES_VISIBLE,
+    value
+  }
+}
+
+export function setContinentOceanNamesVisible (value) {
+  return {
+    type: SET_CONTINENT_OCEAN_NAMES_VISIBLE,
     value
   }
 }

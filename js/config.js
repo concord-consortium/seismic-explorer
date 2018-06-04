@@ -46,6 +46,8 @@ const DEFAULT_CONFIG = {
   plateBoundariesVisible: false,
   plateNamesAvailable: true,
   plateNamesVisible: false,
+  continentOceanNamesAvailable: true,
+  continentOceanNamesVisible: false,
   earthquakesAvailable: true,
   earthquakesVisible: true,
   volcanoesAvailable: true,

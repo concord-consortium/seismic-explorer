@@ -10,6 +10,7 @@ import {
   SET_BASE_LAYER,
   SET_PLATE_BOUNDARIES_VISIBLE,
   SET_PLATE_NAMES_VISIBLE,
+  SET_CONTINENT_OCEAN_NAMES_VISIBLE,
   SET_ANIMATION_ENABLED,
   SET_MODE,
   SET_CROSS_SECTION_POINT,
@@ -108,6 +109,7 @@ const INITIAL_LAYERS = Map({
   base: config.mapStyle,
   plateBoundaries: config.plateBoundariesVisible,
   plateNames: config.plateNamesVisible,
+  continentOceanNames: config.continentOceanNamesVisible,
   earthquakes: config.earthquakesVisible,
   volcanoes: config.volcanoesVisible,
   plateMovement: config.detailedPlateMovementVisible,
@@ -122,6 +124,8 @@ function layers (state = INITIAL_LAYERS, action) {
       return state.set('plateBoundaries', action.value)
     case SET_PLATE_NAMES_VISIBLE:
       return state.set('plateNames', action.value)
+    case SET_CONTINENT_OCEAN_NAMES_VISIBLE:
+      return state.set('continentOceanNames', action.value)
     case SET_EARTHQUAKES_VISIBLE:
       return state.set('earthquakes', action.value)
     case SET_VOLCANOES_VISIBLE:

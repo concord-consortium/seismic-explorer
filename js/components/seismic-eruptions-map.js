@@ -6,13 +6,15 @@ import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
 import PlateBoundariesLayer from './plate-boundaries-layer'
 import PlateArrowsLayer from './plate-arrows-layer'
-import PlateNamesLayer from './plate-names-layer'
+import LabelsLayer from './labels-layer'
 import PinsLayer from './pins-layer'
 import PlateMovementLayer from './plate-movement-layer'
 import CrossSectionDrawLayer from './cross-section-draw-layer'
 import addTouchSupport from '../custom-leaflet/touch-support'
 import { mapLayer } from '../map-layer-tiles'
 import log from '../logger'
+import plateNames from '../data/plate-names'
+import continentOceanNames from '../data/continent-ocean-names'
 import config from '../config'
 
 import '../../css/leaflet/leaflet.css'
@@ -160,7 +162,8 @@ export default class SeismicEruptionsMap extends PureComponent {
           {/* component instance when we switch between maps with subdomains and without. */}
           <TileLayer key={baseLayer.type} url={baseLayer.url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
           {layers.get('plateBoundaries') && <PlateBoundariesLayer mapRegion={mapStatus.get('region')} mapZoom={mapStatus.get('zoom')} />}
-          {layers.get('plateNames') && <PlateNamesLayer mapRegion={mapStatus.get('region')} />}
+          {layers.get('continentOceanNames') && <LabelsLayer mapRegion={mapStatus.get('region')} labels={continentOceanNames} />}
+          {layers.get('plateNames') && <LabelsLayer mapRegion={mapStatus.get('region')} labels={plateNames} />}
           {layers.get('plateArrows') && <PlateArrowsLayer mapRegion={mapStatus.get('region')} />}
           {layers.get('plateMovement') && <PlateMovementLayer />}
           {config.pins && config.pins.length > 0 && <PinsLayer mapRegion={mapStatus.get('region')} />}
