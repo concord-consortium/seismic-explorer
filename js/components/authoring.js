@@ -98,7 +98,7 @@ export default class Authoring extends PureComponent {
             <label>lat <input type='text' className='coords' value={pins[idx][0]} onChange={setProp.bind(null, idx, 0)} /></label>
             <label>lng <input type='text' className='coords' value={pins[idx][1]} onChange={setProp.bind(null, idx, 1)} /></label>
             <label>label <input type='text' value={pins[idx][2]} onChange={setProp.bind(null, idx, 2)} /></label>
-            <span className='remove' onClick={removePin.bind(idx)}><i className='fa fa-minus-circle' /></span>
+            <span className='remove' onClick={removePin.bind(null, idx)}><i className='fa fa-minus-circle' /></span>
           </div>
         )}
         <div><span className='add' onClick={addPin}><i className='fa fa-plus-circle' /></span></div>
