@@ -1,9 +1,9 @@
 var path = require('path');
 var webpack = require('webpack');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  mode: process.env.PRODUCTION ? 'production' : 'development',
   entry: [
     './js/index.js'
   ],
@@ -12,19 +12,19 @@ module.exports = {
     filename: 'app.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'babel-loader'
       },
       {
         test: /\.css$/,
-        loader: 'style!css!autoprefixer'
+        loader: 'style-loader!css-loader'
       },
       {
         test: /\.less$/,
-        loader: 'style!css!less!autoprefixer'
+        loader: 'style-loader!css-loader!less-loader'
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.svg?3179539#iefix (for svg)
@@ -53,14 +53,13 @@ module.exports = {
       {
         // Pass global THREE variable to OrbitControls
         test: /leaflet-plugins\//,
-        loader: 'imports?L=leaflet'
-      }
-    ],
-    // See: https://gist.github.com/mjackson/ecd3914ebee934f4daf4
-    postLoaders: [
+        loader: 'imports-loader?L=leaflet'
+      },
+      // See: https://gist.github.com/mjackson/ecd3914ebee934f4daf4
       {
         include: path.resolve(__dirname, 'node_modules/pixi.js'),
-        loader: 'transform/cacheable?brfs'
+        loader: 'transform/cacheable?brfs',
+        enforce: 'post'
       }
     ]
   },
@@ -79,10 +78,4 @@ if (process.env.PRODUCTION) {
       'process.env.NODE_ENV': JSON.stringify('production')
     })
   )
-  module.exports.plugins.push(
-    new UglifyJsPlugin({
-      sourceMap: true
-    })
-  )
 }
-

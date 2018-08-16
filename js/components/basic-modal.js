@@ -4,6 +4,8 @@ import Modal from 'react-modal'
 import '../../css/basic-modal.less'
 import '../../css/modal-style.less'
 
+Modal.setAppElement('#app')
+
 export default class BasicModal extends PureComponent {
   render () {
     const { isOpen, close, children, className, contentLabel } = this.props
