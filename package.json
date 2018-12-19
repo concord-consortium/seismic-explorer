@@ -77,7 +77,7 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "rollbar": "^2.3.1",
-    "screenfull": "^3.0.0",
+    "screenfull": "^4.0.0",
     "shutterbug": "^1.0.0",
     "three": "^0.87.1",
     "tween.js": "^16.3.4"
