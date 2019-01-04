@@ -23,6 +23,7 @@ export default class AboutModalContent extends PureComponent {
             of New York at Binghamton</a>.</p>
           <p>Seismic Explorer uses earthquake data (magnitude, depth, location, time) from the <a
             href='http://earthquake.usgs.gov/earthquakes/map/' target='_blank'>United States Geological Survey</a>.</p>
+          <p>Street map images are hosted by <a href="https://foundation.wikimedia.org/w/index.php?title=Maps_Terms_of_Use#Where_does_the_map_data_come_from.3F" target="_blank">The Wikimedia Foundation</a>, serving map data from <a href="https://openstreetmap.org" target="_blank">&#169;OpenStreetMap</a>.</p>
         </div>
       </div>
     )
