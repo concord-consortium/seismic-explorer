@@ -157,7 +157,10 @@ export default class SeismicEruptionsMap extends PureComponent {
     let url = baseLayer.url
     if (baseLayer.url.indexOf('{c}') > -1) {
       // If screen scaled display has higher than 1 pixel ratio, request scaled tiles, otherwise just request regular tiles
-      url = window.devicePixelRatio && window.devicePixelRatio !== 1 ? baseLayer.url.replace('{c}', '@' + Math.round(window.devicePixelRatio) + 'x') : baseLayer.url.replace('{c}', '')
+      // Since devicePixelRatio can change between displays and we can't guarantee how many versions of the base tiles there are available,
+      // limit the request scaling to 2x if the user has any scale of higher dpi display.
+      // There's no visible issue in requesting 2x on a regular dpi display aside from bandwidth
+      url = window.devicePixelRatio && window.devicePixelRatio !== 1 ? baseLayer.url.replace('{c}', '@2x') : baseLayer.url.replace('{c}', '')
     }
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
