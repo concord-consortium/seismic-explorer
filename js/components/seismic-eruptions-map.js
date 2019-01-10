@@ -154,13 +154,21 @@ export default class SeismicEruptionsMap extends PureComponent {
     const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
     const baseLayer = this.baseLayer
+    let url = baseLayer.url
+    if (baseLayer.url.indexOf('{c}') > -1) {
+      // If screen scaled display has higher than 1 pixel ratio, request scaled tiles, otherwise just request regular tiles
+      // Since devicePixelRatio can change between displays and we can't guarantee how many versions of the base tiles there are available,
+      // limit the request scaling to 2x if the user has any scale of higher dpi display.
+      // There's no visible issue in requesting 2x on a regular dpi display aside from bandwidth
+      url = window.devicePixelRatio && window.devicePixelRatio !== 1 ? baseLayer.url.replace('{c}', '@2x') : baseLayer.url.replace('{c}', '')
+    }
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
           bounds={INITIAL_BOUNDS} minZoom={2}>
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
-          <TileLayer key={baseLayer.type} url={baseLayer.url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
+          <TileLayer key={baseLayer.type} url={url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
           {layers.get('plateBoundaries') && <PlateBoundariesLayer mapRegion={mapStatus.get('region')} mapZoom={mapStatus.get('zoom')} />}
           {layers.get('continentOceanNames') && <LabelsLayer mapRegion={mapStatus.get('region')} labels={continentOceanNames} />}
           {layers.get('plateNames') && <LabelsLayer mapRegion={mapStatus.get('region')} labels={plateNames} />}

@@ -48,6 +48,7 @@ function tilesToTexture (tiles, layerType) {
   canvas.width = Math.round(width * sx)
   const ctx = canvas.getContext('2d')
   const texture = new THREE.Texture(canvas)
+  const screenScale = window.devicePixelRatio;
   tiles.forEach((row, rowIdx) => {
     row.forEach((rawTile, tileIdx) => {
       const tile = wrapTile(rawTile)
@@ -58,7 +59,7 @@ function tilesToTexture (tiles, layerType) {
         texture.needsUpdate = true
         return
       }
-      const url = tileUrl(layerType, tile.zoom, tile.x, tile.y)
+      const url = tileUrl(layerType, tile.zoom, tile.x, tile.y, screenScale)
       const img = document.createElement('img')
       img.crossOrigin = ''
       img.onload = () => {

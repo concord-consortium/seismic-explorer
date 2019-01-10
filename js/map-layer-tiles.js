@@ -10,9 +10,9 @@ export const layerInfo = [
   {
     type: 'street',
     name: 'Street',
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    url: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{c}.png',
     maxZoom: 19,
-    subdomains: ['a', 'b', 'c']
+    subdomains: []
   },
   {
     type: 'relief',
@@ -28,10 +28,11 @@ export function mapLayer (layerType) {
   return layerInfo.find(m => m.type === layerType)
 }
 
-export function tileUrl (layerType, zoom, x, y) {
+export function tileUrl(layerType, zoom, x, y, scale) {
   const layer = mapLayer(layerType)
   const url = layer.url
   const subdomains = layer.subdomains
   const subdomain = subdomains[Math.floor(Math.random() * subdomains.length)]
-  return url.replace('{s}', subdomain).replace('{z}', zoom).replace('{x}', x).replace('{y}', y)
+  mapScale = scale ? scale : "2";
+  return url.replace('{s}', subdomain).replace('{z}', zoom).replace('{x}', x).replace('{y}', y).replace('{c}', '@' + mapScale + 'x')
 }
