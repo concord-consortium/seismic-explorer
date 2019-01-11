@@ -33,6 +33,6 @@ export function tileUrl(layerType, zoom, x, y, scale) {
   const url = layer.url
   const subdomains = layer.subdomains
   const subdomain = subdomains[Math.floor(Math.random() * subdomains.length)]
-  mapScale = scale ? scale : "2";
-  return url.replace('{s}', subdomain).replace('{z}', zoom).replace('{x}', x).replace('{y}', y).replace('{c}', '@' + mapScale + 'x')
+  const mapScale = scale  && scale !== 1 ? "@2x" : "";
+  return url.replace('{s}', subdomain).replace('{z}', zoom).replace('{x}', x).replace('{y}', y).replace('{c}', mapScale)
 }
