@@ -33,7 +33,7 @@ export default class TickMarks {
       const position = new THREE.Vector3(0, 0, 0).lerp(depthVector, i * positionStep)
       const texture = labelTexture(format(position.length(), type), type)
       const aspectRatio = texture.image.width / texture.image.height
-      const material = new THREE.SpriteMaterial({map: texture})
+      const material = new THREE.SpriteMaterial({ map: texture })
       const sprite = new THREE.Sprite(material)
       sprite.position.copy(position)
       sprite.scale.copy(labelScale(labelSize, aspectRatio, type))

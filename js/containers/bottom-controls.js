@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import * as actions from '../actions'
 import AnimationButtons from '../components/animation-buttons'
 import LayerControls from './layer-controls'
 import { Range, Handle } from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
-import {layerInfo} from '../map-layer-tiles'
+import { layerInfo } from '../map-layer-tiles'
 import log from '../logger'
 
 import '../../css/settings-controls.less'
@@ -34,7 +34,7 @@ function sliderTickFormatter (valueMin, valueMax) {
   const decade = new Date(minYear.substr(0, 2) + minYear.substr(2, 1) + '0')
   decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
   while (decade.getTime() <= maxDate.getTime()) {
-    tickMarks[decade.getTime()] = {label: decade.getUTCFullYear()}
+    tickMarks[decade.getTime()] = { label: decade.getUTCFullYear() }
     // increment decade by 10 years
     decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
   }
@@ -52,21 +52,21 @@ function toggleFullscreen () {
 }
 
 function logPlaybackRangeChange (value) {
-  log('PlaybackRangeChanged', {minTime: (new Date(value[0])).toString(), maxTime: (new Date(value[1])).toString()})
+  log('PlaybackRangeChanged', { minTime: (new Date(value[0])).toString(), maxTime: (new Date(value[1])).toString() })
 }
 
 function logTimeSliderChange (value) {
-  log('TimeSliderChanged', {time: (new Date(value[1])).toString()})
+  log('TimeSliderChanged', { time: (new Date(value[1])).toString() })
 }
 
 function logMagSliderChange (value) {
-  log('MagnitudeSliderChanged', {minMag: value[0], maxMag: value[1]})
+  log('MagnitudeSliderChanged', { minMag: value[0], maxMag: value[1] })
 }
 
 const rangeHandle = (props) => {
   const { index, offset } = props
   return (
-    <div key={index} className='custom-handle' style={{left: `${offset}%`}}>
+    <div key={index} className='custom-handle' style={{ left: `${offset}%` }}>
       <svg height='100%' width='100%' viewBox='0 0 20 20'>
         <polygon points='0,0 10,20 20,0' />
       </svg>
@@ -76,7 +76,7 @@ const rangeHandle = (props) => {
 
 const tooltipHandle = (alwaysVisible) => {
   return (props) => {
-    const {value, index, dragging, ...restProps} = props
+    const { value, index, dragging, ...restProps } = props
     return (
       <Handle key={index} value={value} {...restProps} >
         <div className={`tooltip ${alwaysVisible ? 'visible' : ''}`}>{ sliderDateFormatter(value) }</div>
@@ -103,7 +103,7 @@ class BottomControls extends PureComponent {
   componentDidMount () {
     if (screenfull.enabled) {
       document.addEventListener(screenfull.raw.fullscreenchange, () => {
-        this.setState({fullscreen: screenfull.isFullscreen})
+        this.setState({ fullscreen: screenfull.isFullscreen })
       })
     }
   }
@@ -113,19 +113,19 @@ class BottomControls extends PureComponent {
   }
 
   handleBaseLayerChange (event) {
-    const {setBaseLayer} = this.props
+    const { setBaseLayer } = this.props
     const layer = event.target.value
     setBaseLayer(layer)
-    log('MapLayerChanged', {layer})
+    log('MapLayerChanged', { layer })
   }
 
   handleCurrentTimeChange (value) {
-    const {setFilter, filters} = this.props
+    const { setFilter, filters } = this.props
     setFilter('maxTime', Math.min(value[1], filters.get('playbackMaxTime')))
   }
 
   handlePlaybackRangeChange (value) {
-    const {setFilter, filters} = this.props
+    const { setFilter, filters } = this.props
     setFilter('minTime', value[0])
     setFilter('playbackMaxTime', value[1])
     const newMaxTime = Math.max(value[0], Math.min(value[1], filters.get('maxTime')))
@@ -135,13 +135,13 @@ class BottomControls extends PureComponent {
   }
 
   handleMagRange (value) {
-    const {setFilter} = this.props
+    const { setFilter } = this.props
     setFilter('minMag', value[0])
     setFilter('maxMag', value[1])
   }
 
   handleAnimStep (newValue) {
-    const {filters, setFilter, setAnimationEnabled} = this.props
+    const { filters, setFilter, setAnimationEnabled } = this.props
     if (newValue > filters.get('playbackMaxTime')) {
       newValue = filters.get('playbackMaxTime')
       setAnimationEnabled(false)
@@ -150,24 +150,24 @@ class BottomControls extends PureComponent {
   }
 
   handlePlayPauseBtnClick () {
-    const {animationEnabled, setAnimationEnabled} = this.props
+    const { animationEnabled, setAnimationEnabled } = this.props
     setAnimationEnabled(!animationEnabled)
     log(animationEnabled ? 'PauseClicked' : 'PlayClicked')
   }
 
   handleResetBtnClick () {
-    const {reset} = this.props
+    const { reset } = this.props
     reset()
     log('ResetClicked')
   }
 
   get dateMarks () {
-    const {filters} = this.props
+    const { filters } = this.props
     const min = filters.get('minTimeLimit')
     const max = filters.get('maxTimeLimit')
     let marks = {
-      [min]: {label: sliderDateFormatter(min)},
-      [max]: {label: sliderDateFormatter(max)}
+      [min]: { label: sliderDateFormatter(min) },
+      [max]: { label: sliderDateFormatter(max) }
     }
     if (min !== 0 && max !== 0) {
       // add tick marks for each decade between min and max
@@ -177,7 +177,7 @@ class BottomControls extends PureComponent {
   }
 
   get animSpeed () {
-    const {filters} = this.props
+    const { filters } = this.props
     return (filters.get('maxTimeLimit') - filters.get('minTimeLimit')) / 15000
   }
 
@@ -211,7 +211,7 @@ class BottomControls extends PureComponent {
               />
               <Range className='slider-big' min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
                 step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
-                handleStyle={[{display: 'none'}, {}]}
+                handleStyle={[{ display: 'none' }, {}]}
                 onChange={this.handleCurrentTimeChange} onAfterChange={logTimeSliderChange} marks={this.dateMarks}
                 handle={tooltipHandle(animationEnabled)}
               />

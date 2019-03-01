@@ -126,7 +126,7 @@ export default class Camera {
 
   animateZoom (finalCamZoom) {
     return new TWEEN.Tween(this.camera)
-      .to({zoom: finalCamZoom}, 750)
+      .to({ zoom: finalCamZoom }, 750)
       .easing(TWEEN.Easing.Cubic.InOut)
       .onUpdate(() => {
         this.camera.updateProjectionMatrix()

@@ -34,7 +34,7 @@ export default withLeaflet(class LabelsLayer extends WrappingMapLayer {
   getElement (data, idx) {
     this.generateIcons()
     const { lat, lng } = data
-    const el = new L.Marker([lat, lng], {icon: this.icons[idx]})
+    const el = new L.Marker([lat, lng], { icon: this.icons[idx] })
     el.lat = lat
     el.lng = lng
     return el

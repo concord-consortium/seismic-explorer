@@ -56,7 +56,7 @@ export default class Authoring extends PureComponent {
 
   renderCheckbox (name) {
     const toggleOption = () => {
-      this.setState({[name]: !this.state[name]})
+      this.setState({ [name]: !this.state[name] })
     }
     return (
       <div key={name}><label><input type='checkbox' checked={this.state[name]} onChange={toggleOption} /> { camelCaseToWords(name) }</label></div>
@@ -65,7 +65,7 @@ export default class Authoring extends PureComponent {
 
   renderTextInput (name) {
     const setOption = (event) => {
-      this.setState({[name]: event.target.value})
+      this.setState({ [name]: event.target.value })
     }
     return (
       <div key={name}><label>{ camelCaseToWords(name) } <input type='text' value={this.state[name]} onChange={setOption} /></label></div>
@@ -75,19 +75,19 @@ export default class Authoring extends PureComponent {
   renderPinsAuthoring () {
     const addPin = () => {
       const { pins } = this.state
-      this.setState({pins: pins.concat([[0, 0, 'label']])})
+      this.setState({ pins: pins.concat([[0, 0, 'label']]) })
     }
     const removePin = idx => {
       const { pins } = this.state
       const newPins = pins.concat()
       newPins.splice(idx, 1)
-      this.setState({pins: newPins})
+      this.setState({ pins: newPins })
     }
     const setProp = (idx, prop, event) => {
       const { pins } = this.state
       const newPins = pins.concat()
       newPins[idx][prop] = event.target.value
-      this.setState({pins: newPins})
+      this.setState({ pins: newPins })
     }
     const { pins } = this.state
     return (

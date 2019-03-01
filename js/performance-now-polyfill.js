@@ -27,5 +27,4 @@
   window.performance.now = function () {
     return (new Date()).valueOf() - start
   }
-
 })()

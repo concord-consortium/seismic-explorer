@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import * as actions from '../actions'
 import OverlayButton from '../components/overlay-button'
 import log from '../logger'
@@ -29,12 +29,12 @@ class LayerControls extends PureComponent {
   }
 
   toggle () {
-    this.setState({opened: !this.state.opened})
+    this.setState({ opened: !this.state.opened })
     log('LayerMenuClicked')
   }
 
   hide () {
-    this.setState({opened: false})
+    this.setState({ opened: false })
   }
 
   handlePlateBoundariesChange (event) {
@@ -46,21 +46,21 @@ class LayerControls extends PureComponent {
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
     }
-    log('PlatesVisibilityChanged', {visible})
+    log('PlatesVisibilityChanged', { visible })
   }
 
   handlePlateNamesChange (event) {
     const { setPlateNamesVisible } = this.props
     const visible = event.target.checked
     setPlateNamesVisible(visible)
-    log('PlatesNamesVisibilityChanged', {visible})
+    log('PlatesNamesVisibilityChanged', { visible })
   }
 
   handleContinentOceanNamesChange (event) {
     const { setContinentOceanNamesVisible } = this.props
     const visible = event.target.checked
     setContinentOceanNamesVisible(visible)
-    log('ContinentOceanNamesVisibilityChanged', {visible})
+    log('ContinentOceanNamesVisibilityChanged', { visible })
   }
 
   handleVolcanoLayerChange (event) {

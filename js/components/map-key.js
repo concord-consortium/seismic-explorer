@@ -20,12 +20,12 @@ export default class MapKey extends PureComponent {
   }
 
   open () {
-    this.setState({opened: true})
+    this.setState({ opened: true })
     log('MapKeyOpened')
   }
 
   hide () {
-    this.setState({opened: false})
+    this.setState({ opened: false })
   }
 
   render () {
@@ -95,15 +95,15 @@ function circle (magnitude) {
 }
 
 function earthquakeColor (depth) {
-  return <div className='earthquake-color' style={{backgroundColor: toHexStr(depthToColor(depth))}} />
+  return <div className='earthquake-color' style={{ backgroundColor: toHexStr(depthToColor(depth)) }} />
 }
 
 function boundaryColor (color) {
-  return <div className='boundary-color' style={{backgroundColor: color}} />
+  return <div className='boundary-color' style={{ backgroundColor: color }} />
 }
 
 function volcanoColor (color) {
-  return <div className='volcano-marker' style={{borderBottomColor: color}} />
+  return <div className='volcano-marker' style={{ borderBottomColor: color }} />
 }
 
 function toHexStr (d) {

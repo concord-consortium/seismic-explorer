@@ -25,25 +25,25 @@ export default class TopControls extends PureComponent {
   }
 
   openShareModal () {
-    this.setState({shareModalOpen: true, aboutModalOpen: false})
+    this.setState({ shareModalOpen: true, aboutModalOpen: false })
     log('ShareDialogOpened')
   }
 
   openAboutModal () {
-    this.setState({aboutModalOpen: true, shareModalOpen: false})
+    this.setState({ aboutModalOpen: true, shareModalOpen: false })
     log('AboutDialogOpened')
   }
 
   closeShareModal () {
-    this.setState({shareModalOpen: false})
+    this.setState({ shareModalOpen: false })
   }
 
   closeAboutModal () {
-    this.setState({aboutModalOpen: false})
+    this.setState({ aboutModalOpen: false })
   }
 
   render () {
-    const {shareModalOpen, aboutModalOpen} = this.state
+    const { shareModalOpen, aboutModalOpen } = this.state
 
     return (
       <div className='top-controls'>

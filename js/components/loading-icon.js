@@ -9,7 +9,7 @@ export default class LoadingIcon extends PureComponent {
     return (
       <div className='loading-icon-container'>
         <div className='loading-icon'>
-          {STEPS.map(angle => <div key={angle} className='element' style={{transform: `rotate(${angle}deg) translate(0,-60px)`}} />)}
+          {STEPS.map(angle => <div key={angle} className='element' style={{ transform: `rotate(${angle}deg) translate(0,-60px)` }} />)}
         </div>
       </div>
     )

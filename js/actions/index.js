@@ -26,11 +26,11 @@ const api = new EarthquakeDataAPI()
 
 function requestEarthquakes (tile) {
   return dispatch => {
-    dispatch({type: REQUEST_DATA})
+    dispatch({ type: REQUEST_DATA })
     api.fetchTile(tile)
       .then(
         response => {
-          dispatch({type: RECEIVE_DATA})
+          dispatch({ type: RECEIVE_DATA })
           dispatch(receiveEarthquakes(response))
         },
         error => dispatch(receiveError(error))

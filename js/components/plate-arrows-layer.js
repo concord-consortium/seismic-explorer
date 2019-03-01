@@ -82,7 +82,7 @@ export default withLeaflet(class PlateArrowsLayer extends WrappingMapLayer {
 
   getElement (data) {
     const { idx, lat, lng, angle, info, velocity, type } = data
-    const infoIconAndPopup = new L.Marker([lat, lng], {icon: infoIcon})
+    const infoIconAndPopup = new L.Marker([lat, lng], { icon: infoIcon })
     const arrows = new L.Marker([lat, lng], {
       icon: getArrowIcon(type, velocity),
       rotationAngle: angle,

@@ -29,12 +29,12 @@ export default class {
     this.root = new THREE.Object3D()
     this.overlay = new THREE.Object3D()
 
-    this.lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 4})
-    this.boxMaterial = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 1})
+    this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 4 })
+    this.boxMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 1 })
     this.point1Texture = getPointTexture('P1')
     this.point2Texture = getPointTexture('P2')
-    this.point1Material = new THREE.SpriteMaterial({map: this.point1Texture})
-    this.point2Material = new THREE.SpriteMaterial({map: this.point2Texture})
+    this.point1Material = new THREE.SpriteMaterial({ map: this.point1Texture })
+    this.point2Material = new THREE.SpriteMaterial({ map: this.point2Texture })
 
     this.tickMarks = new TickMarks(BOX_DEPTH)
     this.overlay.add(this.tickMarks.root)

@@ -43,7 +43,7 @@ export default class SplashScreen extends PureComponent {
     }
     return (
       <div className={`splash-screen ${fadeOut ? 'fade-out' : ''}`}>
-        <div style={{transform: `scale(${scale}, ${scale})`}}>
+        <div style={{ transform: `scale(${scale}, ${scale})` }}>
           <img className='splash-img' src={splashScreen} />
           <div>a product of <img className='cc-logo' src={ccLogo} /></div>
         </div>

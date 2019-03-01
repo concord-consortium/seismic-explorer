@@ -28,13 +28,13 @@ module.exports = {
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.svg?3179539#iefix (for svg)
-        test: /\.(png|jpg|gif|svg)((\?|\#).*)?$/,
+        test: /\.(png|jpg|gif|svg)((\?|#).*)?$/,
         // inline base64 URLs for <=64k images, direct URLs for the rest
         loader: 'url-loader?limit=65536'
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.eot?3179539#iefix
-        test: /\.(eot|ttf|woff|woff2)((\?|\#).*)?$/,
+        test: /\.(eot|ttf|woff|woff2)((\?|#).*)?$/,
         loader: 'url-loader?limit=8192'
       },
       {
