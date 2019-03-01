@@ -1,4 +1,4 @@
-import { MapLayer } from 'react-leaflet'
+import { MapLayer, withLeaflet } from 'react-leaflet'
 import { plateMovementCanvasLayer } from '../custom-leaflet/plate-movement-canvas-layer'
 import points from '../data/plate-movement-unavco.js'
 
@@ -31,7 +31,7 @@ function getPoints () {
   return _cachedPoints
 }
 
-export default class PlateMovementCanvasLayer extends MapLayer {
+export default withLeaflet(class PlateMovementCanvasLayer extends MapLayer {
   componentDidMount () {
     super.componentDidMount()
     this.updateLeafletElement(null, this.props)
@@ -45,4 +45,4 @@ export default class PlateMovementCanvasLayer extends MapLayer {
     const { map } = toProps
     this.leafletElement.setPlateMovementPoints(getPoints(map))
   }
-}
+})

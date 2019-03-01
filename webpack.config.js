@@ -1,6 +1,6 @@
-var path = require('path');
-var webpack = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+var path = require('path')
+var webpack = require('webpack')
+var CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   mode: process.env.PRODUCTION ? 'production' : 'development',
@@ -54,21 +54,15 @@ module.exports = {
         // Pass global THREE variable to OrbitControls
         test: /leaflet-plugins\//,
         loader: 'imports-loader?L=leaflet'
-      },
-      // See: https://gist.github.com/mjackson/ecd3914ebee934f4daf4
-      {
-        include: path.resolve(__dirname, 'node_modules/pixi.js'),
-        loader: 'transform/cacheable?brfs',
-        enforce: 'post'
       }
     ]
   },
   plugins: [
     new CopyWebpackPlugin([
-      {from: 'public'}
+      { from: 'public' }
     ])
   ]
-};
+}
 
 if (process.env.PRODUCTION) {
   // We could use NODE_ENV directly (instead of PRODUCTION), but for some reason,

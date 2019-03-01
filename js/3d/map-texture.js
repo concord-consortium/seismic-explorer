@@ -48,7 +48,7 @@ function tilesToTexture (tiles, layerType) {
   canvas.width = Math.round(width * sx)
   const ctx = canvas.getContext('2d')
   const texture = new THREE.Texture(canvas)
-  const screenScale = window.devicePixelRatio;
+  const screenScale = window.devicePixelRatio
   tiles.forEach((row, rowIdx) => {
     row.forEach((rawTile, tileIdx) => {
       const tile = wrapTile(rawTile)
