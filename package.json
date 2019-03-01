@@ -67,17 +67,15 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-leaflet": "^2.2.1",
-    "react-modal": "^3.5.1",
-    "react-redux": "^5.0.6",
-    "react-router": "^3.0.2",
-    "redux": "^3.7.2",
-    "redux-logger": "^2.6.1",
-    "redux-thunk": "^2.2.0",
-    "reselect": "^3.0.1",
+    "react-modal": "^3.8.1",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "rollbar": "^2.5.2",
     "screenfull": "^4.0.1",
     "shutterbug": "^1.0.0",
-    "three": "^0.87.1",
-    "tween.js": "^16.3.4"
+    "three": "^0.102.0",
+    "tween.js": "^16.6.0"
   }
 }

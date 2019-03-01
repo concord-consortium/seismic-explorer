@@ -41,8 +41,8 @@ function tilesToTexture (tiles, layerType) {
   const cols = tiles[0].length
   const height = rows * TILE_SIZE
   const width = cols * TILE_SIZE
-  const sy = THREE.Math.isPowerOfTwo(height) ? 1 : THREE.Math.nearestPowerOfTwo(height) / height
-  const sx = THREE.Math.isPowerOfTwo(width) ? 1 : THREE.Math.nearestPowerOfTwo(width) / width
+  const sy = THREE.Math.isPowerOfTwo(height) ? 1 : THREE.Math.floorPowerOfTwo(height) / height
+  const sx = THREE.Math.isPowerOfTwo(width) ? 1 : THREE.Math.floorPowerOfTwo(width) / width
   const canvas = document.createElement('canvas')
   canvas.height = Math.round(height * sy)
   canvas.width = Math.round(width * sx)
