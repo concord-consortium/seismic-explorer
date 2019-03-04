@@ -14,7 +14,7 @@ export default class BasicModal extends PureComponent {
     return (
       <Modal shouldCloseOnOverlayClick={false} className={`modal-style basic-modal ${className}`}
         overlayClassName='basic-modal-overlay' isOpen={isOpen} contentLabel={contentLabelValue}>
-        <i onClick={close} className='close-icon fa fa-close' />
+        <i onClick={close} className='close-icon fa fa-close' data-test='close-modal' />
         {children}
       </Modal>
     )

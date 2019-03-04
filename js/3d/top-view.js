@@ -4,9 +4,11 @@ import Earthquake from './earthquake'
 import Volcano from './volcano'
 import SpritesContainer from './sprites-container'
 import Camera from './camera'
+import getThreeJSRenderer from '../get-threejs-renderer'
 
 // Share one renderer to avoid memory leaks (I couldn't fix them in other way).
-const renderer = new THREE.WebGLRenderer({ alpha: true })
+const RendererClass = getThreeJSRenderer()
+const renderer = new RendererClass({ alpha: true })
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setClearColor(0x000000, 0)
 

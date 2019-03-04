@@ -35,7 +35,7 @@ export default class MapKey extends PureComponent {
       return null
     }
     return !opened
-      ? <OverlayButton title='Information about the symbols used on this map' onClick={this.open}>Key</OverlayButton>
+      ? <OverlayButton title='Information about the symbols used on this map' onClick={this.open} dataTest='key'>Key</OverlayButton>
       : <div className='modal-style map-key-content' >
         <i onClick={this.hide} className='close-icon fa fa-close' />
         { earthquakes &&

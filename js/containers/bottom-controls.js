@@ -221,11 +221,11 @@ class BottomControls extends PureComponent {
 
         <div className='settings'>
           <div>
-            <img src={ccLogoSrc} />
+            <img src={ccLogoSrc} data-test='cc-logo' />
           </div>
           <div title='Change the map rendering style'>
             Map type
-            <select value={layers.get('base')} onChange={this.handleBaseLayerChange}>
+            <select value={layers.get('base')} onChange={this.handleBaseLayerChange} data-test='map-type'>
               {this.mapLayerOptions}
             </select>
           </div>

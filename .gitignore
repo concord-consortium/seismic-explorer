@@ -3,3 +3,8 @@ dist
 
 .idea
 .DS_Store
+cypress/screenshots
+cypress/snapshots/gpu-dependant/*/__diff_output__
+.snapshot-report
+coverage
+

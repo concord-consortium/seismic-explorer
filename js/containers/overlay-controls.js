@@ -69,22 +69,22 @@ class OverlayControls extends PureComponent {
         </div>
         <div className='controls bottom right inline'>
           {config.crossSection && mode === '2d' && layers.get('earthquakes') &&
-            <OverlayButton title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode} icon='paint-brush'>
+            <OverlayButton title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode} icon='paint-brush' dataTest='draw-cross-section'>
               Draw a cross section line and open 3D view
             </OverlayButton>
           }
           {mode === 'cross-section' &&
             <div>
-              <OverlayButton title='Display the selected area and its earthquakes in 3D' onClick={this.set3DMode} disabled={!canOpen3D} icon='cube'>
+              <OverlayButton title='Display the selected area and its earthquakes in 3D' onClick={this.set3DMode} disabled={!canOpen3D} icon='cube' dataTest='open-3d-view'>
                 Open 3D view {!canOpen3D && '(draw a cross section line first!)'}
               </OverlayButton>
-              <OverlayButton title='Cancel drawing' onClick={this.cancelCrossSectionDrawMode} icon='close'>
+              <OverlayButton title='Cancel drawing' onClick={this.cancelCrossSectionDrawMode} icon='close' dataTest='cancel-drawing'>
                 Cancel
               </OverlayButton>
             </div>
           }
           {mode === '3d' &&
-            <OverlayButton title='Exit 3D view and return to 2D map view' onClick={this.exit3DMode} icon='map'>
+            <OverlayButton title='Exit 3D view and return to 2D map view' onClick={this.exit3DMode} icon='map' dataTest='exit-3d-view'>
               Go back to 2D map
             </OverlayButton>
           }

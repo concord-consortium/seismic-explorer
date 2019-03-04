@@ -7,14 +7,36 @@
     "url": "git+https://github.com/concord-consortium/seismic-explorer.git"
   },
   "scripts": {
-    "lint": "standard --fix js/**/*.js",
     "build": "webpack",
     "build-production": "PRODUCTION=true webpack",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "lint": "standard --fix",
+    "lint:test": "standard",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cypress": "cypress run --reporter cypress-image-snapshot/reporter",
+    "test:cypress:basic": "cypress run --spec cypress/integration/basic/**/*",
+    "test:cypress:snapshots": "cypress run --spec cypress/integration/gpu-dependant/**/* --env failOnSnapshotDiff=false --reporter cypress-image-snapshot/reporter",
+    "test:cypress:open": "cypress open --env failOnSnapshotDiff=false"
   },
   "standard": {
     "ignore": [
       "js/data"
+    ],
+    "globals": [
+      "jest",
+      "describe",
+      "context",
+      "test",
+      "it",
+      "specify",
+      "expect",
+      "before",
+      "beforeAll",
+      "beforeEach",
+      "afterEach",
+      "cy",
+      "Cypress"
     ]
   },
   "keywords": [
@@ -37,8 +59,13 @@
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.1.0",
+    "cypress": "^3.1.5",
+    "cypress-image-snapshot": "^3.0.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.10.0",
     "file-loader": "^3.0.1",
     "imports-loader": "^0.8.0",
+    "jest": "^24.1.0",
     "json-loader": "^0.5.7",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",

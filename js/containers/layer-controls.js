@@ -124,7 +124,7 @@ class LayerControls extends PureComponent {
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>
-        <OverlayButton onClick={this.toggle}>Data type</OverlayButton>
+        <OverlayButton onClick={this.toggle} dataTest='data-type'>Data type</OverlayButton>
         { opened &&
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close' />
