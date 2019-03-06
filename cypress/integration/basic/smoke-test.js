@@ -87,12 +87,15 @@ context('Smoke Test', () => {
 
   context('Map type', () => {
     it('ensures user can change map type', () => {
-      cy.get('[data-test=map-type]').select('Street')
-      cy.get('.leaflet-tile-pane img[src="https://maps.wikimedia.org/osm-intl/3/3/3.png"]').should('exist')
-      cy.get('[data-test=map-type]').select('Relief')
-      cy.get('.leaflet-tile-pane img[src="https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/ETOPO1_Global_Relief_Model_Color_Shaded_Relief/MapServer/tile/3/3/3"]').should('exist')
-      cy.get('[data-test=map-type]').select('Satellite')
-      cy.get('.leaflet-tile-pane img[src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/3/3/3"]').should('exist')
+      cy.window().then(win => {
+        const scale = win.devicePixelRatio > 1 ? `@${win.devicePixelRatio}x` : ''
+        cy.get('[data-test=map-type]').select('Street')
+        cy.get(`.leaflet-tile-pane img[src="https://maps.wikimedia.org/osm-intl/3/3/3${scale}.png"]`).should('exist')
+        cy.get('[data-test=map-type]').select('Relief')
+        cy.get('.leaflet-tile-pane img[src="https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/ETOPO1_Global_Relief_Model_Color_Shaded_Relief/MapServer/tile/3/3/3"]').should('exist')
+        cy.get('[data-test=map-type]').select('Satellite')
+        cy.get('.leaflet-tile-pane img[src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/3/3/3"]').should('exist')
+      })
     })
   })
 
