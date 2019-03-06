@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Map } from 'leaflet'
-import PropTypes from 'prop-types'
-import { LayerGroup, Marker, Polyline, Polygon } from 'react-leaflet'
+import { LayerGroup, Marker, Polyline, Polygon, withLeaflet } from 'react-leaflet'
 import { circleIcon } from '../custom-leaflet/icons'
 import crossSectionRectangle, { pointToArray, limitDistance } from '../core/cross-section-rectangle'
 import config from '../config'
@@ -10,7 +8,7 @@ const MOUSE_DOWN = 'mousedown touchstart'
 const MOUSE_MOVE = 'mousemove touchmove'
 const MOVE_UP = 'mouseup touchend'
 
-export default class CrossSectionDrawLayer extends PureComponent {
+export default withLeaflet(class CrossSectionDrawLayer extends PureComponent {
   constructor (props) {
     super(props)
     this.drawStart = this.drawStart.bind(this)
@@ -20,19 +18,19 @@ export default class CrossSectionDrawLayer extends PureComponent {
   }
 
   componentDidMount () {
-    const { map } = this.context
+    const { map } = this.props.leaflet
     map.dragging.disable()
     map.on(MOUSE_DOWN, this.drawStart)
   }
 
   componentWillUnmount () {
-    const { map } = this.context
+    const { map } = this.props.leaflet
     map.dragging.enable()
     map.off(MOUSE_DOWN, this.drawStart)
   }
 
   drawStart (event) {
-    const { map } = this.context
+    const { map } = this.props.leaflet
     this.setPoint1(event)
     this.setPoint2(null)
     map.on(MOUSE_MOVE, this.setPoint2)
@@ -40,7 +38,7 @@ export default class CrossSectionDrawLayer extends PureComponent {
   }
 
   drawEnd () {
-    const { map } = this.context
+    const { map } = this.props.leaflet
     map.off(MOUSE_MOVE, this.setPoint2)
     map.off(MOVE_UP, this.drawEnd)
   }
@@ -63,7 +61,7 @@ export default class CrossSectionDrawLayer extends PureComponent {
   }
 
   render () {
-    const { map } = this.context
+    const { map } = this.props.leaflet
     const { crossSectionPoints } = this.props
     const point1 = crossSectionPoints.get(0)
     const point2 = crossSectionPoints.get(1)
@@ -77,8 +75,4 @@ export default class CrossSectionDrawLayer extends PureComponent {
       </LayerGroup>
     )
   }
-}
-
-CrossSectionDrawLayer.contextTypes = {
-  map: PropTypes.instanceOf(Map)
-}
+})

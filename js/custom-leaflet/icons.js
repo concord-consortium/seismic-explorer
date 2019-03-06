@@ -3,11 +3,11 @@ import { DivIcon } from 'leaflet'
 import '../../css/custom-leaflet-icons.less'
 
 export function invisibleIcon () {
-  return new DivIcon({className: 'invisible-icon'})
+  return new DivIcon({ className: 'invisible-icon' })
 }
 
 export function circleIcon (label) {
-  return new DivIcon({className: 'circle-icon', html: label})
+  return new DivIcon({ className: 'circle-icon', html: label })
 }
 
 // Cache icons. First, it's just faster. Second, it prevents us from unnecessary re-rendering and buttons blinking.

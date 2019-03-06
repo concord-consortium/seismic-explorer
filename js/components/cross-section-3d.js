@@ -47,7 +47,7 @@ export default class CrossSection3D extends React.Component {
 
   render () {
     return (
-      <div ref='container' className='cross-section-3d' style={{width: '100%', height: '100%'}}>
+      <div ref='container' className='cross-section-3d' style={{ width: '100%', height: '100%' }}>
         {/* Canvas will be inserted here by the external view. */}
       </div>
     )

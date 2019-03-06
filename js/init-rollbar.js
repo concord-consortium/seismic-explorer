@@ -1,6 +1,6 @@
 import rollbar from 'rollbar'
 
-export default function initRollbar() {
+export default function initRollbar () {
   const host = window.location.hostname
   const pathname = window.location.pathname
   const branch = pathname.match(/branch\/(.*)\//)
@@ -15,7 +15,7 @@ export default function initRollbar() {
   // - versions are deployed to /version/<version-num> dir
   let env = 'production'
   if (local) {
-    env = 'local';
+    env = 'local'
   } else if (branch) {
     env = `branch-${branch[1]}`
   } else if (version) {
@@ -24,7 +24,7 @@ export default function initRollbar() {
 
   if (env === 'local') {
     // Do not enable rollbar for localhost.
-    return;
+    return
   }
 
   const config = {

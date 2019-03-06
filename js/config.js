@@ -32,7 +32,7 @@ const DEFAULT_CONFIG = {
   }()),
   // 'CC', 'USGS' or 'fake'
   api: 'CC',
-  mapStyle: 'satellite',  // or 'street' or 'earthquake-density'
+  mapStyle: 'satellite', // or 'street' or 'earthquake-density'
   // Use CloudFront caching for API calls.
   cache: true,
   // Enables / disables logging of user actions to parent frame (e.g. LARA).
@@ -60,7 +60,7 @@ const DEFAULT_CONFIG = {
 
 function getURLParam (name) {
   const url = window.location.href
-  name = name.replace(/[\[\]]/g, '\\$&')
+  name = name.replace(/[[\]]/g, '\\$&')
   const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
   const results = regex.exec(url)
   if (!results) return null

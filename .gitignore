@@ -3,3 +3,8 @@ dist
 
 .idea
 .DS_Store
+cypress/screenshots
+cypress/snapshots-diff
+.snapshot-report
+coverage
+

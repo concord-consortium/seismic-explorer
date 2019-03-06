@@ -28,7 +28,7 @@ function textureDimensions (rectangle, zoom) {
 // Returns zoom level that will generate biggest available texture within MAX_TEXTURE_SIZE x MAX_TEXTURE_SIZE limit.
 function optimalZoomLevel (rectangle, maxZoom) {
   let zoom = -1
-  let dim = {width: 0, height: 0}
+  let dim = { width: 0, height: 0 }
   while (dim.width < MAX_TEXTURE_SIZE && dim.height < MAX_TEXTURE_SIZE && zoom < maxZoom) {
     zoom += 1
     dim = textureDimensions(rectangle, zoom + 1)
@@ -41,14 +41,14 @@ function tilesToTexture (tiles, layerType) {
   const cols = tiles[0].length
   const height = rows * TILE_SIZE
   const width = cols * TILE_SIZE
-  const sy = THREE.Math.isPowerOfTwo(height) ? 1 : THREE.Math.nearestPowerOfTwo(height) / height
-  const sx = THREE.Math.isPowerOfTwo(width) ? 1 : THREE.Math.nearestPowerOfTwo(width) / width
+  const sy = THREE.Math.isPowerOfTwo(height) ? 1 : THREE.Math.floorPowerOfTwo(height) / height
+  const sx = THREE.Math.isPowerOfTwo(width) ? 1 : THREE.Math.floorPowerOfTwo(width) / width
   const canvas = document.createElement('canvas')
   canvas.height = Math.round(height * sy)
   canvas.width = Math.round(width * sx)
   const ctx = canvas.getContext('2d')
   const texture = new THREE.Texture(canvas)
-  const screenScale = window.devicePixelRatio;
+  const screenScale = window.devicePixelRatio
   tiles.forEach((row, rowIdx) => {
     row.forEach((rawTile, tileIdx) => {
       const tile = wrapTile(rawTile)

@@ -125,22 +125,22 @@ export default class SeismicEruptionsMap extends PureComponent {
   handleEarthquakeClick (event, earthquake) {
     // Do not open earthquake popup if click was part of the map dragging action.
     if (this._mapBeingDragged) return
-    this.setState({selectedEarthquake: earthquake})
+    this.setState({ selectedEarthquake: earthquake })
     log('EarthquakeClicked', earthquake)
   }
 
   handleEarthquakePopupClose () {
-    this.setState({selectedEarthquake: null})
+    this.setState({ selectedEarthquake: null })
   }
 
   handleVolcanoClick (event, volcano) {
     if (this._mapBeingDragged) return
-    this.setState({selectedVolcano: volcano})
+    this.setState({ selectedVolcano: volcano })
     log('Volcano Clicked', volcano)
   }
 
   handleVolcanoPopupClose () {
-    this.setState({selectedVolcano: null})
+    this.setState({ selectedVolcano: null })
   }
 
   fitBounds (bounds = INITIAL_BOUNDS) {
@@ -196,5 +196,5 @@ export default class SeismicEruptionsMap extends PureComponent {
 }
 
 function createSVGOverlayLayer (map) {
-  map.addLayer(new Circle([0, 0], 0, {opacity: 0, fillOpacity: 0}))
+  map.addLayer(new Circle([0, 0], 0, { opacity: 0, fillOpacity: 0 }))
 }

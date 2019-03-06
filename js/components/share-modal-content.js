@@ -19,7 +19,7 @@ export default class ShareModalContent extends PureComponent {
           <div>Paste this link in email or IM.</div>
           <textarea value={getURL()} readOnly />
           <div>Paste HTML to embed in website or blog.</div>
-          <textarea value={getIframeString()} readOnly style={{height: '4em'}} />
+          <textarea value={getIframeString()} readOnly style={{ height: '4em' }} />
           <div className='copyright'>
             <b>Copyright © 2016</b> <a href='http://concord.org' target='_blank'>The Concord Consortium</a>. All rights
             reserved. The software is licensed under the <a href='http://opensource.org/licenses/MIT' target='_blank'>MIT</a> license.

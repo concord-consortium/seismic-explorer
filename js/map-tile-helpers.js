@@ -35,7 +35,7 @@ export function wrapTileX (tile) {
   // ((x % maxVal) + maxVal) % maxVal handles both positive and negative values. E.g.:
   // x = -1, maxVal = 16 => ((-1 % 16) + 16) % 16 = 15
   // x = 1, maxVal = 16  => ((1 % 16) + 16) % 16 = 1
-  return {x: ((tile.x % maxVal) + maxVal) % maxVal, y: tile.y, zoom: tile.zoom}
+  return { x: ((tile.x % maxVal) + maxVal) % maxVal, y: tile.y, zoom: tile.zoom }
 }
 
 export function lngDiff (tile1, tile2) {
@@ -68,7 +68,7 @@ export function tilesListByRow (bounds, zoom) {
     const row = []
     tiles.push(row)
     for (let x = tileBBox.left; x <= tileBBox.right; x++) {
-      row.push({x, y, zoom})
+      row.push({ x, y, zoom })
     }
   }
   return tiles

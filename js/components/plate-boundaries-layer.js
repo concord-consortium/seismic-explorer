@@ -1,4 +1,4 @@
-import { MapLayer } from 'react-leaflet'
+import { MapLayer, withLeaflet } from 'react-leaflet'
 import 'leaflet-plugins/layer/vector/KML'
 import L from 'leaflet'
 import boundariesSimpleKML from '../data/plate-boundaries-simple.kml'
@@ -27,7 +27,7 @@ export function getKMLLayers (areaMultiplier, type) {
   return _cachedKML[key]
 }
 
-export default class PlateBoundariesLayer extends MapLayer {
+export default withLeaflet(class PlateBoundariesLayer extends MapLayer {
   createLeafletElement (props) {
     this.group = new L.FeatureGroup()
     this.visibleAreas = {}
@@ -58,4 +58,4 @@ export default class PlateBoundariesLayer extends MapLayer {
       }
     })
   }
-}
+})

@@ -3,7 +3,7 @@ import 'leaflet-rotatedmarker'
 import 'leaflet-plugins/layer/Marker.Rotate.js'
 import WrappingMapLayer from './wrapping-map-layer'
 import plateMovementData from '../data/plate-arrows'
-
+import { withLeaflet } from 'react-leaflet'
 import infoIconPng from '../../images/plates-info.png'
 import divArrowsShortPng from '../../images/div-arrows-short.png'
 import divArrowsMediumPng from '../../images/div-arrows-medium.png'
@@ -75,14 +75,14 @@ function getArrowIcon (type, velocity) {
   return arrows[type + size]
 }
 
-export default class PlateArrowsLayer extends WrappingMapLayer {
+export default withLeaflet(class PlateArrowsLayer extends WrappingMapLayer {
   getData () {
     return plateMovementData
   }
 
   getElement (data) {
     const { idx, lat, lng, angle, info, velocity, type } = data
-    const infoIconAndPopup = new L.Marker([lat, lng], {icon: infoIcon})
+    const infoIconAndPopup = new L.Marker([lat, lng], { icon: infoIcon })
     const arrows = new L.Marker([lat, lng], {
       icon: getArrowIcon(type, velocity),
       rotationAngle: angle,
@@ -100,4 +100,4 @@ export default class PlateArrowsLayer extends WrappingMapLayer {
     group.lng = lng
     return group
   }
-}
+})

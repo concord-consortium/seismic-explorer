@@ -6,12 +6,14 @@ import SpritesContainer from './sprites-container'
 import CrossSectionBox from './cross-section-box'
 import Camera from './camera'
 import log from '../logger'
+import getThreeJSRenderer from '../get-threejs-renderer'
 
 const MAX_DEPTH = 900
 const FINAL_ZOOM = 0.88 // 1 means that cross section box takes the whole screen
 
 // Share one renderer to avoid memory leaks (I couldn't fix them in other way).
-const renderer = new THREE.WebGLRenderer()
+const RendererClass = getThreeJSRenderer()
+const renderer = new RendererClass()
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setClearColor(0x000000, 1)
 renderer.autoClear = false

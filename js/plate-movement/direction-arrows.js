@@ -24,7 +24,7 @@ export default class {
     var material = new THREE.ShaderMaterial({
       uniforms: {
         color: { type: 'c', value: new THREE.Color(0xffffff) },
-        texture: {type: 't', value: this.texture}
+        texture: { type: 't', value: this.texture }
       },
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,

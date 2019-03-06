@@ -1,7 +1,7 @@
-import { MapLayer } from 'react-leaflet'
+import { MapLayer, withLeaflet } from 'react-leaflet'
 import { spritesLayer } from '../custom-leaflet/sprites-layer'
 
-export default class SpritesLayer extends MapLayer {
+export default withLeaflet(class SpritesLayer extends MapLayer {
   componentDidMount () {
     super.componentDidMount()
     this.updateLeafletElement(null, this.props)
@@ -17,4 +17,4 @@ export default class SpritesLayer extends MapLayer {
     this.leafletElement.onEarthquakeClick = onEarthquakeClick
     this.leafletElement.onVolcanoClick = onVolcanoClick
   }
-}
+})

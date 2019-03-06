@@ -21,7 +21,7 @@ export const PlateMovementCanvasLayer = CanvasLayer.extend({
 
   draw: function () {
     if (this._plateMovementPoints) {
-      this.externalView.setProps({PlateMovementPoints: this._plateMovementPoints, latLngToPoint: this.latLngToPoint})
+      this.externalView.setProps({ PlateMovementPoints: this._plateMovementPoints, latLngToPoint: this.latLngToPoint })
       this._plateMovementPoints = null
     }
     const transitionInProgress = this.externalView.render()

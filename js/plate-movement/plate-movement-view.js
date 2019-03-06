@@ -2,9 +2,11 @@ import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import DirectionArrows from './direction-arrows'
 import Camera from './camera'
+import getThreeJSRenderer from '../get-threejs-renderer'
 
 // Share one renderer to avoid memory leaks
-const renderer = new THREE.WebGLRenderer({alpha: true})
+const RendererClass = getThreeJSRenderer()
+const renderer = new RendererClass({ alpha: true })
 renderer.setPixelRatio(window.devicePixelRatio)
 renderer.setClearColor(0x000000, 0)
 
