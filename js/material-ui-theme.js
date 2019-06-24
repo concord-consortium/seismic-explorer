@@ -3,7 +3,8 @@ import { createMuiTheme } from '@material-ui/core/styles'
 export default createMuiTheme({
   palette: {
     primary: {
-      main: '#f8c84e'
+      main: '#f8c84e',
+      dark: '#f8bb31'
     },
     secondary: {
       main: '#f8c84e'
@@ -16,18 +17,18 @@ export default createMuiTheme({
   },
   overrides: {
     MuiButton: {
+      label: {
+        textTransform: 'none',
+        fontSize: 16,
+        color: '#444'
+      },
       root: {
-        '&:hover': {
-          backgroundColor: '#f2f2f2',
-        },
         '&$disabled': {
           color: 'inherit',
-          opacity: 0.25
-        }
-      },
-      text: {
-        color: '#666',
-        padding: 0
+          opacity: 0.5
+        },
+        padding: '2px 10px',
+        color: '#666'
       }
     },
     PrivateSwitchBase: {
