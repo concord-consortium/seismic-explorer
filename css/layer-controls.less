@@ -1,12 +1,10 @@
-.map-layer-controls{
+.map-layer-controls  {
+  position: relative;
   font-size: 14px;
+  margin-left: 12px;
 
   .title {
     margin-bottom: 5px;
-  }
-
-  .overlay-button{
-    font-size:12px;
   }
 }
 
@@ -15,12 +13,15 @@
     width: auto;
     height: auto;
     position: absolute;
-    left: 345px;
-    bottom: 35px;
+    left: 40px;
+    bottom: 40px;
     z-index: 3;
-    padding-top:20px;
+    padding-top: 20px;
 
-    > div + div{
+    > div + div {
       display:block;
+    }
+    label {
+      display: block;
     }
 }

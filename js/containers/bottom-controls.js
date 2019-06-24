@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import * as actions from '../actions'
 import AnimationButtons from '../components/animation-buttons'
 import LayerControls from './layer-controls'
+import MapControls from './map-controls'
 import { Range, Handle } from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
@@ -223,13 +224,10 @@ class BottomControls extends PureComponent {
           <div>
             <img src={ccLogoSrc} data-test='cc-logo' />
           </div>
-          <div title='Change the map rendering style'>
-            Map type
-            <select value={layers.get('base')} onChange={this.handleBaseLayerChange} data-test='map-type'>
-              {this.mapLayerOptions}
-            </select>
+          <div>
+            <MapControls />
+            <LayerControls />
           </div>
-          <LayerControls />
           {layers.get('earthquakes') &&
             <div className='stats'>
               <span>Displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
