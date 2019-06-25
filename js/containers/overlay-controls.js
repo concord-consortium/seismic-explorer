@@ -4,7 +4,7 @@ import * as actions from '../actions'
 import MapKey from '../components/map-key'
 import OverlayButton from '../components/overlay-button'
 import BorderColorIcon from '@material-ui/icons/BorderColor'
-import CenterFocusStrong from '@material-ui/icons/CenterFocusStrong';
+import CenterFocusStrong from '@material-ui/icons/CenterFocusStrong'
 import log from '../logger'
 import config from '../config'
 
