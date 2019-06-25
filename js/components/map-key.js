@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { magnitudeToRadius, depthToColor } from '../earthquake-properties'
 import OverlayButton from './overlay-button'
+import LayersIcon from '@material-ui/icons/Layers'
 import log from '../logger'
 import keyArrowShort from '../../images/key-arrow-short.png'
 import keyArrowMedium from '../../images/key-arrow-medium.png'
@@ -35,7 +36,7 @@ export default class MapKey extends PureComponent {
       return null
     }
     return !opened
-      ? <OverlayButton title='Information about the symbols used on this map' onClick={this.open} dataTest='key'>Key</OverlayButton>
+      ? <OverlayButton color='primary' icon={<LayersIcon />} title='Information about the symbols used on this map' onClick={this.open} dataTest='key'>Key</OverlayButton>
       : <div className='modal-style map-key-content' >
         <i onClick={this.hide} className='close-icon fa fa-close' />
         { earthquakes &&

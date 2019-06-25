@@ -3,11 +3,12 @@ import { createMuiTheme } from '@material-ui/core/styles'
 export default createMuiTheme({
   palette: {
     primary: {
-      main: '#f8c84e',
-      dark: '#f8bb31'
+      main: '#ffffff',
+      dark: '#f4f4f4'
     },
     secondary: {
-      main: '#f8c84e'
+      main: '#f8c84e',
+      dark: '#f8bb31'
     }
   },
   typography: {
@@ -23,12 +24,19 @@ export default createMuiTheme({
         color: '#444'
       },
       root: {
+        padding: '2px 10px'
+      },
+      containedPrimary: {
         '&$disabled': {
-          color: 'inherit',
+          backgroundColor: '#ffffff',
           opacity: 0.5
-        },
-        padding: '2px 10px',
-        color: '#666'
+        }
+      },
+      containedSecondary: {
+        '&$disabled': {
+          backgroundColor: '#f8c84e',
+          opacity: 0.5
+        }
       }
     },
     PrivateSwitchBase: {

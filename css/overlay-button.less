@@ -1,36 +1,20 @@
 .overlay-button {
-  color: #444;
-  background: #fff;
-  border-radius: 4px;
-  padding: 4px 10px 6px 10px;
-  font-size: 16px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
-  cursor: pointer;
-  text-align: center;
-  margin: 6px;
-
-  i {
+  svg, i {
     margin-right: 0.25em;
   }
 
   &.icon-only {
-    width: 26px;
-    height: 26px;
-    padding: 4px 0 0 0;
-    i {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    min-width: 0;
+    svg, i {
+      fill: #000;
       margin-right: 0;
     }
   }
+}
 
-  &:hover {
-    background: #f4f4f4;
-    color: #000;
-  }
-
-  &.disabled {
-    color: #999;
-    pointer-events: none;
-    cursor: default;
-    opacity: 0.9;
-  }
+.overlay-button + .overlay-button {
+  margin-left: 12px;
 }

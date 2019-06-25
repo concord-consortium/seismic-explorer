@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import * as actions from '../actions'
 import log from '../logger'
 import config from '../config'
-import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox'
 import Radio from '@material-ui/core/Radio'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import OverlayButton from '../components/overlay-button'
 
 import '../../css/layer-controls.less'
 import '../../css/settings-controls.less'
@@ -127,7 +127,7 @@ class LayerControls extends PureComponent {
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>
-        <Button variant='contained' color='primary' onClick={this.toggle} data-test='data-type'>Data Type</Button>
+        <OverlayButton onClick={this.toggle} dataTest='data-type'>Data Type</OverlayButton>
         { opened &&
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close' />

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
 import log from '../logger'
-import Button from '@material-ui/core/Button'
+import OverlayButton from '../components/overlay-button'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -42,7 +42,7 @@ class MapControls extends PureComponent {
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>
-        <Button variant='contained' color='primary' onClick={this.toggle} data-test='map-type'>Map Type</Button>
+        <OverlayButton onClick={this.toggle} dataTest='map-type'>Map Type</OverlayButton>
         { opened &&
           <div className='modal-style map-layer-content'>
             <i onClick={this.hide} className='close-icon fa fa-close' />

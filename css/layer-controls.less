@@ -8,20 +8,25 @@
   }
 }
 
-.map-layer-content{
-    display: block;
-    width: auto;
-    height: auto;
-    position: absolute;
-    left: 40px;
-    bottom: 40px;
-    z-index: 3;
-    padding-top: 20px;
+.map-layer-content {
+  display: block;
+  width: auto;
+  height: auto;
+  position: absolute;
+  left: 50px;
+  bottom: 40px;
+  z-index: 3;
+  padding-top: 20px;
 
-    > div + div {
-      display:block;
-    }
-    label {
-      display: block;
-    }
+  > div + div {
+    display:block;
+  }
+  label {
+    display: block;
+  }
+}
+
+.map-layer-controls:first-child .map-layer-content {
+  // Move first pane to the left, so it doesn't overlap with the other one.
+  left: 15px;
 }
