@@ -1,4 +1,8 @@
 import React, { PureComponent } from 'react'
+import Button from '@material-ui/core/Button'
+import StartSVG from '../../images/start.svg'
+import StopSVG from '../../images/stop.svg'
+import RestartSVG from '../../images/restart.svg'
 
 import '../../css/animation-buttons.less'
 
@@ -59,23 +63,19 @@ export default class AnimationButtons extends PureComponent {
     this.prevTimestamp = timestamp
   }
 
-  get icon () {
-    const { animationEnabled } = this.props
-    // FontAwesome class name.
-    return animationEnabled ? 'fa fa-stop' : 'fa fa-play'
-  }
-
   render () {
-    const { onPlayPause, onReset, layers } = this.props
+    const { onPlayPause, onReset, layers, animationEnabled } = this.props
     const hintText = layers.get('earthquakes') ? 'Animate Earthquakes' : 'Animate'
     return (
-      <div>
-        <div className='animation-button' onClick={layers.get('earthquakes') ? onReset : null} title='Reset Animation'>
-          <i className='fa fa-step-backward' />
-        </div>
-        <div className='animation-button' onClick={layers.get('earthquakes') ? onPlayPause : null} title={hintText}>
-          <i className={this.icon} />
-        </div>
+      <div className='animation-buttons'>
+        <Button color='primary' className='animation-button' onClick={layers.get('earthquakes') ? onReset : null} title='Reset Animation'>
+          <RestartSVG />
+          <div>Restart</div>
+        </Button>
+        <Button color='primary' className='animation-button' onClick={layers.get('earthquakes') ? onPlayPause : null} title={hintText}>
+          { animationEnabled ? <StopSVG /> : <StartSVG /> }
+          <div>{ animationEnabled ? 'Stop' : 'Start' }</div>
+        </Button>
       </div>
     )
   }

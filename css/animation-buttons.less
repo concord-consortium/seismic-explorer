@@ -1,29 +1,34 @@
+.animation-buttons {
+  margin: 0 15px 0 10px;
+}
+
 .animation-button {
-  margin: 0.5em 0 0.5em 0;
-  font-size: 1.5em;
-  height: 1.5em;
-  width: 1.5em;
-  line-height: 1.5em;
-  display: inline-block;
-  text-align:center;
-  cursor: pointer;
-  color: #777;
-  background-color: #eeeeee;
-  background-image: linear-gradient(top, #fbfbfb, #bcbec0);
-  &:hover {
-    color: #444;
-    background-image: linear-gradient(top, #fff, #d8d8d8);
+  height: 69px;
+  width: 68px;
+
+  .MuiButton-label {
+    display: flex;
+    flex-direction: column;
+    margin-top: 4px;
   }
-}
 
-.animation-button:first-child {
-  margin-left: 0.5em;
-  border-top-left-radius: 0.5em;
-  border-bottom-left-radius: 0.5em;
-}
+  &:hover {
+    background-color: #dfdfdf !important;
+  }
 
-.animation-button:last-child {
-  margin-right: 0.5em;
-  border-top-right-radius: 0.5em;
-  border-bottom-right-radius: 0.5em;
+  &:hover svg {
+    box-shadow: 0 0 0 4px #fff;
+  }
+
+  svg {
+    display: block;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    background: #fff;
+    margin-bottom: 3px;
+    path {
+      fill: #797979;
+    }
+  }
 }
