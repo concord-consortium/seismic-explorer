@@ -56,15 +56,15 @@ context('Smoke Test', () => {
       cy.wait(1000)
       cy.contains('Displaying 0 of 51730 earthquakes')
       cy.get('.earthquake-playback .slider-big .rc-slider-rail').click()
-      cy.contains('Displaying 23419 of 51730 earthquakes')
+      cy.contains('Displaying 23404 of 51730 earthquakes')
     })
   })
 
   context('Magnitude slider', () => {
     it('ensures user can limit earthquakes magnitude', () => {
       cy.contains('Magnitudes from 0.0 to 10.0')
-      cy.get('.mag-slider .rc-slider-rail').click({ force: true })
-      cy.contains('Magnitudes from 5.0 to 10.0')
+      cy.get('.mag-slider .rc-slider-rail').click(60, 2, { force: true })
+      cy.contains('Magnitudes from 3.5 to 10.0')
     })
   })
 
@@ -72,13 +72,12 @@ context('Smoke Test', () => {
     it('ensures user can display various data on the map', () => {
       cy.get('[data-test=data-type]').click()
       cy.get('.map-layer-content')
-        .should('contain', 'Plate boundaries')
-        .and('contain', 'Plate names')
-        .and('contain', 'Plate names')
-        .and('contain', 'Continent and ocean names')
+        .should('contain', 'Plate Boundaries')
+        .and('contain', 'Plate Names')
+        .and('contain', 'Continent And Ocean Names')
         .and('contain', 'Volcanoes')
         .and('contain', 'Earthquakes')
-        .and('contain', 'Plate movement')
+        .and('contain', 'Plate Movement')
 
       cy.get('.map-layer-content .close-icon').click()
       cy.get('.map-layer-content').should('not.exist')
@@ -87,20 +86,34 @@ context('Smoke Test', () => {
 
   context('Map type', () => {
     it('ensures user can change map type', () => {
+
+
       cy.window().then(win => {
         const scale = win.devicePixelRatio > 1 ? `@${win.devicePixelRatio}x` : ''
-        cy.get('[data-test=map-type]').select('Street')
+
+        cy.get('[data-test=map-type]').click()
+        cy.get('.map-layer-content')
+          .should('contain', 'Relief')
+          .and('contain', 'Street')
+          .and('contain', 'Satellite')
+
+        cy.get('input[value=street]').click()
         cy.get(`.leaflet-tile-pane img[src="https://maps.wikimedia.org/osm-intl/3/3/3${scale}.png"]`).should('exist')
-        cy.get('[data-test=map-type]').select('Relief')
+
+        cy.get('input[value=relief]').click()
         cy.get('.leaflet-tile-pane img[src="https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/ETOPO1_Global_Relief_Model_Color_Shaded_Relief/MapServer/tile/3/3/3"]').should('exist')
-        cy.get('[data-test=map-type]').select('Satellite')
+
+        cy.get('input[value=satellite]').click()
         cy.get('.leaflet-tile-pane img[src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/3/3/3"]').should('exist')
+
+        cy.get('.map-layer-content .close-icon').click()
+        cy.get('.map-layer-content').should('not.exist')
       })
     })
   })
 
   context('Key button', () => {
-    it('ensures user can the key', () => {
+    it('ensures user can open the key', () => {
       cy.get('[data-test=key]').click()
       cy.get('.map-key-content')
         .should('contain', 'Magnitude')
@@ -114,7 +127,7 @@ context('Smoke Test', () => {
         .and('not.contain', 'Volcano - time since last eruption')
 
       cy.get('[data-test=data-type]').click()
-      cy.get('.map-layer-content input[value="volcanoes"]').click()
+      cy.get('[title="Show Volcanoes"]').click()
 
       cy.get('.map-key-content')
         .should('contain', 'Volcano - time since last eruption')
