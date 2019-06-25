@@ -1,7 +1,10 @@
 .map-layer-controls  {
+  display: inline-block;
   position: relative;
   font-size: 14px;
-  margin-left: 12px;
+  &:not(:first-child) {
+    margin-left: 12px;
+  }
 
   .title {
     margin-bottom: 5px;

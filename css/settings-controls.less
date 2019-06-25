@@ -21,48 +21,36 @@
   font-size: 0.7em;
   height: 3.5em;
   flex-wrap: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
   border-top: 1px solid #eee;
   padding: 0.2em 1em;
   color: #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  div {
-    display: inline-block;
+  .centered-settings {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 580px;
+    margin: 0 15px 0 10px;
+
+    & > div {
+      white-space: nowrap;
+    }
   }
+
   img {
     height: 3em;
     margin-left: 0.5em;
   }
 
-  & > div {
-    white-space: nowrap;
-    vertical-align: middle;
-  }
-
-  & > div + div {
-    margin-left: 2em;
-  }
-
-  select {
-    margin-left: 0.5em;
-  }
-
-  input {
-    margin-right: 0.5em;
-  }
-
-  .stats {
-    width:240px;
-  }
-
   .mag-slider {
-    margin-left: 1em;
     height: 3.5em;
 
     .rc-slider {
-      margin-left:4px;
+      margin-left: 4px;
+      margin-top: 0.9em;
       min-width: 25em;
     }
     .rc-tooltip-inner > span {
@@ -71,8 +59,6 @@
   }
 
   .fullscreen-icon {
-    position: absolute;
-    right: 1em;
     margin-top: -0.15em;
     font-size: 1.5em;
     height: 2em;
