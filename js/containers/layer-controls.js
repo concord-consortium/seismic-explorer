@@ -152,7 +152,7 @@ class LayerControls extends PureComponent {
           <div title='Show Continent and Ocean Names Overlay'>
             <FormControlLabel
               control={<Checkbox checked={layers.get('continentOceanNames')} onChange={this.handleContinentOceanNamesChange} />}
-              label='Continent And Ocean Names'
+              label='Continent and Ocean Names'
             />
           </div>
           }

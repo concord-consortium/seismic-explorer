@@ -244,9 +244,11 @@ class BottomControls extends PureComponent {
               </div>
             }
           </div>
-          {screenfull.enabled &&
-            <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title='Toggle Fullscreen' />
-          }
+          <div>
+            {screenfull.enabled &&
+              <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title='Toggle Fullscreen' />
+            }
+          </div>
         </div>
       </div>
     )

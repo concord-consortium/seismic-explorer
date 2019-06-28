@@ -77,7 +77,7 @@ class OverlayControls extends PureComponent {
               title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode}
               icon={<BorderColorIcon className='draw-cross-section-icon' />} dataTest='draw-cross-section'
             >
-             Draw Cross-Section
+             Draw Cross-section
             </OverlayButton>
           }
           {mode === 'cross-section' &&

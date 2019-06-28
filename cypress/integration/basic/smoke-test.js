@@ -74,7 +74,7 @@ context('Smoke Test', () => {
       cy.get('.map-layer-content')
         .should('contain', 'Plate Boundaries')
         .and('contain', 'Plate Names')
-        .and('contain', 'Continent And Ocean Names')
+        .and('contain', 'Continent and Ocean Names')
         .and('contain', 'Volcanoes')
         .and('contain', 'Earthquakes')
         .and('contain', 'Plate Movement')
