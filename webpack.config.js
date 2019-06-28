@@ -28,7 +28,7 @@ module.exports = {
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.svg?3179539#iefix (for svg)
-        test: /\.(png|jpg|gif|svg)((\?|#).*)?$/,
+        test: /\.(png|jpg|gif)((\?|#).*)?$/,
         // inline base64 URLs for <=64k images, direct URLs for the rest
         loader: 'url-loader?limit=65536'
       },
@@ -54,6 +54,28 @@ module.exports = {
         // Pass global THREE variable to OrbitControls
         test: /leaflet-plugins\//,
         loader: 'imports-loader?L=leaflet'
+      },
+      {
+        test: /\.svg$/,
+        oneOf: [
+          {
+            // Do not apply SVGR import in CSS/LESS files.
+            issuer: /\.(less|css)$/,
+            use: 'url-loader'
+          },
+          {
+            issuer: /\.js$/,
+            loader: '@svgr/webpack',
+            options: {
+              svgoConfig: {
+                plugins: {
+                  // SVGR removes viewbox by default. Disable this behavior.
+                  removeViewBox: false
+                }
+              }
+            }
+          }
+        ]
       }
     ]
   },

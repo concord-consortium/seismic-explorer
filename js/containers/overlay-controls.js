@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import * as actions from '../actions'
 import MapKey from '../components/map-key'
 import OverlayButton from '../components/overlay-button'
+import BorderColorIcon from '@material-ui/icons/BorderColor'
+import CenterFocusStrong from '@material-ui/icons/CenterFocusStrong'
 import log from '../logger'
 import config from '../config'
 
@@ -65,18 +67,23 @@ class OverlayControls extends PureComponent {
         <div className='controls top left'>
           {mode !== 'cross-section' && viewChanged &&
             /* Don't display reset view icon when user is drawing a line (cross-section mode). */
-            <OverlayButton title='Reset map to show world view' onClick={resetView} icon='globe' />}
+            <OverlayButton color='primary' title='Reset map to show world view' onClick={resetView} icon={<CenterFocusStrong />} />}
         </div>
-        <div className='controls bottom right inline'>
-          {config.crossSection && mode === '2d' && layers.get('earthquakes') &&
-            <OverlayButton title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode} icon='paint-brush' dataTest='draw-cross-section'>
-              Draw a cross section line and open 3D view
+        <div className='controls bottom right'>
+          {
+            config.crossSection && mode === '2d' && layers.get('earthquakes') &&
+            <OverlayButton
+              color='primary'
+              title='Draw a cross section line and open 3D view' onClick={this.setCrossSectionDrawMode}
+              icon={<BorderColorIcon className='draw-cross-section-icon' />} dataTest='draw-cross-section'
+            >
+             Draw Cross-section
             </OverlayButton>
           }
           {mode === 'cross-section' &&
             <div>
               <OverlayButton title='Display the selected area and its earthquakes in 3D' onClick={this.set3DMode} disabled={!canOpen3D} icon='cube' dataTest='open-3d-view'>
-                Open 3D view {!canOpen3D && '(draw a cross section line first!)'}
+                Open 3D View
               </OverlayButton>
               <OverlayButton title='Cancel drawing' onClick={this.cancelCrossSectionDrawMode} icon='close' dataTest='cancel-drawing'>
                 Cancel
@@ -84,8 +91,8 @@ class OverlayControls extends PureComponent {
             </div>
           }
           {mode === '3d' &&
-            <OverlayButton title='Exit 3D view and return to 2D map view' onClick={this.exit3DMode} icon='map' dataTest='exit-3d-view'>
-              Go back to 2D map
+            <OverlayButton title='Exit 3D view and return to 2D map view' onClick={this.exit3DMode} icon='cube' dataTest='exit-3d-view'>
+              Close 3D View
             </OverlayButton>
           }
         </div>

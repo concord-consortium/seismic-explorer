@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import * as actions from '../actions'
 import AnimationButtons from '../components/animation-buttons'
 import LayerControls from './layer-controls'
+import MapControls from './map-controls'
 import { Range, Handle } from 'rc-slider'
 import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
@@ -223,30 +224,31 @@ class BottomControls extends PureComponent {
           <div>
             <img src={ccLogoSrc} data-test='cc-logo' />
           </div>
-          <div title='Change the map rendering style'>
-            Map type
-            <select value={layers.get('base')} onChange={this.handleBaseLayerChange} data-test='map-type'>
-              {this.mapLayerOptions}
-            </select>
-          </div>
-          <LayerControls />
-          {layers.get('earthquakes') &&
-            <div className='stats'>
-              <span>Displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
-              {magFilter && <span title='Zoom in to see weaker earthquakes.'><br />starting from magnitude <strong>{magnitudeCutOff}</strong></span>}
+          <div className='centered-settings'>
+            <div>
+              <MapControls />
+              <LayerControls />
             </div>
-          }
-          {layers.get('earthquakes') &&
-            <div className='mag-slider'>
-              <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
-                <Range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
-                  onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
+            {layers.get('earthquakes') &&
+              <div className='stats'>
+                <span>Displaying <strong>{earthquakesCountVisible}</strong> of <strong>{earthquakesCount}</strong> earthquakes </span>
+                {magFilter && <span title='Zoom in to see weaker earthquakes.'><br />starting from magnitude <strong>{magnitudeCutOff}</strong></span>}
               </div>
-            </div>
-          }
-          {screenfull.enabled &&
-            <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title='Toggle Fullscreen' />
-          }
+            }
+            {layers.get('earthquakes') &&
+              <div className='mag-slider'>
+                <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
+                  <Range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
+                    onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
+                </div>
+              </div>
+            }
+          </div>
+          <div>
+            {screenfull.enabled &&
+              <div className={this.fullscreenIconStyle} onClick={toggleFullscreen} title='Toggle Fullscreen' />
+            }
+          </div>
         </div>
       </div>
     )

@@ -147,6 +147,8 @@ export default class SeismicEruptionsMap extends PureComponent {
     const { mark2DViewModified } = this.props
     this.map.fitBounds(bounds)
     mark2DViewModified(false)
+    // Reset this flag again after some time, as Leaflet will call view updated event at the end of animation.
+    setTimeout(() => mark2DViewModified(false), 400)
     log('ResetMapClicked')
   }
 

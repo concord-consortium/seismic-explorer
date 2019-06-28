@@ -1,14 +1,17 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
-import OverlayButton from '../components/overlay-button'
 import log from '../logger'
 import config from '../config'
+import Checkbox from '@material-ui/core/Checkbox'
+import Radio from '@material-ui/core/Radio'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import OverlayButton from '../components/overlay-button'
 
 import '../../css/layer-controls.less'
 import '../../css/settings-controls.less'
 
-const inputType = config.exclusiveDataLayers ? 'radio' : 'checkbox'
+const CheckboxOrRadio = config.exclusiveDataLayers ? Radio : Checkbox
 
 class LayerControls extends PureComponent {
   constructor (props) {
@@ -124,30 +127,33 @@ class LayerControls extends PureComponent {
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>
-        <OverlayButton onClick={this.toggle} dataTest='data-type'>Data type</OverlayButton>
+        <OverlayButton onClick={this.toggle} dataTest='data-type'>Data Type</OverlayButton>
         { opened &&
         <div className='modal-style map-layer-content'>
           <i onClick={this.hide} className='close-icon fa fa-close' />
-          <div>Data Available:</div>
+          <div className='title'>Data Available:</div>
           { config.plateBoundariesAvailable && mode !== '3d' &&
             <div title='Show Plate Boundaries Overlay'>
-              <input type='checkbox' checked={layers.get('plateBoundaries')} onChange={this.handlePlateBoundariesChange}
-                id='plate-border-box' />
-              <label htmlFor='plate-border-box'>Plate boundaries</label>
+              <FormControlLabel
+                control={<Checkbox checked={layers.get('plateBoundaries')} onChange={this.handlePlateBoundariesChange} />}
+                label='Plate Boundaries'
+              />
             </div>
           }
           { config.plateNamesAvailable && mode !== '3d' &&
             <div title='Show Plate Names Overlay'>
-              <input type='checkbox' checked={layers.get('plateNames')} onChange={this.handlePlateNamesChange}
-                id='plate-names-box' />
-              <label htmlFor='plate-names-box'>Plate names</label>
+              <FormControlLabel
+                control={<Checkbox checked={layers.get('plateNames')} onChange={this.handlePlateNamesChange} />}
+                label='Plate Names'
+              />
             </div>
           }
           { config.continentOceanNamesAvailable && mode !== '3d' &&
           <div title='Show Continent and Ocean Names Overlay'>
-            <input type='checkbox' checked={layers.get('continentOceanNames')} onChange={this.handleContinentOceanNamesChange}
-              id='continent-ocean-names-box' />
-            <label htmlFor='continent-ocean-box'>Continent and ocean names</label>
+            <FormControlLabel
+              control={<Checkbox checked={layers.get('continentOceanNames')} onChange={this.handleContinentOceanNamesChange} />}
+              label='Continent and Ocean Names'
+            />
           </div>
           }
           { (config.plateBoundariesAvailable || config.plateNamesAvailable || config.continentOceanNamesAvailable) && mode !== '3d' &&
@@ -155,27 +161,34 @@ class LayerControls extends PureComponent {
           }
           { config.volcanoesAvailable &&
             <div title='Show Volcanoes'>
-              <input type={inputType} checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange}
-                id='volcano-box' value='volcanoes' name='datatype' />
-              <label htmlFor='volcano-box'>Volcanoes</label>
+              <FormControlLabel
+                control={<CheckboxOrRadio checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
+                label='Volcanoes'
+              />
             </div>
           }
           { config.earthquakesAvailable &&
             <div className='toggle-earthquakes' title='Show or hide all earthquakes on the map'>
-              <input type={inputType} id='earthquake-toggle' checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} value='earthquakes' name='datatype' />
-              <label htmlFor='earthquake-toggle'>Earthquakes</label>
+              <FormControlLabel
+                control={<CheckboxOrRadio checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} />}
+                label='Earthquakes'
+              />
             </div>
           }
           { config.plateMovementAvailable && mode !== '3d' &&
           <div className='toggle-arrow-movement' title='Show or hide plate movement arrows'>
-            <input type={inputType} id='plate-arrow-toggle' checked={layers.get('plateArrows')} onChange={this.handlePlateArrowLayerChange} value='plateArrows' name='datatype' />
-            <label htmlFor='plate-arrow-toggle'>Plate movement</label>
+            <FormControlLabel
+              control={<CheckboxOrRadio checked={layers.get('plateArrows')} onChange={this.handlePlateArrowLayerChange} />}
+              label='Plate Movement'
+            />
           </div>
           }
           { config.detailedPlateMovementAvailable && mode !== '3d' &&
-            <div className='toggle-plate-movement' title='Show or hide plate movement arrows'>
-              <input type={inputType} id='plate-movement-toggle' checked={layers.get('plateMovement')} onChange={this.handlePlateMovementLayerChange} value='plateMovement' name='datatype' />
-              <label htmlFor='plate-movement-toggle'>Plate movement (detailed)</label>
+            <div className='toggle-arrow-movement' title='Show or hide plate movement arrows'>
+              <FormControlLabel
+                control={<CheckboxOrRadio checked={layers.get('plateMovement')} onChange={this.handlePlateMovementLayerChange} />}
+                label='Plate Movement (Detailed)'
+              />
             </div>
           }
         </div>
