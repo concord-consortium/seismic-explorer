@@ -46,6 +46,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleVolcanoClick = this.handleVolcanoClick.bind(this)
     this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
+    this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
   }
 
   get map () {
@@ -92,6 +93,12 @@ export default class SeismicEruptionsMap extends PureComponent {
       // TOOD: remove, it can be useful to tweak position of plate arrows.
       console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
     })
+
+    window.addEventListener('resize', this.handleInitialBoundsSetup)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.handleInitialBoundsSetup)
   }
 
   componentDidUpdate () {
@@ -100,7 +107,21 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.refs.map.leafletElement.setMaxZoom(this.baseLayer.maxZoom || DEFAULT_MAX_ZOOM)
   }
 
-  handleMapViewportChanged () {
+  // This method is called on window.resize. For some reason, when Seismic Explorer is embedded in iframe,
+  // and this iframe size is updated by parent page, Leaflet gets lost and doesn't set initial bounds correctly.
+  // Related PT story: https://www.pivotaltracker.com/n/projects/1929933/stories/167580182/comments/205160884
+  // I can't explain why it happens, but that's the only reliable workaround I've found -> call Leaflet's
+  // invalidateSize() method and then fit bounds again. Note that we do that ONLY when map hasn't been modified
+  // the user explicitely. Otherwise, any resize of the window would cause the view to reset. It could be unexpected
+  // and annoying to users.
+  handleInitialBoundsSetup () {
+    if (!this.props.mapModified) {
+      this.map.invalidateSize()
+      this.fitBounds()
+    }
+  }
+
+  handleMapViewportChanged (e) {
     const { mark2DViewModified } = this.props
     mark2DViewModified(true)
 
