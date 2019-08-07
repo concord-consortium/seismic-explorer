@@ -60,7 +60,7 @@ class App extends PureComponent {
 
   renderApp () {
     const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
-      mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint } = this.props
+      mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews } = this.props
     return (
       <div>
         {dataFetching && <LoadingIcon />}
@@ -69,7 +69,7 @@ class App extends PureComponent {
         </div>
         <div className={`map-container mode-${mode}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
-            mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus}
+            mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus} mapModified={changedViews.has('2d')}
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData} />
           {mode === '3d' &&
@@ -102,6 +102,7 @@ function mapStateToProps (state) {
     error: state.getIn(['dataStatus', 'error']),
     dataFetching: state.getIn(['downloadStatus', 'requestsInProgress']),
     mode: state.get('mode'),
+    changedViews: state.get('changedViews'),
     filters: state.get('filters'),
     layers: state.get('layers'),
     earthquakes: getVisibleEarthquakes(state),
