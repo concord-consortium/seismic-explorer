@@ -99,7 +99,7 @@ context('Smoke Test', () => {
         cy.get('input[value=streetWikimedia]').click()
         cy.get(`.leaflet-tile-pane img[src="https://maps.wikimedia.org/osm-intl/3/3/3${scale}.png"]`).should('exist')
 
-        cy.get('input[value=streetArcgis]').click()
+        cy.get('input[value=street]').click()
         cy.get(`.leaflet-tile-pane img[src="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/3/3/3"]`).should('exist')
 
         cy.get('input[value=relief]').click()
