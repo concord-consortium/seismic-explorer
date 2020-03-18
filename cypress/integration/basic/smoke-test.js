@@ -100,7 +100,7 @@ context('Smoke Test', () => {
         cy.get(`.leaflet-tile-pane img[src="https://maps.wikimedia.org/osm-intl/3/3/3${scale}.png"]`).should('exist')
 
         cy.get('input[value=streetArcgis]').click()
-        cy.get(`.leaflet-tile-pane img[src="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/3/3/3.png"]`).should('exist')
+        cy.get(`.leaflet-tile-pane img[src="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/3/3/3"]`).should('exist')
 
         cy.get('input[value=relief]').click()
         cy.get('.leaflet-tile-pane img[src="https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/ETOPO1_Global_Relief_Model_Color_Shaded_Relief/MapServer/tile/3/3/3"]').should('exist')
