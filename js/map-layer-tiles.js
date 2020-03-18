@@ -8,9 +8,16 @@ export const layerInfo = [
     subdomains: []
   },
   {
-    type: 'street',
-    name: 'Street',
+    type: 'streetWikimedia',
+    name: 'Street (Wikimedia)',
     url: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{c}.png',
+    maxZoom: 19,
+    subdomains: []
+  },
+  {
+    type: 'streetArcgis',
+    name: 'Street (ArcGIS)',
+    url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
     maxZoom: 19,
     subdomains: []
   },
