@@ -50,6 +50,7 @@ const DEFAULT_CONFIG = {
   continentOceanNamesVisible: false,
   earthquakesAvailable: true,
   earthquakesVisible: true,
+  earthquakesDisplayAllOnStart: false,
   volcanoesAvailable: true,
   volcanoesVisible: false,
   plateMovementAvailable: true,

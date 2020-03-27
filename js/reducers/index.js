@@ -89,7 +89,7 @@ const INITIAL_FILTERS = Map({
   minMag: 0,
   maxMag: 10,
   minTime: config.startTime,
-  maxTime: config.startTime,
+  maxTime: config.earthquakesDisplayAllOnStart ? config.endTime : config.startTime,
   playbackMaxTime: config.endTime,
   minTimeLimit: config.startTime,
   maxTimeLimit: config.endTime,
