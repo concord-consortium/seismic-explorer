@@ -56,7 +56,9 @@ const DEFAULT_CONFIG = {
   plateMovementAvailable: true,
   plateMovementVisible: false,
   detailedPlateMovementAvailable: false,
-  detailedPlateMovementVisible: false
+  detailedPlateMovementVisible: false,
+  // Remove bottom bar and other UI elements from the view by setting to false
+  showUserInterface: true
 }
 
 function getURLParam (name) {

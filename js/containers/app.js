@@ -64,9 +64,11 @@ class App extends PureComponent {
     return (
       <div>
         {dataFetching && <LoadingIcon />}
-        <div className='top-controls-container'>
-          <TopControls />
-        </div>
+        {layers.get('showUI') &&
+          <div className='top-controls-container'>
+            <TopControls />
+          </div>
+        }
         <div className={`map-container mode-${mode}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus} mapModified={changedViews.has('2d')}
@@ -79,9 +81,11 @@ class App extends PureComponent {
           }
           <OverlayControls resetView={this.resetView} />
         </div>
-        <div className='bottom-controls-container'>
-          <BottomControls />
-        </div>
+        {layers.get('showUI') &&
+          <div className='bottom-controls-container'>
+            <BottomControls />
+          </div>
+        }
       </div>
     )
   }

@@ -21,6 +21,7 @@ export const SET_EARTHQUAKES_VISIBLE = 'SET_EARTHQUAKES_VISIBLE'
 export const SET_VOLCANOES_VISIBLE = 'SET_VOLCANOES_VISIBLE'
 export const SET_PLATE_MOVEMENT_VISIBLE = 'SET_PLATE_MOVEMENT_VISIBLE'
 export const SET_PLATE_ARROWS_VISIBLE = 'SET_PLATE_ARROWS_VISIBLE'
+export const SET_UI_VISIBLE = 'SET_UI_VISIBLE'
 
 const api = new EarthquakeDataAPI()
 
@@ -170,6 +171,13 @@ export function setPlateArrowsVisible (value) {
 export function setAnimationEnabled (value) {
   return {
     type: SET_ANIMATION_ENABLED,
+    value
+  }
+}
+
+export function setUIVisible(value) {
+  return {
+    type: SET_UI_VISIBLE,
     value
   }
 }

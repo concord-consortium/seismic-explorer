@@ -19,7 +19,8 @@ import {
   SET_EARTHQUAKES_VISIBLE,
   SET_VOLCANOES_VISIBLE,
   SET_PLATE_MOVEMENT_VISIBLE,
-  SET_PLATE_ARROWS_VISIBLE
+  SET_PLATE_ARROWS_VISIBLE,
+  SET_UI_VISIBLE
 } from '../actions'
 import config from '../config'
 
@@ -113,7 +114,8 @@ const INITIAL_LAYERS = Map({
   earthquakes: config.earthquakesVisible,
   volcanoes: config.volcanoesVisible,
   plateMovement: config.detailedPlateMovementVisible,
-  plateArrows: config.plateMovementVisible
+  plateArrows: config.plateMovementVisible,
+  showUI: config.showUserInterface
 })
 
 function layers (state = INITIAL_LAYERS, action) {
@@ -134,6 +136,8 @@ function layers (state = INITIAL_LAYERS, action) {
       return state.set('plateMovement', action.value)
     case SET_PLATE_ARROWS_VISIBLE:
       return state.set('plateArrows', action.value)
+    case SET_UI_VISIBLE:
+      return state.set('showUI', action.value)
     default:
       return state
   }
