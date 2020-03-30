@@ -61,15 +61,16 @@ class App extends PureComponent {
   renderApp () {
     const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews } = this.props
+    const showUI = layers.get('showUI');
     return (
       <div>
         {dataFetching && <LoadingIcon />}
-        {layers.get('showUI') &&
+        {showUI &&
           <div className='top-controls-container'>
             <TopControls />
           </div>
         }
-        <div className={`map-container mode-${mode}`}>
+        <div className={`map-container mode-${mode} ${showUI === false ? "full-height":""}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus} mapModified={changedViews.has('2d')}
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
@@ -79,9 +80,11 @@ class App extends PureComponent {
               mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
               mark3DViewModified={mark3DViewModified} />
           }
-          <OverlayControls resetView={this.resetView} />
+          {showUI &&
+            <OverlayControls resetView={this.resetView} />
+          }
         </div>
-        {layers.get('showUI') &&
+        {showUI &&
           <div className='bottom-controls-container'>
             <BottomControls />
           </div>

@@ -11,6 +11,12 @@ const DEFAULT_CONFIG = {
   minLng: -120,
   maxLat: 60,
   maxLng: 120,
+  // alternatively, specify center
+  centerLat: 39,
+  centerLng: -29.5,
+  centeredInitialZoom: 6,
+  // default behavior is to use a bounding box, but set this to false to use center position + zoom instead
+  sizeToFitBounds: true,
   // Max number of earthquakes that can be provided for one tile.
   tileLimit: 12000,
   // Use dates independent of the current time zone to make sure that caching works better.
@@ -58,7 +64,9 @@ const DEFAULT_CONFIG = {
   detailedPlateMovementAvailable: false,
   detailedPlateMovementVisible: false,
   // Remove bottom bar and other UI elements from the view by setting to false
-  showUserInterface: true
+  showUserInterface: true,
+  // constrain the view to use a square aspect ratio by setting to true (not yet implemented)
+  constrainView: false
 }
 
 function getURLParam (name) {

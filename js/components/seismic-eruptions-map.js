@@ -25,6 +25,10 @@ const INITIAL_BOUNDS = [
   [config.maxLat, config.maxLng]
 ]
 
+const INITIAL_CENTER = {
+  center: { lat: config.centerLat, lon: config.centerLng }, zoom: config.centeredInitialZoom
+}
+
 // It delays download of earthquakes data on map moveend event, so user can pan or zoom map
 // a few times quickly before the download starts.
 const BOUNDS_UPDATE_DELAY = 600 // ms
@@ -93,7 +97,11 @@ export default class SeismicEruptionsMap extends PureComponent {
       // TOOD: remove, it can be useful to tweak position of plate arrows.
       console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
     })
-
+    if (!config.sizeToFitBounds) {
+      // if we are not using bounds, and instead using a center point, force a refresh of the viewport to
+      // get the earthquakes to render on first load
+      setTimeout(() => this.handleMapViewportChanged(), 400)
+    }
     window.addEventListener('resize', this.handleInitialBoundsSetup)
   }
 
@@ -117,14 +125,17 @@ export default class SeismicEruptionsMap extends PureComponent {
   handleInitialBoundsSetup () {
     if (!this.props.mapModified) {
       this.map.invalidateSize()
-      this.fitBounds()
+      if (config.sizeToFitBounds) {
+        this.fitBounds()
+      } else {
+        this.centerMap()
+      }
     }
   }
 
   handleMapViewportChanged (e) {
     const { mark2DViewModified } = this.props
     mark2DViewModified(true)
-
     this._mapBeingDragged = false
 
     clearTimeout(this._boundsUpdateTimeoutID)
@@ -164,6 +175,15 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.setState({ selectedVolcano: null })
   }
 
+  centerMap(center = INITIAL_CENTER) {
+    const { mark2DViewModified } = this.props
+    this.map.viewport = center
+    mark2DViewModified(false)
+    console.log("CENTER MAP")
+    // Reset this flag again after some time, as Leaflet will call view updated event at the end of animation.
+    setTimeout(() => mark2DViewModified(false), 400)
+    log('ResetMapClicked')
+  }
   fitBounds (bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props
     this.map.fitBounds(bounds)
@@ -185,10 +205,12 @@ export default class SeismicEruptionsMap extends PureComponent {
       // There's no visible issue in requesting 2x on a regular dpi display aside from bandwidth
       url = window.devicePixelRatio && window.devicePixelRatio !== 1 ? baseLayer.url.replace('{c}', '@2x') : baseLayer.url.replace('{c}', '')
     }
+    const centerPoint = config.sizeToFitBounds ? undefined : INITIAL_CENTER
+    const bounds = config.sizeToFitBounds ? INITIAL_BOUNDS : undefined
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
-          bounds={INITIAL_BOUNDS} minZoom={2}>
+           bounds={bounds} minZoom={2} viewport={centerPoint}>
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
           <TileLayer key={baseLayer.type} url={url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
