@@ -144,6 +144,11 @@ export default class SeismicEruptionsMap extends PureComponent {
       setMapStatus(this.mapRegion, this.mapZoom, layers.get('earthquakes'))
 
       const bounds = this.map.getBounds()
+
+      const lengthKm = bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000 // m -> km
+      const widthKm = bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000 // m -> km
+      console.log(lengthKm, widthKm);
+
       log('MapRegionChanged', {
         minLat: bounds.getSouthWest().lat,
         minLng: bounds.getSouthWest().lng,
