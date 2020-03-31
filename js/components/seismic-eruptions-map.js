@@ -45,7 +45,8 @@ export default class SeismicEruptionsMap extends PureComponent {
       selectedEarthquake: null,
       selectedVolcano: null,
       scaleWidth: 0,
-      scaleHeight: 0
+      scaleHeight: 0,
+      zoom: 0
     }
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
@@ -114,7 +115,10 @@ export default class SeismicEruptionsMap extends PureComponent {
   componentDidUpdate () {
     // This maxZoom option is not handled by react-leaftlet as a dynamic react property (it doesn't update after
     // Map component is created), so we need to use raw Leaflet API to dynamically change it.
-    this.refs.map.leafletElement.setMaxZoom(this.baseLayer.maxZoom || DEFAULT_MAX_ZOOM)
+    let maxZoom = config.zoomMax > -1 ? config.zoomMax : DEFAULT_MAX_ZOOM
+    if (this.baseLayer.maxZoom && maxZoom > this.baseLayer.maxZoom) maxZoom = this.baseLayer.maxZoom
+    this.refs.map.leafletElement.setMaxZoom(maxZoom)
+    this.setState({ zoom: this.mapZoom })
   }
 
   // This method is called on window.resize. For some reason, when Seismic Explorer is embedded in iframe,
@@ -149,8 +153,8 @@ export default class SeismicEruptionsMap extends PureComponent {
 
       const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
       const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-      this.setState({ scaleWidth: widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })})
-      this.setState({ scaleHeight: heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })})
+      this.setState({ scaleWidth: widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 }) })
+      this.setState({ scaleHeight: heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 }) })
 
       log('MapRegionChanged', {
         minLat: bounds.getSouthWest().lat,
@@ -202,7 +206,7 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   render () {
     const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
-    const { selectedEarthquake, selectedVolcano, scaleWidth, scaleHeight } = this.state
+    const { selectedEarthquake, selectedVolcano, scaleWidth, scaleHeight, zoom } = this.state
     const baseLayer = this.baseLayer
     let url = baseLayer.url
     if (baseLayer.url.indexOf('{c}') > -1) {
@@ -214,10 +218,12 @@ export default class SeismicEruptionsMap extends PureComponent {
     }
     const centerPoint = config.sizeToFitBounds ? undefined : INITIAL_CENTER
     const bounds = config.sizeToFitBounds ? INITIAL_BOUNDS : undefined
+    const allowDragging = config.allowDrag
+    const scaleText = zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
-          bounds={bounds} minZoom={2} viewport={centerPoint}>
+          bounds={bounds} minZoom={config.zoomMin > -1 ? config.zoomMin : 2} viewport={centerPoint} dragging={allowDragging} >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
           <TileLayer key={baseLayer.type} url={url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
@@ -243,7 +249,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           }
         </Map>
         {!config.showUserInterface &&
-          <div className='scale-markers'>Scale: {scaleWidth}km x {scaleHeight}km</div>
+          <div className='scale-markers'>{scaleText}</div>
         }
       </div>
     )

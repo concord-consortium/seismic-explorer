@@ -65,8 +65,11 @@ const DEFAULT_CONFIG = {
   detailedPlateMovementVisible: false,
   // Remove bottom bar and other UI elements from the view by setting to false
   showUserInterface: true,
-  // constrain the view to use a square aspect ratio by setting to true (not yet implemented)
-  constrainView: false
+  // allow dragging / panning the map
+  allowDrag: true,
+  // min/max zoom levels. If set to -1 this has no effect
+  zoomMax: -1,
+  zoomMin: -1
 }
 
 function getURLParam (name) {

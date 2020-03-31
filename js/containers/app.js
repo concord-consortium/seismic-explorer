@@ -10,6 +10,7 @@ import LoadingIcon from '../components/loading-icon'
 import SplashScreen from '../components/splash-screen'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
 import { getVisibleEarthquakes, getVisibleVolcanoes } from '../selectors'
+import config from '../config'
 
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
@@ -61,7 +62,7 @@ class App extends PureComponent {
   renderApp () {
     const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews } = this.props
-    const showUI = layers.get('showUI')
+    const showUI = config.showUserInterface
     return (
       <div>
         {dataFetching && <LoadingIcon />}
