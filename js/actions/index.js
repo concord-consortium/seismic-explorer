@@ -175,7 +175,7 @@ export function setAnimationEnabled (value) {
   }
 }
 
-export function setUIVisible(value) {
+export function setUIVisible (value) {
   return {
     type: SET_UI_VISIBLE,
     value

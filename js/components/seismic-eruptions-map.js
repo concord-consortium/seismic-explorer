@@ -147,7 +147,7 @@ export default class SeismicEruptionsMap extends PureComponent {
 
       const lengthKm = bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000 // m -> km
       const widthKm = bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000 // m -> km
-      console.log(lengthKm, widthKm);
+      console.log(lengthKm, widthKm)
 
       log('MapRegionChanged', {
         minLat: bounds.getSouthWest().lat,
@@ -180,11 +180,10 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.setState({ selectedVolcano: null })
   }
 
-  centerMap(center = INITIAL_CENTER) {
+  centerMap (center = INITIAL_CENTER) {
     const { mark2DViewModified } = this.props
     this.map.viewport = center
     mark2DViewModified(false)
-    console.log("CENTER MAP")
     // Reset this flag again after some time, as Leaflet will call view updated event at the end of animation.
     setTimeout(() => mark2DViewModified(false), 400)
     log('ResetMapClicked')
@@ -215,7 +214,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
-           bounds={bounds} minZoom={2} viewport={centerPoint}>
+          bounds={bounds} minZoom={2} viewport={centerPoint}>
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
           <TileLayer key={baseLayer.type} url={url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />

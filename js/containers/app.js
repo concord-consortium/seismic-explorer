@@ -61,7 +61,7 @@ class App extends PureComponent {
   renderApp () {
     const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews } = this.props
-    const showUI = layers.get('showUI');
+    const showUI = layers.get('showUI')
     return (
       <div>
         {dataFetching && <LoadingIcon />}
@@ -70,7 +70,7 @@ class App extends PureComponent {
             <TopControls />
           </div>
         }
-        <div className={`map-container mode-${mode} ${showUI === false ? "full-height":""}`}>
+        <div className={`map-container mode-${mode} ${showUI === false ? 'full-height' : ''}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus} mapModified={changedViews.has('2d')}
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
