@@ -43,7 +43,9 @@ export default class SeismicEruptionsMap extends PureComponent {
     super(props)
     this.state = {
       selectedEarthquake: null,
-      selectedVolcano: null
+      selectedVolcano: null,
+      scaleWidth: 0,
+      scaleHeight: 0
     }
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
@@ -145,9 +147,10 @@ export default class SeismicEruptionsMap extends PureComponent {
 
       const bounds = this.map.getBounds()
 
-      const lengthKm = bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000 // m -> km
-      const widthKm = bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000 // m -> km
-      console.log(lengthKm, widthKm)
+      const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+      const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+      this.setState({ scaleWidth: widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })})
+      this.setState({ scaleHeight: heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })})
 
       log('MapRegionChanged', {
         minLat: bounds.getSouthWest().lat,
@@ -199,7 +202,7 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   render () {
     const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
-    const { selectedEarthquake, selectedVolcano } = this.state
+    const { selectedEarthquake, selectedVolcano, scaleWidth, scaleHeight } = this.state
     const baseLayer = this.baseLayer
     let url = baseLayer.url
     if (baseLayer.url.indexOf('{c}') > -1) {
@@ -239,6 +242,9 @@ export default class SeismicEruptionsMap extends PureComponent {
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
         </Map>
+        {!config.showUserInterface &&
+          <div className='scale-markers'>Scale: {scaleWidth}km x {scaleHeight}km</div>
+        }
       </div>
     )
   }
