@@ -25,9 +25,7 @@ const INITIAL_BOUNDS = [
   [config.maxLat, config.maxLng]
 ]
 
-const INITIAL_CENTER = {
-  center: { lat: config.centerLat, lon: config.centerLng }, zoom: config.centeredInitialZoom
-}
+const INITIAL_CENTER = { lat: config.centerLat, lng: config.centerLng }
 
 // It delays download of earthquakes data on map moveend event, so user can pan or zoom map
 // a few times quickly before the download starts.
@@ -46,7 +44,8 @@ export default class SeismicEruptionsMap extends PureComponent {
       selectedVolcano: null,
       scaleWidth: 0,
       scaleHeight: 0,
-      zoom: 0
+      zoom: 0,
+      mapViewport: { center: { lat: config.centerLat, lon: config.centerLng }, zoom: config.centeredInitialZoom }
     }
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
@@ -54,6 +53,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
+    this.handleZoom = this.handleZoom.bind(this)
   }
 
   get map () {
@@ -133,8 +133,6 @@ export default class SeismicEruptionsMap extends PureComponent {
       this.map.invalidateSize()
       if (config.sizeToFitBounds) {
         this.fitBounds()
-      } else {
-        this.centerMap()
       }
     }
   }
@@ -187,14 +185,21 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.setState({ selectedVolcano: null })
   }
 
-  centerMap (center = INITIAL_CENTER) {
-    const { mark2DViewModified } = this.props
-    this.map.viewport = center
-    mark2DViewModified(false)
-    // Reset this flag again after some time, as Leaflet will call view updated event at the end of animation.
-    setTimeout(() => mark2DViewModified(false), 400)
-    log('ResetMapClicked')
+  handleZoom () {
+    if (!config.sizeToFitBounds) {
+      // if we're not using bounds, we use a center point.
+      // ensure map remains with the correct center.
+      const { mark2DViewModified } = this.props
+      const nextViewport = this.refs.map.viewport
+      // using the + and - buttons will not change the center, only double-click and mouse wheel
+      if (nextViewport.center !== INITIAL_CENTER) {
+        nextViewport.center = INITIAL_CENTER
+        this.setState({ mapViewport: nextViewport })
+        mark2DViewModified(false)
+      }
+    }
   }
+
   fitBounds (bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props
     this.map.fitBounds(bounds)
@@ -206,7 +211,7 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   render () {
     const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
-    const { selectedEarthquake, selectedVolcano, scaleWidth, scaleHeight, zoom } = this.state
+    const { selectedEarthquake, selectedVolcano, scaleWidth, scaleHeight, zoom, mapViewport } = this.state
     const baseLayer = this.baseLayer
     let url = baseLayer.url
     if (baseLayer.url.indexOf('{c}') > -1) {
@@ -216,13 +221,13 @@ export default class SeismicEruptionsMap extends PureComponent {
       // There's no visible issue in requesting 2x on a regular dpi display aside from bandwidth
       url = window.devicePixelRatio && window.devicePixelRatio !== 1 ? baseLayer.url.replace('{c}', '@2x') : baseLayer.url.replace('{c}', '')
     }
-    const centerPoint = config.sizeToFitBounds ? undefined : INITIAL_CENTER
+    const centerPoint = config.sizeToFitBounds ? undefined : mapViewport
     const bounds = config.sizeToFitBounds ? INITIAL_BOUNDS : undefined
     const allowDragging = config.allowDrag
     const scaleText = zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
+        <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged} onzoomend={this.handleZoom}
           bounds={bounds} minZoom={config.zoomMin > -1 ? config.zoomMin : 2} viewport={centerPoint} dragging={allowDragging} >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
