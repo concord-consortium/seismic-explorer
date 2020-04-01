@@ -12,8 +12,8 @@ const DEFAULT_CONFIG = {
   maxLat: 60,
   maxLng: 120,
   // alternatively, specify center
-  centerLat: 39,
-  centerLng: -29.5,
+  centerLat: 0,
+  centerLng: 0,
   centeredInitialZoom: 6,
   // default behavior is to use a bounding box, but set this to false to use center position + zoom instead
   sizeToFitBounds: true,
