@@ -51,7 +51,6 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
-    this.handleZoom = this.handleZoom.bind(this)
   }
 
   get map() {
@@ -190,22 +189,6 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.setState({ selectedVolcano: null })
   }
 
-  handleZoom () {
-    if (!config.sizeToFitBounds) {
-      // if we're not using bounds, we use a center point.
-      // ensure map remains with the correct center.
-      const { mark2DViewModified } = this.props
-      const nextViewport = this.refs.map.viewport
-      // using the + and - buttons will not change the center, only double-click and mouse wheel
-      // there may be some small variations, so limit the updates to only significant changes in
-      // view center point
-      if (Math.ceil(nextViewport.center[0]) !== Math.ceil(INITIAL_CENTER.lat)) {
-        nextViewport.center = INITIAL_CENTER
-        mark2DViewModified(false)
-      }
-    }
-  }
-
   fitBounds (bounds = INITIAL_BOUNDS) {
     const { mark2DViewModified } = this.props
     this.map.fitBounds(bounds)
@@ -227,21 +210,26 @@ export default class SeismicEruptionsMap extends PureComponent {
       // There's no visible issue in requesting 2x on a regular dpi display aside from bandwidth
       url = window.devicePixelRatio && window.devicePixelRatio !== 1 ? baseLayer.url.replace('{c}', '@2x') : baseLayer.url.replace('{c}', '')
     }
-    const zoom = this.map ? this.mapZoom : config.centeredInitialZoom
-    let viewport = undefined;
-    if (!config.sizeToFitBounds) {
-      viewport = {
-        center: INITIAL_CENTER,
-        zoom
-      }
-    }
-    const bounds = config.sizeToFitBounds ? INITIAL_BOUNDS : undefined
+
     const allowDragging = config.allowDrag
+    const allowFreeMouseZoom = config.sizeToFitBounds ? true : "center"
+    const bounds = config.sizeToFitBounds ? INITIAL_BOUNDS : undefined
+    const center = config.sizeToFitBounds ? undefined : INITIAL_CENTER
+    const zoom = this.map ? this.mapZoom : config.centeredInitialZoom
+
     const scaleText = zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged} onzoomend={this.handleZoom}
-          bounds={bounds} minZoom={config.zoomMin > -1 ? config.zoomMin : 2} viewport={viewport} dragging={allowDragging} >
+        <Map ref='map' className='map'
+          onViewportChanged={this.handleMapViewportChanged}
+          bounds={bounds}
+          minZoom={config.zoomMin > -1 ? config.zoomMin : 2}
+          dragging={allowDragging}
+          zoom={zoom}
+          center={center}
+          doubleClickZoom={allowFreeMouseZoom}
+          scrollWheelZoom={allowFreeMouseZoom}
+        >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
           <TileLayer key={baseLayer.type} url={url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
