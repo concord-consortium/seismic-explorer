@@ -14,7 +14,7 @@ const DEFAULT_CONFIG = {
   // alternatively, specify center
   centerLat: 0,
   centerLng: 0,
-  centeredInitialZoom: 6,
+  centeredInitialZoom: 0,
   // default behavior is to use a bounding box, but set this to false to use center position + zoom instead
   sizeToFitBounds: true,
   // Max number of earthquakes that can be provided for one tile.
