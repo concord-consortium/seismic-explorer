@@ -53,11 +53,11 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
   }
 
-  get map() {
+  get map () {
     if (this.refs.map && this.refs.map.leafletElement) {
       return this.refs.map.leafletElement
     } else {
-      return;
+
     }
   }
 
@@ -71,11 +71,11 @@ export default class SeismicEruptionsMap extends PureComponent {
     }
   }
 
-  get mapZoom() {
+  get mapZoom () {
     if (this.map) {
       return this.map.getZoom()
     } else {
-      return;
+
     }
   }
 
@@ -212,7 +212,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     }
 
     const allowDragging = config.allowDrag
-    const allowFreeMouseZoom = config.sizeToFitBounds ? true : "center"
+    const allowFreeMouseZoom = config.sizeToFitBounds ? true : 'center'
     const bounds = config.sizeToFitBounds ? INITIAL_BOUNDS : undefined
     const center = config.sizeToFitBounds ? undefined : INITIAL_CENTER
     const zoom = this.map ? this.mapZoom : config.centeredInitialZoom
