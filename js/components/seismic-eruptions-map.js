@@ -44,9 +44,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     super(props)
     this.state = {
       selectedEarthquake: null,
-      selectedVolcano: null,
-      scaleWidth: 0,
-      scaleHeight: 0
+      selectedVolcano: null
     }
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
