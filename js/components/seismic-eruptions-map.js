@@ -220,7 +220,6 @@ export default class SeismicEruptionsMap extends PureComponent {
     const center = config.sizeToFitBounds ? undefined : INITIAL_CENTER
     const zoom = this.map ? this.mapZoom : config.centeredInitialZoom
 
-    const scaleText = zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map'
@@ -259,7 +258,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           }
         </Map>
         {!config.showUserInterface &&
-          <div className='scale-markers'>{scaleText}</div>
+          <div className='scale-markers'>{zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''}</div>
         }
       </div>
     )
