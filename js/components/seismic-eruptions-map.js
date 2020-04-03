@@ -33,6 +33,9 @@ const BOUNDS_UPDATE_DELAY = 600 // ms
 
 const DEFAULT_MAX_ZOOM = 13
 
+let scaleWidth = 0;
+let scaleHeight = 0;
+
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
 
@@ -51,6 +54,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
+    this.handleZoom = this.handleZoom.bind(this)
   }
 
   get map () {
@@ -149,11 +153,6 @@ export default class SeismicEruptionsMap extends PureComponent {
 
       const bounds = this.map.getBounds()
 
-      const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-      const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-      this.setState({ scaleWidth: widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 }) })
-      this.setState({ scaleHeight: heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 }) })
-
       log('MapRegionChanged', {
         minLat: bounds.getSouthWest().lat,
         minLng: bounds.getSouthWest().lng,
@@ -162,6 +161,16 @@ export default class SeismicEruptionsMap extends PureComponent {
         zoom: this.mapZoom
       })
     }, BOUNDS_UPDATE_DELAY)
+  }
+
+  handleZoom(e) {
+    // After zooming, if we are showing a scale, recalculate the properties
+    const bounds = this.map.getBounds()
+    const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+    const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+
+    scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
 
   handleEarthquakeClick (event, earthquake) {
@@ -196,7 +205,7 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   render () {
     const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
-    const { selectedEarthquake, selectedVolcano, scaleWidth, scaleHeight } = this.state
+    const { selectedEarthquake, selectedVolcano } = this.state
     const baseLayer = this.baseLayer
     let url = baseLayer.url
     if (baseLayer.url.indexOf('{c}') > -1) {
@@ -225,6 +234,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           center={center}
           doubleClickZoom={allowFreeMouseZoom}
           scrollWheelZoom={allowFreeMouseZoom}
+          onzoomend={this.handleZoom}
         >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
