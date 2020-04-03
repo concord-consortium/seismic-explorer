@@ -54,10 +54,8 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   get map () {
-    if (this.refs.map && this.refs.map.leafletElement) {
+    if (this.refs.map) {
       return this.refs.map.leafletElement
-    } else {
-
     }
   }
 
@@ -74,8 +72,6 @@ export default class SeismicEruptionsMap extends PureComponent {
   get mapZoom () {
     if (this.map) {
       return this.map.getZoom()
-    } else {
-
     }
   }
 
