@@ -33,8 +33,8 @@ const BOUNDS_UPDATE_DELAY = 600 // ms
 
 const DEFAULT_MAX_ZOOM = 13
 
-let scaleWidth = 0;
-let scaleHeight = 0;
+let scaleWidth = 0
+let scaleHeight = 0
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
@@ -163,7 +163,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     }, BOUNDS_UPDATE_DELAY)
   }
 
-  handleZoom(e) {
+  handleZoom (e) {
     // After zooming, if we are showing a scale, recalculate the properties
     const bounds = this.map.getBounds()
     const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
