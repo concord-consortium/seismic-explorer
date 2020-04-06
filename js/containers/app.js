@@ -10,6 +10,7 @@ import LoadingIcon from '../components/loading-icon'
 import SplashScreen from '../components/splash-screen'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
 import { getVisibleEarthquakes, getVisibleVolcanoes } from '../selectors'
+import config from '../config'
 
 import '../../css/app.less'
 import 'font-awesome/css/font-awesome.css'
@@ -61,13 +62,16 @@ class App extends PureComponent {
   renderApp () {
     const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews } = this.props
+    const showUI = config.showUserInterface
     return (
       <div>
         {dataFetching && <LoadingIcon />}
-        <div className='top-controls-container'>
-          <TopControls />
-        </div>
-        <div className={`map-container mode-${mode}`}>
+        {showUI &&
+          <div className='top-controls-container'>
+            <TopControls />
+          </div>
+        }
+        <div className={`map-container mode-${mode} ${showUI === false ? 'full-height' : ''}`}>
           <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus} mapModified={changedViews.has('2d')}
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
@@ -77,11 +81,15 @@ class App extends PureComponent {
               mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
               mark3DViewModified={mark3DViewModified} />
           }
-          <OverlayControls resetView={this.resetView} />
+          {showUI &&
+            <OverlayControls resetView={this.resetView} />
+          }
         </div>
-        <div className='bottom-controls-container'>
-          <BottomControls />
-        </div>
+        {showUI &&
+          <div className='bottom-controls-container'>
+            <BottomControls />
+          </div>
+        }
       </div>
     )
   }

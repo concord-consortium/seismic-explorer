@@ -89,7 +89,7 @@ const INITIAL_FILTERS = Map({
   minMag: 0,
   maxMag: 10,
   minTime: config.startTime,
-  maxTime: config.startTime,
+  maxTime: config.earthquakesDisplayAllOnStart ? config.endTime : config.startTime,
   playbackMaxTime: config.endTime,
   minTimeLimit: config.startTime,
   maxTimeLimit: config.endTime,
@@ -113,7 +113,8 @@ const INITIAL_LAYERS = Map({
   earthquakes: config.earthquakesVisible,
   volcanoes: config.volcanoesVisible,
   plateMovement: config.detailedPlateMovementVisible,
-  plateArrows: config.plateMovementVisible
+  plateArrows: config.plateMovementVisible,
+  showUI: config.showUserInterface
 })
 
 function layers (state = INITIAL_LAYERS, action) {

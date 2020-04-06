@@ -25,11 +25,16 @@ const INITIAL_BOUNDS = [
   [config.maxLat, config.maxLng]
 ]
 
+const INITIAL_CENTER = { lat: config.centerLat, lng: config.centerLng }
+
 // It delays download of earthquakes data on map moveend event, so user can pan or zoom map
 // a few times quickly before the download starts.
 const BOUNDS_UPDATE_DELAY = 600 // ms
 
 const DEFAULT_MAX_ZOOM = 13
+
+let scaleWidth = 0
+let scaleHeight = 0
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
@@ -47,10 +52,13 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
+    this.handleZoom = this.handleZoom.bind(this)
   }
 
   get map () {
-    return this.refs.map.leafletElement
+    if (this.refs.map) {
+      return this.refs.map.leafletElement
+    }
   }
 
   get mapRegion () {
@@ -64,7 +72,9 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   get mapZoom () {
-    return this.map.getZoom()
+    if (this.map) {
+      return this.map.getZoom()
+    }
   }
 
   get baseLayer () {
@@ -93,7 +103,11 @@ export default class SeismicEruptionsMap extends PureComponent {
       // TOOD: remove, it can be useful to tweak position of plate arrows.
       console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
     })
-
+    if (!config.sizeToFitBounds) {
+      // if we are not using bounds, and instead using a center point, force a refresh of the viewport to
+      // get the earthquakes to render on first load
+      this.handleMapViewportChanged()
+    }
     window.addEventListener('resize', this.handleInitialBoundsSetup)
   }
 
@@ -104,7 +118,9 @@ export default class SeismicEruptionsMap extends PureComponent {
   componentDidUpdate () {
     // This maxZoom option is not handled by react-leaftlet as a dynamic react property (it doesn't update after
     // Map component is created), so we need to use raw Leaflet API to dynamically change it.
-    this.refs.map.leafletElement.setMaxZoom(this.baseLayer.maxZoom || DEFAULT_MAX_ZOOM)
+    let maxZoom = config.zoomMax > -1 ? config.zoomMax : DEFAULT_MAX_ZOOM
+    if (this.baseLayer.maxZoom && maxZoom > this.baseLayer.maxZoom) maxZoom = this.baseLayer.maxZoom
+    this.refs.map.leafletElement.setMaxZoom(maxZoom)
   }
 
   // This method is called on window.resize. For some reason, when Seismic Explorer is embedded in iframe,
@@ -117,14 +133,15 @@ export default class SeismicEruptionsMap extends PureComponent {
   handleInitialBoundsSetup () {
     if (!this.props.mapModified) {
       this.map.invalidateSize()
-      this.fitBounds()
+      if (config.sizeToFitBounds) {
+        this.fitBounds()
+      }
     }
   }
 
   handleMapViewportChanged (e) {
     const { mark2DViewModified } = this.props
     mark2DViewModified(true)
-
     this._mapBeingDragged = false
 
     clearTimeout(this._boundsUpdateTimeoutID)
@@ -133,6 +150,7 @@ export default class SeismicEruptionsMap extends PureComponent {
       setMapStatus(this.mapRegion, this.mapZoom, layers.get('earthquakes'))
 
       const bounds = this.map.getBounds()
+
       log('MapRegionChanged', {
         minLat: bounds.getSouthWest().lat,
         minLng: bounds.getSouthWest().lng,
@@ -141,6 +159,16 @@ export default class SeismicEruptionsMap extends PureComponent {
         zoom: this.mapZoom
       })
     }, BOUNDS_UPDATE_DELAY)
+  }
+
+  handleZoom (e) {
+    // After zooming, if we are showing a scale, recalculate the properties
+    const bounds = this.map.getBounds()
+    const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+    const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+
+    scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
 
   handleEarthquakeClick (event, earthquake) {
@@ -185,10 +213,26 @@ export default class SeismicEruptionsMap extends PureComponent {
       // There's no visible issue in requesting 2x on a regular dpi display aside from bandwidth
       url = window.devicePixelRatio && window.devicePixelRatio !== 1 ? baseLayer.url.replace('{c}', '@2x') : baseLayer.url.replace('{c}', '')
     }
+
+    const allowDragging = config.allowDrag
+    const allowFreeMouseZoom = config.sizeToFitBounds ? true : 'center'
+    const bounds = config.sizeToFitBounds ? INITIAL_BOUNDS : undefined
+    const center = config.sizeToFitBounds ? undefined : INITIAL_CENTER
+    const zoom = this.map ? this.mapZoom : config.centeredInitialZoom
+
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
-        <Map ref='map' className='map' onViewportChanged={this.handleMapViewportChanged}
-          bounds={INITIAL_BOUNDS} minZoom={2}>
+        <Map ref='map' className='map'
+          onViewportChanged={this.handleMapViewportChanged}
+          bounds={bounds}
+          minZoom={config.zoomMin > -1 ? config.zoomMin : 2}
+          dragging={allowDragging}
+          zoom={zoom}
+          center={center}
+          doubleClickZoom={allowFreeMouseZoom}
+          scrollWheelZoom={allowFreeMouseZoom}
+          onzoomend={this.handleZoom}
+        >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
           <TileLayer key={baseLayer.type} url={url} subdomains={baseLayer.subdomains} attribution={baseLayer.attribution} />
@@ -213,6 +257,9 @@ export default class SeismicEruptionsMap extends PureComponent {
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
         </Map>
+        {!config.showUserInterface &&
+          <div className='scale-markers'>{zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''}</div>
+        }
       </div>
     )
   }
