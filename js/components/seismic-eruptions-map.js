@@ -108,6 +108,7 @@ export default class SeismicEruptionsMap extends PureComponent {
       // get the earthquakes to render on first load
       this.handleMapViewportChanged()
     }
+    this.calculateScale()
     window.addEventListener('resize', this.handleInitialBoundsSetup)
   }
 
@@ -137,6 +138,7 @@ export default class SeismicEruptionsMap extends PureComponent {
         this.fitBounds()
       }
     }
+    this.calculateScale()
   }
 
   handleMapViewportChanged (e) {
@@ -163,12 +165,7 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   handleZoom (e) {
     // After zooming, if we are showing a scale, recalculate the properties
-    const bounds = this.map.getBounds()
-    const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-    const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-
-    scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
-    scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    this.calculateScale()
   }
 
   handleEarthquakeClick (event, earthquake) {
@@ -190,6 +187,14 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   handleVolcanoPopupClose () {
     this.setState({ selectedVolcano: null })
+  }
+
+  calculateScale() {
+    const bounds = this.map.getBounds()
+    const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+    const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+    scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
 
   fitBounds (bounds = INITIAL_BOUNDS) {
@@ -258,7 +263,14 @@ export default class SeismicEruptionsMap extends PureComponent {
           }
         </Map>
         {!config.showUserInterface &&
-          <div className='scale-markers'>{zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''}</div>
+          <div className='scale-markers'>
+          {zoom > 3 &&
+            <div>
+              <div>{`Scale: ${scaleWidth}km x ${scaleHeight}km`}</div>
+              <div>{`Zoom level: ${zoom}`}</div>
+            </div>
+          }
+        </div>
         }
       </div>
     )
