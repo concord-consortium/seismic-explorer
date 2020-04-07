@@ -70,8 +70,8 @@ const DEFAULT_CONFIG = {
   // min/max zoom levels. If set to -1 this has no effect
   zoomMax: -1,
   zoomMin: -1,
-  //Set these using hex string to have all quakes and/or volcanoes use that specific color
-  //If set to -1 this has no effect
+  // Set these using hex string to have all quakes and/or volcanoes use that specific color
+  // If set to -1 this has no effect
   quakeColor: -1,
   volcanoColor: -1
 }
