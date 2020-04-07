@@ -1,7 +1,9 @@
+import config from "../config"
 import * as THREE from 'three'
 import Sprite from './sprite'
 
 function ageToColor (age) {
+  if (config.volcanoColor != -1) return parseInt(config.volcanoColor,16)
   if (age <= 100) return 0xFF6600
   if (age <= 400) return 0xD26F2D
   if (age <= 1600) return 0xAC7753

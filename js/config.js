@@ -69,7 +69,9 @@ const DEFAULT_CONFIG = {
   allowDrag: true,
   // min/max zoom levels. If set to -1 this has no effect
   zoomMax: -1,
-  zoomMin: -1
+  zoomMin: -1,
+  quakeColor: -1,
+  volcanoColor: -1
 }
 
 function getURLParam (name) {
