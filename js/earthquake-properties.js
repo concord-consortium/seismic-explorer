@@ -1,9 +1,9 @@
-import config from "./config"
+import config from './config'
 export const TRANSITION_TIME = 750
 
 export function depthToColor (depth) {
   // Depth can be negative (earthquake above the sea level) - use 0-30km range color in this case.
-  if (config.quakeColor != -1) return parseInt(config.quakeColor,16)
+  if (config.quakeColor !== -1) return parseInt(config.quakeColor, 16)
   if (depth <= 30) return 0xFF0A00
   if (depth <= 100) return 0xFF7A00
   if (depth <= 200) return 0xFFF700
