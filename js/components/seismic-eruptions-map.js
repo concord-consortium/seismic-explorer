@@ -189,7 +189,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.setState({ selectedVolcano: null })
   }
 
-  calculateScale() {
+  calculateScale () {
     const bounds = this.map.getBounds()
     const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
     const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
@@ -264,13 +264,13 @@ export default class SeismicEruptionsMap extends PureComponent {
         </Map>
         {!config.showUserInterface &&
           <div className='scale-markers'>
-          {zoom > 3 &&
+            {zoom > 3 &&
             <div>
               <div>{`Scale: ${scaleWidth}km x ${scaleHeight}km`}</div>
               <div>{`Zoom level: ${zoom}`}</div>
             </div>
-          }
-        </div>
+            }
+          </div>
         }
       </div>
     )
