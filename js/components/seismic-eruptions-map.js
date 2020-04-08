@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Map, TileLayer } from 'react-leaflet'
+import { Map, TileLayer, ScaleControl } from 'react-leaflet'
 import { Circle } from 'leaflet'
 import SpritesLayer from './sprites-layer'
 import EarthquakePopup from './earthquake-popup'
@@ -33,8 +33,8 @@ const BOUNDS_UPDATE_DELAY = 600 // ms
 
 const DEFAULT_MAX_ZOOM = 13
 
-let scaleWidth = 0
-let scaleHeight = 0
+// let scaleWidth = 0
+// let scaleHeight = 0
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
@@ -108,6 +108,7 @@ export default class SeismicEruptionsMap extends PureComponent {
       // get the earthquakes to render on first load
       this.handleMapViewportChanged()
     }
+    this.calculateScale()
     window.addEventListener('resize', this.handleInitialBoundsSetup)
   }
 
@@ -137,6 +138,7 @@ export default class SeismicEruptionsMap extends PureComponent {
         this.fitBounds()
       }
     }
+    this.calculateScale()
   }
 
   handleMapViewportChanged (e) {
@@ -163,12 +165,7 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   handleZoom (e) {
     // After zooming, if we are showing a scale, recalculate the properties
-    const bounds = this.map.getBounds()
-    const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-    const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-
-    scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
-    scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    this.calculateScale()
   }
 
   handleEarthquakeClick (event, earthquake) {
@@ -190,6 +187,18 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   handleVolcanoPopupClose () {
     this.setState({ selectedVolcano: null })
+  }
+
+  calculateScale () {
+    // const bounds = this.map.getBounds()
+    // const distWidthM = bounds.getSouthWest().distanceTo(bounds.getSouthEast())
+    // const distHeightM = bounds.getNorthEast().distanceTo(bounds.getSouthEast())
+    // // Note that these distances _should_ be in meters, but at zoom levels 3 and lower, at larger screen sizes
+    // // this calculation can quietly return values in km, so caution should be used if required at zoom 3 or lower.
+    // const widthKm = Math.round(distWidthM / 1000) // m -> km
+    // const heightKm = Math.round(distHeightM / 1000) // m -> km
+    // scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    // scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
 
   fitBounds (bounds = INITIAL_BOUNDS) {
@@ -256,9 +265,16 @@ export default class SeismicEruptionsMap extends PureComponent {
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
+          {!config.showUserInterface &&
+            <ScaleControl position={'topleft'} />
+          }
         </Map>
         {!config.showUserInterface &&
-          <div className='scale-markers'>{zoom > 3 ? `Scale: ${scaleWidth}km x ${scaleHeight}km   Zoom level: ${zoom}` : ''}</div>
+          <div className='scale-markers'>
+            <div>
+              <div>{`Zoom level: ${zoom}`}</div>
+            </div>
+          </div>
         }
       </div>
     )
