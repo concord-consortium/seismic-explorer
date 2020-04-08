@@ -33,8 +33,8 @@ const BOUNDS_UPDATE_DELAY = 600 // ms
 
 const DEFAULT_MAX_ZOOM = 13
 
-let scaleWidth = 0
-let scaleHeight = 0
+// let scaleWidth = 0
+// let scaleHeight = 0
 
 // Leaflet map doesn't support custom touch events by default.
 addTouchSupport()
@@ -190,15 +190,15 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   calculateScale () {
-    const bounds = this.map.getBounds()
-    const distWidthM = bounds.getSouthWest().distanceTo(bounds.getSouthEast())
-    const distHeightM = bounds.getNorthEast().distanceTo(bounds.getSouthEast())
-    // Note that these distances _should_ be in meters, but at zoom levels 3 and lower, at larger screen sizes
-    // this calculation can quietly return values in km, so caution should be used if required at zoom 3 or lower.
-    const widthKm = Math.round(distWidthM / 1000) // m -> km
-    const heightKm = Math.round(distHeightM / 1000) // m -> km
-    scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
-    scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    // const bounds = this.map.getBounds()
+    // const distWidthM = bounds.getSouthWest().distanceTo(bounds.getSouthEast())
+    // const distHeightM = bounds.getNorthEast().distanceTo(bounds.getSouthEast())
+    // // Note that these distances _should_ be in meters, but at zoom levels 3 and lower, at larger screen sizes
+    // // this calculation can quietly return values in km, so caution should be used if required at zoom 3 or lower.
+    // const widthKm = Math.round(distWidthM / 1000) // m -> km
+    // const heightKm = Math.round(distHeightM / 1000) // m -> km
+    // scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
+    // scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
 
   fitBounds (bounds = INITIAL_BOUNDS) {
