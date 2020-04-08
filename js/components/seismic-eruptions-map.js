@@ -265,7 +265,9 @@ export default class SeismicEruptionsMap extends PureComponent {
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
-          <ScaleControl position={'topleft'} />
+          {!config.showUserInterface &&
+            <ScaleControl position={'topleft'} />
+          }
         </Map>
         {!config.showUserInterface &&
           <div className='scale-markers'>
