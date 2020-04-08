@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Map, TileLayer } from 'react-leaflet'
+import { Map, TileLayer, ScaleControl } from 'react-leaflet'
 import { Circle } from 'leaflet'
 import SpritesLayer from './sprites-layer'
 import EarthquakePopup from './earthquake-popup'
@@ -191,8 +191,12 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   calculateScale () {
     const bounds = this.map.getBounds()
-    const widthKm = Math.round(bounds.getSouthWest().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
-    const heightKm = Math.round(bounds.getNorthEast().distanceTo(bounds.getSouthEast()) / 1000) // m -> km
+    const distWidthM = bounds.getSouthWest().distanceTo(bounds.getSouthEast())
+    const distHeightM = bounds.getNorthEast().distanceTo(bounds.getSouthEast())
+    // Note that these distances _should_ be in meters, but at zoom levels 3 and lower, at larger screen sizes
+    // this calculation can quietly return values in km, so caution should be used if required at zoom 3 or lower.
+    const widthKm = Math.round(distWidthM / 1000) // m -> km
+    const heightKm = Math.round(distHeightM / 1000) // m -> km
     scaleWidth = widthKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
     scaleHeight = heightKm.toLocaleString(navigator.language, { minimumFractionDigits: 0 })
   }
@@ -261,15 +265,13 @@ export default class SeismicEruptionsMap extends PureComponent {
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
+          <ScaleControl position={'topleft'} />
         </Map>
         {!config.showUserInterface &&
           <div className='scale-markers'>
-            {zoom > 3 &&
             <div>
-              <div>{`Scale: ${scaleWidth}km x ${scaleHeight}km`}</div>
               <div>{`Zoom level: ${zoom}`}</div>
             </div>
-            }
           </div>
         }
       </div>
