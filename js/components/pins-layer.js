@@ -6,7 +6,7 @@ import config from '../config'
 import '../../css/pins-layer.less'
 
 const getPinIcon = label => L.divIcon({
-  className: 'map-pin-icon',
+  className: `map-pin-icon ${!config.allowPinDrag && "fixed-position"}`,
   html: `<div class="map-pin-content">${label}<div class='pin fa fa-map-pin' /></div>`
 })
 
@@ -17,7 +17,11 @@ export default withLeaflet(class PinsLayer extends WrappingMapLayer {
 
   getElement (data, idx) {
     const { lat, lng, label } = data
-    const el = new L.Marker([lat, lng], { icon: getPinIcon(label) })
+    const el = new L.Marker([lat, lng], {
+      icon: getPinIcon(label),
+      draggable: config.allowPinDrag,
+      bubblingMouseEvents: !config.allowPinDrag
+    })
     el.lat = lat
     el.lng = lng
     return el

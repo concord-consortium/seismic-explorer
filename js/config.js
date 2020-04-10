@@ -6,6 +6,7 @@ const DEFAULT_CONFIG = {
   // Authorable pins. A single pin is defined by array: [<lat>, <lng>, <label>]. E.g.:
   // pins=[[0, 0, "test pin"], [20, 50, "another pin"]]
   pins: [],
+  allowPinDrag: false,
   // Initial map region.
   minLat: -60,
   minLng: -120,

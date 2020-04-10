@@ -1,5 +1,4 @@
 .map-pin-icon  {
-  pointer-events: none;
   color: #fafafa;
   text-shadow: 1px 1px 3px #000;
   width: 200px !important;
@@ -7,7 +6,9 @@
   margin-left: -100px !important;
   margin-top: -100px !important;
   text-align: center;
-
+  &.fixed-position {
+    pointer-events: none;
+  }
   .map-pin-content {
     font-size: 16px;
     line-height: 18px;
