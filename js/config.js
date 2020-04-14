@@ -7,6 +7,8 @@ const DEFAULT_CONFIG = {
   // pins=[[0, 0, "test pin"], [20, 50, "another pin"]]
   pins: [],
   allowPinDrag: false,
+  clickToMoveSinglePin: false,
+  defaultPinLabel: '',
   // Initial map region.
   minLat: -60,
   minLng: -120,
