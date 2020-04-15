@@ -37,10 +37,10 @@ class MapControls extends PureComponent {
     log('MapLayerChanged', { layer })
   }
 
-  getMapTypes() {
+  getMapTypes () {
     const { mapTypeFilters } = this.props
     if (mapTypeFilters) {
-      const maps = [];
+      const maps = []
       layerInfo.map((m, idx) => {
         if (mapTypeFilters.indexOf(m.type) > -1) {
           const name = m.name.indexOf(' ') > -1 ? m.name.substring(0, m.name.indexOf(' ')) : m.name
