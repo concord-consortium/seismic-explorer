@@ -29,7 +29,7 @@ class SimplifiedControls extends PureComponent {
   render () {
     return (
       <div className='simplified-controls'>
-        <MapControls />
+        <MapControls mapTypeFilters={['street', 'satellite']} />
         <LayerControls />
       </div>
     )
