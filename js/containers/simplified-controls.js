@@ -11,9 +11,6 @@ import '../../css/simplified-controls.less'
 class SimplifiedControls extends PureComponent {
   constructor (props) {
     super(props)
-    this.state = {
-    }
-
     this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
   }
   get mapLayerOptions () {

@@ -53,6 +53,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
     this.handleZoom = this.handleZoom.bind(this)
+    this.handlePinUpdated = this.handlePinUpdated.bind(this)
   }
 
   get map () {
@@ -190,10 +191,26 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   handleMapClick (e) {
     console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
+
+    const { pins } = this.props
+    // Note that this doesn't yet work if we need to move more than one pin. In future, we could
+    // extend to enable click-to-add more pins
+    const maxPins = 1
     if (config.clickToMoveSinglePin) {
-      this.props.setPin(0, e.latlng, config.defaultPinLabel)
+      const pinList = pins.toJS()
+      if (pinList.length < maxPins) {
+        this.props.setPin(pinList.length, e.latlng, config.defaultPinLabel)
+      } else {
+        // update the position of the last-placed pin
+        this.props.updatePin(pinList.length - 1, e.latlng)
+      }
     }
   }
+  handlePinUpdated (idx, markerElement, latLng) {
+    // update state with marker from Leaflet
+    this.props.updatePin(idx, latLng, markerElement)
+  }
+
   calculateScale () {
     // const bounds = this.map.getBounds()
     // const distWidthM = bounds.getSouthWest().distanceTo(bounds.getSouthEast())
@@ -258,7 +275,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           {layers.get('plateNames') && <LabelsLayer mapRegion={mapStatus.get('region')} labels={plateNames} />}
           {layers.get('plateArrows') && <PlateArrowsLayer mapRegion={mapStatus.get('region')} />}
           {layers.get('plateMovement') && <PlateMovementLayer />}
-          {pins && <PinsLayer mapRegion={mapStatus.get('region')} pins={pins} />}
+          {pins && <PinsLayer mapRegion={mapStatus.get('region')} pins={pins} onPinUpdated={this.handlePinUpdated} />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <SpritesLayer earthquakes={earthquakes} volcanoes={volcanoes}

@@ -10,16 +10,17 @@ const getPinIcon = label => L.divIcon({
   html: `<div class="map-pin-content">${label}<div class='pin fa fa-map-pin' /></div>`
 })
 
-const allPins = []
-
 export default withLeaflet(class PinsLayer extends WrappingMapLayer {
   getData () {
     return this.props.pins.toJS() // config.pins.map(data => ({ lat: data[0], lng: data[1], label: data[2] }))
   }
 
   getElement (data, idx) {
+    const { pins } = this.props
+    const pinList = pins.toJS()
+    const existingPin = pinList[idx] ? pinList[idx].marker : undefined
     const { lat, lng, label } = data
-    if (idx > allPins.length - 1) {
+    if (!existingPin) {
       const el = new L.Marker([lat, lng], {
         icon: getPinIcon(label),
         draggable: config.allowPinDrag,
@@ -27,12 +28,12 @@ export default withLeaflet(class PinsLayer extends WrappingMapLayer {
       })
       el.lat = lat
       el.lng = lng
-      allPins.push(el)
+      this.props.onPinUpdated(idx, el, { lat, lng })
       return el
     } else {
-      const existingPin = allPins[idx]
       const newLatLng = new L.LatLng(lat, lng)
       existingPin.setLatLng(newLatLng)
+      this.props.onPinUpdated(idx, existingPin, { lat, lng })
       return existingPin
     }
   }

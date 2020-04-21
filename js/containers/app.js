@@ -62,9 +62,9 @@ class App extends PureComponent {
 
   renderApp () {
     const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
-      mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews, pins, setPin } = this.props
+      mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews, pins, setPin, updatePin } = this.props
     const showUI = config.showUserInterface
-    const simplifiedUI = config.simplifiedUI
+    const simplifiedUI = !showUI && config.simplifiedUI
     return (
       <div>
         {dataFetching && <LoadingIcon />}
@@ -78,7 +78,7 @@ class App extends PureComponent {
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus} mapModified={changedViews.has('2d')}
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData}
-            pins={pins} setPin={setPin} />
+            pins={pins} setPin={setPin} updatePin={updatePin} />
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} volcanoes={volcanoes} crossSectionPoints={crossSectionPoints}
               mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}

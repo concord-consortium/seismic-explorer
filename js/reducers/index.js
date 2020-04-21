@@ -20,7 +20,8 @@ import {
   SET_VOLCANOES_VISIBLE,
   SET_PLATE_MOVEMENT_VISIBLE,
   SET_PLATE_ARROWS_VISIBLE,
-  SET_PIN
+  SET_PIN,
+  UPDATE_PIN
 } from '../actions'
 import config from '../config'
 
@@ -140,14 +141,28 @@ function layers (state = INITIAL_LAYERS, action) {
       return state
   }
 }
-const pinList = config.pins.map(data => ({ lat: data[0], lng: data[1], label: data[2] }))
-console.log(pinList)
+const pinList = config.pins.map(data => ({ lat: data[0], lng: data[1], label: data[2], marker: undefined }))
+
 const INITIAL_PINS = List(pinList)
 
 function pins (state = INITIAL_PINS, action) {
   switch (action.type) {
     case SET_PIN:
-      return state.set(action.index, { lat: action.latLng.lat, lng: action.latLng.lng, label: action.label })
+      return state.set(action.index, { lat: action.latLng.lat, lng: action.latLng.lng, label: action.label, marker: undefined })
+    case UPDATE_PIN:
+      const updatedPinList = state.map((item, index) => {
+        if (index !== action.index) {
+          return item
+        }
+        // else this pin was moved / marker reference updated. Preserve label
+        if (action.marker) {
+          return { lat: action.latLng.lat, lng: action.latLng.lng, label: item.label, marker: action.marker }
+        } else {
+          // use existing marker reference
+          return { lat: action.latLng.lat, lng: action.latLng.lng, label: item.label, marker: item.marker }
+        }
+      })
+      return updatedPinList
     default:
       return state
   }
