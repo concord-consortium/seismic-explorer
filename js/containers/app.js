@@ -64,7 +64,7 @@ class App extends PureComponent {
     const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews, pins, setPin } = this.props
     const showUI = config.showUserInterface
-    const pinUI = config.clickToMoveSinglePin
+    const simplifiedUI = config.simplifiedUI
     return (
       <div>
         {dataFetching && <LoadingIcon />}
@@ -93,7 +93,7 @@ class App extends PureComponent {
             <BottomControls />
           </div>
         }
-        {pinUI &&
+        {simplifiedUI &&
           <SimplifiedControls />
         }
       </div>

@@ -68,6 +68,7 @@ const DEFAULT_CONFIG = {
   detailedPlateMovementVisible: false,
   // Remove bottom bar and other UI elements from the view by setting to false
   showUserInterface: true,
+  simplifiedUI: false,
   // allow dragging / panning the map
   allowDrag: true,
   // min/max zoom levels. If set to -1 this has no effect
