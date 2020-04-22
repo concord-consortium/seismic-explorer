@@ -6,7 +6,7 @@ import config from '../config'
 import '../../css/pins-layer.less'
 
 const getPinIcon = label => L.divIcon({
-  className: `map-pin-icon ${!config.allowPinDrag && 'fixed-position'}`,
+  className: `map-pin-icon ${!config.allowPinDrag && 'fixed-position'} ${config.clickToMoveSinglePin && 'colorful-pin'}`,
   html: `<div class="map-pin-content">${label}<div class='pin fa fa-map-pin' /></div>`
 })
 
