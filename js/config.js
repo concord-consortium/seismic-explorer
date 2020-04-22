@@ -6,6 +6,9 @@ const DEFAULT_CONFIG = {
   // Authorable pins. A single pin is defined by array: [<lat>, <lng>, <label>]. E.g.:
   // pins=[[0, 0, "test pin"], [20, 50, "another pin"]]
   pins: [],
+  allowPinDrag: false,
+  clickToMoveSinglePin: false,
+  defaultPinLabel: '',
   // Initial map region.
   minLat: -60,
   minLng: -120,
@@ -65,6 +68,7 @@ const DEFAULT_CONFIG = {
   detailedPlateMovementVisible: false,
   // Remove bottom bar and other UI elements from the view by setting to false
   showUserInterface: true,
+  simplifiedUI: false,
   // allow dragging / panning the map
   allowDrag: true,
   // min/max zoom levels. If set to -1 this has no effect

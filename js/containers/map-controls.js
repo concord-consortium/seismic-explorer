@@ -37,6 +37,26 @@ class MapControls extends PureComponent {
     log('MapLayerChanged', { layer })
   }
 
+  getMapTypes () {
+    const { mapTypeFilters } = this.props
+    if (mapTypeFilters) {
+      const maps = []
+      layerInfo.map((m, idx) => {
+        if (mapTypeFilters.indexOf(m.type) > -1) {
+          const name = m.name.indexOf(' ') > -1 ? m.name.substring(0, m.name.indexOf(' ')) : m.name
+          maps.push(<FormControlLabel key={idx} value={m.type} control={<Radio />} label={name}
+          />)
+        }
+      })
+      return maps
+    } else {
+      return layerInfo.map((m, idx) =>
+        <FormControlLabel key={idx} value={m.type} control={<Radio />} label={m.name}
+        />
+      )
+    }
+  }
+
   render () {
     const { layers } = this.props
     const { opened } = this.state
@@ -49,12 +69,7 @@ class MapControls extends PureComponent {
             <div className='title'>Maps:</div>
             <div title='Change the map rendering style'>
               <RadioGroup value={layers.get('base')} onChange={this.handleBaseLayerChange}>
-                {
-                  layerInfo.map((m, idx) =>
-                    <FormControlLabel key={idx} value={m.type} control={<Radio />} label={m.name}
-                    />
-                  )
-                }
+                {this.getMapTypes()}
               </RadioGroup>
             </div>
           </div>

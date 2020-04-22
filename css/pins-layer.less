@@ -1,13 +1,20 @@
 .map-pin-icon  {
-  pointer-events: none;
   color: #fafafa;
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: rgb(46, 46, 46);
   text-shadow: 1px 1px 3px #000;
+  font-weight: bold;
   width: 200px !important;
   height: 100px !important;
   margin-left: -100px !important;
   margin-top: -100px !important;
   text-align: center;
-
+  &.fixed-position {
+    pointer-events: none;
+  }
+  &.colorful-pin {
+    color: #ffe839;
+  }
   .map-pin-content {
     font-size: 16px;
     line-height: 18px;

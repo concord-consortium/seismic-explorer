@@ -53,6 +53,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
     this.handleZoom = this.handleZoom.bind(this)
+    this.handlePinUpdated = this.handlePinUpdated.bind(this)
   }
 
   get map () {
@@ -100,8 +101,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     setMapStatus(this.mapRegion, this.mapZoom)
 
     this.map.on('click', (e) => {
-      // TOOD: remove, it can be useful to tweak position of plate arrows.
-      console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
+      this.handleMapClick(e)
     })
     if (!config.sizeToFitBounds) {
       // if we are not using bounds, and instead using a center point, force a refresh of the viewport to
@@ -189,6 +189,28 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.setState({ selectedVolcano: null })
   }
 
+  handleMapClick (e) {
+    console.log('lat:', e.latlng.lat, 'lng:', e.latlng.lng)
+
+    const { pins } = this.props
+    // Note that this doesn't yet work if we need to move more than one pin. In future, we could
+    // extend to enable click-to-add more pins
+    const maxPins = 1
+    if (config.clickToMoveSinglePin) {
+      const pinList = pins.toJS()
+      if (pinList.length < maxPins) {
+        this.props.setPin(pinList.length, e.latlng, config.defaultPinLabel)
+      } else {
+        // update the position of the last-placed pin
+        this.props.updatePin(pinList.length - 1, e.latlng)
+      }
+    }
+  }
+  handlePinUpdated (idx, markerElement, latLng) {
+    // update state with marker from Leaflet
+    this.props.updatePin(idx, latLng, markerElement)
+  }
+
   calculateScale () {
     // const bounds = this.map.getBounds()
     // const distWidthM = bounds.getSouthWest().distanceTo(bounds.getSouthEast())
@@ -211,7 +233,7 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   render () {
-    const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint } = this.props
+    const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint, pins } = this.props
     const { selectedEarthquake, selectedVolcano } = this.state
     const baseLayer = this.baseLayer
     let url = baseLayer.url
@@ -229,6 +251,8 @@ export default class SeismicEruptionsMap extends PureComponent {
     const center = config.sizeToFitBounds ? undefined : INITIAL_CENTER
     const zoom = this.map ? this.mapZoom : config.centeredInitialZoom
 
+    const showZoomControls = config.minZoom !== config.maxZoom
+
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
         <Map ref='map' className='map'
@@ -241,6 +265,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           doubleClickZoom={allowFreeMouseZoom}
           scrollWheelZoom={allowFreeMouseZoom}
           onzoomend={this.handleZoom}
+          zoomControl={showZoomControls}
         >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
           {/* component instance when we switch between maps with subdomains and without. */}
@@ -250,7 +275,7 @@ export default class SeismicEruptionsMap extends PureComponent {
           {layers.get('plateNames') && <LabelsLayer mapRegion={mapStatus.get('region')} labels={plateNames} />}
           {layers.get('plateArrows') && <PlateArrowsLayer mapRegion={mapStatus.get('region')} />}
           {layers.get('plateMovement') && <PlateMovementLayer />}
-          {config.pins && config.pins.length > 0 && <PinsLayer mapRegion={mapStatus.get('region')} />}
+          {pins && <PinsLayer mapRegion={mapStatus.get('region')} pins={pins} onPinUpdated={this.handlePinUpdated} />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
             <SpritesLayer earthquakes={earthquakes} volcanoes={volcanoes}
@@ -265,11 +290,11 @@ export default class SeismicEruptionsMap extends PureComponent {
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
           }
-          {!config.showUserInterface &&
+          {!config.showUserInterface && showZoomControls &&
             <ScaleControl position={'topleft'} />
           }
         </Map>
-        {!config.showUserInterface &&
+        {!config.showUserInterface && showZoomControls &&
           <div className='scale-markers'>
             <div>
               <div>{`Zoom level: ${zoom}`}</div>
