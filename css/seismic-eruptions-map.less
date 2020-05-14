@@ -10,6 +10,16 @@
     cursor: pointer;
   }
 
+  .scale-markers {
+    position: fixed;
+    top: 150px;
+    left: 10px;
+    height: 60px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+  }
   /* Earthquakes should be above SVG elements (plate boundaries) */
   .leaflet-overlay-pane {
     svg {
@@ -25,6 +35,16 @@
     .plate-movement-canvas-layer {
       z-index: 1;
     }
+  }
+
+  .leaflet-control-scale-line {
+    font-size: 16px;
+    margin-bottom: 15px;
+    background: transparent;
+    border: 0;
+    color: white;
+    border: 2px solid white;
+    border-top: 0
   }
 
   /* Set of styles applied only when user enters cross section drawing mode */
