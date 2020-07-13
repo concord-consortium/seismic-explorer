@@ -7,7 +7,7 @@ import '../../css/leaflet/leaflet.css'
 import '../../css/thumbnail-map.less'
 
 const INITIAL_CENTER = { lat: 0, lng: 0 }
-const ZOOM_PAN_INTERVAL = 600
+const ZOOM_PAN_INTERVAL = 1000
 
 const divIcon = (label) => {
   return (
@@ -56,6 +56,7 @@ export default class ThumbnailMap extends PureComponent {
         const maxZoom = Math.min(this.map.getBoundsZoom(bounds), 3)
         clearTimeout(this._zoomPanTimeoutId)
         this.map.setZoom(maxZoom - 1)
+        // zoom needs to complete before we can pan
         this._zoomPanTimeoutId = setTimeout(() => {
           this.map.panTo(bounds.getCenter())
         }, ZOOM_PAN_INTERVAL)
