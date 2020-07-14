@@ -75,7 +75,7 @@ export default class ThumbnailMap extends PureComponent {
       p2LatLng && markers.push(<Marker key={'p2'} position={p2LatLng} icon={divIcon('P2')} />)
 
       const centerLine = p1LatLng && p2LatLng && <Polyline key={'csline'} positions={[p1LatLng, p2LatLng]} color={'white'} weight={1} />
-      const crossSectionRect = p1LatLng && p2LatLng && <Polygon key={'csrect'} positions={crossSectionRectangle(p1LatLng, p2LatLng)} color={'white'}  weight={1} clickable={false} />
+      const crossSectionRect = p1LatLng && p2LatLng && <Polygon key={'csrect'} positions={crossSectionRectangle(p1LatLng, p2LatLng)} color={'white'} weight={1} clickable={false} />
       return [ markers, centerLine, crossSectionRect ]
     }
   }
