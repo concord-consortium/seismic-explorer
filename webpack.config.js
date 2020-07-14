@@ -47,7 +47,7 @@ module.exports = {
       },
       {
         // Pass global THREE variable to OrbitControls
-        test: /three\/examples\/js/,
+        test: /three[\\/]examples[\\/]js/,
         loader: 'imports-loader?THREE=three'
       },
       {
