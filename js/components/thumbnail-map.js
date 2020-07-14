@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react'
 import L from 'leaflet'
-import { Map, Marker, TileLayer } from 'react-leaflet'
+import { Map, Marker, Polyline, Polygon, TileLayer } from 'react-leaflet'
 import { mapLayer } from '../map-layer-tiles'
+import crossSectionRectangle from '../core/cross-section-rectangle'
 
 import '../../css/leaflet/leaflet.css'
 import '../../css/thumbnail-map.less'
@@ -73,9 +74,12 @@ export default class ThumbnailMap extends PureComponent {
       p1LatLng && markers.push(<Marker key={'p1'} position={p1LatLng} icon={divIcon('P1')} />)
       p2LatLng && markers.push(<Marker key={'p2'} position={p2LatLng} icon={divIcon('P2')} />)
 
-      return markers
+      const centerLine = p1LatLng && p2LatLng && <Polyline key={'csline'} positions={[p1LatLng, p2LatLng]} color={'white'} weight={1} />
+      const crossSectionRect = p1LatLng && p2LatLng && <Polygon key={'csrect'} positions={crossSectionRectangle(p1LatLng, p2LatLng)} color={'white'}  weight={1} clickable={false} />
+      return [ markers, centerLine, crossSectionRect ]
     }
   }
+
   render () {
     const { mode } = this.props
     const baseLayer = this.baseLayer
