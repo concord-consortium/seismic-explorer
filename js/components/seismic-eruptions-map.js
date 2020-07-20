@@ -251,7 +251,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     const center = config.sizeToFitBounds ? undefined : INITIAL_CENTER
     const zoom = this.map ? this.mapZoom : config.centeredInitialZoom
 
-    const showZoomControls = config.zoomMin !== config.zoomMax
+    const showZoomControls = config.zoomMin === -1 || (config.zoomMin !== config.zoomMax)
 
     return (
       <div className={`seismic-eruptions-map mode-${mode}`}>
