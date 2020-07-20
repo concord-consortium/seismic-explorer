@@ -62,8 +62,7 @@ export default class ThumbnailMap extends PureComponent {
             this.map.panTo(bounds.getCenter())
           }, ZOOM_PAN_INTERVAL)
         }
-
-      }, 1000);
+      }, 1000)
     }
   }
 
