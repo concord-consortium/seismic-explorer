@@ -15,6 +15,10 @@ module.exports = (on, config) => {
     if (browser.name === 'electron') {
       launchOptions.args.width = 1400
       launchOptions.args.height = 1000
+      // open issue for Cypress screenshot, fix sizes https://github.com/cypress-io/cypress/issues/587
+      launchOptions.preferences['width'] = 1400
+      launchOptions.preferences['height'] = 1000
+      launchOptions.preferences['resizable'] = false
       return launchOptions
     }
   })
