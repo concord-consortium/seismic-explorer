@@ -80,7 +80,7 @@ class App extends PureComponent {
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData}
             pins={pins} setPin={setPin} updatePin={updatePin} />
-          <ThumbnailMap crossSectionPoints={crossSectionPoints} mode={mode} layers={layers} />
+          {mode === '3d' && <ThumbnailMap crossSectionPoints={crossSectionPoints} mode={mode} layers={layers} />}
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} volcanoes={volcanoes} crossSectionPoints={crossSectionPoints}
               mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}

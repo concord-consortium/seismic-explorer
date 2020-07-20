@@ -49,19 +49,21 @@ export default class ThumbnailMap extends PureComponent {
     if (mode === '3d' && crossSectionPoints) {
       const p1LatLng = crossSectionPoints.get(0)
       const p2LatLng = crossSectionPoints.get(1)
+      setTimeout(() => {
+        if (!p2LatLng) {
+          p1LatLng && this.map.panTo(new L.LatLng(p1LatLng[0], p1LatLng[1]))
+        } else {
+          const bounds = L.latLngBounds([p1LatLng, p2LatLng])
+          const maxZoom = Math.min(this.map.getBoundsZoom(bounds), 3)
+          clearTimeout(this._zoomPanTimeoutId)
+          this.map.setZoom(maxZoom - 1)
+          // zoom needs to complete before we can pan
+          this._zoomPanTimeoutId = setTimeout(() => {
+            this.map.panTo(bounds.getCenter())
+          }, ZOOM_PAN_INTERVAL)
+        }
 
-      if (!p2LatLng) {
-        p1LatLng && this.map.panTo(new L.LatLng(p1LatLng[0], p1LatLng[1]))
-      } else {
-        const bounds = L.latLngBounds([p1LatLng, p2LatLng])
-        const maxZoom = Math.min(this.map.getBoundsZoom(bounds), 3)
-        clearTimeout(this._zoomPanTimeoutId)
-        this.map.setZoom(maxZoom - 1)
-        // zoom needs to complete before we can pan
-        this._zoomPanTimeoutId = setTimeout(() => {
-          this.map.panTo(bounds.getCenter())
-        }, ZOOM_PAN_INTERVAL)
-      }
+      }, 1000);
     }
   }
 
