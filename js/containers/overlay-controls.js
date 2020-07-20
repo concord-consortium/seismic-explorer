@@ -64,7 +64,7 @@ class OverlayControls extends PureComponent {
     const viewChanged = (mode !== '3d' && changedViews.has('2d')) || (mode === '3d' && changedViews.has('3d'))
     return (
       <div className='overlay-controls'>
-        <div className='controls top left'>
+        <div className={`controls top left ${mode === '3d' && ' cross-section'}`}>
           {mode !== 'cross-section' && viewChanged &&
             /* Don't display reset view icon when user is drawing a line (cross-section mode). */
             <OverlayButton color='primary' title='Reset map to show world view' onClick={resetView} icon={<CenterFocusStrong />} />}
