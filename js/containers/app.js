@@ -5,6 +5,7 @@ import TopControls from '../components/top-controls'
 import OverlayControls from './overlay-controls'
 import BottomControls from './bottom-controls'
 import SeismicEruptionsMap from '../components/seismic-eruptions-map'
+import ThumbnailMap from '../components/thumbnail-map'
 import CrossSection3D from '../components/cross-section-3d'
 import LoadingIcon from '../components/loading-icon'
 import SplashScreen from '../components/splash-screen'
@@ -79,6 +80,7 @@ class App extends PureComponent {
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData}
             pins={pins} setPin={setPin} updatePin={updatePin} />
+          {mode === '3d' && <ThumbnailMap crossSectionPoints={crossSectionPoints} mode={mode} layers={layers} />}
           {mode === '3d' &&
             <CrossSection3D ref='view3d' earthquakes={earthquakes} volcanoes={volcanoes} crossSectionPoints={crossSectionPoints}
               mapType={layers.get('base')} latLngToPoint={this.latLngToPoint}
