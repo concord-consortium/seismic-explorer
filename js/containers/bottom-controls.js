@@ -64,15 +64,18 @@ function logMagSliderChange (value) {
   log('MagnitudeSliderChanged', { minMag: value[0], maxMag: value[1] })
 }
 
-const rangeHandle = (props) => {
-  const { index, offset } = props
-  return (
-    <div key={index} className='custom-handle' style={{ left: `${offset}%` }}>
-      <svg height='100%' width='100%' viewBox='0 0 20 20'>
-        <polygon points='0,0 10,20 20,0' />
-      </svg>
-    </div>
-  )
+const rangeHandle = (alwaysVisible, minTime, maxTime) => {
+  return (props) => {
+    const { index, offset } = props
+    return (
+      <div key={index} className='custom-handle' style={{ left: `${offset}%` }}>
+        <svg height='100%' width='100%' viewBox='0 0 20 20'>
+          <polygon points='0,0 10,20 20,0' />
+        </svg>
+        <div className={`tooltip ${alwaysVisible ? 'visible ' : ''}${index === 0 ? 'right' : 'left'}`}>{ sliderDateFormatter(index === 0 ? minTime : maxTime) }</div>
+      </div>
+    )
+  }
 }
 
 const tooltipHandle = (alwaysVisible) => {
@@ -208,7 +211,7 @@ class BottomControls extends PureComponent {
               <Range className='slider-range-only' allowCross={false} min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
                 step={86400} value={[filters.get('minTime'), filters.get('playbackMaxTime')]}
                 onChange={this.handlePlaybackRangeChange} onAfterChange={logPlaybackRangeChange}
-                handle={rangeHandle}
+                handle={rangeHandle(animationEnabled, filters.get('minTime'), filters.get('playbackMaxTime'))}
               />
               <Range className='slider-big' min={filters.get('minTimeLimit')} max={filters.get('maxTimeLimit')}
                 step={86400} value={[filters.get('minTime'), filters.get('maxTime')]}
