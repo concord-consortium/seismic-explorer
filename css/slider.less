@@ -86,9 +86,29 @@
       stroke-width: 2;
 
       &:active, &:hover {
+        .tooltip {
+          display: block;
+        }
         cursor: pointer;
         fill: #f6ca7a;
       }
+    }
+
+    &:active, &:hover {
+      .tooltip {
+        display: block;
+        cursor: pointer;
+        pointer-events: none;
+      }      
+      .right {
+        font-size: 1.3em;
+        margin-left: 1.5em;
+      }
+      .left {
+        font-size: 1.3em;
+        margin-left: -6em;
+      }
+
     }
   }
 }
