@@ -44,11 +44,12 @@ export default class MapKey extends PureComponent {
           <tbody>
             <tr><th colSpan='2'>Magnitude</th><th colSpan='2'>Depth</th></tr>
             <tr><td>{circle(3)}</td><td>3</td><td>{earthquakeColor(20)}</td><td>0-30 km</td></tr>
-            <tr><td>{circle(5)}</td><td>5</td><td>{earthquakeColor(50)}</td><td>30-100 km</td></tr>
-            <tr><td>{circle(6)}</td><td>6</td><td>{earthquakeColor(150)}</td><td>100-200 km</td></tr>
-            <tr><td>{circle(7)}</td><td>7</td><td>{earthquakeColor(250)}</td><td>200-300 km</td></tr>
-            <tr><td>{circle(8)}</td><td>8</td><td>{earthquakeColor(400)}</td><td>300-500 km</td></tr>
-            <tr><td>{circle(9)}</td><td>9</td><td>{earthquakeColor(550)}</td><td>> 500 km</td></tr>
+            <tr><td>{circle(4)}</td><td>4</td><td>{earthquakeColor(50)}</td><td>30-100 km</td></tr>
+            <tr><td>{circle(5)}</td><td>5</td><td>{earthquakeColor(150)}</td><td>100-200 km</td></tr>
+            <tr><td>{circle(6)}</td><td>6</td><td>{earthquakeColor(250)}</td><td>200-300 km</td></tr>
+            <tr><td>{circle(7)}</td><td>7</td><td>{earthquakeColor(400)}</td><td>300-500 km</td></tr>
+            <tr><td>{circle(8)}</td><td>8</td><td>{earthquakeColor(550)}</td><td>> 500 km</td></tr>
+            <tr><td>{circle(9)}</td><td>9</td></tr>
           </tbody>
         </table>
         }
