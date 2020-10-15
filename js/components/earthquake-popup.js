@@ -21,5 +21,5 @@ export default class EarthquakePopup extends PureComponent {
 
 function date (timestamp) {
   const d = new Date(parseInt(timestamp))
-  return d.toLocaleString ? d.toLocaleString() : d.toString()
+  return (d.toLocaleString ? d.toLocaleString() : d.toString()) + ' UTC'
 }
