@@ -6,6 +6,7 @@ import TweenManager from '../tween-manager'
 const DISTANCE_FROM_TARGET = 1000
 const TARGET_ANGLE = Math.PI * 0.485
 const TARGET_Z_OFFSET = 85
+const TWEEN_SEGMENT_DURATION = 1500
 
 export default class Camera {
   constructor (domElement, controlsEnabled) {
@@ -104,7 +105,7 @@ export default class Camera {
 
   animateCamAndTargetPos (finalCamPos, targetZ) {
     return new TWEEN.Tween(this.camera.position)
-      .to(finalCamPos, 750)
+      .to(finalCamPos, TWEEN_SEGMENT_DURATION)
       .easing(TWEEN.Easing.Cubic.InOut)
       .onUpdate(() => {
         // Move controls' target too.
@@ -117,7 +118,7 @@ export default class Camera {
 
   animateCamPos (finalCamPos) {
     return new TWEEN.Tween(this.camera.position)
-      .to(finalCamPos, 750)
+      .to(finalCamPos, TWEEN_SEGMENT_DURATION)
       .easing(TWEEN.Easing.Cubic.InOut)
       .onUpdate(() => {
         this.controls.update()
@@ -126,7 +127,7 @@ export default class Camera {
 
   animateZoom (finalCamZoom) {
     return new TWEEN.Tween(this.camera)
-      .to({ zoom: finalCamZoom }, 750)
+      .to({ zoom: finalCamZoom }, TWEEN_SEGMENT_DURATION)
       .easing(TWEEN.Easing.Cubic.InOut)
       .onUpdate(() => {
         this.camera.updateProjectionMatrix()
