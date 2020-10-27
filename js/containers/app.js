@@ -11,7 +11,7 @@ import LoadingIcon from '../components/loading-icon'
 import SplashScreen from '../components/splash-screen'
 import SimplifiedControls from './simplified-controls'
 import { enableShutterbug, disableShutterbug } from '../shutterbug-support'
-import { getVisibleEarthquakes, getVisibleVolcanoes } from '../selectors'
+import { getVisibleEarthquakes, getVisibleVolcanoes, getVisibleEruptions } from '../selectors'
 import config from '../config'
 
 import '../../css/app.less'
@@ -62,7 +62,8 @@ class App extends PureComponent {
   }
 
   renderApp () {
-    const { dataFetching, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setMapStatus, updateEarthquakesData,
+    const { dataFetching, earthquakes, volcanoes, eruptions, layers, crossSectionPoints, mapStatus, setMapStatus,
+      updateEarthquakesData, updateEruptionsData,
       mark2DViewModified, mark3DViewModified, mode, setCrossSectionPoint, changedViews, pins, setPin, updatePin } = this.props
     const showUI = config.showUserInterface
     const simplifiedUI = !showUI && config.simplifiedUI
@@ -75,10 +76,11 @@ class App extends PureComponent {
           </div>
         }
         <div className={`map-container mode-${mode} ${showUI === false ? 'full-height' : ''}`}>
-          <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes}
+          <SeismicEruptionsMap ref='map' earthquakes={earthquakes} volcanoes={volcanoes} eruptions={eruptions}
             mode={mode} layers={layers} crossSectionPoints={crossSectionPoints} mapStatus={mapStatus} mapModified={changedViews.has('2d')}
             setMapStatus={setMapStatus} setCrossSectionPoint={setCrossSectionPoint} mark2DViewModified={mark2DViewModified}
             updateEarthquakesData={updateEarthquakesData}
+            updateEruptionsData={updateEruptionsData}
             pins={pins} setPin={setPin} updatePin={updatePin} />
           {mode === '3d' && <ThumbnailMap crossSectionPoints={crossSectionPoints} mode={mode} layers={layers} />}
           {mode === '3d' &&
@@ -123,6 +125,7 @@ function mapStateToProps (state) {
     layers: state.get('layers'),
     earthquakes: getVisibleEarthquakes(state),
     volcanoes: getVisibleVolcanoes(state),
+    eruptions: getVisibleEruptions(state),
     crossSectionPoints: state.get('crossSectionPoints'),
     mapStatus: state.get('mapStatus'),
     pins: state.get('pins')

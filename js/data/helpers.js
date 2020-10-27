@@ -36,6 +36,38 @@ export function processAPIResponse (response, limit, enforcedMinMagnitude) {
     magnitudeCutOff: magnitudeCutOff
   }
 }
+// Processes JSON returned by API (USGS or our own) and returns only necessary data.
+// We save some memory and also it documents (and tests) which properties are necessary.
+export function processEruptionAPIResponse (response, limit) {
+  const eruptions = response.features.map(eruption => {
+    const coords = eruption.geometry.coordinates
+    const props = eruption.properties
+    return {
+      id: eruption.eruptionnumber,
+      geometry: {
+        // Swap lat and lng!
+        // We expect lat first, then lng. USGS / GeoJSON format is the opposite.
+        coordinates: [coords[1], coords[0], coords[2]]
+      },
+      properties: {
+        eruptionnumber: eruption.eruptionnumber,
+        volcanonumber: eruption.volcanonumber,
+        volcanoname: eruption.volcanoname,
+        activitytype: eruption.activitytype,
+        explosivityindexmax: eruption.explosivityindexmax,
+        majorrocktype: eruption.majorrocktype,
+        latitude: eruption.latitude,
+        longitude: eruption.longitude,
+        startdate: eruption.startdate,
+        enddate: eruption.enddate
+      }
+    }
+  })
+  return {
+    // Sort data by time.
+    eruptions: eruptions.sort((a, b) => a.properties.endtime - b.properties.endtime)
+  }
+}
 
 // Takes array of data objects (returned by processAPIResponse) and merges it into single one.
 export function concatenateData (array) {
@@ -71,5 +103,20 @@ export function copyAndShiftLng (data, offset) {
   })
   return Object.assign({}, data, {
     earthquakes: newEarthquakes
+  })
+}
+
+
+export function copyAndShiftEruptionLng (data, offset) {
+  const newEruptions = data.eruptions.map(eruption => {
+    const coords = eruption.geometry.coordinates
+    return Object.assign({}, eruption, {
+      geometry: {
+        coordinates: [coords[0], coords[1] + offset, coords[2]]
+      }
+    })
+  })
+  return Object.assign({}, data, {
+    eruptions: newEruptions
   })
 }
