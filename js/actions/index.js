@@ -5,7 +5,7 @@ import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 export const SET_MAP_STATUS = 'SET_MAP_STATUS'
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
-export const RESET_ERUPTIONS = 'RESET_ERUPTIONS'
+export const RESET_DATA = 'RESET_DATA'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
 export const RECEIVE_EARTHQUAKES = 'RECEIVE_EARTHQUAKES'
 export const RECEIVE_ERUPTIONS = 'RECEIVE_ERUPTIONS'
@@ -28,13 +28,13 @@ export const SET_PLATE_ARROWS_VISIBLE = 'SET_PLATE_ARROWS_VISIBLE'
 export const SET_PIN = 'SET_PIN'
 export const UPDATE_PIN = 'UPDATE_PIN'
 
-const api = new EarthquakeDataAPI()
+const earthquakeApi = new EarthquakeDataAPI()
 const eruptionApi = new EruptionDataAPI()
 
 function requestEarthquakes (tile) {
   return dispatch => {
     dispatch({ type: REQUEST_DATA })
-    api.fetchTile(tile)
+    earthquakeApi.fetchTile(tile)
       .then(
         response => {
           dispatch({ type: RECEIVE_DATA })
@@ -72,7 +72,7 @@ function receiveError (error) {
 function updateEarthquakesData (region, zoom) {
   return dispatch => {
     // First, reset earthquakes data and abort all the old requests.
-    api.abortAllRequests()
+    earthquakeApi.abortAllRequests()
     dispatch({
       type: RESET_EARTHQUAKES
     })
@@ -80,11 +80,11 @@ function updateEarthquakesData (region, zoom) {
     const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
     // Then retrieve all the cached data tiles.
     console.time('cached tiles processing')
-    const cachedEarthquakes = api.getTilesFromCache(tiles)
+    const cachedEarthquakes = earthquakeApi.getTilesFromCache(tiles)
     dispatch(receiveEarthquakes(cachedEarthquakes))
     console.timeEnd('cached tiles processing')
     // Finally request new data tiles.
-    const tilesToDownload = tiles.filter(t => !api.isInCache(t))
+    const tilesToDownload = tiles.filter(t => !earthquakeApi.isInCache(t))
     console.log('data tiles to download:', tilesToDownload.length)
     tilesToDownload.forEach((tile, idx) =>
       dispatch(requestEarthquakes(tile))
@@ -135,7 +135,7 @@ function updateEruptionData (region, zoom) {
     // First, reset eruption data and abort all the old requests.
     eruptionApi.abortAllRequests()
     dispatch({
-      type: RESET_ERUPTIONS
+      type: RESET_DATA
     })
     // Process region, get tiles. Remove unnecessary ones (y values < 0 or > max value, we don't display map there).
     const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
@@ -160,12 +160,8 @@ export function setMapStatus (region, zoom, earthquakesVisible, eruptionsVisible
       region,
       zoom
     })
-    if (earthquakesVisible) {
-      dispatch(updateEarthquakesData(region, zoom))
-    }
-    if (eruptionsVisible) {
-      dispatch(updateEruptionData(region, zoom))
-    }
+    earthquakesVisible && dispatch(updateEarthquakesData(region, zoom))
+    eruptionsVisible && dispatch(updateEruptionData(region, zoom))
   }
 }
 

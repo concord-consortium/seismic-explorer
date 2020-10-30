@@ -14,9 +14,9 @@ function ageToColor (lastEruptionDate) {
 function eruptionSize (isErupting) {
   // both 2D and 3D view use the same dimensions.
   if (isErupting) {
-    return 60
+    return 80
   } else {
-    return 30
+    return 40
   }
 }
 
@@ -30,12 +30,12 @@ export default class Eruption extends Sprite {
     const ctx = canvas.getContext('2d')
 
     ctx.beginPath()
-    ctx.moveTo(size, 0)
-    ctx.lineTo(size, size)
-    ctx.lineTo(0, size)
-    ctx.lineTo(0, 0)
+    ctx.moveTo(0, 0) // corner
+    ctx.lineTo(size / 2 - size / 8, size) // tip
+    ctx.lineTo(size / 2 + size / 8, size) // tip
     ctx.lineTo(size, 0)
-    ctx.closePath()
+    ctx.lineTo(0, 0)
+    ctx.clip()
 
     ctx.fillStyle = '#fff'
     ctx.fill()
@@ -43,6 +43,12 @@ export default class Eruption extends Sprite {
     ctx.lineWidth = strokeWidth
     ctx.strokeStyle = '#000'
     ctx.stroke()
+
+    ctx.fillStyle = `rgba(1,1,1,0.3)`
+    ctx.strokeStyle = `rgba(1,1,1,0)`
+    ctx.moveTo(size / 2, size)
+    ctx.arc(size / 2, size, size / 4, Math.PI, 2 * Math.PI)
+    ctx.fill()
 
     const texture = new THREE.Texture(canvas)
     texture.needsUpdate = true
