@@ -43,29 +43,29 @@ export function processEruptionAPIResponse (response, limit) {
     const coords = eruption.geometry.coordinates
     const props = eruption.properties
     return {
-      id: eruption.eruptionnumber,
+      id: props.eruptionnumber,
       geometry: {
         // Swap lat and lng!
         // We expect lat first, then lng. USGS / GeoJSON format is the opposite.
-        coordinates: [coords[1], coords[0], coords[2]]
+        coordinates: [coords[1], coords[0], coords[2] ? coords[2] : 10]
       },
       properties: {
-        eruptionnumber: eruption.eruptionnumber,
-        volcanonumber: eruption.volcanonumber,
-        volcanoname: eruption.volcanoname,
-        activitytype: eruption.activitytype,
-        explosivityindexmax: eruption.explosivityindexmax,
-        majorrocktype: eruption.majorrocktype,
-        latitude: eruption.latitude,
-        longitude: eruption.longitude,
-        startdate: eruption.startdate,
-        enddate: eruption.enddate
+        eruptionnumber: props.eruptionnumber,
+        volcanonumber: props.volcanonumber,
+        volcanoname: props.volcanoname,
+        activitytype: props.activitytype,
+        explosivityindexmax: props.explosivityindexmax,
+        majorrocktype: props.majorrocktype,
+        latitude: props.latitude,
+        longitude: props.longitude,
+        startdate: props.startdate,
+        enddate: props.enddate
       }
     }
   })
   return {
     // Sort data by time.
-    eruptions: eruptions.sort((a, b) => a.properties.endtime - b.properties.endtime)
+    eruptions: eruptions.sort((a, b) => a.properties.startdate - b.properties.startdate)
   }
 }
 
@@ -92,6 +92,26 @@ export function concatenateData (array) {
   return result
 }
 
+export function concatenateEruptionData (array) {
+  // A bit overspoken, but this function is called quite often and it can take some time. Try to
+  // concatenate data in CPU and memory-efficient way.
+  let dataLength = 0
+  array.forEach(data => {
+    dataLength += data.eruptions.length
+  })
+  const result = {
+    eruptions: new Array(dataLength)
+  }
+  let idx = 0
+  array.forEach(data => {
+    for (let i = 0, len = data.eruptions.length; i < len; i++) {
+      result.eruptions[idx++] = data.eruptions[i]
+    }
+  })
+  return result
+}
+
+
 export function copyAndShiftLng (data, offset) {
   const newEarthquakes = data.earthquakes.map(eq => {
     const coords = eq.geometry.coordinates
@@ -112,7 +132,7 @@ export function copyAndShiftEruptionLng (data, offset) {
     const coords = eruption.geometry.coordinates
     return Object.assign({}, eruption, {
       geometry: {
-        coordinates: [coords[0], coords[1] + offset, coords[2]]
+        coordinates: [coords[0], coords[1] + offset, coords[2] ? coords[2] : 10]
       }
     })
   })

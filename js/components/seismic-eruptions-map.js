@@ -4,6 +4,7 @@ import { Circle } from 'leaflet'
 import SpritesLayer from './sprites-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
+import EruptionPopup from './eruption-popup'
 import PlateBoundariesLayer from './plate-boundaries-layer'
 import PlateArrowsLayer from './plate-arrows-layer'
 import LabelsLayer from './labels-layer'
@@ -152,7 +153,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     clearTimeout(this._boundsUpdateTimeoutID)
     this._boundsUpdateTimeoutID = setTimeout(() => {
       const { layers, setMapStatus } = this.props
-      setMapStatus(this.mapRegion, this.mapZoom, layers.get('earthquakes'))
+      setMapStatus(this.mapRegion, this.mapZoom, layers.get('earthquakes'), layers.get('eruptions'))
 
       const bounds = this.map.getBounds()
 
@@ -300,7 +301,7 @@ export default class SeismicEruptionsMap extends PureComponent {
             <VolcanoPopup volcano={selectedVolcano} onPopupClose={this.handleVolcanoPopupClose} />
           }
           {mode === '2d' && selectedEruption &&
-            <VolcanoPopup volcano={selectedEruption} onPopupClose={this.handleEruptionPopupClose} />
+            <EruptionPopup eruption={selectedEruption} onPopupClose={this.handleEruptionPopupClose} />
           }
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />

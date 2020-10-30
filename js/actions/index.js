@@ -1,5 +1,5 @@
 import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
-import EruptionDataAPI, { EruptionAPIError, EruptionRequestAborted} from '../eruption-data-api'
+import EruptionDataAPI, { EruptionAPIError, EruptionRequestAborted } from '../eruption-data-api'
 import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 
 export const SET_MAP_STATUS = 'SET_MAP_STATUS'

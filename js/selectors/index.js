@@ -89,25 +89,26 @@ export const getVisibleVolcanoes = createSelector(
 
 export const getVisibleEruptions = createSelector(
   [eruptionsEnabled, eruptionsData, filters, crossSectionPoints],
-  (eruptionsEnabled, eruptionsData, filters, crossSectionPoints ) => {
+  (eruptionsEnabled, eruptionsData, filters, crossSectionPoints) => {
     if (!eruptionsEnabled) {
       return []
     }
     const minTime = filters.get('minTime')
     const maxTime = filters.get('maxTime')
-    const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
+    // const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
     // Two important notes:
     // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
     // - Yes, I don't copy and do mutate data.features elements. It's been done due to performance reasons.
     const result = []
-    for (let i = 0, len = eruptionsData.length; i < len; i++) {
-      const eruption = eruptionsData[i]
-      if (eruption && eruption.properties)
-      if (eruption && eruption.properties) {
-        const props = eruption.properties
-        eruption.visible = props.starttime > minTime && props.starttime < maxTime
-       // && crossSectionFilter(eruption.geometry.coordinates)
-        result.push(eruption)
+    if (eruptionsData.length > 0) {
+      for (let i = 0, len = eruptionsData.length; i < len; i++) {
+        const eruption = eruptionsData[i]
+        if (eruption && eruption.properties) {
+          const props = eruption.properties
+          eruption.visible = new Date(props.startdate) > minTime && new Date(props.startdate) < maxTime
+          // && crossSectionFilter(eruption.geometry.coordinates)
+          result.push(eruption)
+        }
       }
     }
     return result

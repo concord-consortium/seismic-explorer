@@ -86,11 +86,9 @@ function data (state = INITIAL_DATA, action) {
       const earthquakes = state.get('earthquakes')
         .concat(action.response.earthquakes)
         .filter(e => e.properties.mag >= newCutOff)
-      return state.set('earthquakes', earthquakes)
-        .set('magnitudeCutOff', newCutOff)
+      return state.set('earthquakes', earthquakes).set('magnitudeCutOff', newCutOff)
     case RECEIVE_ERUPTIONS:
-      const eruptions = state.get('eruptions')
-        .concat(action.response.eruptions)
+      const eruptions = state.get('eruptions').concat(action.response.eruptions)
       return state.set('eruptions', eruptions)
     default:
       return state

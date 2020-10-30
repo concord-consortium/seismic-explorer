@@ -1,5 +1,5 @@
-import { fakeDataset } from './data/fake-data'
-import { processEruptionAPIResponse, copyAndShiftEruptionLng } from './data/helpers'
+import { fakeEruptionDataset } from './data/fake-data'
+import { processEruptionAPIResponse, copyAndShiftEruptionLng, concatenateEruptionData } from './data/helpers'
 import { wrapTileX, lngDiff, tile2LatLngBounds } from './map-tile-helpers'
 import Cache from './cache'
 import config from './config'
@@ -7,12 +7,11 @@ import config from './config'
 const CONCORD_API = 'https://e401fd4io0.execute-api.us-east-1.amazonaws.com/production/seismic-explorer-eruptions'
 const CLOUDFRONT_CONCORD_API = 'https://d876rjgss4hzs.cloudfront.net/production/seismic-explorer-eruptions'
 
-function getAPIHost() {
-  return CONCORD_API;
+function getAPIHost () {
   if (config.cache) {
-    return CLOUDFRONT_CONCORD_API;
+    return CLOUDFRONT_CONCORD_API
   } else {
-    return CONCORD_API;
+    return CONCORD_API
   }
 }
 
@@ -20,18 +19,17 @@ function getAPIPath (tile) {
   const bb = tile2LatLngBounds(tile)
   const startTime = (new Date(config.startTime)).toISOString()
   const endTime = (new Date(config.endTime)).toISOString()
-  return `${getAPIHost()}?starttime=${startTime}&endtime=${endTime}` +
-    `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
-    `&orderby=startdate&limit=${config.tileLimit}`
+  const requestPath = `${getAPIHost()}?starttime=${startTime}&endtime=${endTime}` +
+  `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
+  `&orderby=startdate&limit=${config.tileLimit}`
+  return requestPath
 }
 
 function fakeData (tile, count) {
   const options = tile2LatLngBounds(tile)
-  options.minDep = (tile.x % 6) * 100
-  options.maxDep = (tile.x % 6) * 100
   return new Promise(resolve => {
     setTimeout(function () {
-      resolve(fakeDataset(count, options))
+      resolve(fakeEruptionDataset(count, options))
     }, Math.random() * 1000)
   })
 }
@@ -71,8 +69,7 @@ export default class EruptionDataAPI {
   getTilesFromCache (tiles) {
     const cachedTiles = tiles.filter(t => this.isInCache(t)).map(t => this.getFromCache(t))
     console.log('cached data tiles:', cachedTiles.length)
-
-    return cachedTiles
+    return concatenateEruptionData(cachedTiles)
   }
 
   fetchTile (tile) {
@@ -81,7 +78,7 @@ export default class EruptionDataAPI {
     const wrappedTile = wrapTileX(tile)
     const lngOffset = lngDiff(tile, wrappedTile)
     const dataPromise = config.api === 'fake'
-      ? fakeData(wrappedTile, 100)
+      ? fakeData(wrappedTile, 10)
       : this._fetchData(getAPIPath(wrappedTile))
     return dataPromise
       .then(response => processEruptionAPIResponse(response, config.tileLimit))
@@ -104,17 +101,17 @@ export default class EruptionDataAPI {
             resolve(JSON.parse(this.responseText))
           } catch (e) {
             // Sometimes USGS API returns malformed JSONs. Report that.
-            reject(new APIError('Malformed GeoJSON', e))
+            reject(new EruptionAPIError('Malformed GeoJSON', e))
           }
         } else {
-          reject(new APIError(this.statusText, this))
+          reject(new EruptionAPIError(this.statusText, this))
         }
       })
       oReq.addEventListener('abort', function () {
-        reject(new RequestAborted())
+        reject(new EruptionRequestAborted())
       })
       oReq.addEventListener('error', function () {
-        reject(new APIError(this.statusText, this))
+        reject(new EruptionAPIError(this.statusText, this))
       })
       oReq.open('GET', url)
       oReq.send()
