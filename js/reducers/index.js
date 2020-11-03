@@ -72,7 +72,6 @@ const INITIAL_DATA = Map({
   eruptions: []
 })
 
-
 function data (state = INITIAL_DATA, action) {
   switch (action.type) {
     case RESET_EARTHQUAKES:

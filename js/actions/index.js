@@ -160,7 +160,6 @@ export function setMapStatus (region, zoom, earthquakesVisible, eruptionsVisible
       region,
       zoom
     })
-    console.log(`earthquakes: ${earthquakesVisible}, eruptions: ${eruptionsVisible}`)
     earthquakesVisible && dispatch(updateEarthquakesData(region, zoom))
     eruptionsVisible && dispatch(updateEruptionData(region, zoom))
   }

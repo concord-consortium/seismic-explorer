@@ -43,12 +43,12 @@ export default class Eruption extends Sprite {
     return texture
   }
 
-  getColor(data) {
-    const ageDate = data.properties.enddate? data.properties.enddate : data.properties.startdate
+  getColor (data) {
+    const ageDate = data.properties.enddate ? data.properties.enddate : data.properties.startdate
     return ageToColor(ageDate)
   }
 
-  getSize(data) {
+  getSize (data) {
     // we don't yet have a way to say "it's erupting right now" for an eruption
     // the sprite renders the same with only visible / invisible. Todo: either
     // add to this sprite to change appearance while active, or add new erupting layer
