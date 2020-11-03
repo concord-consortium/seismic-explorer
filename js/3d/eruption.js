@@ -5,19 +5,11 @@ import Sprite from './sprite'
 function ageToColor (lastEruptionDate) {
   const age = new Date().getFullYear() - new Date(lastEruptionDate).getFullYear()
   if (config.volcanoColor !== -1) return parseInt(config.volcanoColor, 16)
-  if (age <= 5) return 0xFF6600
-  if (age <= 10) return 0xD26F2D
-  if (age <= 15) return 0xAC7753
-  if (age <= 30) return 0x8C7D73
+  if (age <= 40) return 0xFF6600
+  if (age <= 100) return 0xD26F2D
+  if (age <= 400) return 0xAC7753
+  if (age <= 1600) return 0x8C7D73
   return 0x808080
-}
-function eruptionSize (isErupting) {
-  // both 2D and 3D view use the same dimensions.
-  if (isErupting) {
-    return 80
-  } else {
-    return 40
-  }
 }
 
 export default class Eruption extends Sprite {
@@ -31,10 +23,12 @@ export default class Eruption extends Sprite {
 
     ctx.beginPath()
     ctx.moveTo(0, 0) // corner
-    ctx.lineTo(size / 2 - size / 8, size) // tip
-    ctx.lineTo(size / 2 + size / 8, size) // tip
+    // ctx.lineTo(size / 2 - size / 8, size) // left-of-tip use for flattened-top appearance
+    // ctx.lineTo(size / 2 + size / 8, size) // right-of-tip
+    ctx.lineTo(size / 2, size) // tip
     ctx.lineTo(size, 0)
     ctx.lineTo(0, 0)
+    ctx.closePath()
     ctx.clip()
 
     ctx.fillStyle = '#fff'
@@ -44,23 +38,25 @@ export default class Eruption extends Sprite {
     ctx.strokeStyle = '#000'
     ctx.stroke()
 
-    ctx.fillStyle = `rgba(1,1,1,0.3)`
-    ctx.strokeStyle = `rgba(1,1,1,0)`
-    ctx.moveTo(size / 2, size)
-    ctx.arc(size / 2, size, size / 4, Math.PI, 2 * Math.PI)
-    ctx.fill()
-
     const texture = new THREE.Texture(canvas)
     texture.needsUpdate = true
     return texture
   }
 
-  getColor (data) {
-    return ageToColor(data.properties.startdate)
+  getColor(data) {
+    const ageDate = data.properties.enddate? data.properties.enddate : data.properties.startdate
+    return ageToColor(ageDate)
   }
 
-  getSize (data) {
-    return eruptionSize(!data.properties.enddate)
-    // new Date(data.properties.enddate) > new Date())
+  getSize(data) {
+    // we don't yet have a way to say "it's erupting right now" for an eruption
+    // the sprite renders the same with only visible / invisible. Todo: either
+    // add to this sprite to change appearance while active, or add new erupting layer
+    const isErupting = false
+    if (isErupting) {
+      return 60
+    } else {
+      return 35
+    }
   }
 }

@@ -68,16 +68,17 @@ function mapStatus (state = INITIAL_MAP_STATUS, action) {
 
 const INITIAL_DATA = Map({
   earthquakes: [],
-  eruptions: [],
-  magnitudeCutOff: 0
+  magnitudeCutOff: 0,
+  eruptions: []
 })
+
 
 function data (state = INITIAL_DATA, action) {
   switch (action.type) {
     case RESET_EARTHQUAKES:
-      return INITIAL_DATA
+      return state.set('earthquakes', []).set('magnitudeCutOff', 0)
     case RESET_ERUPTIONS:
-      return INITIAL_DATA
+      return state.set('eruptions', [])
     case RECEIVE_EARTHQUAKES:
       // Select max minimal magnitude among the tiles and remove all the earthquakes weaker than it.
       // It ensures that displayed data is consistent and there're no visual "holes" in earthquakes layer.

@@ -65,14 +65,17 @@ export default class AnimationButtons extends PureComponent {
 
   render () {
     const { onPlayPause, onReset, layers, animationEnabled } = this.props
-    const hintText = layers.get('earthquakes') ? 'Animate Earthquakes' : 'Animate'
+    const earthquakes = layers.get('earthquakes')
+    const eruptions = layers.get('eruptions')
+    const controlsEnabled = earthquakes || eruptions
+    const hintText = earthquakes && eruptions ? 'Animate Seismic Activity' : earthquakes ? 'Animate Earthquakes' : eruptions ? 'Animate Eruptions' : 'Animate'
     return (
       <div className='animation-buttons'>
-        <Button color='primary' className='animation-button' onClick={layers.get('earthquakes') ? onReset : null} title='Reset Animation'>
+        <Button color='primary' className='animation-button' onClick={controlsEnabled ? onReset : null} title='Reset Animation'>
           <RestartSVG />
           <div>Restart</div>
         </Button>
-        <Button color='primary' className='animation-button' onClick={layers.get('earthquakes') ? onPlayPause : null} title={hintText}>
+        <Button color='primary' className='animation-button' onClick={controlsEnabled ? onPlayPause : null} title={hintText}>
           { animationEnabled ? <StopSVG /> : <StartSVG /> }
           <div>{ animationEnabled ? 'Stop' : 'Start' }</div>
         </Button>

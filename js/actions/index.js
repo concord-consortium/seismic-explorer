@@ -5,7 +5,7 @@ import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 export const SET_MAP_STATUS = 'SET_MAP_STATUS'
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
-export const RESET_DATA = 'RESET_DATA'
+export const RESET_ERUPTIONS = 'RESET_ERUPTIONS'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
 export const RECEIVE_EARTHQUAKES = 'RECEIVE_EARTHQUAKES'
 export const RECEIVE_ERUPTIONS = 'RECEIVE_ERUPTIONS'
@@ -79,13 +79,13 @@ function updateEarthquakesData (region, zoom) {
     // Process region, get tiles. Remove unnecessary ones (y values < 0 or > max value, we don't display map there).
     const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
     // Then retrieve all the cached data tiles.
-    console.time('cached tiles processing')
+    console.time('Earthquake cached tiles processing')
     const cachedEarthquakes = earthquakeApi.getTilesFromCache(tiles)
     dispatch(receiveEarthquakes(cachedEarthquakes))
-    console.timeEnd('cached tiles processing')
+    console.timeEnd('Earthquake cached tiles processing')
     // Finally request new data tiles.
     const tilesToDownload = tiles.filter(t => !earthquakeApi.isInCache(t))
-    console.log('data tiles to download:', tilesToDownload.length)
+    console.log('Earthquake data tiles to download:', tilesToDownload.length)
     tilesToDownload.forEach((tile, idx) =>
       dispatch(requestEarthquakes(tile))
     )
@@ -135,18 +135,18 @@ function updateEruptionData (region, zoom) {
     // First, reset eruption data and abort all the old requests.
     eruptionApi.abortAllRequests()
     dispatch({
-      type: RESET_DATA
+      type: RESET_ERUPTIONS
     })
     // Process region, get tiles. Remove unnecessary ones (y values < 0 or > max value, we don't display map there).
     const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
     // Then retrieve all the cached data tiles.
-    console.time('cached tiles processing')
+    console.time('Eruption cached tiles processing')
     const cachedEruptions = eruptionApi.getTilesFromCache(tiles)
     dispatch(receiveEruptions(cachedEruptions))
-    console.timeEnd('cached tiles processing')
+    console.timeEnd('Eruption cached tiles processing')
     // Finally request new data tiles.
     const tilesToDownload = tiles.filter(t => !eruptionApi.isInCache(t))
-    console.log('data tiles to download:', tilesToDownload.length)
+    console.log('Eruption data tiles to download:', tilesToDownload.length)
     tilesToDownload.forEach((tile, idx) =>
       dispatch(requestEruptions(tile))
     )
@@ -160,6 +160,7 @@ export function setMapStatus (region, zoom, earthquakesVisible, eruptionsVisible
       region,
       zoom
     })
+    console.log(`earthquakes: ${earthquakesVisible}, eruptions: ${eruptionsVisible}`)
     earthquakesVisible && dispatch(updateEarthquakesData(region, zoom))
     eruptionsVisible && dispatch(updateEruptionData(region, zoom))
   }
