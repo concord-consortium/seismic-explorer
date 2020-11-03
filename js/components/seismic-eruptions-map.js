@@ -56,7 +56,6 @@ export default class SeismicEruptionsMap extends PureComponent {
     this.handleEruptionPopupClose = this.handleEruptionPopupClose.bind(this)
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
-    this.handleZoom = this.handleZoom.bind(this)
     this.handlePinUpdated = this.handlePinUpdated.bind(this)
   }
 
@@ -112,7 +111,6 @@ export default class SeismicEruptionsMap extends PureComponent {
       // get the earthquakes to render on first load
       this.handleMapViewportChanged()
     }
-    this.calculateScale()
     window.addEventListener('resize', this.handleInitialBoundsSetup)
   }
 
@@ -142,7 +140,6 @@ export default class SeismicEruptionsMap extends PureComponent {
         this.fitBounds()
       }
     }
-    this.calculateScale()
   }
 
   handleMapViewportChanged (e) {
@@ -165,11 +162,6 @@ export default class SeismicEruptionsMap extends PureComponent {
         zoom: this.mapZoom
       })
     }, BOUNDS_UPDATE_DELAY)
-  }
-
-  handleZoom (e) {
-    // After zooming, if we are showing a scale, recalculate the properties
-    this.calculateScale()
   }
 
   handleEarthquakeClick (event, earthquake) {
@@ -277,7 +269,6 @@ export default class SeismicEruptionsMap extends PureComponent {
           center={center}
           doubleClickZoom={allowFreeMouseZoom}
           scrollWheelZoom={allowFreeMouseZoom}
-          onzoomend={this.handleZoom}
           zoomControl={showZoomControls}
         >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
