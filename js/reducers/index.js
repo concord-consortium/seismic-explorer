@@ -98,6 +98,8 @@ function data (state = INITIAL_DATA, action) {
 const INITIAL_FILTERS = Map({
   minMag: 0,
   maxMag: 10,
+  startTime: config.startTime, // the start & end time won't change, caching them here for easier access in bottom controls when adjusting time slider
+  endTime: config.endTime,
   minTime: config.startTime,
   maxTime: config.earthquakesDisplayAllOnStart ? config.endTime : config.startTime,
   playbackMaxTime: config.endTime,

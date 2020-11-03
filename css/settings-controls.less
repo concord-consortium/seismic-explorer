@@ -32,11 +32,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 590px;
     margin: 0 15px 0 10px;
 
     & > div {
       white-space: nowrap;
+      padding: 0 10px 0 10px;
     }
   }
 
@@ -55,6 +55,26 @@
     }
     .rc-tooltip-inner > span {
       font-family: sans-serif;
+    }
+
+    .mag-label{
+      text-align: center;
+      .mag-label-text{
+        padding-left: 8px;
+      }
+    }
+  }
+  .recent-data-toggle{
+    display: inline-flex;
+    position: relative;
+    &:not(:first-child) {
+      margin-left: 12px;
+    }
+    label {
+      padding-left: 5px;
+    }
+    input[type=checkbox]:checked{
+      color: orange;
     }
   }
 

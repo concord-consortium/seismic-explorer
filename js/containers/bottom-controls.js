@@ -102,6 +102,7 @@ class BottomControls extends PureComponent {
     this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
     this.handleResetBtnClick = this.handleResetBtnClick.bind(this)
     this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
+    this.handleRecentToggle = this.handleRecentToggle.bind(this)
   }
 
   componentDidMount () {
@@ -163,6 +164,25 @@ class BottomControls extends PureComponent {
     const { reset } = this.props
     reset()
     log('ResetClicked')
+  }
+
+  handleRecentToggle () {
+    const { filters, setFilter } = this.props
+    const currentDate = Date.now()
+    const monthAgo = currentDate - 2592000000 // 1000 * 60 * 60 * 24 * 30 = ms => s => mins => hours => days => 30 days
+    // toggle between original start/end and the "recent 30 day" view
+    const startDate = filters.get('minTimeLimit') !== filters.get('startTime') ? filters.get('startTime') : monthAgo
+    const endDate = filters.get('maxTimeLimit') !== filters.get('endTime') ? filters.get('endTime') : currentDate
+
+    if (filters.get('minDate') !== startDate) {
+      setFilter('minDate', startDate)
+    }
+    if (filters.get('maxDate') > endDate) {
+      setFilter('maxDate', endDate)
+    }
+
+    setFilter('minTimeLimit', startDate)
+    setFilter('maxTimeLimit', currentDate)
   }
 
   get dateMarks () {
@@ -229,6 +249,10 @@ class BottomControls extends PureComponent {
           </div>
           <div className='centered-settings'>
             <div>
+              <div className='recent-data-toggle'>
+                <input id='recenttoggle' type='checkbox' onChange={this.handleRecentToggle} />
+                <label for='recenttoggle'>Only display recent<br />activity (30 days)</label>
+              </div>
               <MapControls />
               <LayerControls />
             </div>
@@ -240,7 +264,7 @@ class BottomControls extends PureComponent {
             }
             {layers.get('earthquakes') &&
               <div className='mag-slider'>
-                <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
+                <div className='mag-label'><div className='mag-label-text'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
                   <Range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
                     onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
                 </div>
