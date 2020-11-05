@@ -67,15 +67,24 @@
   .recent-data-toggle{
     display: inline-flex;
     position: relative;
+    width: 140px;
     &:not(:first-child) {
       margin-left: 12px;
     }
-    label {
-      padding-left: 5px;
+    span {
+      font-size: 1em;
+      line-height: 1.2em;
+      white-space: normal;
+      padding-top: 3px;
     }
-    input[type=checkbox]:checked{
-      color: orange;
+  }
+  .map-layer-controls{
+    button {
+      margin-bottom: 7px;
     }
+  }
+  .stats {
+    width: 190px;
   }
 
   .fullscreen-icon {
