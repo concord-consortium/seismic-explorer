@@ -22,6 +22,18 @@
     }
   }
 
+  table.volcanoes {
+    font-size: 0.9em;
+    border-spacing: 0;
+    td {
+      height: 24px;
+      text-align: center;
+    }
+    td + td{
+      text-align: left;
+    }
+  }
+
   .earthquake-color {
     width: 25px;
     height: 25px;
@@ -37,25 +49,6 @@
   .stats {
     max-width: 24em;
     font-size: 0.75em;
-  }
-
-  .volcanos{
-    td{
-      min-width: 48px;
-      text-align: center;
-    }
-    td + td{
-      text-align: left;
-    }
-  }
-
-  .volcano-marker {
-    margin: auto;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 12px 20.8px 12px;
-    border-color: transparent transparent #ff6600 transparent;
   }
 
   .plateArrows img {
