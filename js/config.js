@@ -79,7 +79,8 @@ const DEFAULT_CONFIG = {
   // Set these using hex string to have all quakes and/or volcanoes use that specific color
   // If set to -1 this has no effect
   quakeColor: -1,
-  volcanoColor: -1
+  volcanoColor: -1,
+  showRecentCheckbox: true
 }
 
 function getURLParam (name) {

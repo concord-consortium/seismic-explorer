@@ -11,6 +11,7 @@ import { layerInfo } from '../map-layer-tiles'
 import log from '../logger'
 import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import config from '../config'
 
 import '../../css/settings-controls.less'
 import 'rc-slider/assets/index.css'
@@ -300,12 +301,14 @@ class BottomControls extends PureComponent {
           </div>
           <div className='centered-settings'>
             <div>
-              <div className='recent-data-toggle' title='Only display recent activity (30 days)'>
-                <FormControlLabel
-                  control={<Checkbox onChange={this.handleRecentToggle} />}
-                  label='Only display recent activity (30 days)'
-                />
-              </div>
+              {config.showRecentCheckbox &&
+                <div className='recent-data-toggle' title='Only display recent activity (30 days)'>
+                  <FormControlLabel
+                    control={<Checkbox onChange={this.handleRecentToggle} />}
+                    label='Only display recent activity (30 days)'
+                  />
+                </div>
+              }
               <MapControls />
               <LayerControls />
             </div>
