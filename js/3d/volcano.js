@@ -8,6 +8,7 @@ function ageToColor (age) {
   if (age <= 400) return 0xD26F2D
   if (age <= 1600) return 0xAC7753
   if (age <= 6400) return 0x8C7D73
+  if (age === 999999) return 0xB1B1B1 // unknown age
   return 0x808080
 }
 
