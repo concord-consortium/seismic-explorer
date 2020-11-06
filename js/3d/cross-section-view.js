@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import Earthquake from './earthquake'
 import Volcano from './volcano'
+import Eruption from './eruption'
 import SpritesContainer from './sprites-container'
 import CrossSectionBox from './cross-section-box'
 import Camera from './camera'
@@ -25,6 +26,7 @@ export default class {
     this.camera = new Camera(renderer.domElement)
     this.earthquakes = new SpritesContainer(Earthquake, 200000)
     this.volcanoes = new SpritesContainer(Volcano, 5000)
+    this.eruptions = new SpritesContainer(Eruption, 5000)
     this.crossSectionBox = new CrossSectionBox()
     this.resize()
     this._initScene()
@@ -44,6 +46,7 @@ export default class {
     // Prevent memory leaks.
     this.volcanoes.destroy()
     this.earthquakes.destroy()
+    this.eruptions.destroy()
     this.crossSectionBox.destroy()
     this.camera.destroy()
   }
@@ -61,6 +64,9 @@ export default class {
     }
     if (this.props.volcanoes !== newProps.volcanoes) {
       this.volcanoes.setProps(newProps.volcanoes, latLngDepthToPoint)
+    }
+    if (this.props.eruptions !== newProps.eruptions) {
+      this.eruptions.setProps(newProps.eruptions, latLngDepthToPoint)
     }
     if (this.props.crossSectionPoints !== newProps.crossSectionPoints) {
       this.crossSectionBox.setProps(newProps.crossSectionPoints, newProps.mapType, finalZoom, latLngDepthToPoint)
@@ -89,6 +95,7 @@ export default class {
 
     this.camera.update()
     this.volcanoes.update(progress)
+    this.eruptions.update(progress)
     this.earthquakes.update(progress)
     this.crossSectionBox.update(this.camera.zoom, this.camera.polarAngle)
 
@@ -118,6 +125,7 @@ export default class {
     this.sceneOverlay = new THREE.Scene()
     this.scene.add(this.earthquakes.root)
     this.scene.add(this.volcanoes.root)
+    this.scene.add(this.eruptions.root)
     this.scene.add(this.crossSectionBox.root)
     this.sceneOverlay.add(this.crossSectionBox.overlay)
   }
