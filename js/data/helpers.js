@@ -47,7 +47,7 @@ export function processEruptionAPIResponse (response, limit) {
       geometry: {
         // Swap lat and lng!
         // We expect lat first, then lng. USGS / GeoJSON format is the opposite.
-        coordinates: [coords[1], coords[0], coords[2] ? coords[2] : 10]
+        coordinates: [coords[1], coords[0], coords[2] ? coords[2] : -10]
       },
       properties: {
         eruptionnumber: props.eruptionnumber,
@@ -132,7 +132,7 @@ export function copyAndShiftEruptionLng (data, offset) {
     const coords = eruption.geometry.coordinates
     return Object.assign({}, eruption, {
       geometry: {
-        coordinates: [coords[0], coords[1] + offset, coords[2] ? coords[2] : 10]
+        coordinates: [coords[0], coords[1] + offset, coords[2]]
       }
     })
   })

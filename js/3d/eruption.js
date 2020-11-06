@@ -23,8 +23,6 @@ export default class Eruption extends Sprite {
 
     ctx.beginPath()
     ctx.moveTo(0, 0) // corner
-    // ctx.lineTo(size / 2 - size / 8, size) // left-of-tip use for flattened-top appearance
-    // ctx.lineTo(size / 2 + size / 8, size) // right-of-tip
     ctx.lineTo(size / 2, size) // tip
     ctx.lineTo(size, 0)
     ctx.lineTo(0, 0)
@@ -54,9 +52,9 @@ export default class Eruption extends Sprite {
     // add to this sprite to change appearance while active, or add new erupting layer
     const isErupting = false
     if (isErupting) {
-      return 60
+      return window.devicePixelRatio * 30
     } else {
-      return 35
+      return window.devicePixelRatio * 25
     }
   }
 }

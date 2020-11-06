@@ -60,7 +60,11 @@ export default class {
     this.props = newProps
   }
 
-  spriteAt (x, y) {
+  spriteAt(x, y) {
+    const eruption = this.eruptions.spriteAt(x, this._height - y)
+    if (eruption) {
+      return { type: 'eruption', data: eruption }
+    }
     const volcano = this.volcanoes.spriteAt(x, this._height - y)
     if (volcano) {
       return { type: 'volcano', data: volcano }
@@ -68,10 +72,6 @@ export default class {
     const earthquake = this.earthquakes.spriteAt(x, this._height - y)
     if (earthquake) {
       return { type: 'earthquake', data: earthquake }
-    }
-    const eruption = this.eruptions.spriteAt(x, this._height - y)
-    if (eruption) {
-      return { type: 'eruption', data: eruption }
     }
     return null
   }
