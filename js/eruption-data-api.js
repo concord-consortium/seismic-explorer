@@ -21,7 +21,7 @@ function getAPIPath (tile) {
   const endTime = (new Date(config.endTime)).toISOString()
   const requestPath = `${getAPIHost()}?starttime=${startTime}&endtime=${endTime}` +
   `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
-  `&orderby=startdate&limit=${config.tileLimit}`
+  `&orderby=startdate-asc&limit=${config.tileLimit}`
   return requestPath
 }
 
