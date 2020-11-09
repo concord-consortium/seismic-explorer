@@ -14,7 +14,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Run Tests
-        run: npm run test:coverage -- --runInBand
+        run: npm run jest --watch
   cypress:
     runs-on: ubuntu-latest
     steps:
