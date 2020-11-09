@@ -131,7 +131,7 @@ context('Smoke Test', () => {
         .and('not.contain', 'Years since last volcanic eruption')
 
       cy.get('[data-test=data-type]').click()
-      cy.get('[title="Show Historical Volcanoes"]').click()
+      cy.get('[title="Show or hide all volcanic eruptions on the map"]').click()
 
       cy.get('.map-key-content')
         .should('contain', 'Years since last volcanic eruption')
