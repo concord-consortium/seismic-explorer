@@ -1,11 +1,14 @@
 import EarthquakeDataAPI, { APIError, RequestAborted } from '../earthquake-data-api'
+import EruptionDataAPI, { EruptionAPIError, EruptionRequestAborted } from '../eruption-data-api'
 import { tilesList, tileYOutOfBounds } from '../map-tile-helpers'
 
 export const SET_MAP_STATUS = 'SET_MAP_STATUS'
 export const REQUEST_DATA = 'REQUEST_DATA'
 export const RESET_EARTHQUAKES = 'RESET_EARTHQUAKES'
+export const RESET_ERUPTIONS = 'RESET_ERUPTIONS'
 export const RECEIVE_DATA = 'RECEIVE_DATA'
 export const RECEIVE_EARTHQUAKES = 'RECEIVE_EARTHQUAKES'
+export const RECEIVE_ERUPTIONS = 'RECEIVE_ERUPTIONS'
 export const RECEIVE_ERROR = 'RECEIVE_ERROR'
 export const SET_FILTER = 'SET_FILTER'
 export const SET_BASE_LAYER = 'SET_BASE_LAYER'
@@ -19,17 +22,19 @@ export const MARK_2D_VIEW_MODIFIED = 'MARK_2D_VIEW_MODIFIED'
 export const MARK_3D_VIEW_MODIFIED = 'MARK_3D_VIEW_MODIFIED'
 export const SET_EARTHQUAKES_VISIBLE = 'SET_EARTHQUAKES_VISIBLE'
 export const SET_VOLCANOES_VISIBLE = 'SET_VOLCANOES_VISIBLE'
+export const SET_ERUPTIONS_VISIBLE = 'SET_ERUPTIONS_VISIBLE'
 export const SET_PLATE_MOVEMENT_VISIBLE = 'SET_PLATE_MOVEMENT_VISIBLE'
 export const SET_PLATE_ARROWS_VISIBLE = 'SET_PLATE_ARROWS_VISIBLE'
 export const SET_PIN = 'SET_PIN'
 export const UPDATE_PIN = 'UPDATE_PIN'
 
-const api = new EarthquakeDataAPI()
+const earthquakeApi = new EarthquakeDataAPI()
+const eruptionApi = new EruptionDataAPI()
 
 function requestEarthquakes (tile) {
   return dispatch => {
     dispatch({ type: REQUEST_DATA })
-    api.fetchTile(tile)
+    earthquakeApi.fetchTile(tile)
       .then(
         response => {
           dispatch({ type: RECEIVE_DATA })
@@ -67,36 +72,96 @@ function receiveError (error) {
 function updateEarthquakesData (region, zoom) {
   return dispatch => {
     // First, reset earthquakes data and abort all the old requests.
-    api.abortAllRequests()
+    earthquakeApi.abortAllRequests()
     dispatch({
       type: RESET_EARTHQUAKES
     })
     // Process region, get tiles. Remove unnecessary ones (y values < 0 or > max value, we don't display map there).
     const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
     // Then retrieve all the cached data tiles.
-    console.time('cached tiles processing')
-    const cachedEarthquakes = api.getTilesFromCache(tiles)
+    console.time('Earthquake cached tiles processing')
+    const cachedEarthquakes = earthquakeApi.getTilesFromCache(tiles)
     dispatch(receiveEarthquakes(cachedEarthquakes))
-    console.timeEnd('cached tiles processing')
+    console.timeEnd('Earthquake cached tiles processing')
     // Finally request new data tiles.
-    const tilesToDownload = tiles.filter(t => !api.isInCache(t))
-    console.log('data tiles to download:', tilesToDownload.length)
+    const tilesToDownload = tiles.filter(t => !earthquakeApi.isInCache(t))
+    console.log('Earthquake data tiles to download:', tilesToDownload.length)
     tilesToDownload.forEach((tile, idx) =>
       dispatch(requestEarthquakes(tile))
     )
   }
 }
 
-export function setMapStatus (region, zoom, earthquakesVisible) {
+function requestEruptions (tile) {
+  return dispatch => {
+    dispatch({ type: REQUEST_DATA })
+    eruptionApi.fetchTile(tile)
+      .then(
+        response => {
+          dispatch({ type: RECEIVE_DATA })
+          dispatch(receiveEruptions(response))
+        },
+        error => dispatch(eruptionReceiveError(error))
+      )
+  }
+}
+
+function receiveEruptions (response) {
+  return {
+    type: RECEIVE_ERUPTIONS,
+    response: response
+  }
+}
+
+function eruptionReceiveError (error) {
+  if (error instanceof EruptionAPIError) {
+    console.error('[API error]', error.message, error.response)
+  } else if (!(error instanceof EruptionRequestAborted)) {
+    // RequestAborted can happen when user is panning map quickly and various tiles stated loading, but
+    // are not necessary anymore. That's normal case, so don't log it.
+    console.error('[unknown error]', error)
+  }
+  return {
+    type: RECEIVE_ERROR,
+    response: error
+  }
+}
+
+// Each time map region is changed (moved, panned, zoomed in / out), we need to update eruption data.
+// - region is an object with min/max values of lng and lat
+// - zoom is simple number, the current map zoom
+function updateEruptionData (region, zoom) {
+  return dispatch => {
+    // First, reset eruption data and abort all the old requests.
+    eruptionApi.abortAllRequests()
+    dispatch({
+      type: RESET_ERUPTIONS
+    })
+    // Process region, get tiles. Remove unnecessary ones (y values < 0 or > max value, we don't display map there).
+    const tiles = tilesList(region, zoom).filter(t => !tileYOutOfBounds(t))
+    // Then retrieve all the cached data tiles.
+    console.time('Eruption cached tiles processing')
+    const cachedEruptions = eruptionApi.getTilesFromCache(tiles)
+    dispatch(receiveEruptions(cachedEruptions))
+    console.timeEnd('Eruption cached tiles processing')
+    // Finally request new data tiles.
+    const tilesToDownload = tiles.filter(t => !eruptionApi.isInCache(t))
+    console.log('Eruption data tiles to download:', tilesToDownload.length)
+    tilesToDownload.forEach((tile, idx) =>
+      dispatch(requestEruptions(tile))
+    )
+  }
+}
+
+export function setMapStatus (region, zoom, earthquakesVisible, eruptionsVisible) {
   return dispatch => {
     dispatch({
       type: SET_MAP_STATUS,
       region,
       zoom
     })
-    if (earthquakesVisible) {
-      dispatch(updateEarthquakesData(region, zoom))
-    }
+    earthquakesVisible && dispatch(updateEarthquakesData(region, zoom))
+    eruptionsVisible && dispatch(updateEruptionData(region, zoom))
   }
 }
 
@@ -116,6 +181,18 @@ export function setEarthquakesVisible (value, region, zoom) {
     })
     if (value && region !== undefined && zoom !== undefined) {
       dispatch(updateEarthquakesData(region, zoom))
+    }
+  }
+}
+
+export function setEruptionsVisible (value, region, zoom) {
+  return dispatch => {
+    dispatch({
+      type: SET_ERUPTIONS_VISIBLE,
+      value
+    })
+    if (value && region !== undefined && zoom !== undefined) {
+      dispatch(updateEruptionData(region, zoom))
     }
   }
 }

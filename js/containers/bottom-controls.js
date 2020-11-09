@@ -197,7 +197,7 @@ class BottomControls extends PureComponent {
 
     return (
       <div>
-        {layers.get('earthquakes') &&
+        {(layers.get('earthquakes') || layers.get('eruptions')) &&
           <div className='earthquake-playback'>
             <div>
               <AnimationButtons ref='playButton' animationEnabled={animationEnabled} value={filters.get('maxTime')}

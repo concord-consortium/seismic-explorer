@@ -26,6 +26,7 @@ class LayerControls extends PureComponent {
     this.handlePlateNamesChange = this.handlePlateNamesChange.bind(this)
     this.handleContinentOceanNamesChange = this.handleContinentOceanNamesChange.bind(this)
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
+    this.handleEruptionLayerChange = this.handleEruptionLayerChange.bind(this)
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
     this.handlePlateArrowLayerChange = this.handlePlateArrowLayerChange.bind(this)
@@ -67,7 +68,7 @@ class LayerControls extends PureComponent {
   }
 
   handleVolcanoLayerChange (event) {
-    const { setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setEruptionsVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setVolcanoesVisible(visible)
     log('VolcanoesVisibilityChanged', { visible })
@@ -75,11 +76,12 @@ class LayerControls extends PureComponent {
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
+      setEruptionsVisible(false)
     }
   }
 
   handleEarthquakeLayerChange (event) {
-    const { setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible, mapRegion, mapZoom)
     log('ShowEarthquakes', { visible })
@@ -87,15 +89,32 @@ class LayerControls extends PureComponent {
       setVolcanoesVisible(false)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
+      setEruptionsVisible(false)
     }
     if (!visible) {
       // Stop earthquakes animation when earthquakes layer is hidden.
       setAnimationEnabled(false)
     }
   }
+  handleEruptionLayerChange (event) {
+    const { setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const visible = event.target.checked
+    setEruptionsVisible(visible, mapRegion, mapZoom)
+    log('ShowEruptions', { visible })
+    if (visible && config.exclusiveDataLayers) {
+      setEarthquakesVisible(false, mapRegion, mapZoom)
+      setVolcanoesVisible(false)
+      setPlateMovementVisible(false)
+      setPlateArrowsVisible(false)
+    }
+    if (!visible) {
+      // Stop eruptions animation when eruptions layer is hidden.
+      setAnimationEnabled(false)
+    }
+  }
 
   handlePlateMovementLayerChange (event) {
-    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { layers, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
     log('ShowPlateMovement', { visible })
@@ -105,11 +124,12 @@ class LayerControls extends PureComponent {
       setVolcanoesVisible(false)
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateArrowsVisible(false)
+      setEruptionsVisible(false)
     }
   }
 
   handlePlateArrowLayerChange (event) {
-    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { layers, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setPlateArrowsVisible(visible)
     log('ShowPlateArrows', { visible })
@@ -119,6 +139,7 @@ class LayerControls extends PureComponent {
       setVolcanoesVisible(false)
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
+      setEruptionsVisible(false)
     }
   }
 
@@ -160,7 +181,7 @@ class LayerControls extends PureComponent {
             <div><hr /></div>
           }
           { config.volcanoesAvailable &&
-            <div title='Show Volcanoes'>
+            <div title='Show Historical Volcanoes'>
               <FormControlLabel
                 control={<CheckboxOrRadio checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
                 label='Volcanoes'
@@ -172,6 +193,14 @@ class LayerControls extends PureComponent {
               <FormControlLabel
                 control={<CheckboxOrRadio checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} />}
                 label='Earthquakes'
+              />
+            </div>
+          }
+          { config.eruptionsAvailable &&
+            <div className='toggle-eruptions' title='Show or hide all volcanic eruptions on the map'>
+              <FormControlLabel
+                control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
+                label='Eruptions'
               />
             </div>
           }

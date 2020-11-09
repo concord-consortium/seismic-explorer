@@ -4,6 +4,8 @@ import {
   REQUEST_DATA,
   RESET_EARTHQUAKES,
   RECEIVE_EARTHQUAKES,
+  RESET_ERUPTIONS,
+  RECEIVE_ERUPTIONS,
   RECEIVE_DATA,
   RECEIVE_ERROR,
   SET_FILTER,
@@ -18,6 +20,7 @@ import {
   MARK_3D_VIEW_MODIFIED,
   SET_EARTHQUAKES_VISIBLE,
   SET_VOLCANOES_VISIBLE,
+  SET_ERUPTIONS_VISIBLE,
   SET_PLATE_MOVEMENT_VISIBLE,
   SET_PLATE_ARROWS_VISIBLE,
   SET_PIN,
@@ -65,13 +68,16 @@ function mapStatus (state = INITIAL_MAP_STATUS, action) {
 
 const INITIAL_DATA = Map({
   earthquakes: [],
-  magnitudeCutOff: 0
+  magnitudeCutOff: 0,
+  eruptions: []
 })
 
 function data (state = INITIAL_DATA, action) {
   switch (action.type) {
     case RESET_EARTHQUAKES:
-      return INITIAL_DATA
+      return state.set('earthquakes', []).set('magnitudeCutOff', 0)
+    case RESET_ERUPTIONS:
+      return state.set('eruptions', [])
     case RECEIVE_EARTHQUAKES:
       // Select max minimal magnitude among the tiles and remove all the earthquakes weaker than it.
       // It ensures that displayed data is consistent and there're no visual "holes" in earthquakes layer.
@@ -80,8 +86,10 @@ function data (state = INITIAL_DATA, action) {
       const earthquakes = state.get('earthquakes')
         .concat(action.response.earthquakes)
         .filter(e => e.properties.mag >= newCutOff)
-      return state.set('earthquakes', earthquakes)
-        .set('magnitudeCutOff', newCutOff)
+      return state.set('earthquakes', earthquakes).set('magnitudeCutOff', newCutOff)
+    case RECEIVE_ERUPTIONS:
+      const eruptions = state.get('eruptions').concat(action.response.eruptions)
+      return state.set('eruptions', eruptions)
     default:
       return state
   }
@@ -113,6 +121,7 @@ const INITIAL_LAYERS = Map({
   plateNames: config.plateNamesVisible,
   continentOceanNames: config.continentOceanNamesVisible,
   earthquakes: config.earthquakesVisible,
+  eruptions: config.eruptionsVisible,
   volcanoes: config.volcanoesVisible,
   plateMovement: config.detailedPlateMovementVisible,
   plateArrows: config.plateMovementVisible,
@@ -133,6 +142,8 @@ function layers (state = INITIAL_LAYERS, action) {
       return state.set('earthquakes', action.value)
     case SET_VOLCANOES_VISIBLE:
       return state.set('volcanoes', action.value)
+    case SET_ERUPTIONS_VISIBLE:
+      return state.set('eruptions', action.value)
     case SET_PLATE_MOVEMENT_VISIBLE:
       return state.set('plateMovement', action.value)
     case SET_PLATE_ARROWS_VISIBLE:

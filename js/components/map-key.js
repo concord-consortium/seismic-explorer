@@ -30,7 +30,7 @@ export default class MapKey extends PureComponent {
   }
 
   render () {
-    const { boundaries, plateArrows, volcanoes, earthquakes } = this.props
+    const { boundaries, plateArrows, volcanoes, earthquakes, eruptions } = this.props
     const { opened } = this.state
     if (!plateArrows && !boundaries && !volcanoes && !earthquakes) {
       return null
@@ -74,7 +74,7 @@ export default class MapKey extends PureComponent {
             </tbody>
           </table>
         }
-        { volcanoes &&
+        { (volcanoes || eruptions) &&
           <table className='volcanoes'>
             <tbody>
               <tr><th colSpan='2'>Volcano - time since last eruption</th></tr>

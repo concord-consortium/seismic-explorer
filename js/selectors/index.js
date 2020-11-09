@@ -17,7 +17,9 @@ function getCrossSectionFilter (crossSectionPoints) {
 
 const earthquakesEnabled = state => state.get('layers').get('earthquakes')
 const volcanoesLayerEnabled = state => state.get('layers').get('volcanoes')
+const eruptionsEnabled = state => state.get('layers').get('eruptions')
 const earthquakesData = state => state.get('data').get('earthquakes')
+const eruptionsData = state => state.get('data').get('eruptions')
 const filters = state => state.get('filters')
 // It will limit recalculation when user is just drawing cross section points in 2d mode.
 const crossSectionPoints = state => state.get('filters').get('crossSection') && state.get('crossSectionPoints')
@@ -65,9 +67,7 @@ export const getVisibleVolcanoes = createSelector(
     const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
     const mapMultipliers = mapAreaMultipliers(mapRegion.minLng, mapRegion.maxLng)
     const result = []
-    // Two important notes:
-    // - Make sure that result is always a new Array instance, so pure components can detect it's been changed.
-    // - Yes, I don't copy and do mutate elements. It's been done due to performance reasons.
+
     mapMultipliers.forEach(multiplier => {
       volcanoesData.forEach(v => {
         const shiftedLng = v.geometry.coordinates[1] + multiplier * 360
@@ -81,6 +81,33 @@ export const getVisibleVolcanoes = createSelector(
         result.push(volcCopy)
       })
     })
+    return result
+  }
+)
+
+// Eruptions
+
+export const getVisibleEruptions = createSelector(
+  [eruptionsEnabled, eruptionsData, filters, crossSectionPoints],
+  (eruptionsEnabled, eruptionsData, filters, crossSectionPoints) => {
+    if (!eruptionsEnabled) {
+      return []
+    }
+    const minTime = filters.get('minTime')
+    const maxTime = filters.get('maxTime')
+    const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
+    const result = []
+    if (eruptionsData.length > 0) {
+      for (let i = 0, len = eruptionsData.length; i < len; i++) {
+        const eruption = eruptionsData[i]
+        if (eruption && eruption.properties) {
+          const props = eruption.properties
+          eruption.visible = new Date(props.startdate) > minTime && new Date(props.startdate) < maxTime &&
+          crossSectionFilter(eruption.geometry.coordinates)
+          result.push(eruption)
+        }
+      }
+    }
     return result
   }
 )

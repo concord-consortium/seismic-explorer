@@ -62,6 +62,8 @@ const DEFAULT_CONFIG = {
   earthquakesDisplayAllOnStart: false,
   volcanoesAvailable: true,
   volcanoesVisible: false,
+  eruptionsAvailable: true,
+  eruptionsVisible: false,
   plateMovementAvailable: true,
   plateMovementVisible: false,
   detailedPlateMovementAvailable: false,

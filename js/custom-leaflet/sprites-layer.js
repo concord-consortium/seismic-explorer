@@ -7,7 +7,8 @@ export const SpritesLayer = CanvasLayer.extend({
     CanvasLayer.prototype.initialize.call(this, options)
     this.draw = this.draw.bind(this)
     this.onEarthquakeClick = function (event, earthquakeData) {}
-    this.onVolcanoClick = function (event, volcanoData) {}
+    this.onVolcanoClick = function (event, volcanoData) { }
+    this.onEruptionClick = function (event, eruptionData) { }
   },
 
   initCanvas: function () {
@@ -16,21 +17,24 @@ export const SpritesLayer = CanvasLayer.extend({
     DomUtil.addClass(this._canvas, 'earthquakes-canvas-layer')
   },
 
-  setData: function (earthquakes, volcanoes) {
+  setData: function (earthquakes, volcanoes, eruptions) {
     this._earthquakesToProcess = earthquakes
     this._volcanoesToProcess = volcanoes
+    this._eruptionsToProcess = eruptions
     this.scheduleRedraw()
   },
 
   draw: function () {
-    if (this._earthquakesToProcess && this._volcanoesToProcess) {
+    if (this._earthquakesToProcess && this._volcanoesToProcess && this._eruptionsToProcess) {
       this.externalView.setProps({
         earthquakes: this._earthquakesToProcess,
         volcanoes: this._volcanoesToProcess,
+        eruptions: this._eruptionsToProcess,
         latLngToPoint: this.latLngToPoint
       })
       this._volcanoesToProcess = null
       this._earthquakesToProcess = null
+      this._eruptionsToProcess = null
     }
     const transitionInProgress = this.externalView.render()
     if (transitionInProgress) {
@@ -52,6 +56,8 @@ export const SpritesLayer = CanvasLayer.extend({
       this.onEarthquakeClick(event, sprite.data)
     } else if (sprite && sprite.type === 'volcano') {
       this.onVolcanoClick(event, sprite.data)
+    } else if (sprite && sprite.type === 'eruption') {
+      this.onEruptionClick(event, sprite.data)
     }
   }
 })

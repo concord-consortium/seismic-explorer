@@ -4,6 +4,7 @@ import { Circle } from 'leaflet'
 import SpritesLayer from './sprites-layer'
 import EarthquakePopup from './earthquake-popup'
 import VolcanoPopup from './volcano-popup'
+import EruptionPopup from './eruption-popup'
 import PlateBoundariesLayer from './plate-boundaries-layer'
 import PlateArrowsLayer from './plate-arrows-layer'
 import LabelsLayer from './labels-layer'
@@ -44,15 +45,17 @@ export default class SeismicEruptionsMap extends PureComponent {
     super(props)
     this.state = {
       selectedEarthquake: null,
-      selectedVolcano: null
+      selectedVolcano: null,
+      selectedEruption: null
     }
     this.handleEarthquakeClick = this.handleEarthquakeClick.bind(this)
     this.handleEarthquakePopupClose = this.handleEarthquakePopupClose.bind(this)
     this.handleVolcanoClick = this.handleVolcanoClick.bind(this)
     this.handleVolcanoPopupClose = this.handleVolcanoPopupClose.bind(this)
+    this.handleEruptionClick = this.handleEruptionClick.bind(this)
+    this.handleEruptionPopupClose = this.handleEruptionPopupClose.bind(this)
     this.handleMapViewportChanged = this.handleMapViewportChanged.bind(this)
     this.handleInitialBoundsSetup = this.handleInitialBoundsSetup.bind(this)
-    this.handleZoom = this.handleZoom.bind(this)
     this.handlePinUpdated = this.handlePinUpdated.bind(this)
   }
 
@@ -108,7 +111,6 @@ export default class SeismicEruptionsMap extends PureComponent {
       // get the earthquakes to render on first load
       this.handleMapViewportChanged()
     }
-    this.calculateScale()
     window.addEventListener('resize', this.handleInitialBoundsSetup)
   }
 
@@ -138,7 +140,6 @@ export default class SeismicEruptionsMap extends PureComponent {
         this.fitBounds()
       }
     }
-    this.calculateScale()
   }
 
   handleMapViewportChanged (e) {
@@ -149,7 +150,7 @@ export default class SeismicEruptionsMap extends PureComponent {
     clearTimeout(this._boundsUpdateTimeoutID)
     this._boundsUpdateTimeoutID = setTimeout(() => {
       const { layers, setMapStatus } = this.props
-      setMapStatus(this.mapRegion, this.mapZoom, layers.get('earthquakes'))
+      setMapStatus(this.mapRegion, this.mapZoom, layers.get('earthquakes'), layers.get('eruptions'))
 
       const bounds = this.map.getBounds()
 
@@ -161,11 +162,6 @@ export default class SeismicEruptionsMap extends PureComponent {
         zoom: this.mapZoom
       })
     }, BOUNDS_UPDATE_DELAY)
-  }
-
-  handleZoom (e) {
-    // After zooming, if we are showing a scale, recalculate the properties
-    this.calculateScale()
   }
 
   handleEarthquakeClick (event, earthquake) {
@@ -187,6 +183,15 @@ export default class SeismicEruptionsMap extends PureComponent {
 
   handleVolcanoPopupClose () {
     this.setState({ selectedVolcano: null })
+  }
+  handleEruptionClick (event, eruption) {
+    if (this._mapBeingDragged) return
+    this.setState({ selectedEruption: eruption })
+    log('Eruption Clicked', eruption)
+  }
+
+  handleEruptionPopupClose () {
+    this.setState({ selectedEruption: null })
   }
 
   handleMapClick (e) {
@@ -233,8 +238,8 @@ export default class SeismicEruptionsMap extends PureComponent {
   }
 
   render () {
-    const { mode, earthquakes, volcanoes, layers, crossSectionPoints, mapStatus, setCrossSectionPoint, pins } = this.props
-    const { selectedEarthquake, selectedVolcano } = this.state
+    const { mode, earthquakes, volcanoes, eruptions, layers, crossSectionPoints, mapStatus, setCrossSectionPoint, pins } = this.props
+    const { selectedEarthquake, selectedVolcano, selectedEruption } = this.state
     const baseLayer = this.baseLayer
     let url = baseLayer.url
     if (baseLayer.url.indexOf('{c}') > -1) {
@@ -264,7 +269,6 @@ export default class SeismicEruptionsMap extends PureComponent {
           center={center}
           doubleClickZoom={allowFreeMouseZoom}
           scrollWheelZoom={allowFreeMouseZoom}
-          onzoomend={this.handleZoom}
           zoomControl={showZoomControls}
         >
           {/* #key attribute is very important here. #subdomains is not a dynamic property, so we can't reuse the same */}
@@ -278,14 +282,17 @@ export default class SeismicEruptionsMap extends PureComponent {
           {pins && <PinsLayer mapRegion={mapStatus.get('region')} pins={pins} onPinUpdated={this.handlePinUpdated} />}
           {mode !== '3d' &&
             /* Performance optimization. Update of this component is expensive. Remove it when the map is invisible. */
-            <SpritesLayer earthquakes={earthquakes} volcanoes={volcanoes}
-              onEarthquakeClick={this.handleEarthquakeClick} onVolcanoClick={this.handleVolcanoClick} />
+            <SpritesLayer earthquakes={earthquakes} volcanoes={volcanoes} eruptions={eruptions}
+              onEarthquakeClick={this.handleEarthquakeClick} onVolcanoClick={this.handleVolcanoClick} onEruptionClick={this.handleEruptionClick} />
           }
           {mode === '2d' && selectedEarthquake &&
             <EarthquakePopup earthquake={selectedEarthquake} onPopupClose={this.handleEarthquakePopupClose} />
           }
           {mode === '2d' && selectedVolcano &&
             <VolcanoPopup volcano={selectedVolcano} onPopupClose={this.handleVolcanoPopupClose} />
+          }
+          {mode === '2d' && selectedEruption &&
+            <EruptionPopup eruption={selectedEruption} onPopupClose={this.handleEruptionPopupClose} />
           }
           {mode === 'cross-section' &&
             <CrossSectionDrawLayer crossSectionPoints={crossSectionPoints} setCrossSectionPoint={setCrossSectionPoint} />
