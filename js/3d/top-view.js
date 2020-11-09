@@ -60,7 +60,7 @@ export default class {
     this.props = newProps
   }
 
-  spriteAt(x, y) {
+  spriteAt (x, y) {
     const eruption = this.eruptions.spriteAt(x, this._height - y)
     if (eruption) {
       return { type: 'eruption', data: eruption }
