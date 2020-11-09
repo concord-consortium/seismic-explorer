@@ -128,16 +128,17 @@ context('Smoke Test', () => {
         .and('contain', '0-30 km')
         .and('contain', '300-500 km')
         .and('contain', '> 500 km')
-        .and('not.contain', 'Volcano - time since last eruption')
+        .and('not.contain', 'Years since last volcanic eruption')
 
       cy.get('[data-test=data-type]').click()
       cy.get('[title="Show Historical Volcanoes"]').click()
 
       cy.get('.map-key-content')
-        .should('contain', 'Volcano - time since last eruption')
-        .and('contain', 'Up to 100 years')
-        .and('contain', '400-1600 years')
-        .and('contain', '> 6400 years')
+        .should('contain', 'Years since last volcanic eruption')
+        .and('contain', '< 100')
+        .and('contain', '400-1600')
+        .and('contain', '> 6400')
+        .and('contain', 'Unknown')
     })
   })
 
