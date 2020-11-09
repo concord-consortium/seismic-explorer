@@ -102,8 +102,8 @@ export const getVisibleEruptions = createSelector(
         const eruption = eruptionsData[i]
         if (eruption && eruption.properties) {
           const props = eruption.properties
-          eruption.visible = new Date(props.startdate) > minTime && new Date(props.startdate) < maxTime
-          && crossSectionFilter(eruption.geometry.coordinates)
+          eruption.visible = new Date(props.startdate) > minTime && new Date(props.startdate) < maxTime &&
+          crossSectionFilter(eruption.geometry.coordinates)
           result.push(eruption)
         }
       }
