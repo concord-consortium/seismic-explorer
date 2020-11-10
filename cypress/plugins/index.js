@@ -19,8 +19,10 @@ module.exports = (on, config) => {
       launchOptions.preferences['width'] = 1400
       launchOptions.preferences['height'] = 1000
       launchOptions.preferences['resizable'] = false
-      return launchOptions
+    } else if (browser.name === 'chrome') {
+      launchOptions.push('--window-size=1400,1000')
     }
+    return launchOptions
   })
 
   addMatchImageSnapshotPlugin(on, config)
