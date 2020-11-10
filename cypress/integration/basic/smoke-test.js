@@ -54,11 +54,25 @@ context('Smoke Test', () => {
   context('Earthquakes slider', () => {
     it('ensures user can show earthquakes', () => {
       cy.wait(1000)
-      cy.contains('Displaying 0 of 51730 earthquakes')
+      // text will be similar to "Displaying 0 of 80000 earthquakes"
+      cy.get('.stats').then(statText => {
+        const num1 = parseInt(statText.text().split(' ')[1])
+        const num2 = parseInt(statText.text().split(' ')[3])
+        expect(num1).to.eq(0)
+        expect(num2 > 10000).to.eq(true)
+      })
+      cy.contains(' earthquakes')
       cy.get('.earthquake-playback .slider-big .rc-slider-rail').click()
-      // total number of earthquakes may vary very slightly, sometimes 23400 sometimes 23100, so assume it's in the 23k range
-      cy.contains('Displaying 23')
-      cy.contains(' of 51730 earthquakes')
+      // total number of earthquakes may vary, it's in the 20-30k range
+      cy.contains('Displaying ')
+      cy.get('.stats').then(statText => {
+        const num1 = parseInt(statText.text().split(' ')[1])
+        const num2 = parseInt(statText.text().split(' ')[3])
+        expect(num1 > 0).to.eq(true)
+        expect(num2 > 10000).to.eq(true)
+        expect(num2 > num1).to.eq(true)
+      })
+      cy.contains(' earthquakes')
     })
   })
 
@@ -94,21 +108,14 @@ context('Smoke Test', () => {
         cy.get('[data-test=map-type]').click()
         cy.get('.map-layer-content')
           .should('contain', 'Relief')
-          .and('contain', 'Street (Wikimedia)')
           .and('contain', 'Street (ArcGIS)')
           .and('contain', 'Satellite')
-
-        cy.get('input[value=streetWikimedia]').click()
-        cy.get(`.leaflet-tile-pane img[src="https://maps.wikimedia.org/osm-intl/3/3/3${scale}.png"]`).should('exist')
-
         cy.get('input[value=street]').click()
-        cy.get(`.leaflet-tile-pane img[src="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/3/3/3"]`).should('exist')
-
+        cy.get(`.leaflet-tile-pane img[src="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/2/1/1"]`).should('exist')
         cy.get('input[value=relief]').click()
-        cy.get('.leaflet-tile-pane img[src="https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/ETOPO1_Global_Relief_Model_Color_Shaded_Relief/MapServer/tile/3/3/3"]').should('exist')
-
+        cy.get('.leaflet-tile-pane img[src="https://tiles.arcgis.com/tiles/C8EMgrsFcRFL6LrL/arcgis/rest/services/ETOPO1_Global_Relief_Model_Color_Shaded_Relief/MapServer/tile/2/1/1"]').should('exist')
         cy.get('input[value=satellite]').click()
-        cy.get('.leaflet-tile-pane img[src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/3/3/3"]').should('exist')
+        cy.get('.leaflet-tile-pane img[src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/2/1/1"]').should('exist')
 
         cy.get('.map-layer-content .close-icon').click()
         cy.get('.map-layer-content').should('not.exist')
