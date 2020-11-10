@@ -13,14 +13,12 @@ module.exports = (on, config) => {
   on('before:browser:launch', (browser, launchOptions) => {
     // Note that it needs to match or exceed viewportHeight and viewportWidth values specified in cypress.json.
     if (browser.name === 'electron') {
-      launchOptions.args.width = 1280
-      launchOptions.args.height = 1000
-      // open issue for Cypress screenshot, fix sizes https://github.com/cypress-io/cypress/issues/587
       launchOptions.preferences['width'] = 1280
       launchOptions.preferences['height'] = 1000
       launchOptions.preferences['resizable'] = false
     } else if (browser.name === 'chrome') {
-      launchOptions.push('--window-size=1280,1000')
+      launchOptions.args.push('--window-size=1280,1000')
+      launchOptions.args.push('--force-device-scale-factor=1')
     }
     return launchOptions
   })
