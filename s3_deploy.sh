@@ -35,6 +35,7 @@ if [ "$BRANCH_OR_TAG" = "$CURRENT_TAG" ]; then
   DEPLOY_DEST="_site/$S3_DEPLOY_DIR"
   # used by s3_website.yml
   export S3_DEPLOY_DIR
+  export BRANCH_OR_TAG
 
 # production branch builds deploy to root of site
 elif [ "$BRANCH_OR_TAG" = "$PRODUCTION_BRANCH" ]; then
@@ -47,6 +48,7 @@ else
   DEPLOY_DEST="_site/$S3_DEPLOY_DIR"
   # used by s3_website.yml
   export S3_DEPLOY_DIR
+  export BRANCH_OR_TAG
 fi
 
 # copy files to destination
