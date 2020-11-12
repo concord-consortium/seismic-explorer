@@ -5,10 +5,8 @@ DISTRIBUTION_ID='E3MT1G8AEEAXO'
 # name of branch to deploy to root of site
 PRODUCTION_BRANCH='production'
 
-if [ "$TRAVIS_BRANCH" = "production" ]; then
-  mv dist _site
-else
-  # the 2> is to prevent error messages when no match is found
+# extract current TAG if present
+# the 2> is to prevent error messages when no match is found
 CURRENT_TAG=`git describe --tags --exact-match $GITHUB_SHA 2> /dev/null`
 
 # Extract the branch or tag name from the GITHUB_REF
