@@ -14,7 +14,7 @@ jobs:
       - name: Build
         run: npm run build
       - name: Run Tests
-        run: npm run test:watch
+        run: npm run test
   cypress:
     runs-on: ubuntu-latest
     steps:
