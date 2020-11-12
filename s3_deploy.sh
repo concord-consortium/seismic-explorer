@@ -33,21 +33,18 @@ if [ "$BRANCH_OR_TAG" = "$CURRENT_TAG" ]; then
   mkdir -p _site/version
   S3_DEPLOY_DIR="version/$BRANCH_OR_TAG"
   DEPLOY_DEST="_site/$S3_DEPLOY_DIR"
-  INVAL_PATH="/version/$BRANCH_OR_TAG/index.html"
   # used by s3_website.yml
   export S3_DEPLOY_DIR
 
 # production branch builds deploy to root of site
 elif [ "$BRANCH_OR_TAG" = "$PRODUCTION_BRANCH" ]; then
   DEPLOY_DEST="_site"
-  INVAL_PATH="/index.html"
 
 # branch builds deploy to /branch/BRANCH_NAME
 else
   mkdir -p _site/branch
   S3_DEPLOY_DIR="branch/$DEPLOY_DIR_NAME"
   DEPLOY_DEST="_site/$S3_DEPLOY_DIR"
-  INVAL_PATH="/branch/$DEPLOY_DIR_NAME/index.html"
   # used by s3_website.yml
   export S3_DEPLOY_DIR
 fi
@@ -57,7 +54,3 @@ mv $SRC_DIR $DEPLOY_DEST
 
 # deploy the site contents
 s3_website push --site _site
-
-# explicit CloudFront invalidation to workaround s3_website gem invalidation bug
-# with origin path (https://github.com/laurilehmijoki/s3_website/issues/207).
-aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths $INVAL_PATH
