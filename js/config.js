@@ -60,7 +60,7 @@ const DEFAULT_CONFIG = {
   earthquakesAvailable: true,
   earthquakesVisible: true,
   earthquakesDisplayAllOnStart: false,
-  volcanoesAvailable: true,
+  volcanoesAvailable: false,
   volcanoesVisible: false,
   eruptionsAvailable: true,
   eruptionsVisible: false,
@@ -80,7 +80,8 @@ const DEFAULT_CONFIG = {
   // If set to -1 this has no effect
   quakeColor: -1,
   volcanoColor: -1,
-  showRecentCheckbox: true
+  showRecentCheckbox: true,
+  showHistoricEruptions: false
 }
 
 function getURLParam (name) {

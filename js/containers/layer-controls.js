@@ -30,6 +30,7 @@ class LayerControls extends PureComponent {
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
     this.handlePlateArrowLayerChange = this.handlePlateArrowLayerChange.bind(this)
+    this.handleToggleHistoricEruptions = this.handleToggleHistoricEruptions.bind(this)
   }
 
   toggle () {
@@ -143,8 +144,13 @@ class LayerControls extends PureComponent {
     }
   }
 
+  handleToggleHistoricEruptions(event) {
+    const { setFilter } = this.props
+    setFilter('historicEruptions', event.target.checked)
+  }
+
   render () {
-    const { layers, mode } = this.props
+    const { layers, filters, mode } = this.props
     const { opened } = this.state
     return (
       <div className='map-layer-controls'>
@@ -202,6 +208,12 @@ class LayerControls extends PureComponent {
                 control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
                 label='Eruptions'
               />
+              <div className='toggle-historic-eruptions' title='Show historic eruptions'>
+                <FormControlLabel
+                  control={<CheckboxOrRadio checked={filters.get('historicEruptions')} onChange={this.handleToggleHistoricEruptions} />}
+                  label='Historic Eruptions'
+                />
+              </div>
             </div>
           }
           { config.plateMovementAvailable && mode !== '3d' &&

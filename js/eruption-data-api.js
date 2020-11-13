@@ -17,7 +17,7 @@ function getAPIHost () {
 
 function getAPIPath (tile) {
   const bb = tile2LatLngBounds(tile)
-  const startTime = (new Date(config.startTime)).toISOString()
+  const startTime = config.showHistoricEruptions ? (new Date(1,1,1)).toISOString() : (new Date(config.startTime)).toISOString()
   const endTime = (new Date(config.endTime)).toISOString()
   const requestPath = `${getAPIHost()}?starttime=${startTime}&endtime=${endTime}` +
   `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +

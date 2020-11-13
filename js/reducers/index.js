@@ -105,7 +105,8 @@ const INITIAL_FILTERS = Map({
   playbackMaxTime: config.endTime,
   minTimeLimit: config.startTime,
   maxTimeLimit: config.endTime,
-  crossSection: false
+  crossSection: false,
+  historicEruptions: config.showHistoricEruptions
 })
 
 function filters (state = INITIAL_FILTERS, action) {
