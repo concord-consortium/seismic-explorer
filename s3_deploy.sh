@@ -5,7 +5,7 @@ PROJECT_NAME='seismic-explorer'
 # AWS CloudFront distribution ID
 DISTRIBUTION_ID='E3MT1G8AEEAXO'
 # AWS CloudFront distribution domain
-DISTRIBUTION_DOMAIN='starter-projects.concord.org'
+DISTRIBUTION_DOMAIN='seismic-explorer.concord.org'
 # name of branch to deploy to root of site
 ROOT_BRANCH='production'
 # location of built files
