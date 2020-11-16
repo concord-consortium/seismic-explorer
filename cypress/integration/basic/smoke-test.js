@@ -103,8 +103,6 @@ context('Smoke Test', () => {
   context('Map type', () => {
     it('ensures user can change map type', () => {
       cy.window().then(win => {
-        const scale = win.devicePixelRatio > 1 ? `@${win.devicePixelRatio}x` : ''
-
         cy.get('[data-test=map-type]').click()
         cy.get('.map-layer-content')
           .should('contain', 'Relief')
