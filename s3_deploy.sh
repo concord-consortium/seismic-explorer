@@ -42,8 +42,9 @@ if [ "$BRANCH_OR_TAG" = "$CURRENT_TAG" ]; then
   INVAL_PATH="/version/$BRANCH_OR_TAG/index.html"
   # in this case we are going to deploy this code to a subfolder of version
   # So ignore everything except this folder.
-  # FIXME: the code used to be calling Regexp.escape on S3_DEPLOY_DIR
-  IGNORE_ON_SERVER="^(?!$PROJECT_NAME/$S3_DEPLOY_DIR/)"
+  # Currently this only escapes `.`
+  S3_DEPLOY_DIR_ESCAPED=$(sed 's/[.]/[&]/g;' <<<"$S3_DEPLOY_DIR")
+  IGNORE_ON_SERVER="^(?!$PROJECT_NAME/$S3_DEPLOY_DIR_ESCAPED/)"
 
 # root branch builds deploy to root of site
 elif [ "$BRANCH_OR_TAG" = "$ROOT_BRANCH" ]; then
@@ -61,8 +62,9 @@ else
   INVAL_PATH="/branch/$DEPLOY_DIR_NAME/index.html"
   # in this case we are going to deploy this code to a subfolder of branch
   # So ignore everything except this folder.
-  # FIXME: the code used to be calling Regexp.escape on S3_DEPLOY_DIR
-  IGNORE_ON_SERVER="^(?!$PROJECT_NAME/$S3_DEPLOY_DIR/)"
+  # Currently this only escapes `.`
+  S3_DEPLOY_DIR_ESCAPED=$(sed 's/[.]/[&]/g;' <<<"$S3_DEPLOY_DIR")
+  IGNORE_ON_SERVER="^(?!$PROJECT_NAME/$S3_DEPLOY_DIR_ESCAPED/)"
 fi
 
 # used by s3_website.yml
@@ -76,8 +78,7 @@ mv $SRC_DIR $DEPLOY_DEST
 
 # deploy the site contents
 echo Deploying "$BRANCH_OR_TAG" to "$PROJECT_NAME/$S3_DEPLOY_DIR"...
-# temporarily add dry-run switch to make sure recent changes are doing the right thing
-s3_website push --dry-run --site _site
+s3_website push --site _site
 
 # explicit CloudFront invalidation to workaround s3_website gem invalidation bug
 # with origin path (https://github.com/laurilehmijoki/s3_website/issues/207).
