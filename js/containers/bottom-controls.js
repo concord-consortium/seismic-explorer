@@ -236,6 +236,8 @@ class BottomControls extends PureComponent {
     setFilter('minTimeLimit', startDate)
     setFilter('maxTimeLimit', endDate)
 
+    setFilter('playbackMaxTime', endDate)
+
     // if the box is checked, set both earthquakes and eruptions visible
     if (e.target.checked) {
       setEarthquakesVisible(true, mapRegion, mapZoom )
