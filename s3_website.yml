@@ -1,5 +1,3 @@
-s3_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
-s3_secret: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
 s3_bucket: models-resources
 s3_key_prefix: <%= ENV['PROJECT_NAME'] %>
 s3_endpoint: us-east-1
@@ -9,15 +7,11 @@ cloudfront_distribution_id: <%= ENV['DISTRIBUTION_ID'] %>
 cloudfront_invalidate_root: true
 cloudfront_wildcard_invalidation: true
 
-<% if ENV['BRANCH_OR_TAG'] == 'production' %>
-# in this case we are going to deploy this branch to the top level of the domain
-# so we need to ignore the version and branch folders
 ignore_on_server: <%= ENV['IGNORE_ON_SERVER'] %>
 max_age:
   "<%= ENV['PROJECT_NAME'] %>/*": 600 # 10 minutes
   "<%= ENV['PROJECT_NAME'] %>/version/*": 31536000 # 1 year
   "<%= ENV['PROJECT_NAME'] %>/branch/*": 0
-
 
 cloudfront_distribution_config:
   aliases:
