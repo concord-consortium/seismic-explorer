@@ -223,7 +223,7 @@ class BottomControls extends PureComponent {
   }
 
   handleRecentToggle (e) {
-    const { filters, setFilter, setEarthquakesVisible, setEruptionsVisible, mapRegion, mapZoom  } = this.props
+    const { filters, setFilter, setEarthquakesVisible, setEruptionsVisible, mapRegion, mapZoom } = this.props
     const currentDate = Date.now()
     const monthAgo = currentDate - thirtyDays
     // toggle between original start/end and the "recent 30 day" view
@@ -236,10 +236,12 @@ class BottomControls extends PureComponent {
     setFilter('minTimeLimit', startDate)
     setFilter('maxTimeLimit', endDate)
 
+    setFilter('playbackMaxTime', endDate)
+
     // if the box is checked, set both earthquakes and eruptions visible
     if (e.target.checked) {
-      setEarthquakesVisible(true, mapRegion, mapZoom )
-      setEruptionsVisible(true, mapRegion, mapZoom )
+      setEarthquakesVisible(true, mapRegion, mapZoom)
+      setEruptionsVisible(true, mapRegion, mapZoom)
     }
   }
 

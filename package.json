@@ -17,7 +17,8 @@
     "test:cypress": "cypress run --reporter cypress-image-snapshot/reporter",
     "test:cypress:basic": "cypress run --spec cypress/integration/basic/**/*",
     "test:cypress:snapshots": "cypress run --spec cypress/integration/gpu-dependant/**/* --env failOnSnapshotDiff=false --reporter cypress-image-snapshot/reporter",
-    "test:cypress:open": "cypress open --env failOnSnapshotDiff=false"
+    "test:cypress:open": "cypress open --env failOnSnapshotDiff=false",
+    "test:cypress:chrome": "cypress run --headless --browser chrome"
   },
   "standard": {
     "ignore": [
@@ -60,7 +61,7 @@
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.1.0",
-    "cypress": "^4.12.1",
+    "cypress": "^5.6.0",
     "cypress-image-snapshot": "^3.1.1",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.10.0",
