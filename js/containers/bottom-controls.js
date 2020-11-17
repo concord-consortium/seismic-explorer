@@ -222,8 +222,8 @@ class BottomControls extends PureComponent {
     log('ResetClicked')
   }
 
-  handleRecentToggle () {
-    const { filters, setFilter } = this.props
+  handleRecentToggle (e) {
+    const { filters, setFilter, setEarthquakesVisible, setEruptionsVisible, mapRegion, mapZoom } = this.props
     const currentDate = Date.now()
     const monthAgo = currentDate - thirtyDays
     // toggle between original start/end and the "recent 30 day" view
@@ -231,10 +231,18 @@ class BottomControls extends PureComponent {
     const endDate = filters.get('maxTimeLimit') !== filters.get('initialEndTime') ? filters.get('initialEndTime') : currentDate
 
     setFilter('minTime', startDate)
-    setFilter('maxTime', endDate)
+    setFilter('maxTime', config.earthquakesDisplayAllOnStart ? endDate : startDate)
 
     setFilter('minTimeLimit', startDate)
     setFilter('maxTimeLimit', endDate)
+
+    setFilter('playbackMaxTime', endDate)
+
+    // if the box is checked, set both earthquakes and eruptions visible
+    if (e.target.checked) {
+      setEarthquakesVisible(true, mapRegion, mapZoom)
+      setEruptionsVisible(true, mapRegion, mapZoom)
+    }
   }
 
   get dateMarks () {
@@ -343,6 +351,8 @@ function mapStateToProps (state) {
     filters: state.get('filters'),
     layers: state.get('layers'),
     mode: state.get('mode'),
+    mapRegion: state.get('mapStatus').get('region'),
+    mapZoom: state.get('mapStatus').get('zoom'),
     animationEnabled: state.get('animationEnabled'),
     earthquakesCount: state.get('data').get('earthquakes').length,
     earthquakesCountVisible: state.get('data').get('earthquakes').filter(e => e.visible).length,

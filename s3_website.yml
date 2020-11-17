@@ -1,0 +1,20 @@
+s3_bucket: models-resources
+s3_key_prefix: <%= ENV['PROJECT_NAME'] %>
+s3_endpoint: us-east-1
+gzip: true
+
+cloudfront_distribution_id: <%= ENV['DISTRIBUTION_ID'] %>
+cloudfront_invalidate_root: true
+cloudfront_wildcard_invalidation: true
+
+ignore_on_server: <%= ENV['IGNORE_ON_SERVER'] %>
+max_age:
+  "<%= ENV['PROJECT_NAME'] %>/*": 600 # 10 minutes
+  "<%= ENV['PROJECT_NAME'] %>/version/*": 31536000 # 1 year
+  "<%= ENV['PROJECT_NAME'] %>/branch/*": 0
+
+cloudfront_distribution_config:
+  aliases:
+    quantity: 1
+    items:
+      - <%= ENV['DISTRIBUTION_DOMAIN'] %>
