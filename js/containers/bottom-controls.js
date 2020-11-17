@@ -9,35 +9,91 @@ import ccLogoSrc from '../../images/cc-logo.png'
 import screenfull from 'screenfull'
 import { layerInfo } from '../map-layer-tiles'
 import log from '../logger'
+import Checkbox from '@material-ui/core/Checkbox'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import config from '../config'
 
 import '../../css/settings-controls.less'
 import 'rc-slider/assets/index.css'
 import '../../css/slider.less'
 
+const thirtyDays = 2592000000 // 1000 * 60 * 60 * 24 * 30 = ms => s => mins => hours => days => 30 days
+
 function sliderDateFormatter (value) {
   const date = new Date(value)
-  // .getMoth() returns [0, 11] range.
+  // .getMonth() returns [0, 11] range.
   let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
   let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
   return `${month}/${day}/${date.getFullYear()}`
 }
 
 function sliderTickFormatter (valueMin, valueMax) {
-  // Don't display decade labels if it's closer to the edge values than 4 years.
-  // Labels would be too close to each other and probably overlap.
-  const minDistFromEdgeValues = 4 // years
+  // determine the scale based on difference between min and max
+  const dateDiff = Math.round((valueMax - valueMin) / thirtyDays)
   const tickMarks = {}
-  const minDate = new Date(valueMin)
-  const minYear = (minDate.getFullYear() + minDistFromEdgeValues).toString()
-  const maxDate = new Date(valueMax)
-  maxDate.setFullYear(maxDate.getUTCFullYear() - minDistFromEdgeValues, 0, 1)
+  // suitable padding so the text doesn't overlap the edge labels
+  let tickSpacing = thirtyDays
+  let tickQuantity = 4
 
-  const decade = new Date(minYear.substr(0, 2) + minYear.substr(2, 1) + '0')
-  decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
-  while (decade.getTime() <= maxDate.getTime()) {
-    tickMarks[decade.getTime()] = { label: decade.getUTCFullYear() }
-    // increment decade by 10 years
+  const minDate = new Date(valueMin)
+  const maxDate = new Date(valueMax)
+
+  if (dateDiff < 2) {
+    // show date marks in days
+    tickSpacing = 7
+
+    minDate.setUTCDate(minDate.getUTCDate() + tickSpacing)
+    maxDate.setUTCDate(maxDate.getUTCDate() - tickSpacing)
+
+    const markerDate = minDate
+
+    while (markerDate.getTime() <= maxDate.getTime()) {
+      tickMarks[markerDate.getTime()] = { label: `${markerDate.getUTCMonth() + 1}/${markerDate.getUTCDate()}/${markerDate.getUTCFullYear()}` }
+      // increment marker time
+      markerDate.setUTCDate(markerDate.getUTCDate() + tickSpacing)
+    }
+  } else if (dateDiff > 2 && dateDiff < 24) {
+    // show date marks in months
+    tickSpacing = Math.round((maxDate - minDate) / thirtyDays / tickQuantity)
+
+    minDate.setUTCMonth(minDate.getUTCMonth() + tickSpacing)
+    maxDate.setUTCMonth(maxDate.getUTCMonth() - tickSpacing)
+
+    const markerDate = new Date(minDate.getUTCFullYear(), minDate.getUTCMonth(), 1)
+
+    while (markerDate.getTime() <= maxDate.getTime()) {
+      tickMarks[markerDate.getTime()] = { label: `${markerDate.getUTCMonth() + 1}/${markerDate.getUTCFullYear()}` }
+      markerDate.setUTCMonth(markerDate.getUTCMonth() + tickSpacing)
+    }
+  } else if (dateDiff > 24 && dateDiff < 120) {
+    // show date marks in years
+    tickSpacing = Math.round((maxDate.getUTCFullYear() - minDate.getUTCFullYear()) / tickQuantity)
+
+    minDate.setUTCFullYear(minDate.getUTCFullYear() + tickSpacing)
+    maxDate.setUTCFullYear(maxDate.getUTCFullYear() - tickSpacing)
+
+    const markerDate = minDate
+
+    while (markerDate.getTime() <= maxDate.getTime()) {
+      tickMarks[markerDate.getTime()] = { label: `${markerDate.getUTCFullYear()}` }
+      markerDate.setUTCFullYear(markerDate.getUTCFullYear() + tickSpacing)
+    }
+  } else {
+    // show decades
+    tickSpacing = 4 // years
+    const minDate = new Date(valueMin)
+    const minYear = (minDate.getFullYear() + tickSpacing).toString()
+    const maxDate = new Date(valueMax)
+    maxDate.setFullYear(maxDate.getUTCFullYear() - tickSpacing, 0, 1)
+
+    const decade = new Date(minYear.substr(0, 2) + minYear.substr(2, 1) + '0')
+
     decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
+    while (decade.getTime() <= maxDate.getTime()) {
+      tickMarks[decade.getTime()] = { label: decade.getUTCFullYear() }
+      // increment decade by 10 years
+      decade.setFullYear(decade.getUTCFullYear() + 10, 0, 1)
+    }
   }
   return tickMarks
 }
@@ -102,6 +158,7 @@ class BottomControls extends PureComponent {
     this.handlePlayPauseBtnClick = this.handlePlayPauseBtnClick.bind(this)
     this.handleResetBtnClick = this.handleResetBtnClick.bind(this)
     this.handleBaseLayerChange = this.handleBaseLayerChange.bind(this)
+    this.handleRecentToggle = this.handleRecentToggle.bind(this)
   }
 
   componentDidMount () {
@@ -163,6 +220,29 @@ class BottomControls extends PureComponent {
     const { reset } = this.props
     reset()
     log('ResetClicked')
+  }
+
+  handleRecentToggle (e) {
+    const { filters, setFilter, setEarthquakesVisible, setEruptionsVisible, mapRegion, mapZoom } = this.props
+    const currentDate = Date.now()
+    const monthAgo = currentDate - thirtyDays
+    // toggle between original start/end and the "recent 30 day" view
+    const startDate = filters.get('minTimeLimit') !== filters.get('initialStartTime') ? filters.get('initialStartTime') : monthAgo
+    const endDate = filters.get('maxTimeLimit') !== filters.get('initialEndTime') ? filters.get('initialEndTime') : currentDate
+
+    setFilter('minTime', startDate)
+    setFilter('maxTime', config.earthquakesDisplayAllOnStart ? endDate : startDate)
+
+    setFilter('minTimeLimit', startDate)
+    setFilter('maxTimeLimit', endDate)
+
+    setFilter('playbackMaxTime', endDate)
+
+    // if the box is checked, set both earthquakes and eruptions visible
+    if (e.target.checked) {
+      setEarthquakesVisible(true, mapRegion, mapZoom)
+      setEruptionsVisible(true, mapRegion, mapZoom)
+    }
   }
 
   get dateMarks () {
@@ -229,6 +309,14 @@ class BottomControls extends PureComponent {
           </div>
           <div className='centered-settings'>
             <div>
+              {config.showRecentCheckbox &&
+                <div className='recent-data-toggle' title='Only display recent activity (30 days)'>
+                  <FormControlLabel
+                    control={<Checkbox onChange={this.handleRecentToggle} />}
+                    label='Only display recent activity (30 days)'
+                  />
+                </div>
+              }
               <MapControls />
               <LayerControls />
             </div>
@@ -240,7 +328,7 @@ class BottomControls extends PureComponent {
             }
             {layers.get('earthquakes') &&
               <div className='mag-slider'>
-                <div className='mag-label'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong><br />
+                <div className='mag-label'><div className='mag-label-text'>Magnitudes from <strong>{minMag.toFixed(1)}</strong> to <strong>{maxMag.toFixed(1)}</strong></div>
                   <Range min={0} max={10} step={0.1} value={[minMag, maxMag]} onChange={this.handleMagRange}
                     onAfterChange={logMagSliderChange} marks={{ 0: 0, 5: 5, 10: 10 }} />
                 </div>
@@ -263,6 +351,8 @@ function mapStateToProps (state) {
     filters: state.get('filters'),
     layers: state.get('layers'),
     mode: state.get('mode'),
+    mapRegion: state.get('mapStatus').get('region'),
+    mapZoom: state.get('mapStatus').get('zoom'),
     animationEnabled: state.get('animationEnabled'),
     earthquakesCount: state.get('data').get('earthquakes').length,
     earthquakesCountVisible: state.get('data').get('earthquakes').filter(e => e.visible).length,

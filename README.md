@@ -2,19 +2,19 @@
 
 Latest **stable** version:
 
-http://seismic-explorer.concord.org
+https://seismic-explorer.concord.org
 
 Latest **development** version:
 
-http://seismic-explorer.concord.org/branch/master/index.html
+https://seismic-explorer.concord.org/branch/master/index.html
 
 Old versions can be accessed via `/version/<tag>` path, e.g.:
 
-http://seismic-explorer.concord.org/version/1.1.0/index.html
+https://seismic-explorer.concord.org/version/1.1.0/index.html
 
 ## Configuration
 
-Take a look at the [authoring page]( http://seismic-explorer.concord.org/?authoring).
+Take a look at the [authoring page]( https://seismic-explorer.concord.org/?authoring).
 
 Some options can be set using URL parameters, for example:
 
@@ -52,7 +52,7 @@ webpack
 ```
 or start webpack dev server:
 ```
-npm install -g webpack-dev-server 
+npm install -g webpack-dev-server
 webpack-dev-server
 ```
 and open [http://localhost:8080/](http://localhost:8080/) or [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/) (auto-reload after each code change).
@@ -69,7 +69,7 @@ Some things that may be confusing when you start working with Redux (or at least
 
 > When you notice that some components don’t use the props they receive but merely forward them down and you have to rewire all those intermediate components any time the children need more data, it’s a good time to introduce some container components. This way you can get the data and the behavior props to the leaf components without burdening the unrelated components in the middle of the tree.
 
-* Is it okay to still use React's state? I think so, and so does [Redux's author](https://github.com/reactjs/redux/issues/1287). 
+* Is it okay to still use React's state? I think so, and so does [Redux's author](https://github.com/reactjs/redux/issues/1287).
 
 Additional, useful resources:
 * [Redux examples](https://github.com/reactjs/redux/tree/master/examples)
@@ -79,9 +79,9 @@ Additional, useful resources:
 
 * Browser specific prefixes are not necessary, as this project uses [autoprefixer](https://github.com/postcss/autoprefixer), which will add them automatically.
 * Webpack parses URLs in CSS too, so it will either copy resources automatically to `/dist` or inline them in CSS file. That applies to images and fonts (take a look at webpack config).
-* All the styles are included by related components in JS files. Please make sure that those styles are scoped to the top-level component class, so we don't pollute the whole page. It's not very important right now, but might become important if this page becomes part of the larger UI. And I believe it's a good practice anyway. 
+* All the styles are included by related components in JS files. Please make sure that those styles are scoped to the top-level component class, so we don't pollute the whole page. It's not very important right now, but might become important if this page becomes part of the larger UI. And I believe it's a good practice anyway.
 * I would try to make sure that each component specifies all its necessary styles to look reasonably good and it doesn't depend on styles defined somewhere else (e.g. in parent components). Parent components or global styles could be used to theme components, but they should work just fine without them too.
 
-## License 
+## License
 
 [MIT](https://github.com/concord-consortium/seismic-explorer/blob/master/LICENSE)
