@@ -91,7 +91,7 @@ context('Smoke Test', () => {
         .should('contain', 'Plate Boundaries')
         .and('contain', 'Plate Names')
         .and('contain', 'Continent and Ocean Names')
-        .and('contain', 'Volcanoes')
+        .and('contain', 'Eruptions')
         .and('contain', 'Earthquakes')
         .and('contain', 'Plate Movement')
 
@@ -136,7 +136,7 @@ context('Smoke Test', () => {
         .and('not.contain', 'Years since last volcanic eruption')
 
       cy.get('[data-test=data-type]').click()
-      cy.get('[title="Show or hide all volcanic eruptions on the map"]').click()
+      cy.get('.toggle-eruptions').click()
 
       cy.get('.map-key-content')
         .should('contain', 'Years since last volcanic eruption')

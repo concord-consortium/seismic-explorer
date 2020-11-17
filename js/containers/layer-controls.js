@@ -202,12 +202,14 @@ class LayerControls extends PureComponent {
               />
             </div>
           }
-          { config.eruptionsAvailable &&
-            <div className='toggle-eruptions' title='Show or hide all volcanic eruptions on the map'>
-              <FormControlLabel
-                control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
-                label='Eruptions'
-              />
+          {config.eruptionsAvailable &&
+            <div>
+              <div className='toggle-eruptions' title='Show or hide all volcanic eruptions on the map'>
+                <FormControlLabel
+                  control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
+                  label='Eruptions'
+                />
+              </div>
               <div className='toggle-historic-eruptions' title='Show historic eruptions'>
                 <FormControlLabel
                   control={<CheckboxOrRadio checked={filters.get('historicEruptions')} onChange={this.handleToggleHistoricEruptions} />}
