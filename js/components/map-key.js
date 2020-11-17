@@ -77,12 +77,14 @@ export default class MapKey extends PureComponent {
         { (volcanoes || eruptions) &&
           <table className='volcanoes'>
             <tbody>
-              <tr><th colSpan='2'>Volcano - time since last eruption</th></tr>
-              <tr><td>{volcanoColor('#ff6600')}</td><td>Up to 100 years</td></tr>
-              <tr><td>{volcanoColor('#d26f2d')}</td><td>100-400 years</td></tr>
-              <tr><td>{volcanoColor('#ac7753')}</td><td>400-1600 years</td></tr>
-              <tr><td>{volcanoColor('#8c7d73')}</td><td>1600-6400 years</td></tr>
-              <tr><td>{volcanoColor('#808080')}</td><td>> 6400 years</td></tr>
+              <tr><th colSpan='2' height='28px'>Years since last volcanic eruption</th></tr>
+              <tr><td>{volcanoIcon('#ffffff')}</td><td>Active eruption</td></tr>
+              <tr><td>{volcanoIcon('#ff6600')}</td><td>{`< 100`}</td></tr>
+              <tr><td>{volcanoIcon('#d26f2d')}</td><td>100-400</td></tr>
+              <tr><td>{volcanoIcon('#ac7753')}</td><td>400-1600</td></tr>
+              <tr><td>{volcanoIcon('#8c7d73')}</td><td>1600-6400</td></tr>
+              <tr><td>{volcanoIcon('#808080')}</td><td>{`> 6400`}</td></tr>
+              <tr><td>{volcanoIcon('#b1b1b1')}</td><td>Unknown</td></tr>
             </tbody>
           </table>
         }
@@ -91,7 +93,8 @@ export default class MapKey extends PureComponent {
 }
 
 function circle (magnitude) {
-  return <svg xmlns='http://www.w3.org/2000/svg' width='48' height='48'>
+  const circleContainerSize = magnitude < 9 ? 42 : 48
+  return <svg xmlns='http://www.w3.org/2000/svg' width={circleContainerSize} height={circleContainerSize}>
     <circle cx='24' cy='24' r={magnitudeToRadius(magnitude)} stroke='black' fill='rgba(0,0,0,0)' />
   </svg>
 }
@@ -104,8 +107,10 @@ function boundaryColor (color) {
   return <div className='boundary-color' style={{ backgroundColor: color }} />
 }
 
-function volcanoColor (color) {
-  return <div className='volcano-marker' style={{ borderBottomColor: color }} />
+function volcanoIcon (color) {
+  return <svg viewBox='0 0 64 64' width='24px' height='24px' xmlns='http://www.w3.org/2000/svg'>
+    <polygon style={{ fill: color, stroke: 'rgb(0, 0, 0)' }} points='4 60 32 4 60 60 4 60' />
+  </svg>
 }
 
 function toHexStr (d) {
