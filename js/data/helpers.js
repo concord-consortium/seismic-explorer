@@ -59,13 +59,16 @@ export function processEruptionAPIResponse (response, limit) {
         latitude: props.latitude,
         longitude: props.longitude,
         startdate: props.startdate,
-        enddate: props.enddate
+        startdateyear: props.startdateyear,
+        enddate: props.enddate,
+        active: props.active
       }
     }
   })
   return {
+    eruptions
     // Sort data by time.
-    eruptions: eruptions.sort((a, b) => a.properties.startdate - b.properties.startdate)
+    //eruptions: eruptions.sort((a, b) => a.properties.startdate - b.properties.startdate)
   }
 }
 

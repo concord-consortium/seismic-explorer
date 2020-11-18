@@ -197,18 +197,6 @@ export function setEruptionsVisible (value, region, zoom) {
   }
 }
 
-export function setHistoricEruptionsVisible (value, region, zoom) {
-  return dispatch => {
-    dispatch({
-      type: SET_HISTORIC_ERUPTIONS_VISIBLE,
-      value
-    })
-    if (value && region !== undefined && zoom !== undefined) {
-      dispatch(updateEruptionData(region, zoom))
-    }
-  }
-}
-
 export function setBaseLayer (value) {
   return {
     type: SET_BASE_LAYER,

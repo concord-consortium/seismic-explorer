@@ -17,12 +17,9 @@ function getAPIHost () {
 
 function getAPIPath (tile) {
   const bb = tile2LatLngBounds(tile)
-  // const startTime = config.showHistoricEruptions ? '0' : (new Date(config.startTime)).toISOString()
-  const startTime = config.showHistoricEruptions ? '0' : (new Date(1,1,1)).toISOString()
-  const endTime = (new Date(config.endTime)).toISOString()
-  const requestPath = `${getAPIHost()}?starttime=${startTime}&endtime=${endTime}` +
+  const requestPath = `${getAPIHost()}?` +
   `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
-  `&orderby=startdate-asc` // &limit=${config.tileLimit}`
+  `&orderby=startdate-asc`
   return requestPath
 }
 

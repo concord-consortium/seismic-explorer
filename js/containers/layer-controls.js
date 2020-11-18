@@ -144,7 +144,7 @@ class LayerControls extends PureComponent {
     }
   }
 
-  handleToggleHistoricEruptions(event) {
+  handleToggleHistoricEruptions (event) {
     const { setFilter } = this.props
     setFilter('historicEruptions', event.target.checked)
   }
