@@ -3,7 +3,7 @@ import { Popup } from 'react-leaflet'
 
 const renderDate = d => {
   const theDate = new Date(d)
-  return `${theDate.getFullYear()}-${theDate.getMonth()}-${theDate.getDate()}`
+  return `${theDate.getFullYear()}-${theDate.getMonth() + 1}-${theDate.getDate()}`
 }
 export default class EruptionPopup extends PureComponent {
   render () {
@@ -19,7 +19,7 @@ export default class EruptionPopup extends PureComponent {
           <div>Type: <b>{eruption.properties.activitytype}</b></div>
           <div>Explosivity Index: <b>{eruption.properties.explosivityindexmax}</b></div>
           <div>Start Date: <b>{renderDate(eruption.properties.startdate)}</b></div>
-          <div>End Date: <b>{renderDate(eruption.properties.enddate)}</b></div>
+          <div>End Date: <b>{eruption.properties.active ? 'Active Eruption' : renderDate(eruption.properties.enddate)}</b></div>
         </div>
       </Popup>
     )

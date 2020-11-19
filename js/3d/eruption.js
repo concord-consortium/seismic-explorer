@@ -2,7 +2,8 @@ import config from '../config'
 import * as THREE from 'three'
 import Sprite from './sprite'
 
-function ageToColor (lastEruptionDate, lastEruptionYear) {
+function ageToColor (lastEruptionDate, lastEruptionYear, active) {
+  if (active) return 0xFFFFFF
   const currentYear = new Date().getFullYear()
   const age = lastEruptionDate ? currentYear - new Date(lastEruptionDate).getFullYear() : currentYear - parseInt(lastEruptionYear)
   if (config.volcanoColor !== -1) return parseInt(config.volcanoColor, 16)
@@ -44,7 +45,7 @@ export default class Eruption extends Sprite {
 
   getColor (data) {
     const ageDate = data.properties.enddate ? data.properties.enddate : data.properties.startdate
-    return ageToColor(ageDate, data.startdateyear)
+    return ageToColor(ageDate, data.properties.startdateyear, data.properties.active)
   }
 
   getSize (data) {
