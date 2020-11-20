@@ -17,7 +17,7 @@ function getAPIHost () {
 
 function getAPIPath (tile) {
   const bb = tile2LatLngBounds(tile)
-  const requestPath = `${getAPIHost()}?` +
+  const requestPath = `${getAPIHost()}?startDate=${config.startTime}` +
   `&maxlatitude=${bb.maxLat}&minlatitude=${bb.minLat}&maxlongitude=${bb.maxLng}&minlongitude=${bb.minLng}` +
   `&orderby=startdate-asc`
   return requestPath

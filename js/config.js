@@ -43,7 +43,7 @@ const DEFAULT_CONFIG = {
   api: 'CC',
   mapStyle: 'satellite', // or 'street' or 'earthquake-density'
   // Use CloudFront caching for API calls.
-  cache: true,
+  cache: false,
   // Enables / disables logging of user actions to parent frame (e.g. LARA).
   logging: true,
   // Data layers.

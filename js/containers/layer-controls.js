@@ -212,7 +212,7 @@ class LayerControls extends PureComponent {
               </div>
               <div className='toggle-historic-eruptions' title='Show historic eruptions'>
                 <FormControlLabel
-                  control={<CheckboxOrRadio checked={filters.get('historicEruptions')} onChange={this.handleToggleHistoricEruptions} />}
+                  control={<CheckboxOrRadio checked={filters.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
                   label='Historic Eruptions'
                 />
               </div>

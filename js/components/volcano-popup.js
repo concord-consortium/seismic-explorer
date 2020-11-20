@@ -7,14 +7,13 @@ export default class VolcanoPopup extends PureComponent {
     const pos = [ volcano.geometry.coordinates[0], volcano.geometry.coordinates[1], 0 ]
     return (
       <Popup closeOnClick={false} onClose={onPopupClose} position={pos}>
-        <div>
-          <div>Volcano</div>
-          <div>Name: <b>{volcano.name}</b></div>
-          <div>Country: <b>{volcano.country}</b></div>
-          <div>Region: <b>{volcano.region}</b></div>
-          <div>Location:<b>{pos[0]}</b>,<b>{pos[1]}</b></div>
-          <div>Type: <b>{volcano.volcanotype}</b></div>
-          <div>Date: <b>{volcano.lastactivedate}</b></div>
+        <div className='popup-header'>Volcanic Eruption</div>
+          <div>Volcano Name: <b>{volcano.properties.volcanoname}</b></div>
+          <div>Volcano Rock Type: <b>{volcano.properties.majorrocktype}</b></div>
+          <div>Location: <b>{pos[0]}</b>,<b>{pos[1]}</b></div>
+          <div>Eruptions: <b>{volcano.properties.eruptioncount}</b>
+          <div>Last Eruption Date: <b>{volcano.properties.lasteruptionyear}</b></div>
+          <div>Previous Eruptions: <b>{volcano.properties.eruptionyears}</b></div>
         </div>
       </Popup>
     )

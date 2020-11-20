@@ -12,7 +12,7 @@ export default class EruptionPopup extends PureComponent {
     return (
       <Popup closeOnClick={false} onClose={onPopupClose} position={pos}>
         <div>
-          <div>Volcanic Eruption</div>
+          <div className='popup-header'>Volcanic Eruption</div>
           <div>Volcano Name: <b>{eruption.properties.volcanoname}</b></div>
           <div>Volcano Rock Type: <b>{eruption.properties.majorrocktype}</b></div>
           <div>Location: <b>{pos[0]}</b>,<b>{pos[1]}</b></div>

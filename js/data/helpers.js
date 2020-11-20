@@ -39,7 +39,7 @@ export function processAPIResponse (response, limit, enforcedMinMagnitude) {
 // Processes JSON returned by API (USGS or our own) and returns only necessary data.
 // We save some memory and also it documents (and tests) which properties are necessary.
 export function processEruptionAPIResponse (response, limit) {
-  const eruptions = response.features.map(eruption => {
+  const eruptions = response.features.eruptions && response.features.eruptions.map(eruption => {
     const coords = eruption.geometry.coordinates
     const props = eruption.properties
     return {
@@ -65,8 +65,30 @@ export function processEruptionAPIResponse (response, limit) {
       }
     }
   })
+
+  const volcanoes = response.features.volcanoes && response.features.volcanoes.map(volcano => {
+    const coords = volcano.geometry.coordinates
+    const props = volcano.properties
+    return {
+      id: props.volcanonumber,
+      geometry: {
+        // Swap lat and lng!
+        // We expect lat first, then lng. USGS / GeoJSON format is the opposite.
+        coordinates: [coords[1], coords[0], coords[2] ? coords[2] : -10]
+      },
+      properties: {
+        volcanoname: props.volcanoname,
+        volcanonumber: props.volcanonumber,
+        eruptionnumbers: props.eruptionnumbers,
+        eruptionyears: props.eruptionyears,
+        majorrocktype: props.majorrocktype,
+        lasteruptionyear: props.lasteruptionyear
+      }
+    }
+  })
   return {
-    eruptions
+    eruptions,
+    volcanoes
     // Sort data by time.
     //eruptions: eruptions.sort((a, b) => a.properties.startdate - b.properties.startdate)
   }

@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect'
 import crossSectionRectangle from '../core/cross-section-rectangle'
 import pointInsidePolygon from '../core/point-inside-polygon'
-import mapAreaMultipliers from '../core/map-area-multipliers'
-import volcanoesData from '../data/volcanoes'
 
 function getCrossSectionFilter (crossSectionPoints) {
   if (!crossSectionPoints) return () => true
@@ -20,6 +18,7 @@ const volcanoesLayerEnabled = state => state.get('layers').get('volcanoes')
 const eruptionsEnabled = state => state.get('layers').get('eruptions')
 const earthquakesData = state => state.get('data').get('earthquakes')
 const eruptionsData = state => state.get('data').get('eruptions')
+const volcanoesData = state => state.get('data').get('volcanoes')
 const filters = state => state.get('filters')
 // It will limit recalculation when user is just drawing cross section points in 2d mode.
 const crossSectionPoints = state => state.get('filters').get('crossSection') && state.get('crossSectionPoints')
@@ -59,28 +58,23 @@ export const getVisibleEarthquakes = createSelector(
 // Volcanoes
 
 export const getVisibleVolcanoes = createSelector(
-  [ volcanoesLayerEnabled, crossSectionPoints, mapRegion ],
-  (volcanoesLayerEnabled, crossSectionPoints, mapRegion) => {
+  [ volcanoesLayerEnabled, volcanoesData, crossSectionPoints, mapRegion ],
+  (volcanoesLayerEnabled, volcanoesData, crossSectionPoints, mapRegion) => {
     if (!volcanoesLayerEnabled) {
       return []
     }
     const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
-    const mapMultipliers = mapAreaMultipliers(mapRegion.minLng, mapRegion.maxLng)
     const result = []
 
-    mapMultipliers.forEach(multiplier => {
-      volcanoesData.forEach(v => {
-        const shiftedLng = v.geometry.coordinates[1] + multiplier * 360
-        if (shiftedLng < mapRegion.minLng || shiftedLng > mapRegion.maxLng) return
-        const lat = v.geometry.coordinates[0]
-        const depth = v.geometry.coordinates[2]
-        const volcCopy = Object.assign({}, v)
-        volcCopy.geometry = { coordinates: [ lat, shiftedLng, depth ] }
-        // When cross section mode is disabled, this filter returns true.
-        volcCopy.visible = crossSectionFilter(volcCopy.geometry.coordinates)
-        result.push(volcCopy)
-      })
-    })
+    if (volcanoesData.length > 0) {
+      for (let i = 0, len = volcanoesData.length; i < len; i++) {
+        const volcano = volcanoesData[i]
+        if (volcano && volcano.properties) {
+          volcano.visible = crossSectionFilter(volcano.geometry.coordinates)
+          result.push(volcano)
+        }
+      }
+    }
     return result
   }
 )
@@ -109,12 +103,6 @@ export const getVisibleEruptions = createSelector(
             // const active = endDate >= maxTime || ((startDate > minTime || startYear > minYear) && props.active)
             eruption.visible = crossSectionFilter(eruption.geometry.coordinates)
             result.push(eruption)
-          } else {
-            // we have a historic eruption - only display if filter is set
-            if (filters.get('historicEruptions')) {
-              eruption.visible = crossSectionFilter(eruption.geometry.coordinates)
-              result.push(eruption)
-            }
           }
         }
       }

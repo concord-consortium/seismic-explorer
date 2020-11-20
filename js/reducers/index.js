@@ -69,7 +69,8 @@ function mapStatus (state = INITIAL_MAP_STATUS, action) {
 const INITIAL_DATA = Map({
   earthquakes: [],
   magnitudeCutOff: 0,
-  eruptions: []
+  eruptions: [],
+  volcanoes: []
 })
 
 function data (state = INITIAL_DATA, action) {
@@ -89,7 +90,8 @@ function data (state = INITIAL_DATA, action) {
       return state.set('earthquakes', earthquakes).set('magnitudeCutOff', newCutOff)
     case RECEIVE_ERUPTIONS:
       const eruptions = state.get('eruptions').concat(action.response.eruptions)
-      return state.set('eruptions', eruptions)
+      const volcanoes = state.get('volcanoes').concat(action.response.volcanoes)
+      return state.set('eruptions', eruptions).set('volcanoes', volcanoes)
     default:
       return state
   }
