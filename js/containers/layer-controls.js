@@ -193,14 +193,6 @@ class LayerControls extends PureComponent {
           { (config.plateBoundariesAvailable || config.plateNamesAvailable || config.continentOceanNamesAvailable) && mode !== '3d' &&
             <div><hr /></div>
           }
-          { config.volcanoesAvailable &&
-            <div title='Show Historical Volcanoes'>
-              <FormControlLabel
-                control={<CheckboxOrRadio checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
-                label='Volcanoes'
-              />
-            </div>
-          }
           { config.earthquakesAvailable &&
             <div className='toggle-earthquakes' title='Show or hide all earthquakes on the map'>
               <FormControlLabel
@@ -216,13 +208,15 @@ class LayerControls extends PureComponent {
                   control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
                   label='Volcanic Eruptions'
                 />
-              </div>
+            </div>
+            {config.volcanoesAvailable &&
               <div className='toggle-historic-eruptions' title='Show historic eruptions'>
                 <FormControlLabel
                   control={<CheckboxOrRadio checked={filters.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
                   label={`Eruptions prior to ${dateFormatter(filters.get('minTime'))}`}
                 />
               </div>
+            }
             </div>
           }
           { config.plateMovementAvailable && mode !== '3d' &&

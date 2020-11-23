@@ -60,7 +60,7 @@ const DEFAULT_CONFIG = {
   earthquakesAvailable: true,
   earthquakesVisible: true,
   earthquakesDisplayAllOnStart: false,
-  volcanoesAvailable: false,
+  volcanoesAvailable: true,
   volcanoesVisible: false,
   eruptionsAvailable: true,
   eruptionsVisible: false,
