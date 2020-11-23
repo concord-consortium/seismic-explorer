@@ -87,7 +87,7 @@ export const getVisibleVolcanoes = createSelector(
 export const getVisibleEruptions = createSelector(
   [eruptionsEnabled, eruptionsData, filters, crossSectionPoints],
   (eruptionsEnabled, eruptionsData, filters, crossSectionPoints) => {
-    if (!eruptionsEnabled) {
+    if (!eruptionsEnabled || filters.get('minTime') === filters.get('maxTime')) {
       return []
     }
     const minTime = filters.get('minTime')
