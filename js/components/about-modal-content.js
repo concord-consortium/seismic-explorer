@@ -36,6 +36,7 @@ export default class AboutModalContent extends PureComponent {
             and Global Volcanism Program, 2013. Volcanoes of the World, v. 4.9.1. Venzke, E (ed.). Smithsonian Institution. Data
             Downloaded {dateFormatter()}. https://doi.org/10.5479/si.GVP.VOTW4-2013
           </p>
+          <p>Hurricane Explorer [Computer software]. (2020). Concord, MA: The Concord Consortium.</p>
         </div>
       </div>
     )
