@@ -106,7 +106,7 @@ context('Smoke Test', () => {
         cy.get('[data-test=map-type]').click()
         cy.get('.map-layer-content')
           .should('contain', 'Relief')
-          .and('contain', 'Street (ArcGIS)')
+          .and('contain', 'Street')
           .and('contain', 'Satellite')
         cy.get('input[value=street]').click()
         cy.get(`.leaflet-tile-pane img[src="https://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/2/1/1"]`).should('exist')
