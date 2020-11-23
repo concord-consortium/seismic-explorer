@@ -58,19 +58,22 @@ export const getVisibleEarthquakes = createSelector(
 // Volcanoes
 
 export const getVisibleVolcanoes = createSelector(
-  [ volcanoesLayerEnabled, volcanoesData, crossSectionPoints, mapRegion ],
-  (volcanoesLayerEnabled, volcanoesData, crossSectionPoints, mapRegion) => {
+  [ volcanoesLayerEnabled, volcanoesData, filters, crossSectionPoints, mapRegion ],
+  (volcanoesLayerEnabled, volcanoesData, filters, crossSectionPoints, mapRegion) => {
     if (!volcanoesLayerEnabled) {
       return []
     }
     const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
+    const minTime = filters.get('minTime')
+    const minYear = new Date(minTime).getUTCFullYear()
     const result = []
 
     if (volcanoesData.length > 0) {
       for (let i = 0, len = volcanoesData.length; i < len; i++) {
         const volcano = volcanoesData[i]
         if (volcano && volcano.properties) {
-          volcano.visible = crossSectionFilter(volcano.geometry.coordinates)
+          volcano.visible = parseInt(volcano.properties.lasteruptionyear) <= minYear &&
+            crossSectionFilter(volcano.geometry.coordinates)
           result.push(volcano)
         }
       }
