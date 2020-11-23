@@ -14,13 +14,6 @@ export const layerInfo = [
     maxZoom: 19,
     subdomains: []
   },
-  // {
-  //   type: 'streetWikimedia',
-  //   name: 'Street (Wikimedia)',
-  //   url: 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}{c}.png',
-  //   maxZoom: 19,
-  //   subdomains: []
-  // },
   {
     type: 'relief',
     name: 'Relief',

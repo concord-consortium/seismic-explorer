@@ -3,7 +3,14 @@ import React, { PureComponent } from 'react'
 import '../../css/about-modal-content.less'
 
 export default class AboutModalContent extends PureComponent {
-  render () {
+  render() {
+    const dateFormatter = () => {
+      const date = new Date()
+      // .getMonth() returns [0, 11] range.
+      let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      return `${month}/${day}/${date.getFullYear()}`
+    }
     return (
       <div className='about-modal-content'>
         <div className='title'>About: Seismic Explorer</div>
@@ -24,10 +31,11 @@ export default class AboutModalContent extends PureComponent {
           <p>Seismic Explorer uses earthquake data (magnitude, depth, location, time) from the <a
             href='http://earthquake.usgs.gov/earthquakes/map/' target='_blank'>United States Geological Survey</a>.
             Earthquake time is reported in Coordinated Universal Time (UTC).</p>
-          <p>Volcano data (location, last eruption date) comes from the <a
-            href='https://volcano.si.edu/reports_weekly.cfm' target='_blank'>Smithsonian Institution Global Volcanism Program</a>.
+          <p>Volcanic Eruption data comes from the <a
+            href='https://volcano.si.edu/reports_weekly.cfm' target='_blank'>Smithsonian / USGS Weekly Volcanic Activity Report</a>
+            and Global Volcanism Program, 2013. Volcanoes of the World, v. 4.9.1. Venzke, E (ed.). Smithsonian Institution. Data
+            Downloaded {dateFormatter()}. https://doi.org/10.5479/si.GVP.VOTW4-2013
           </p>
-          <p>Street map images are hosted by <a href='https://foundation.wikimedia.org/w/index.php?title=Maps_Terms_of_Use#Where_does_the_map_data_come_from.3F' target='_blank'>The Wikimedia Foundation</a>, serving map data from <a href='https://openstreetmap.org' target='_blank'>&#169;OpenStreetMap</a>.</p>
         </div>
       </div>
     )
