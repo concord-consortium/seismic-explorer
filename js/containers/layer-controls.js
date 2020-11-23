@@ -152,6 +152,13 @@ class LayerControls extends PureComponent {
   render () {
     const { layers, filters, mode } = this.props
     const { opened } = this.state
+    const dateFormatter = (value) => {
+      const date = new Date(value)
+      // .getMonth() returns [0, 11] range.
+      let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      return `${month}/${day}/${date.getFullYear()}`
+    }
     return (
       <div className='map-layer-controls'>
         <OverlayButton onClick={this.toggle} dataTest='data-type'>Data Type</OverlayButton>
@@ -213,7 +220,7 @@ class LayerControls extends PureComponent {
               <div className='toggle-historic-eruptions' title='Show historic eruptions'>
                 <FormControlLabel
                   control={<CheckboxOrRadio checked={filters.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
-                  label='Historic Eruptions'
+                  label={`Eruptions prior to ${dateFormatter(config.startTime)}`}
                 />
               </div>
             </div>

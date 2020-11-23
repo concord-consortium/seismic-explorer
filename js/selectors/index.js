@@ -97,7 +97,7 @@ export const getVisibleEruptions = createSelector(
         if (eruption && eruption.properties) {
           const props = eruption.properties
           const startDate = new Date(props.startdate)
-          const endDate = props.active ? new Date(2100, 1, 1) : new Date(props.enddate)
+          const endDate = new Date(props.enddate) // props.active ? new Date(2100, 1, 1) : new Date(props.enddate)
 
           if ((startDate > minTime && startDate <= maxTime) || (startDate < minTime && endDate >= maxTime)) {
             // const active = endDate >= maxTime || ((startDate > minTime || startYear > minYear) && props.active)

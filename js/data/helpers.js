@@ -60,7 +60,7 @@ export function processEruptionAPIResponse (response, limit) {
         longitude: props.longitude,
         startdate: props.startdate,
         startdateyear: props.startdateyear,
-        enddate: props.enddate,
+        enddate: props.active ? "2100-01-01" : props.enddate,
         active: props.active
       }
     }
@@ -69,6 +69,9 @@ export function processEruptionAPIResponse (response, limit) {
   const volcanoes = response.features.volcanoes && response.features.volcanoes.map(volcano => {
     const coords = volcano.geometry.coordinates
     const props = volcano.properties
+    const previousEruptions = props.eruptionyears.split(',')
+    const eruptionyears = previousEruptions.sort((a, b) => b - a).join(', ')
+    const eruptioncount = previousEruptions.length;
     return {
       id: props.volcanonumber,
       geometry: {
@@ -79,16 +82,17 @@ export function processEruptionAPIResponse (response, limit) {
       properties: {
         volcanoname: props.volcanoname,
         volcanonumber: props.volcanonumber,
+        eruptioncount,
         eruptionnumbers: props.eruptionnumbers,
-        eruptionyears: props.eruptionyears,
+        eruptionyears, //props.eruptionyears,
         majorrocktype: props.majorrocktype,
         lasteruptionyear: props.lasteruptionyear
       }
     }
   })
   return {
-    eruptions,
-    volcanoes
+    eruptions: eruptions.sort((a, b) => new Date(a.properties.enddate) - new Date(b.properties.enddate)),
+    volcanoes: volcanoes.sort((a, b) => a.properties.lasteruptionyear - b.properties.lasteruptionyear)
     // Sort data by time.
     //eruptions: eruptions.sort((a, b) => a.properties.startdate - b.properties.startdate)
   }
