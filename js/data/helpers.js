@@ -84,17 +84,16 @@ export function processEruptionAPIResponse (response, limit) {
         volcanonumber: props.volcanonumber,
         eruptioncount,
         eruptionnumbers: props.eruptionnumbers,
-        eruptionyears, //props.eruptionyears,
+        eruptionyears,
         majorrocktype: props.majorrocktype,
         lasteruptionyear: props.lasteruptionyear
       }
     }
   })
   return {
+    // Sort data by time to fix sprite drawing order
     eruptions: eruptions.sort((a, b) => new Date(a.properties.enddate) - new Date(b.properties.enddate)),
     volcanoes: volcanoes.sort((a, b) => a.properties.lasteruptionyear - b.properties.lasteruptionyear)
-    // Sort data by time.
-    //eruptions: eruptions.sort((a, b) => a.properties.startdate - b.properties.startdate)
   }
 }
 
