@@ -101,9 +101,11 @@ export const getVisibleEruptions = createSelector(
           const props = eruption.properties
           const startDate = new Date(props.startdate)
           const endDate = new Date(props.enddate)
+          const displayActive =  endDate > maxTime
 
-          if ((startDate > minTime && startDate <= maxTime) || (startDate < minTime && endDate >= maxTime)) {
+          if ((startDate > minTime && startDate <= maxTime) || (startDate < minTime && endDate >= minTime)) {
             eruption.visible = crossSectionFilter(eruption.geometry.coordinates)
+            eruption.properties.displayActive = displayActive
             result.push(eruption)
           }
         }

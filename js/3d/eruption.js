@@ -45,7 +45,7 @@ export default class Eruption extends Sprite {
 
   getColor (data) {
     const ageDate = data.properties.enddate ? data.properties.enddate : data.properties.startdate
-    return ageToColor(ageDate, data.properties.startdateyear, data.properties.active)
+    return ageToColor(ageDate, data.properties.startdateyear, data.properties.displayActive)
   }
 
   getSize (data) {
