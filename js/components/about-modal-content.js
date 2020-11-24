@@ -32,11 +32,10 @@ export default class AboutModalContent extends PureComponent {
             href='http://earthquake.usgs.gov/earthquakes/map/' target='_blank'>United States Geological Survey</a>.
             Earthquake time is reported in Coordinated Universal Time (UTC).</p>
           <p>Volcanic Eruption data comes from the <a
-            href='https://volcano.si.edu/reports_weekly.cfm' target='_blank'>Smithsonian / USGS Weekly Volcanic Activity Report</a>
+            href='https://volcano.si.edu/reports_weekly.cfm' target='_blank'>Smithsonian / USGS Weekly Volcanic Activity Report</a>&nbsp;
             and Global Volcanism Program, 2013. Volcanoes of the World, v. 4.9.1. Venzke, E (ed.). Smithsonian Institution. Data
             Downloaded {dateFormatter()}. https://doi.org/10.5479/si.GVP.VOTW4-2013
           </p>
-          <p>Hurricane Explorer [Computer software]. (2020). Concord, MA: The Concord Consortium.</p>
         </div>
       </div>
     )
