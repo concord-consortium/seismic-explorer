@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import '../../css/about-modal-content.less'
 
 export default class AboutModalContent extends PureComponent {
-  render() {
+  render () {
     const dateFormatter = () => {
       const date = new Date()
       // .getMonth() returns [0, 11] range.

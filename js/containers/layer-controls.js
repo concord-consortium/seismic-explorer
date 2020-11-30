@@ -208,15 +208,15 @@ class LayerControls extends PureComponent {
                   control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
                   label='Volcanic Eruptions'
                 />
-            </div>
-            {config.volcanoesAvailable &&
+              </div>
+              {config.volcanoesAvailable &&
               <div className='toggle-historic-eruptions' title='Show historic eruptions'>
                 <FormControlLabel
                   control={<CheckboxOrRadio checked={filters.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
                   label={`Eruptions prior to ${dateFormatter(filters.get('minTime'))}`}
                 />
               </div>
-            }
+              }
             </div>
           }
           { config.plateMovementAvailable && mode !== '3d' &&
