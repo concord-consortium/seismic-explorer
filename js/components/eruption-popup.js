@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react'
 import { Popup } from 'react-leaflet'
 
-const renderDate = d => {
-  const theDate = new Date(d)
-  return `${theDate.getFullYear()}-${theDate.getMonth() + 1}-${theDate.getDate()}`
+const dateFormatter = (value) => {
+  const date = new Date(value)
+  // .getMonth() returns [0, 11] range.
+  let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+  let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+  return `${month}/${day}/${date.getFullYear()}`
 }
 export default class EruptionPopup extends PureComponent {
   render () {
@@ -18,8 +21,8 @@ export default class EruptionPopup extends PureComponent {
           <div>Location: <b>{pos[0]}</b>,<b>{pos[1]}</b></div>
           <div>Type: <b>{eruption.properties.activitytype}</b></div>
           <div>Explosivity Index: <b>{eruption.properties.explosivityindexmax}</b></div>
-          <div>Start Date: <b>{renderDate(eruption.properties.startdate)}</b></div>
-          <div>End Date: <b>{eruption.properties.active ? 'Active Eruption' : renderDate(eruption.properties.enddate)}</b></div>
+          <div>Start Date: <b>{dateFormatter(eruption.properties.startdate)}</b></div>
+          <div>End Date: <b>{eruption.properties.active ? 'Active Eruption' : dateFormatter(eruption.properties.enddate)}</b></div>
         </div>
       </Popup>
     )
