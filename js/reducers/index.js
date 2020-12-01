@@ -116,7 +116,7 @@ function filters (state = INITIAL_FILTERS, action) {
     case SET_FILTER:
       if (action.name === 'maxTime') {
         // exposing this value to the window to help update webgl sprites (eruptions when changing active -> inactive)
-        Window.currentSimulationTime = new Date(action.value)
+        window.currentSimulationTime = new Date(action.value)
       }
       return state.set(action.name, action.value)
     default:
