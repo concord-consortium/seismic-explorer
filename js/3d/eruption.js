@@ -5,7 +5,7 @@ import Sprite from './sprite'
 function ageToColor (lastEruptionDate, lastEruptionYear, active) {
   if (active) return 0xFFFFFF
   const currentYear = new Date().getFullYear()
-  const age = lastEruptionDate ? currentYear - new Date(lastEruptionDate).getFullYear() : currentYear - parseInt(lastEruptionYear)
+  const age = lastEruptionDate ? currentYear - lastEruptionDate.getFullYear() : currentYear - parseInt(lastEruptionYear)
   if (config.volcanoColor !== -1) return parseInt(config.volcanoColor, 16)
   if (age <= 40) return 0xFF6600
   if (age <= 100) return 0xD26F2D
@@ -45,7 +45,9 @@ export default class Eruption extends Sprite {
 
   getColor (data) {
     const ageDate = data.properties.enddate ? data.properties.enddate : data.properties.startdate
-    return ageToColor(ageDate, data.properties.startdateyear, data.properties.displayActive)
+    const active = data.properties.enddate > Window.currentSimulationTime
+    // active flag updates correctly for the current simulation time, but the color may not change because of buffer?
+    return ageToColor(ageDate, data.properties.startdateyear, active)
   }
 
   getSize (data) {

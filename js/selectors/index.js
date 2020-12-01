@@ -90,25 +90,19 @@ export const getVisibleEruptions = createSelector(
     if (!eruptionsEnabled || filters.get('minTime') === filters.get('maxTime')) {
       return []
     }
-    const minTime = new Date(filters.get('minTime'))
-    const maxTime = new Date(filters.get('maxTime'))
+    const minTime = filters.get('minTime')
+    const maxTime = filters.get('maxTime')
     const crossSectionFilter = getCrossSectionFilter(crossSectionPoints)
     const result = []
-    if (eruptionsData.length > 0) {
-      for (let i = 0, len = eruptionsData.length; i < len; i++) {
-        const eruption = eruptionsData[i]
-        if (eruption && eruption.properties) {
-          const props = eruption.properties
-          const startDate = new Date(props.startdate)
-          const endDate = new Date(props.enddate)
-          const displayActive = endDate > maxTime
+    for (let i = 0, len = eruptionsData.length; i < len; i++) {
+      const eruption = eruptionsData[i]
+      const props = eruption.properties
+      const startDate = props.startdate.getTime()
+      const endDate = props.enddate.getTime()
 
-          if ((startDate > minTime && startDate <= maxTime) || (startDate < minTime && endDate >= minTime)) {
-            eruption.visible = crossSectionFilter(eruption.geometry.coordinates)
-            eruption.properties.displayActive = displayActive
-            result.push(eruption)
-          }
-        }
+      if ((startDate > minTime && startDate <= maxTime) || (startDate < minTime && endDate >= minTime)) {
+        eruption.visible = crossSectionFilter(eruption.geometry.coordinates)
+        result.push(eruption)
       }
     }
     return result

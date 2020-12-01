@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Popup } from 'react-leaflet'
 
-const dateFormatter = (value) => {
-  const date = new Date(value)
+const dateFormatter = (date) => {
   // .getMonth() returns [0, 11] range.
   let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
   let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()

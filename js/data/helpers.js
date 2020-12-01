@@ -58,9 +58,9 @@ export function processEruptionAPIResponse (response, limit) {
         majorrocktype: props.majorrocktype,
         latitude: props.latitude,
         longitude: props.longitude,
-        startdate: props.startdate,
+        startdate: new Date(props.startdate),
         startdateyear: props.startdateyear,
-        enddate: props.active ? "2100-01-01" : props.enddate,
+        enddate: props.active ? new Date("2100-01-01") : new Date(props.enddate),
         active: props.active
       }
     }
