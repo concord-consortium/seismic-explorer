@@ -57,13 +57,17 @@ export default class SpritesContainer {
     return null
   }
 
-  update (progress) {
+  update (progress, invalidateColor = false) {
     let transitionInProgress = false
     this._processNewData()
     for (let i = 0, length = this._renderedSprites.length; i < length; i++) {
       const sprite = this._renderedSprites[i]
       sprite.transitionStep(progress)
       if (sprite.transitionInProgress) transitionInProgress = true
+      if (invalidateColor) {
+        // need to force update sprite color for sprites that change over time (eruptions)
+        sprite.setColorAttr(sprite.getColor(sprite.data))
+      }
     }
     return transitionInProgress
   }

@@ -82,7 +82,7 @@ export default class {
     this.camera.update()
     const volcanoesTransition = this.volcanoes.update(progress)
     const earthquakesTransition = this.earthquakes.update(progress)
-    const eruptionsTransition = this.eruptions.update(progress)
+    const eruptionsTransition = this.eruptions.update(progress, true)
     const transitionInProgress = volcanoesTransition || earthquakesTransition || eruptionsTransition
     renderer.render(this.scene, this.camera.camera)
     // Reset timestamp if transition has just ended, so when it starts next time, `progress` value starts from 0 again.
