@@ -32,7 +32,7 @@ export default class MapKey extends PureComponent {
   render () {
     const { boundaries, plateArrows, volcanoes, earthquakes, eruptions } = this.props
     const { opened } = this.state
-    if (!plateArrows && !boundaries && !volcanoes && !earthquakes) {
+    if (!plateArrows && !boundaries && !volcanoes && !earthquakes && !eruptions) {
       return null
     }
     return !opened

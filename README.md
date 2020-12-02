@@ -24,6 +24,7 @@ Some options can be set using URL parameters, for example:
 * https://seismic-explorer.concord.org/?api=USGS - use USGS API instead of Concord API.
 * https://seismic-explorer.concord.org/?cache=false - don't use CloudFront CDN / caching.
 * https://seismic-explorer.concord.org/?logging=false - disable logging (to CC Log Manager, Google Analytics and the web browser console).
+* https://seismic-explorer.concord.org/?earthquakesDisplayAllOnStart - show all earthquakes on launch, as if playback had completed.
 
 ### Data layer presets:
 

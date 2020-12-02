@@ -39,7 +39,7 @@ export function processAPIResponse (response, limit, enforcedMinMagnitude) {
 // Processes JSON returned by API (USGS or our own) and returns only necessary data.
 // We save some memory and also it documents (and tests) which properties are necessary.
 export function processEruptionAPIResponse (response, limit) {
-  const eruptions = response.features.map(eruption => {
+  const eruptions = response.features.eruptions && response.features.eruptions.map(eruption => {
     const coords = eruption.geometry.coordinates
     const props = eruption.properties
     return {
@@ -58,14 +58,42 @@ export function processEruptionAPIResponse (response, limit) {
         majorrocktype: props.majorrocktype,
         latitude: props.latitude,
         longitude: props.longitude,
-        startdate: props.startdate,
-        enddate: props.enddate
+        startdate: new Date(props.startdate),
+        startdateyear: props.startdateyear,
+        enddate: props.active ? new Date("2100-01-01") : new Date(props.enddate),
+        active: props.active
+      }
+    }
+  })
+
+  const volcanoes = response.features.volcanoes && response.features.volcanoes.map(volcano => {
+    const coords = volcano.geometry.coordinates
+    const props = volcano.properties
+    const previousEruptions = props.eruptionyears.split(',')
+    const eruptionyears = previousEruptions.sort((a, b) => b - a).join(', ')
+    const eruptioncount = previousEruptions.length;
+    return {
+      id: props.volcanonumber,
+      geometry: {
+        // Swap lat and lng!
+        // We expect lat first, then lng. USGS / GeoJSON format is the opposite.
+        coordinates: [coords[1], coords[0], coords[2] ? coords[2] : -10]
+      },
+      properties: {
+        volcanoname: props.volcanoname,
+        volcanonumber: props.volcanonumber,
+        eruptioncount,
+        eruptionnumbers: props.eruptionnumbers,
+        eruptionyears,
+        majorrocktype: props.majorrocktype,
+        lasteruptionyear: props.lasteruptionyear
       }
     }
   })
   return {
-    // Sort data by time.
-    eruptions: eruptions.sort((a, b) => a.properties.startdate - b.properties.startdate)
+    // Sort data by time to fix sprite drawing order
+    eruptions: eruptions.sort((a, b) => new Date(a.properties.enddate) - new Date(b.properties.enddate)),
+    volcanoes: volcanoes.sort((a, b) => a.properties.lasteruptionyear - b.properties.lasteruptionyear)
   }
 }
 

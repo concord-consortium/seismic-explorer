@@ -238,10 +238,10 @@ class BottomControls extends PureComponent {
 
     setFilter('playbackMaxTime', endDate)
 
-    // if the box is checked, set both earthquakes and eruptions visible
+    // if the box is checked, set both earthquakes and eruptions visible if enabled in config
     if (e.target.checked) {
-      setEarthquakesVisible(true, mapRegion, mapZoom)
-      setEruptionsVisible(true, mapRegion, mapZoom)
+      setEarthquakesVisible(config.earthquakesAvailable, mapRegion, mapZoom)
+      setEruptionsVisible(config.eruptionsAvailable, mapRegion, mapZoom)
     }
   }
 

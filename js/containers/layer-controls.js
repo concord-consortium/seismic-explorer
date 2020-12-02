@@ -30,6 +30,7 @@ class LayerControls extends PureComponent {
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
     this.handlePlateArrowLayerChange = this.handlePlateArrowLayerChange.bind(this)
+    this.handleToggleHistoricEruptions = this.handleToggleHistoricEruptions.bind(this)
   }
 
   toggle () {
@@ -143,9 +144,21 @@ class LayerControls extends PureComponent {
     }
   }
 
+  handleToggleHistoricEruptions (event) {
+    const { setFilter } = this.props
+    setFilter('historicEruptions', event.target.checked)
+  }
+
   render () {
-    const { layers, mode } = this.props
+    const { layers, filters, mode } = this.props
     const { opened } = this.state
+    const dateFormatter = (value) => {
+      const date = new Date(value)
+      // .getMonth() returns [0, 11] range.
+      let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      return `${month}/${day}/${date.getFullYear()}`
+    }
     return (
       <div className='map-layer-controls'>
         <OverlayButton onClick={this.toggle} dataTest='data-type'>Data Type</OverlayButton>
@@ -180,14 +193,6 @@ class LayerControls extends PureComponent {
           { (config.plateBoundariesAvailable || config.plateNamesAvailable || config.continentOceanNamesAvailable) && mode !== '3d' &&
             <div><hr /></div>
           }
-          { config.volcanoesAvailable &&
-            <div title='Show Historical Volcanoes'>
-              <FormControlLabel
-                control={<CheckboxOrRadio checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
-                label='Volcanoes'
-              />
-            </div>
-          }
           { config.earthquakesAvailable &&
             <div className='toggle-earthquakes' title='Show or hide all earthquakes on the map'>
               <FormControlLabel
@@ -196,12 +201,22 @@ class LayerControls extends PureComponent {
               />
             </div>
           }
-          { config.eruptionsAvailable &&
-            <div className='toggle-eruptions' title='Show or hide all volcanic eruptions on the map'>
-              <FormControlLabel
-                control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
-                label='Eruptions'
-              />
+          {config.eruptionsAvailable &&
+            <div>
+              <div className='toggle-eruptions' title='Show or hide all volcanic eruptions on the map'>
+                <FormControlLabel
+                  control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
+                  label='Volcanic Eruptions'
+                />
+              </div>
+              {config.volcanoesAvailable &&
+              <div className='toggle-historic-eruptions' title='Show historic eruptions'>
+                <FormControlLabel
+                  control={<CheckboxOrRadio checked={filters.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
+                  label={`Eruptions prior to ${dateFormatter(filters.get('minTime'))}`}
+                />
+              </div>
+              }
             </div>
           }
           { config.plateMovementAvailable && mode !== '3d' &&

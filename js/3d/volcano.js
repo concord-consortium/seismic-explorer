@@ -2,7 +2,9 @@ import config from '../config'
 import * as THREE from 'three'
 import Sprite from './sprite'
 
-function ageToColor (age) {
+function ageToColor (lastEruptionYear) {
+  const currentYear = new Date().getFullYear()
+  const age = currentYear - lastEruptionYear
   if (config.volcanoColor !== -1) return parseInt(config.volcanoColor, 16)
   if (age <= 100) return 0xFF6600
   if (age <= 400) return 0xD26F2D
@@ -41,10 +43,10 @@ export default class Volcano extends Sprite {
   }
 
   getColor (data) {
-    return ageToColor(data.age)
+    return ageToColor(data.properties.lasteruptionyear)
   }
 
   getSize (data) {
-    return 30
+    return window.devicePixelRatio * 20
   }
 }

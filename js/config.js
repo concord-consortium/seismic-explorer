@@ -20,7 +20,7 @@ const DEFAULT_CONFIG = {
   centeredInitialZoom: 0,
   // default behavior is to use a bounding box, but set this to false to use center position + zoom instead
   sizeToFitBounds: true,
-  // Max number of earthquakes that can be provided for one tile.
+  // Max number of sprites (earthquakes and eruptions) that can be provided for one tile.
   tileLimit: 12000,
   // Use dates independent of the current time zone to make sure that caching works better.
   // Set UTC noon, so users in US still see this date in UI in their local timezone as 1/1/1980 (instead of 12/31/1979).
@@ -80,7 +80,8 @@ const DEFAULT_CONFIG = {
   // If set to -1 this has no effect
   quakeColor: -1,
   volcanoColor: -1,
-  showRecentCheckbox: true
+  showRecentCheckbox: true,
+  showHistoricEruptions: false
 }
 
 function getURLParam (name) {
