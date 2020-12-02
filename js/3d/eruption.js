@@ -45,9 +45,7 @@ export default class Eruption extends Sprite {
 
   getColor (data) {
     const ageDate = data.properties.enddate ? data.properties.enddate : data.properties.startdate
-    const active = data.properties.enddate > window.currentSimulationTime
-    // active flag updates correctly for the current simulation time, but the color may not change because of buffer?
-    return ageToColor(ageDate, data.properties.startdateyear, active)
+    return ageToColor(ageDate, data.properties.startdateyear, data.active)
   }
 
   getSize (data) {

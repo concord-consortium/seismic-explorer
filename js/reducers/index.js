@@ -114,10 +114,6 @@ const INITIAL_FILTERS = Map({
 function filters (state = INITIAL_FILTERS, action) {
   switch (action.type) {
     case SET_FILTER:
-      if (action.name === 'maxTime') {
-        // exposing this value to the window to help update webgl sprites (eruptions when changing active -> inactive)
-        window.currentSimulationTime = new Date(action.value)
-      }
       return state.set(action.name, action.value)
     default:
       return state

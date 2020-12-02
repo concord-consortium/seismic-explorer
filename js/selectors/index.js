@@ -102,6 +102,8 @@ export const getVisibleEruptions = createSelector(
 
       if ((startDate > minTime && startDate <= maxTime) || (startDate < minTime && endDate >= minTime)) {
         eruption.visible = crossSectionFilter(eruption.geometry.coordinates)
+        // .active property is used to get the current color of eruption
+        eruption.active = endDate >= maxTime
         result.push(eruption)
       }
     }

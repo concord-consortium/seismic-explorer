@@ -57,17 +57,13 @@ export default class SpritesContainer {
     return null
   }
 
-  update (progress, invalidateColor = false) {
+  update (progress) {
     let transitionInProgress = false
     this._processNewData()
     for (let i = 0, length = this._renderedSprites.length; i < length; i++) {
       const sprite = this._renderedSprites[i]
       sprite.transitionStep(progress)
       if (sprite.transitionInProgress) transitionInProgress = true
-      if (invalidateColor) {
-        // need to force update sprite color for sprites that change over time (eruptions)
-        sprite.setColorAttr(sprite.getColor(sprite.data))
-      }
     }
     return transitionInProgress
   }
@@ -95,7 +91,14 @@ export default class SpritesContainer {
         const pos = this._latLngDepthToSprite(spriteData.geometry.coordinates)
         this._renderedSprites[i].setPositionAttr(pos)
       }
-      this._renderedSprites[i].targetVisibility = spriteData.visible ? 1 : 0
+      const renderedSprite = this._renderedSprites[i]
+      // Color can change due to change in data (e.g. eruption can become active).
+      const newColor = renderedSprite.getColor(spriteData)
+      if (renderedSprite.color !== newColor) {
+        renderedSprite.color = newColor
+        renderedSprite.setColorAttr(newColor)
+      }
+      renderedSprite.targetVisibility = spriteData.visible ? 1 : 0
     }
     // Reset old data.
     for (let i = data.length, length = this._renderedSprites.length; i < length; i++) {
