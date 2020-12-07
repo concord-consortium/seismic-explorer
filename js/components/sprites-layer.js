@@ -12,9 +12,10 @@ export default withLeaflet(class SpritesLayer extends MapLayer {
   }
 
   updateLeafletElement (fromProps, toProps) {
-    const { earthquakes, volcanoes, onEarthquakeClick, onVolcanoClick } = toProps
-    this.leafletElement.setData(earthquakes, volcanoes)
+    const { earthquakes, volcanoes, eruptions, onEarthquakeClick, onVolcanoClick, onEruptionClick } = toProps
+    this.leafletElement.setData(earthquakes, volcanoes, eruptions)
     this.leafletElement.onEarthquakeClick = onEarthquakeClick
     this.leafletElement.onVolcanoClick = onVolcanoClick
+    this.leafletElement.onEruptionClick = onEruptionClick
   }
 })

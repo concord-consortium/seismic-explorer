@@ -91,7 +91,14 @@ export default class SpritesContainer {
         const pos = this._latLngDepthToSprite(spriteData.geometry.coordinates)
         this._renderedSprites[i].setPositionAttr(pos)
       }
-      this._renderedSprites[i].targetVisibility = spriteData.visible ? 1 : 0
+      const renderedSprite = this._renderedSprites[i]
+      // Color can change due to change in data (e.g. eruption can become active).
+      const newColor = renderedSprite.getColor(spriteData)
+      if (renderedSprite.color !== newColor) {
+        renderedSprite.color = newColor
+        renderedSprite.setColorAttr(newColor)
+      }
+      renderedSprite.targetVisibility = spriteData.visible ? 1 : 0
     }
     // Reset old data.
     for (let i = data.length, length = this._renderedSprites.length; i < length; i++) {

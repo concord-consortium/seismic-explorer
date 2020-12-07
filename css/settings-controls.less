@@ -32,11 +32,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 590px;
     margin: 0 15px 0 10px;
 
     & > div {
       white-space: nowrap;
+      padding: 0 10px 0 10px;
     }
   }
 
@@ -56,6 +56,35 @@
     .rc-tooltip-inner > span {
       font-family: sans-serif;
     }
+
+    .mag-label{
+      text-align: center;
+      .mag-label-text{
+        padding-left: 8px;
+      }
+    }
+  }
+  .recent-data-toggle{
+    display: inline-flex;
+    position: relative;
+    width: 140px;
+    &:not(:first-child) {
+      margin-left: 12px;
+    }
+    span {
+      font-size: 1em;
+      line-height: 1.2em;
+      white-space: normal;
+      padding-top: 3px;
+    }
+  }
+  .map-layer-controls{
+    button {
+      margin-bottom: 7px;
+    }
+  }
+  .stats {
+    width: 190px;
   }
 
   .fullscreen-icon {

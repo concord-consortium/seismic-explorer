@@ -26,9 +26,11 @@ class LayerControls extends PureComponent {
     this.handlePlateNamesChange = this.handlePlateNamesChange.bind(this)
     this.handleContinentOceanNamesChange = this.handleContinentOceanNamesChange.bind(this)
     this.handleEarthquakeLayerChange = this.handleEarthquakeLayerChange.bind(this)
+    this.handleEruptionLayerChange = this.handleEruptionLayerChange.bind(this)
     this.handleVolcanoLayerChange = this.handleVolcanoLayerChange.bind(this)
     this.handlePlateMovementLayerChange = this.handlePlateMovementLayerChange.bind(this)
     this.handlePlateArrowLayerChange = this.handlePlateArrowLayerChange.bind(this)
+    this.handleToggleHistoricEruptions = this.handleToggleHistoricEruptions.bind(this)
   }
 
   toggle () {
@@ -67,7 +69,7 @@ class LayerControls extends PureComponent {
   }
 
   handleVolcanoLayerChange (event) {
-    const { setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setEruptionsVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setVolcanoesVisible(visible)
     log('VolcanoesVisibilityChanged', { visible })
@@ -75,11 +77,12 @@ class LayerControls extends PureComponent {
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
+      setEruptionsVisible(false)
     }
   }
 
   handleEarthquakeLayerChange (event) {
-    const { setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setEarthquakesVisible(visible, mapRegion, mapZoom)
     log('ShowEarthquakes', { visible })
@@ -87,15 +90,32 @@ class LayerControls extends PureComponent {
       setVolcanoesVisible(false)
       setPlateMovementVisible(false)
       setPlateArrowsVisible(false)
+      setEruptionsVisible(false)
     }
     if (!visible) {
       // Stop earthquakes animation when earthquakes layer is hidden.
       setAnimationEnabled(false)
     }
   }
+  handleEruptionLayerChange (event) {
+    const { setAnimationEnabled, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const visible = event.target.checked
+    setEruptionsVisible(visible, mapRegion, mapZoom)
+    log('ShowEruptions', { visible })
+    if (visible && config.exclusiveDataLayers) {
+      setEarthquakesVisible(false, mapRegion, mapZoom)
+      setVolcanoesVisible(false)
+      setPlateMovementVisible(false)
+      setPlateArrowsVisible(false)
+    }
+    if (!visible) {
+      // Stop eruptions animation when eruptions layer is hidden.
+      setAnimationEnabled(false)
+    }
+  }
 
   handlePlateMovementLayerChange (event) {
-    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { layers, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setPlateMovementVisible(visible)
     log('ShowPlateMovement', { visible })
@@ -105,11 +125,12 @@ class LayerControls extends PureComponent {
       setVolcanoesVisible(false)
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateArrowsVisible(false)
+      setEruptionsVisible(false)
     }
   }
 
   handlePlateArrowLayerChange (event) {
-    const { layers, setEarthquakesVisible, setVolcanoesVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
+    const { layers, setEarthquakesVisible, setVolcanoesVisible, setEruptionsVisible, setPlateMovementVisible, setPlateBoundariesVisible, setPlateArrowsVisible, mapRegion, mapZoom } = this.props
     const visible = event.target.checked
     setPlateArrowsVisible(visible)
     log('ShowPlateArrows', { visible })
@@ -119,12 +140,25 @@ class LayerControls extends PureComponent {
       setVolcanoesVisible(false)
       setEarthquakesVisible(false, mapRegion, mapZoom)
       setPlateMovementVisible(false)
+      setEruptionsVisible(false)
     }
   }
 
+  handleToggleHistoricEruptions (event) {
+    const { setFilter } = this.props
+    setFilter('historicEruptions', event.target.checked)
+  }
+
   render () {
-    const { layers, mode } = this.props
+    const { layers, filters, mode } = this.props
     const { opened } = this.state
+    const dateFormatter = (value) => {
+      const date = new Date(value)
+      // .getMonth() returns [0, 11] range.
+      let month = date.getMonth() < 9 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+      let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+      return `${month}/${day}/${date.getFullYear()}`
+    }
     return (
       <div className='map-layer-controls'>
         <OverlayButton onClick={this.toggle} dataTest='data-type'>Data Type</OverlayButton>
@@ -159,20 +193,30 @@ class LayerControls extends PureComponent {
           { (config.plateBoundariesAvailable || config.plateNamesAvailable || config.continentOceanNamesAvailable) && mode !== '3d' &&
             <div><hr /></div>
           }
-          { config.volcanoesAvailable &&
-            <div title='Show Volcanoes'>
-              <FormControlLabel
-                control={<CheckboxOrRadio checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
-                label='Volcanoes'
-              />
-            </div>
-          }
           { config.earthquakesAvailable &&
             <div className='toggle-earthquakes' title='Show or hide all earthquakes on the map'>
               <FormControlLabel
                 control={<CheckboxOrRadio checked={layers.get('earthquakes')} onChange={this.handleEarthquakeLayerChange} />}
                 label='Earthquakes'
               />
+            </div>
+          }
+          {config.eruptionsAvailable &&
+            <div>
+              <div className='toggle-eruptions' title='Show or hide all volcanic eruptions on the map'>
+                <FormControlLabel
+                  control={<CheckboxOrRadio checked={layers.get('eruptions')} onChange={this.handleEruptionLayerChange} />}
+                  label='Volcanic Eruptions'
+                />
+              </div>
+              {config.volcanoesAvailable &&
+              <div className='toggle-historic-eruptions' title='Show historic eruptions'>
+                <FormControlLabel
+                  control={<CheckboxOrRadio checked={layers.get('volcanoes')} onChange={this.handleVolcanoLayerChange} />}
+                  label={`Eruptions prior to ${dateFormatter(filters.get('minTime'))}`}
+                />
+              </div>
+              }
             </div>
           }
           { config.plateMovementAvailable && mode !== '3d' &&

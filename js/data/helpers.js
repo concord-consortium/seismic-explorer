@@ -36,6 +36,66 @@ export function processAPIResponse (response, limit, enforcedMinMagnitude) {
     magnitudeCutOff: magnitudeCutOff
   }
 }
+// Processes JSON returned by API (USGS or our own) and returns only necessary data.
+// We save some memory and also it documents (and tests) which properties are necessary.
+export function processEruptionAPIResponse (response, limit) {
+  const eruptions = response.features.eruptions && response.features.eruptions.map(eruption => {
+    const coords = eruption.geometry.coordinates
+    const props = eruption.properties
+    return {
+      id: props.eruptionnumber,
+      geometry: {
+        // Swap lat and lng!
+        // We expect lat first, then lng. USGS / GeoJSON format is the opposite.
+        coordinates: [coords[1], coords[0], coords[2] ? coords[2] : -10]
+      },
+      properties: {
+        eruptionnumber: props.eruptionnumber,
+        volcanonumber: props.volcanonumber,
+        volcanoname: props.volcanoname,
+        activitytype: props.activitytype,
+        explosivityindexmax: props.explosivityindexmax,
+        majorrocktype: props.majorrocktype,
+        latitude: props.latitude,
+        longitude: props.longitude,
+        startdate: new Date(props.startdate),
+        startdateyear: props.startdateyear,
+        enddate: props.active ? new Date("2100-01-01") : new Date(props.enddate),
+        active: props.active
+      }
+    }
+  })
+
+  const volcanoes = response.features.volcanoes && response.features.volcanoes.map(volcano => {
+    const coords = volcano.geometry.coordinates
+    const props = volcano.properties
+    const previousEruptions = props.eruptionyears.split(',')
+    const eruptionyears = previousEruptions.sort((a, b) => b - a).join(', ')
+    const eruptioncount = previousEruptions.length;
+    return {
+      id: props.volcanonumber,
+      geometry: {
+        // Swap lat and lng!
+        // We expect lat first, then lng. USGS / GeoJSON format is the opposite.
+        coordinates: [coords[1], coords[0], coords[2] ? coords[2] : -10]
+      },
+      properties: {
+        volcanoname: props.volcanoname,
+        volcanonumber: props.volcanonumber,
+        eruptioncount,
+        eruptionnumbers: props.eruptionnumbers,
+        eruptionyears,
+        majorrocktype: props.majorrocktype,
+        lasteruptionyear: props.lasteruptionyear
+      }
+    }
+  })
+  return {
+    // Sort data by time to fix sprite drawing order
+    eruptions: eruptions.sort((a, b) => new Date(a.properties.enddate) - new Date(b.properties.enddate)),
+    volcanoes: volcanoes.sort((a, b) => a.properties.lasteruptionyear - b.properties.lasteruptionyear)
+  }
+}
 
 // Takes array of data objects (returned by processAPIResponse) and merges it into single one.
 export function concatenateData (array) {
@@ -60,6 +120,26 @@ export function concatenateData (array) {
   return result
 }
 
+export function concatenateEruptionData (array) {
+  // A bit overspoken, but this function is called quite often and it can take some time. Try to
+  // concatenate data in CPU and memory-efficient way.
+  let dataLength = 0
+  array.forEach(data => {
+    dataLength += data.eruptions.length
+  })
+  const result = {
+    eruptions: new Array(dataLength)
+  }
+  let idx = 0
+  array.forEach(data => {
+    for (let i = 0, len = data.eruptions.length; i < len; i++) {
+      result.eruptions[idx++] = data.eruptions[i]
+    }
+  })
+  return result
+}
+
+
 export function copyAndShiftLng (data, offset) {
   const newEarthquakes = data.earthquakes.map(eq => {
     const coords = eq.geometry.coordinates
@@ -71,5 +151,20 @@ export function copyAndShiftLng (data, offset) {
   })
   return Object.assign({}, data, {
     earthquakes: newEarthquakes
+  })
+}
+
+
+export function copyAndShiftEruptionLng (data, offset) {
+  const newEruptions = data.eruptions.map(eruption => {
+    const coords = eruption.geometry.coordinates
+    return Object.assign({}, eruption, {
+      geometry: {
+        coordinates: [coords[0], coords[1] + offset, coords[2]]
+      }
+    })
+  })
+  return Object.assign({}, data, {
+    eruptions: newEruptions
   })
 }

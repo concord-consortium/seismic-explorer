@@ -5,14 +5,14 @@ const TRANSITION_COLOR = 0xFFFFFF
 
 const colorHelper = new THREE.Color()
 
-export default class Point {
+export default class Sprite {
   constructor (data, idx, attributes) {
     this.id = data.id
     this.data = data
 
     // Index in attribute arrays.
     this.idx = idx
-    // Particle system attributes (position, customColor, size). See points-container.js.
+    // Particle system attributes (position, customColor, size). See sprites-container.js.
     this.attributes = attributes
 
     // getSize and getColor need to be implemented by subclass.
