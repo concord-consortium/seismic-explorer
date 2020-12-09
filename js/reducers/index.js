@@ -98,7 +98,7 @@ function data (state = INITIAL_DATA, action) {
 }
 
 const INITIAL_FILTERS = Map({
-  minMag: 0,
+  minMag: 3,
   maxMag: 10,
   initialStartTime: config.startTime, // the start & end time won't change, caching them here for easier access in bottom controls when adjusting time slider
   initialEndTime: config.endTime,
