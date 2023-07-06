@@ -7,6 +7,11 @@ module.exports = {
   entry: [
     './js/index.js'
   ],
+  devServer: {
+    client: {
+      overlay: false,
+    },
+  },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'app.js'
