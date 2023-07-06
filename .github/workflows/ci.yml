@@ -7,8 +7,10 @@ jobs:
     name: Build and Run Jest Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: Install Dependencies
         run: npm ci --legacy-peer-deps
       - name: Build
@@ -19,11 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - uses: cypress-io/github-action@v2
+        uses: actions/checkout@v3
+      - uses: cypress-io/github-action@v5
         with:
+          install-command: npm ci --legacy-peer-deps
           browser: chrome
-          headless: true
           start: npm start
           wait-on: 'http://localhost:8080'
   s3-deploy:
@@ -33,8 +35,10 @@ jobs:
       - cypress
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: Setup Ruby 2.4
         uses: actions/setup-ruby@v1
         with:
