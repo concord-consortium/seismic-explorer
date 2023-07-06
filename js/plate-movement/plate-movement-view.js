@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import 'three/examples/js/controls/OrbitControls'
 import DirectionArrows from './direction-arrows'
 import Camera from './camera'
 import getThreeJSRenderer from '../get-threejs-renderer'

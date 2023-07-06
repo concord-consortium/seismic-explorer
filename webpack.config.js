@@ -20,22 +20,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style-loader!css-loader'
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.less$/,
-        loader: 'style-loader!css-loader!less-loader'
+        use: ['style-loader', 'css-loader', 'less-loader']
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.svg?3179539#iefix (for svg)
-        test: /\.(png|jpg|gif)((\?|#).*)?$/,
-        // inline base64 URLs for <=64k images, direct URLs for the rest
-        loader: 'url-loader?limit=65536'
-      },
-      {
-        // Support ?123 suffix, e.g. ../fonts/m4d-icons.eot?3179539#iefix
-        test: /\.(eot|ttf|woff|woff2)((\?|#).*)?$/,
-        loader: 'url-loader?limit=8192'
+        test: /\.(png|jpg|gif|woff|woff2|eot|ttf)((\?|#).*)?$/,
+        type: 'asset',
       },
       {
         test: /\.glsl$/,
@@ -48,12 +42,21 @@ module.exports = {
       {
         // Pass global THREE variable to OrbitControls
         test: /three[\\/]examples[\\/]js/,
-        loader: 'imports-loader?THREE=three'
+        loader: 'imports-loader',
+        options: {
+          imports: [
+            'namespace three THREE'
+          ]
+        }
       },
       {
-        // Pass global THREE variable to OrbitControls
         test: /leaflet-plugins\//,
-        loader: 'imports-loader?L=leaflet'
+        loader: 'imports-loader',
+        options: {
+          imports: [
+            'namespace leaflet L'
+          ]
+        }
       },
       {
         test: /\.svg$/,
@@ -61,7 +64,7 @@ module.exports = {
           {
             // Do not apply SVGR import in CSS/LESS files.
             issuer: /\.(less|css)$/,
-            use: 'url-loader'
+            type: 'asset',
           },
           {
             issuer: /\.js$/,
@@ -80,9 +83,11 @@ module.exports = {
     ]
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: 'public' }
-    ])
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'public' }
+      ],
+    })
   ]
 }
 
