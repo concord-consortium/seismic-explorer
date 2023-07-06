@@ -7,10 +7,12 @@ jobs:
     name: Build and Run Jest Tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --legacy-peer-deps
       - name: Build
         run: npm run build
       - name: Run Tests
@@ -19,14 +21,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - uses: cypress-io/github-action@v2
+        uses: actions/checkout@v3
+      - uses: cypress-io/github-action@v5
         with:
+          install-command: npm ci --legacy-peer-deps
           browser: chrome
-          headless: true
           start: npm start
           wait-on: 'http://localhost:8080'
-  s3-deploy:
+  s3-deploy2:
     name: S3 Deploy
     needs:
       - build_test
@@ -34,19 +36,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - name: Setup Ruby 2.4
-        uses: actions/setup-ruby@v1
+      - uses: actions/setup-node@v3
         with:
-          ruby-version: '2.4'
+          node-version: 16
       - name: Install Dependencies
-        run: |
-          gem install s3_website -v 3.4.0
-          npm ci
-      - name: Build
-        run: npm run build
-      - name: Deploy
-        run: ./s3_deploy.sh
+        run: npm ci --legacy-peer-deps
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # skip installing cypress since it isn't needed for just building
+          # This decreases the deploy time quite a bit
+          CYPRESS_INSTALL_BINARY: 0
+      - uses: concord-consortium/s3-deploy-action@v1
+        with:
+          build: npm run build-production
+          bucket: models-resources
+          prefix: seismic-explorer
+          awsAccessKeyId: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          awsSecretAccessKey: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # Parameters to GHActions have to be strings, so a regular yaml array cannot
+          # be used. Instead the `|` turns the following lines into a string
+          topBranches: |
+            ["master"]

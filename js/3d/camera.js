@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import 'three/examples/js/controls/OrbitControls'
 import TWEEN from 'tween.js'
 import { BOX_DEPTH } from './cross-section-box'
 import TweenManager from '../tween-manager'
