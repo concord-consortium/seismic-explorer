@@ -1,35 +1,36 @@
+function beforeTest() {
+  cy.visit('/?endTime=2018-01-01T12:00:00.000Z');
+}
+
 context('Smoke Test', () => {
-  before(function () {
-    cy.visit('/?endTime=2018-01-01T12:00:00.000Z')
-  })
-
   context('Loading screen and initialization of app', () => {
-    it('Makes sure splash screen renders and disappears', () => {
+    it('Loading screen and initialization of app', () => {
+      beforeTest();
+
+      cy.log("Makes sure splash screen renders and disappears");
       cy.waitForSplashscreen()
-    })
 
-    it('Makes sure data loading icon renders and disappears', () => {
+      cy.log("Makes sure data loading icon renders and disappears");
       cy.waitForSpinner()
-    })
 
-    it('verifies the logo', () => {
+      cy.log("verifies the logo");
       cy.get('[data-test=cc-logo]')
         .should('exist')
         .and('be.visible')
-    })
 
-    it('verifies the start and end data', () => {
+      cy.log("verifies the start and end data");
       cy.get('.rc-slider-mark')
         .should('contain', '01/01/1980')
         .and('contain', '1990')
         .and('contain', '2000')
         .and('contain', '2010')
         .and('contain', '01/01/2018')
-    })
   })
+})
 
   context('Cross section interactions', () => {
     it('ensures user can enter and exit cross-section mode', () => {
+      beforeTest();
       cy.get('[data-test=draw-cross-section]').click()
       cy.get('[data-test=open-3d-view]').should('be.visible')
       cy.get('[data-test=cancel-drawing]').should('be.visible')
@@ -53,6 +54,7 @@ context('Smoke Test', () => {
 
   context('Earthquakes slider', () => {
     it('ensures user can show earthquakes', () => {
+      beforeTest();
       cy.wait(1000)
       // text will be similar to "Displaying 0 of 80000 earthquakes"
       cy.get('.stats').then(statText => {
@@ -78,6 +80,7 @@ context('Smoke Test', () => {
 
   context('Magnitude slider', () => {
     it('ensures user can limit earthquakes magnitude', () => {
+      beforeTest();
       cy.contains('Magnitudes from 0.0 to 10.0')
       cy.get('.mag-slider .rc-slider-rail').click(60, 2, { force: true })
       cy.contains('Magnitudes from 3.5 to 10.0')
@@ -86,6 +89,7 @@ context('Smoke Test', () => {
 
   context('Data type menu', () => {
     it('ensures user can display various data on the map', () => {
+      beforeTest();
       cy.get('[data-test=data-type]').click()
       cy.get('.map-layer-content')
         .should('contain', 'Plate Boundaries')
@@ -102,6 +106,7 @@ context('Smoke Test', () => {
 
   context('Map type', () => {
     it('ensures user can change map type', () => {
+      beforeTest();
       cy.window().then(win => {
         cy.get('[data-test=map-type]').click()
         cy.get('.map-layer-content')
@@ -123,6 +128,7 @@ context('Smoke Test', () => {
 
   context('Key button', () => {
     it('ensures user can open the key', () => {
+      beforeTest();
       cy.get('[data-test=key]').click()
       cy.get('.map-key-content')
         .should('contain', 'Magnitude')
@@ -149,6 +155,7 @@ context('Smoke Test', () => {
 
   context('About button', () => {
     it('ensures user can see the about box', () => {
+      beforeTest();
       cy.get('[data-test=about]').click()
       cy.get('.about-modal-content')
         .should('contain', 'About: Seismic Explorer')
@@ -161,6 +168,7 @@ context('Smoke Test', () => {
 
   context('Share button', () => {
     it('ensures user can see the share box', () => {
+      beforeTest();
       cy.get('[data-test=share]').click()
       cy.get('.share-modal-content')
         .should('contain', 'Share: Seismic Explorer')
@@ -174,6 +182,7 @@ context('Smoke Test', () => {
 
   context('Reload button', () => {
     it('ensures user can reload the app', () => {
+      beforeTest();
       cy.get('[data-test=reload]').click()
       cy.waitForSplashscreen()
     })
