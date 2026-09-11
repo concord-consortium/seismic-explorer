@@ -12,6 +12,10 @@ Old versions can be accessed via `/version/<tag>` path, e.g.:
 
 https://seismic-explorer.concord.org/version/1.1.0/index.html
 
+## Deployment
+
+S3 deployment is handled by GitHub Actions using OIDC for AWS authentication. See [deploy-setup.md in starter-projects](https://github.com/concord-consortium/starter-projects/blob/main/doc/deploy-setup.md) for how the AWS side is set up, and [doc/deploy.md](doc/deploy.md) for how deploys work in this repo.
+
 ## Configuration
 
 Take a look at the [authoring page]( https://seismic-explorer.concord.org/?authoring).
