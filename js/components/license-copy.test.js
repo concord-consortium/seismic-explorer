@@ -86,10 +86,13 @@ describe.each([
     expect(copy.nextElementSibling).toBeNull()
     expect(copy.parentElement).toBe(container.firstElementChild)
   })
+})
 
-  it('drops the old 2016 copyright block', () => {
-    renderContent()
-    expect(container.textContent).not.toMatch(/Copyright © 2016|All rights reserved|Please provide attribution/)
-    expect(container.querySelector('a[href*="opensource.org"]')).toBeNull()
-  })
+it('drops the old 2016 copyright block from the Share dialog', () => {
+  const container = document.createElement('div')
+  act(() => { ReactDOM.render(<ShareModalContent />, container) })
+  expect(container.querySelector('[data-test="license-copy"]')).not.toBeNull()
+  expect(container.textContent).not.toMatch(/Copyright © 2016|All rights reserved|Please provide attribution/)
+  expect(container.querySelector('a[href*="opensource.org"]')).toBeNull()
+  ReactDOM.unmountComponentAtNode(container)
 })

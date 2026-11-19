@@ -47,7 +47,7 @@ No other input changes: `install-command`, `browser`, `start` and `wait-on` keep
 - `js/test/style-stub.js` (new), `js/test/pin-date.js` (new): test helpers.
 - `js/components/license-copy.test.js` (new): R17's copy tests over both dialogs.
 
-**Estimated diff size**: ~195 lines (95 of them the test).
+**Estimated diff size**: ~195 lines (98 of them the test).
 
 `js/license-constants.js`:
 
@@ -65,7 +65,6 @@ import React from 'react'
 
 import '../../css/external-link.less'
 
-// A link that opens in a new tab and tells screen-reader users that it does.
 export default function ExternalLink ({ href, children }) {
   return (
     <a className='external-link' href={href} target='_blank' rel='noopener noreferrer'>
@@ -285,14 +284,19 @@ describe.each([
     expect(copy.nextElementSibling).toBeNull()
     expect(copy.parentElement).toBe(container.firstElementChild)
   })
+})
 
-  it('drops the old 2016 copyright block', () => {
-    renderContent()
-    expect(container.textContent).not.toMatch(/Copyright © 2016|All rights reserved|Please provide attribution/)
-    expect(container.querySelector('a[href*="opensource.org"]')).toBeNull()
-  })
+it('drops the old 2016 copyright block from the Share dialog', () => {
+  const container = document.createElement('div')
+  act(() => { ReactDOM.render(<ShareModalContent />, container) })
+  expect(container.querySelector('[data-test="license-copy"]')).not.toBeNull()
+  expect(container.textContent).not.toMatch(/Copyright © 2016|All rights reserved|Please provide attribution/)
+  expect(container.querySelector('a[href*="opensource.org"]')).toBeNull()
+  ReactDOM.unmountComponentAtNode(container)
 })
 ```
+
+The 2016 block was only ever in Share, so its absence is checked there alone; run for About too, the check could not fail.
 
 The accessible-name assertion uses the link's text: with no `aria-label` or `aria-labelledby`, a link's name is its text content, the visually hidden hint included. The repo has no Testing Library, and adding it for one assertion would be a dependency change (React 16.8.3, jsdom 11).
 
@@ -514,12 +518,12 @@ describe.each([
 
 Run on master with all three steps applied as throwaway code, then removed:
 
-- `npx jest`: 3 suites, 23 tests pass (the existing reducer test, 12 copy tests, 10 top-bar tests: five each for About and Share).
+- `npx jest`: 3 suites, 22 tests pass (the existing reducer test, 11 copy tests, 10 top-bar tests: five each for About and Share).
 - `npx standard js`: clean. `npm run lint:test` (whole repo) already fails on master, in `cypress/`, `cypress.config.js` and `webpack.config.js`, which this plan does not touch; CI does not run lint.
 - `npm run build-production`: compiles with 9 warnings, all from files this plan does not touch: bundle-size limits and import warnings in `js/3d/camera.js` and three's `OrbitControls.js`.
-- The license-copy step alone (dialog step not applied): `npx jest` 13 tests pass and `npx standard js` is clean, so it can be committed and reviewed by itself.
+- The license-copy step alone (dialog step not applied): `npx jest` 12 tests pass and `npx standard js` is clean, so it can be committed and reviewed by itself.
 - Cypress `cypress/e2e/basic/smoke.cy.js` (13.6.3, Electron, against the dev server): 10/10 pass, including its About and Share tests, which open by `data-test` and close with `[data-test=close-modal]`. No Cypress spec changes.
-- Each test fails when the line it guards is broken: dropping `<LicenseCopy />` from either dialog (5 fail), a hardcoded year (2), a straight apostrophe (2), `rel="noopener"` only (2), no new-tab hint (4), a wrong MIT constant (2), the mailto link through `ExternalLink` (4), a block after the copy (1); and in the top-bar tests: About back to a span (3), Share back to a span (3), Share without `type='button'` (1), no `onRequestClose` (2), `shouldReturnFocusAfterClose={false}` (4), Close without `autoFocus` (2), no `aria.labelledby` (2), Share unlabeled (1), Share's Close doing nothing (2), Close without its name (2), Close without `type='button'` (2).
+- Each test fails when the line it guards is broken: dropping `<LicenseCopy />` from About (5 fail) or Share (6), Share's 2016 block put back (1), a hardcoded year (2), a straight apostrophe (2), `rel="noopener"` only (2), no new-tab hint (4), a wrong MIT constant (2), the mailto link through `ExternalLink` (4), a block after the copy (1); and in the top-bar tests: About back to a span (3), Share back to a span (3), Share without `type='button'` (1), no `onRequestClose` (2), `shouldReturnFocusAfterClose={false}` (4), Close without `autoFocus` (2), no `aria.labelledby` (2), Share unlabeled (1), Share's Close doing nothing (2), Close without its name (2), Close without `type='button'` (2).
 - Browser (dev server, Chromium, 900 × 600, the Share embed size): About is a button in the same box as today's span (841, 2, 40.9 × 18); Tab shows a whole focus ring on it; the About dialog scrolls to the copy within the cap (13 to 573px with `calc(100vh - 40px)`; unscrolled at 1024 × 768, 69 to 699px, and 1280 × 800, 104 to 696px), named "About: Seismic Explorer"; Enter (and Space) on the focused About button opens the dialog with focus on Close, which shows its ring; Tab from Close moves to the first link; Esc closes and focus returns to About; a mouse click on About opens it with focus on Close and no ring, and clicking Close returns focus to About with no ring; Share is a button in the same box as today's span (785.3, 2, 37.8 × 18), Tab reaches it after About, its focus ring runs 0 to 22px and is whole on all four sides inside the 22px bar, Enter opens "Share: Seismic Explorer" with focus on Close and its ring showing (by mouse, no ring), and Esc, and Enter on Close, each return focus to Share; all four copy links are underlined; the copyright line is 10.4px; Share is 68 to 517px with the copy last and 8px between its paragraphs; both dialogs are 38.4px narrower than on master (About 630px, Share 405px), from `border-box`. In the Share dialog's own embed snippet (900 × 600 iframe, `scrolling="no"`, so no page scrollbar), About is 20 to 580px and scrolls to the copy by mouse wheel, PageDown and arrow keys, and Share is 76 to 524px. Firefox (Playwright's Firefox build) matches Chromium: About and Share are pixel-identical to master in the top bar, the × is the same glyph, size and offset from the dialog's corner, Tab reaches About with its ring, Enter on About or Share opens the dialog with focus on Close and its ring showing (by mouse, no ring), Esc and Enter on Close return focus to the opener, the four links have the same accessible names, and About scrolls within the cap at 900 × 600 (20 to 580px). Not checked: Safari (WebKit would not launch here).
 
 ## Open Questions
