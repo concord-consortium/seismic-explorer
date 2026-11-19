@@ -37,7 +37,7 @@ SE-4 is one of five matching Geo stories (HURR-70, SE-4, TE-10, WM-67, FM-5). Th
 
 - **R8. Hidden user interface is unchanged**: with `showUserInterface=false` the app renders exactly as before (decision 3, Kiley: "Don't add anything").
 - **R9. No other new surface**: no top-bar Terms of Use item, no heading over the copy, no links row (decision 6).
-- **R10. About and Share are `<button type="button">`s**, each looking as its old text control did (15px, `#777`, `#111` on hover, same position), keeping `data-test="about"`, `data-test="share"` and the `AboutDialogOpened` and `ShareDialogOpened` logs, with a keyboard focus ring that fits inside the 22px top bar. Reload stays as it is. *(Share as a button goes beyond the story: decision 4, Doug, 2026-11-18, after Teale Fristoe's review of HURR-70.)*
+- **R10. Reload, About and Share are `<button type="button">`s**, each looking as its old control did (15px, `#777`, `#111` on hover, same position), keeping `data-test="reload"`, `data-test="about"`, `data-test="share"` and the `ReloadClicked`, `AboutDialogOpened` and `ShareDialogOpened` logs, with a keyboard focus ring that fits inside the 22px top bar. Reload's icon is `aria-hidden`; the button is named "Reload" by `aria-label`, with a matching `title` tooltip. Tab goes Reload, Share, About, as they read on screen. *(Share as a button goes beyond the story: decision 4, Doug, 2026-11-18, after Teale Fristoe's review of HURR-70. Reload as a button: Kiley Brown's review of the Geo branch builds, Doug, 2026-11-19.)*
 
 ### Dialog behavior (both dialogs, through `BasicModal`, decision 7)
 
@@ -53,7 +53,7 @@ SE-4 is one of five matching Geo stories (HURR-70, SE-4, TE-10, WM-67, FM-5). Th
 
 ### Tests
 
-- **R17.** Unit tests render the real About and Share content and cover, for each: the four hrefs as literal URLs; `target` and `rel` on the web links and their absence on the mailto link; each link's accessible name; the R2 copy word for word, including the curly apostrophe and bold lead-ins; that the copy is the last block; and the year under two pinned dates. In Share, the R4 text is absent. Through the real top bar, for both About and Share: a focusable `type="button"` that opens its dialog, named by its title, with focus on Close; Esc and Close each close it and return focus to the button, including after a click from the body that did not focus it (seven tests per button; removing either handler's focus call fails its 2). Share comes before About in document order, so Tab follows the on-screen order (27 Jest tests in all). *(Enter itself is checked in the browser only: jsdom 11 does not turn Enter on a button into a click, and neither Cypress 13's `type('{enter}')` nor a Chrome DevTools key press from Cypress activated the button. Layout, focus rings and the height cap are browser checks too.)*
+- **R17.** Unit tests render the real About and Share content and cover, for each: the four hrefs as literal URLs; `target` and `rel` on the web links and their absence on the mailto link; each link's accessible name; the R2 copy word for word, including the curly apostrophe and bold lead-ins; that the copy is the last block; and the year under two pinned dates. In Share, the R4 text is absent. Through the real top bar, for both About and Share: a focusable `type="button"` that opens its dialog, named by its title, with focus on Close; Esc and Close each close it and return focus to the button, including after a click from the body that did not focus it (seven tests per button; removing either handler's focus call fails its 2). Reload is a focusable `type="button"` named "Reload" with a matching tooltip, and Reload, Share and About come in that document order, so Tab follows the on-screen order (28 Jest tests in all). *(Enter itself is checked in the browser only: jsdom 11 does not turn Enter on a button into a click, and neither Cypress 13's `type('{enter}')` nor a Chrome DevTools key press from Cypress activated the button. Layout, focus rings and the height cap are browser checks too.)*
 
 ### CI
 
@@ -69,7 +69,7 @@ SE-4 is one of five matching Geo stories (HURR-70, SE-4, TE-10, WM-67, FM-5). Th
 - **Component tests**: the repo's first. `package.json`'s `jest.moduleNameMapper` stubs Less imports (`js/test/style-stub.js`). `#app` must exist before `basic-modal.js` is imported, since it calls `Modal.setAppElement('#app')` at import. Jest 24 has no `setSystemTime`, so `js/test/pin-date.js` replaces `global.Date`.
 - **react-modal**: Esc needs only `onRequestClose`; the dialog is named through `aria={{ labelledby }}` pointing at each content component's title id (`ABOUT_TITLE_ID`, `SHARE_TITLE_ID`); focus return is on by default. On open it records the opener before rendering the content and focuses the content `div` only if focus is not already inside, so `autoFocus` on Close works and focus return still reaches the opener.
 - **Dialog height and width**: `box-sizing: border-box; max-height: calc(100vh - 40px)` on `.basic-modal`. In a 900 × 600 iframe About is 20 to 580px and scrolls to the copy by wheel and keyboard; at 1024 × 768 and larger it does not scroll. `border-box` also applies to the existing `max-width` caps, so both dialogs are 38.4px (the 2.4em side padding) narrower than before.
-- **Top bar**: Share and About sit, in that order, in one right-floated group, each with the 1.2em right margin, so Tab moves left to right as they read on screen. The buttons reset `padding`, `border`, `background`, `font` and `line-height` to match the old spans. Both sit 2px from the viewport's top, so the focus ring uses `outline-offset: 0` to stay whole inside the 22px bar.
+- **Top bar**: Reload sits on the left; Share and About sit, in that order, in one right-floated group, each with the 1.2em right margin, so Tab moves left to right as they read on screen. The buttons reset `padding`, `border`, `background`, `font` and `line-height` to match the old spans. All three sit 2px from the viewport's top, so the focus ring uses `outline-offset: 0` to stay whole inside the 22px bar.
 - **Cypress**: `cypress/e2e/basic/smoke.cy.js` finds About, Share and Close by `data-test`, which is kept, so it needs no change.
 - **CI**: v5 and v6 share the got 11.8.6 dev-server ping that failed for HURR-70 on GitHub runner 2.338; v7 runs on Node 24. The evidence is HURR-70's CI run, not a local repro.
 - **Reference**: CODAP-1595 / codap#2758 for the copy and `ExternalLink`; HURR-70 for the Geo shape. Seismic follows the shape, not the code.
@@ -77,7 +77,6 @@ SE-4 is one of five matching Geo stories (HURR-70, SE-4, TE-10, WM-67, FM-5). Th
 ## Out of Scope
 
 - From the story: a third-party acknowledgements list, usage tracking, changing the software license, localizing the legal copy, and a cookie banner.
-- Converting Reload to a button.
 - Existing credit links in About, including their missing `rel`.
 - Embeds with `showUserInterface=false`, where About and the copy stay unreachable (decision 3).
 - The splash screen (decision 11).
@@ -124,7 +123,7 @@ SE-4 is one of five matching Geo stories (HURR-70, SE-4, TE-10, WM-67, FM-5). Th
 ### Does Share become a button too? (geo-common decision 4)
 **Context**: Share opened the same copy from a `<span>` that Tab never reached.
 
-**Decision**: Yes, Doug, 2026-11-18, for all five Geo apps, after Teale Fristoe's review of HURR-70. Beyond the story. Reload is not included.
+**Decision**: Yes, Doug, 2026-11-18, for all five Geo apps, after Teale Fristoe's review of HURR-70. Beyond the story. Reload followed on 2026-11-19, after Kiley Brown's review of the Geo branch builds.
 
 ---
 

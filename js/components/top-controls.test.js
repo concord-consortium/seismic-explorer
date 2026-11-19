@@ -83,10 +83,28 @@ describe.each([
   })
 })
 
-it('puts Share before About in the Tab order, as they read on screen', () => {
-  act(() => { ReactDOM.render(<TopControls />, app) })
-  const share = app.querySelector('[data-test="share"]')
-  const about = app.querySelector('[data-test="about"]')
-  expect(share.compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-  act(() => { ReactDOM.unmountComponentAtNode(app) })
+describe('the top bar', () => {
+  beforeEach(() => {
+    act(() => { ReactDOM.render(<TopControls />, app) })
+  })
+
+  afterEach(() => {
+    act(() => { ReactDOM.unmountComponentAtNode(app) })
+  })
+
+  it('makes Reload a button named Reload, with a matching tooltip and a hidden icon', () => {
+    const reload = app.querySelector('[data-test="reload"]')
+    expect(reload.tagName).toBe('BUTTON')
+    expect(reload.getAttribute('type')).toBe('button')
+    expect(reload.getAttribute('aria-label')).toBe('Reload')
+    expect(reload.getAttribute('title')).toBe('Reload')
+    expect(reload.querySelector('i').getAttribute('aria-hidden')).toBe('true')
+    reload.focus()
+    expect(document.activeElement).toBe(reload)
+  })
+
+  it('puts Reload, Share and About in the Tab order as they read on screen', () => {
+    const controls = Array.from(app.querySelectorAll('button')).map(b => b.getAttribute('data-test'))
+    expect(controls).toEqual(['reload', 'share', 'about'])
+  })
 })
