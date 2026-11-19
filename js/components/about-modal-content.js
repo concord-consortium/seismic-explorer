@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import LicenseCopy from './license-copy'
 
 import '../../css/about-modal-content.less'
 
@@ -37,6 +38,7 @@ export default class AboutModalContent extends PureComponent {
             Downloaded {dateFormatter()}. https://doi.org/10.5479/si.GVP.VOTW4-2013
           </p>
         </div>
+        <LicenseCopy />
       </div>
     )
   }
