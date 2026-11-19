@@ -24,12 +24,15 @@ export default class TopControls extends PureComponent {
     this.closeAboutModal = this.closeAboutModal.bind(this)
   }
 
-  openShareModal () {
+  // react-modal returns focus to whatever had it on open, and some browsers do not focus a clicked button.
+  openShareModal (event) {
+    event.currentTarget.focus()
     this.setState({ shareModalOpen: true, aboutModalOpen: false })
     log('ShareDialogOpened')
   }
 
-  openAboutModal () {
+  openAboutModal (event) {
+    event.currentTarget.focus()
     this.setState({ aboutModalOpen: true, shareModalOpen: false })
     log('AboutDialogOpened')
   }

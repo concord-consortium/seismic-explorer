@@ -70,4 +70,15 @@ describe.each([
     expect(dialog()).toBeNull()
     expect(document.activeElement).toBe(button())
   })
+
+  // macOS Safari and Firefox do not focus a button when it is clicked.
+  it.each([
+    ['Esc', () => act(() => { Simulate.keyDown(dialog(), ESC) })],
+    ['Close', () => act(() => { Simulate.click(dialog().querySelector('[data-test="close-modal"]')) })]
+  ])('gets focus back by %s after a click that did not focus it', (_how, close) => {
+    document.activeElement.blur()
+    act(() => { Simulate.click(button()) })
+    close()
+    expect(document.activeElement).toBe(button())
+  })
 })
