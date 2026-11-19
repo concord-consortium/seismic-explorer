@@ -18,7 +18,7 @@ SE-4 is one of five matching Geo stories (HURR-70, SE-4, TE-10, WM-67, FM-5). Th
 - **R2. Copy, word for word** (CODAP `V3.AboutDialog.*` with the product and host swapped), in this order:
   - Paragraph 1: **Seismic Explorer is free, open-source software.** The Seismic Explorer source code is released under the [MIT License], so you’re welcome to use, modify, and build on it.
   - Paragraph 2: **Your use of Seismic Explorer at seismic-explorer.concord.org** is governed by our [Terms of Use]. The hosted version is free for non-commercial use; commercial use requires a separate written agreement. For more information, visit [concord.org/licensing] or contact [licensing@concord.org].
-  - Copyright line, at 0.65em: `© {current year} The Concord Consortium, Inc.`
+  - Copyright line, at 12px: `© {current year} The Concord Consortium, Inc.`
   - The leading phrase of each paragraph is bold. "you’re" uses the curly apostrophe U+2019 (decision 1).
 - **R3. Year** is `new Date().getFullYear()` at render time. No range and no build-time constant (decision 1).
 - **R4. The old text is gone** from Share: no "Copyright © 2016", "All rights reserved", "opensource.org/licenses/MIT" or "Please provide attribution" (decision 5).
