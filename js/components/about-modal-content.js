@@ -3,6 +3,8 @@ import LicenseCopy from './license-copy'
 
 import '../../css/about-modal-content.less'
 
+export const ABOUT_TITLE_ID = 'about-modal-title'
+
 export default class AboutModalContent extends PureComponent {
   render () {
     const dateFormatter = () => {
@@ -14,7 +16,7 @@ export default class AboutModalContent extends PureComponent {
     }
     return (
       <div className='about-modal-content'>
-        <div className='title'>About: Seismic Explorer</div>
+        <div className='title' id={ABOUT_TITLE_ID}>About: Seismic Explorer</div>
         <div>
           <p>Geologists collect earthquake data every day. What are the patterns of earthquake magnitude, depth,
             location, and frequency? What are the patterns of earthquakes along plate boundaries?</p>

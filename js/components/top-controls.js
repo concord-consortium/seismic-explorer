@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import BasicModal from './basic-modal'
-import ShareModalContent from './share-modal-content'
-import AboutModalContent from './about-modal-content'
+import ShareModalContent, { SHARE_TITLE_ID } from './share-modal-content'
+import AboutModalContent, { ABOUT_TITLE_ID } from './about-modal-content'
 import log from '../logger'
 
 import '../../css/top-controls.less'
@@ -50,14 +50,14 @@ export default class TopControls extends PureComponent {
         <span className='top-link left' onClick={reloadPage} data-test='reload'>
           <i className='fa fa-repeat' />
         </span>
-        <span className='top-link right' onClick={this.openAboutModal} data-test='about'>About</span>
-        <span className='top-link right' onClick={this.openShareModal} data-test='share'>Share</span>
+        <button type='button' className='top-link right' onClick={this.openAboutModal} data-test='about'>About</button>
+        <button type='button' className='top-link right' onClick={this.openShareModal} data-test='share'>Share</button>
 
-        <BasicModal className='narrow' isOpen={shareModalOpen} close={this.closeShareModal}>
+        <BasicModal className='narrow' isOpen={shareModalOpen} close={this.closeShareModal} labelledBy={SHARE_TITLE_ID}>
           <ShareModalContent />
         </BasicModal>
 
-        <BasicModal isOpen={aboutModalOpen} close={this.closeAboutModal}>
+        <BasicModal isOpen={aboutModalOpen} close={this.closeAboutModal} labelledBy={ABOUT_TITLE_ID}>
           <AboutModalContent />
         </BasicModal>
       </div>

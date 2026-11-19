@@ -11,11 +11,13 @@ function getIframeString () {
   return `<iframe width="900px" height="600px" frameborder="no" scrolling="no" allowfullscreen="true" src="${getURL()}"></iframe>`
 }
 
+export const SHARE_TITLE_ID = 'share-modal-title'
+
 export default class ShareModalContent extends PureComponent {
   render () {
     return (
       <div className='share-modal-content'>
-        <div className='title'>Share: Seismic Explorer</div>
+        <div className='title' id={SHARE_TITLE_ID}>Share: Seismic Explorer</div>
         <div>
           <div>Paste this link in email or IM.</div>
           <textarea value={getURL()} readOnly />
