@@ -82,3 +82,11 @@ describe.each([
     expect(document.activeElement).toBe(button())
   })
 })
+
+it('puts Share before About in the Tab order, as they read on screen', () => {
+  act(() => { ReactDOM.render(<TopControls />, app) })
+  const share = app.querySelector('[data-test="share"]')
+  const about = app.querySelector('[data-test="about"]')
+  expect(share.compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  act(() => { ReactDOM.unmountComponentAtNode(app) })
+})

@@ -54,8 +54,10 @@ export default class TopControls extends PureComponent {
         <span className='top-link left' onClick={reloadPage} data-test='reload'>
           <i className='fa fa-repeat' />
         </span>
-        <button type='button' className='top-link right' onClick={this.openAboutModal} data-test='about'>About</button>
-        <button type='button' className='top-link right' onClick={this.openShareModal} data-test='share'>Share</button>
+        <div className='right'>
+          <button type='button' className='top-link' onClick={this.openShareModal} data-test='share'>Share</button>
+          <button type='button' className='top-link' onClick={this.openAboutModal} data-test='about'>About</button>
+        </div>
 
         <BasicModal className='narrow' isOpen={shareModalOpen} close={this.closeShareModal} labelledBy={SHARE_TITLE_ID}>
           <ShareModalContent />
