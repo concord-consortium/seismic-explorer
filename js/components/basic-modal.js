@@ -12,7 +12,7 @@ export default class BasicModal extends PureComponent {
 
     return (
       <Modal shouldCloseOnOverlayClick={false} className={`modal-style basic-modal ${className}`}
-        overlayClassName='basic-modal-overlay' isOpen={isOpen} onRequestClose={close} aria={{ labelledby: labelledBy }}>
+        overlayClassName='basic-modal-overlay' isOpen={isOpen} onRequestClose={close} aria={{ labelledby: labelledBy, modal: true }}>
         <button type='button' autoFocus onClick={close} className='close-icon' aria-label='Close' data-test='close-modal'>
           <i className='fa fa-close' aria-hidden='true' />
         </button>

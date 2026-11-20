@@ -41,10 +41,11 @@ describe.each([
     expect(document.activeElement).toBe(button())
   })
 
-  it('opens a dialog named by its title', () => {
+  it('opens a modal dialog named by its title', () => {
     open()
     expect(dialog().hasAttribute('aria-label')).toBe(false)
     expect(dialogName(dialog())).toBe(title)
+    expect(dialog().getAttribute('aria-modal')).toBe('true')
   })
 
   it('opens with focus on its Close button', () => {
