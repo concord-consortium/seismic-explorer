@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import BasicModal from './basic-modal'
-import ShareModalContent from './share-modal-content'
-import AboutModalContent from './about-modal-content'
+import ShareModalContent, { SHARE_TITLE_ID } from './share-modal-content'
+import AboutModalContent, { ABOUT_TITLE_ID } from './about-modal-content'
 import log from '../logger'
 
 import '../../css/top-controls.less'
@@ -24,12 +24,16 @@ export default class TopControls extends PureComponent {
     this.closeAboutModal = this.closeAboutModal.bind(this)
   }
 
-  openShareModal () {
+  openShareModal (event) {
+    // react-modal returns focus to what had it on open; some browsers do not focus a clicked button.
+    event.currentTarget.focus()
     this.setState({ shareModalOpen: true, aboutModalOpen: false })
     log('ShareDialogOpened')
   }
 
-  openAboutModal () {
+  openAboutModal (event) {
+    // react-modal returns focus to what had it on open; some browsers do not focus a clicked button.
+    event.currentTarget.focus()
     this.setState({ aboutModalOpen: true, shareModalOpen: false })
     log('AboutDialogOpened')
   }
@@ -47,17 +51,19 @@ export default class TopControls extends PureComponent {
 
     return (
       <div className='top-controls'>
-        <span className='top-link left' onClick={reloadPage} data-test='reload'>
-          <i className='fa fa-repeat' />
-        </span>
-        <span className='top-link right' onClick={this.openAboutModal} data-test='about'>About</span>
-        <span className='top-link right' onClick={this.openShareModal} data-test='share'>Share</span>
+        <button type='button' className='top-link left' onClick={reloadPage} aria-label='Reload' title='Reload' data-test='reload'>
+          <i className='fa fa-repeat' aria-hidden='true' />
+        </button>
+        <div className='right'>
+          <button type='button' className='top-link' onClick={this.openShareModal} data-test='share'>Share</button>
+          <button type='button' className='top-link' onClick={this.openAboutModal} data-test='about'>About</button>
+        </div>
 
-        <BasicModal className='narrow' isOpen={shareModalOpen} close={this.closeShareModal}>
+        <BasicModal className='narrow' isOpen={shareModalOpen} close={this.closeShareModal} labelledBy={SHARE_TITLE_ID}>
           <ShareModalContent />
         </BasicModal>
 
-        <BasicModal isOpen={aboutModalOpen} close={this.closeAboutModal}>
+        <BasicModal isOpen={aboutModalOpen} close={this.closeAboutModal} labelledBy={ABOUT_TITLE_ID}>
           <AboutModalContent />
         </BasicModal>
       </div>

@@ -8,13 +8,14 @@ Modal.setAppElement('#app')
 
 export default class BasicModal extends PureComponent {
   render () {
-    const { isOpen, close, children, className, contentLabel } = this.props
-    let contentLabelValue = contentLabel || ''
+    const { isOpen, close, children, className, labelledBy } = this.props
 
     return (
       <Modal shouldCloseOnOverlayClick={false} className={`modal-style basic-modal ${className}`}
-        overlayClassName='basic-modal-overlay' isOpen={isOpen} contentLabel={contentLabelValue}>
-        <i onClick={close} className='close-icon fa fa-close' data-test='close-modal' />
+        overlayClassName='basic-modal-overlay' isOpen={isOpen} onRequestClose={close} aria={{ labelledby: labelledBy, modal: true }}>
+        <button type='button' autoFocus onClick={close} className='close-icon' aria-label='Close' data-test='close-modal'>
+          <i className='fa fa-close' aria-hidden='true' />
+        </button>
         {children}
       </Modal>
     )

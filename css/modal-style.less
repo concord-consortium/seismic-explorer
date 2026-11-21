@@ -12,8 +12,16 @@
     color: #777;
     cursor: pointer;
     float: right;
+    padding: 0;
+    border: 0;
+    background: none;
+    line-height: 1;
     &:hover {
       color: #000;
+    }
+    &:focus-visible {
+      outline: 2px solid #000;
+      outline-offset: 2px;
     }
   }
 }

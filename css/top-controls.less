@@ -9,6 +9,19 @@
     &:hover {
       color: #111;
     }
+
+    &:focus-visible {
+      outline: 2px solid #111;
+      outline-offset: 0;
+    }
+  }
+
+  button.top-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    line-height: inherit;
   }
 
   .left {
@@ -17,6 +30,9 @@
 
   .right {
     float: right;
-    margin-right: 1.2em;
+
+    .top-link {
+      margin-right: 1.2em;
+    }
   }
 }

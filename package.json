@@ -20,6 +20,11 @@
     "test:cypress:open": "cypress open --env failOnSnapshotDiff=false",
     "test:cypress:chrome": "cypress run --headless --browser chrome"
   },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(less|css)$": "<rootDir>/js/test/style-stub.js"
+    }
+  },
   "standard": {
     "ignore": [
       "js/data"

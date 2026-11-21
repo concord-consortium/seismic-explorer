@@ -160,6 +160,7 @@ context('Smoke Test', () => {
       cy.get('.about-modal-content')
         .should('contain', 'About: Seismic Explorer')
         .and('contain', 'Geologists collect earthquake data every day. What are the patterns of earthquake magnitude, depth, location, and frequency? What are the patterns of earthquakes along plate boundaries?')
+      cy.get('.about-modal-content .copyright').should('have.css', 'font-size', '12px')
 
       cy.get('[data-test=close-modal]').click()
       cy.get('.about-modal-content').should('not.exist')
@@ -174,6 +175,7 @@ context('Smoke Test', () => {
         .should('contain', 'Share: Seismic Explorer')
         .and('contain', 'Paste this link in email or IM.')
         .and('contain', 'Paste HTML to embed in website or blog.')
+      cy.get('.share-modal-content .copyright').should('have.css', 'font-size', '12px')
 
       cy.get('[data-test=close-modal]').click()
       cy.get('.about-modal-content').should('not.exist')
